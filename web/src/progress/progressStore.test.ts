@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey } from './progressStore'
+import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak } from './progressStore'
 
 const session = (over = {}) => ({
   drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
@@ -79,5 +79,35 @@ describe('getBest is keyed on session length', () => {
   it('returns null when that length has never been played', () => {
     recordSession(session({ durationSec: 60 }))
     expect(getBest('note-id', 1, 30)).toBeNull()
+  })
+})
+
+describe('getStreak', () => {
+  const day = (offset: number) => {
+    const d = new Date('2026-08-28T12:00:00')
+    d.setDate(d.getDate() + offset)
+    return d
+  }
+  const on = (offset: number) => session({ at: day(offset).toISOString() })
+  const today = day(0)
+
+  it('is zero with no sessions', () => {
+    expect(getStreak(today)).toBe(0)
+  })
+  it('counts consecutive days ending today', () => {
+    recordSession(on(0)); recordSession(on(-1)); recordSession(on(-2))
+    expect(getStreak(today)).toBe(3)
+  })
+  it('counts multiple sessions in a day once', () => {
+    recordSession(on(0)); recordSession(on(0))
+    expect(getStreak(today)).toBe(1)
+  })
+  it('survives an unpractised today by counting back from yesterday', () => {
+    recordSession(on(-1)); recordSession(on(-2))
+    expect(getStreak(today)).toBe(2)
+  })
+  it('breaks on a missed day', () => {
+    recordSession(on(0)); recordSession(on(-1)); recordSession(on(-3))
+    expect(getStreak(today)).toBe(2)
   })
 })

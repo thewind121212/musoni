@@ -74,3 +74,25 @@ export function getBest(drill: string, level: number, durationSec: number): Sess
   }
   return best
 }
+
+/**
+ * Consecutive days ending today that have at least one session.
+ *
+ * A day with no sessions yet does not break the streak until it is over, so an
+ * unpractised today counts back from yesterday: the number shown is what the
+ * user still has, not what they have already lost.
+ */
+export function getStreak(now: Date = new Date()): number {
+  const doc = load()
+  const hasSessions = (d: Date) => (doc.days[localDayKey(d)]?.sessions.length ?? 0) > 0
+
+  const cursor = new Date(now)
+  if (!hasSessions(cursor)) cursor.setDate(cursor.getDate() - 1)
+
+  let streak = 0
+  while (hasSessions(cursor)) {
+    streak++
+    cursor.setDate(cursor.getDate() - 1)
+  }
+  return streak
+}
