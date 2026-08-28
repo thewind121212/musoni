@@ -58,7 +58,7 @@ export function ActivityPanel() {
         )}
       </div>
 
-      <div className="mt-5">
+      <div className="mt-3.5">
         <AnimatePresence mode="wait" initial={false}>
           {expanded ? (
             <motion.div
@@ -66,8 +66,8 @@ export function ActivityPanel() {
               initial={reduce ? false : { opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={reduce ? undefined : { opacity: 0, height: 0 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden"
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden -mx-1.5 px-1.5 py-1.5"
             >
               <ActivityGrid minutesByDay={minutesByDay} />
             </motion.div>
@@ -77,8 +77,8 @@ export function ActivityPanel() {
               initial={reduce ? false : { opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={reduce ? undefined : { opacity: 0, height: 0 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden"
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden -mx-1.5 px-1.5 py-1.5"
             >
               <ActivityWeek minutesByDay={minutesByDay} />
             </motion.div>
@@ -110,7 +110,7 @@ export function ActivityPanel() {
             initial={reduce ? false : { opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={reduce ? undefined : { opacity: 0, height: 0 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
             <div className="mt-1 flex gap-2 border-t border-line pt-4">

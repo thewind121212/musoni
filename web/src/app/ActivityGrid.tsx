@@ -1,6 +1,7 @@
 import { useAppStore } from './store'
 import { useT } from './useT'
 import { localDayKey } from '../progress/progressStore'
+import { buildWeeks } from './activityWeeks'
 
 /**
  * Practice minutes as a calendar heatmap, one square per day, weeks running
@@ -81,23 +82,8 @@ export function ActivityGrid({ minutesByDay }: Props) {
   const t = useT()
   const lang = useAppStore(s => s.settings.lang)
 
-  // Columns are weeks ending today, so the last column always holds the current
-  // week and today is the final filled square.
   const today = new Date()
-  const start = new Date(today)
-  start.setDate(start.getDate() - (WEEKS * 7 - 1))
-  start.setDate(start.getDate() - start.getDay()) // back to the Sunday that opens the range
-
-  const columns: Date[][] = []
-  const cursor = new Date(start)
-  for (let w = 0; w < WEEKS; w++) {
-    const week: Date[] = []
-    for (let d = 0; d < 7; d++) {
-      week.push(new Date(cursor))
-      cursor.setDate(cursor.getDate() + 1)
-    }
-    columns.push(week)
-  }
+  const columns = buildWeeks(today, WEEKS)
 
   // A month label sits above the first column that opens that month.
   const monthLabels = columns.map((week, i) => {
