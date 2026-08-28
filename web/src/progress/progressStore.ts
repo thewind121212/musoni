@@ -13,7 +13,9 @@ const DEFAULTS: Settings = { naming: 'letters', accidentals: false, sound: true 
 
 function load(): Doc {
   const raw = localStorage.getItem(KEY)
-  if (raw) return JSON.parse(raw) as Doc
+  if (raw) {
+    try { return JSON.parse(raw) as Doc } catch { /* corrupted — fall through to defaults */ }
+  }
   return { version: 1, settings: { ...DEFAULTS }, days: {} }
 }
 function save(doc: Doc): void { localStorage.setItem(KEY, JSON.stringify(doc)) }

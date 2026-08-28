@@ -34,4 +34,8 @@ describe('progressStore', () => {
     expect(getBest('note-id', 1)!.practiceScore).toBe(90)
     expect(getBest('note-id', 3)).toBeNull()
   })
+  it('recovers from corrupted localStorage', () => {
+    localStorage.setItem('musoni-progress-v1', '{not json')
+    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true })
+  })
 })
