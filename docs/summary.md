@@ -9,6 +9,7 @@
 
 A web app for pure sheet-music reading training combined with music theory.
 Train reading speed with short drills, track improvement day by day.
+Ear training joins in a future phase (see phase plan below).
 
 ## Phase plan
 
