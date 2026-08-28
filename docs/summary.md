@@ -56,29 +56,37 @@ graph TB
     SET["Settings screen"]
 
     APPSTORE["App Store (Zustand)<br/>settings, level"]
-    DRILLSTORE["Drill Store (Zustand)<br/>note-id session state"]
-    ENGINE["Drill Engine (core)<br/>generate → render → answer → feedback → next"]
+    DRILLSTORE["Drill Store (Zustand)<br/>note-id session lifecycle:<br/>start → answer → next → finish"]
     GEN["Question Generator<br/>(note-id)"]
-    REND["Notation Renderer<br/>(VexFlow)"]
-    SCORE["Scoring<br/>(difficulty-weighted)"]
+    REND["Staff<br/>(VexFlow, core/components)"]
+    SCORE["Scoring<br/>(difficulty-weighted, core)"]
     STORE["Progress Store<br/>(localStorage, cloud-plug)"]
-    AUDIO["Audio Feedback<br/>(Web Audio, optional)"]
+    AUDIO["Audio Feedback<br/>(Web Audio, core, optional)"]
 
     HOME --> DRILL --> RESULTS
     HOME --> SET
     SET --> APPSTORE
     DRILL --> DRILLSTORE
-    DRILLSTORE --> ENGINE
+    DRILL --> REND
+    DRILL --> AUDIO
     APPSTORE --> STORE
+    DRILLSTORE --> GEN
+    DRILLSTORE --> SCORE
     DRILLSTORE --> STORE
-    ENGINE --> GEN
-    ENGINE --> REND
-    ENGINE --> SCORE
-    ENGINE --> AUDIO
-    SCORE --> DRILLSTORE
     RESULTS --> DRILLSTORE
   end
 ```
+
+As built, there is no separate "Drill Engine" component: the note-id
+Drill Store itself holds the session lifecycle (`start` → `answer` →
+`tick`/`next` → `finish`) and calls the Question Generator, Scoring, and
+Progress Store directly. The Drill screen calls Staff (VexFlow rendering)
+and Audio Feedback directly using state read from the Drill Store.
+`core/engine/` exists in the repo only as an empty placeholder folder —
+no code has been written against it. If a second drill (Phase 2:
+Complete-the-Measure) needs to share lifecycle code, extracting a real
+`core/engine` at that point is the natural refactor; for one drill,
+inlining it in the store was the honest simpler choice.
 
 ### API Server (`server/`) — details in `docs/be/`
 

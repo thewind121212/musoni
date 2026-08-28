@@ -11,11 +11,11 @@ Phase 1: train note-identification speed on the staff. Later: rhythm drills, ear
 
 ## Current Phase
 
-**Phase 1 — Note Identification drill** (web only, no login, localStorage progress)
+**Phase 1 — implemented, pending human browser verification** (web only, no login, localStorage progress)
 
 ## State
 
-Design approved and documented. Implementation **not started**.
+All 14 implementation-plan tasks are code-complete and merged on `phase1-note-id`: web app (note-id drill, 4 screens, React Router, Zustand stores, VexFlow staff rendering, weighted scoring, localStorage progress) and Go `/health` stub. 31 web tests (Vitest) + 1 Go test green, `npm run build` clean. Not yet spot-checked in a real browser.
 
 ## Done
 
@@ -29,16 +29,18 @@ Design approved and documented. Implementation **not started**.
 - [x] Doc-sync rule + skill — `CLAUDE.md`, `.claude/skills/doc-sync/`
 - [x] FE architecture: modules + Zustand store per module + core components — `docs/fe/architecture.md`, enforced by `.claude/skills/fe-design/`
 - [x] Implementation workflow: gitignored `tmp/DD-MM-YYYY-<feature>/` plan + progress folders — `.claude/skills/impl-plan/`
+- [x] `web/` scaffolded (Vite + React + TS); `server/` scaffolded (Go, `net/http`, `/health` on `:8080`)
+- [x] Drill 1 (Note Identification) implemented: question generator, weighted scoring, 4 screens (Home, Drill, Results, Settings), React Router, Zustand `app` + `drills/note-id` stores, VexFlow `Staff` component, Web Audio pitch playback
+- [x] `progressStore` (localStorage, versioned doc, cloud-sync plug) implemented and covered by tests
+- [x] 31 web tests (Vitest) + 1 Go test green; `npm run build` clean
 
 ## In Progress
 
-- (nothing)
+- Human browser spot-check: visual staff rendering across levels, audio pitch playback, full play-through at 375px viewport (one letters/naturals L1 session, one solfège/accidentals L2 session) — not runnable headlessly, remains for a human pass
 
 ## Next
 
-- Execute the Phase 1 plan: `tmp/28-08-2026-phase1-note-id/plan.md` (local, gitignored — 14 tasks)
-- Scaffold `web/` (Vite + React + TS) and `server/` (Go hello-world)
-- Implement Drill 1 per `docs/fe/drill-note-identification.md`
+- Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
 
 ## Parked (Phase 2+)
 

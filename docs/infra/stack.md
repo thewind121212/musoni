@@ -32,10 +32,12 @@ musoni/
 └── server/                    # Go, net/http
 ```
 
-## Setup (to be filled when scaffolded)
+## Setup
 
-- `web/`: `npm install && npm run dev`
-- `server/`: `go run .`
+- `web/`: `cd web && npm install && npm run dev` — Vite dev server (default `http://localhost:5173`)
+- `server/`: `cd server && go run .` — serves `GET /health` on `:8080`
+- Tests: `cd web && npm test` (Vitest), `cd server && go test ./...`
+- Build: `cd web && npm run build` (`tsc -b && vite build`, output in `web/dist/`)
 
 ## Deployment
 
