@@ -13,11 +13,10 @@ describe('generateQuestion', () => {
     expect(c.letter).toBe(q.pitch.letter)
     expect(q.pitch.accidental).toBe('')
   })
-  it('accidentals mode: 7-8 unique options, exactly one matches printed note', () => {
+  it('accidentals mode: exactly 8 unique options, exactly one matches printed note', () => {
     for (let i = 0; i < 50; i++) {
       const q = generateQuestion(2, true, 'letters')
-      expect(q.options.length).toBeGreaterThanOrEqual(7)
-      expect(q.options.length).toBeLessThanOrEqual(8)
+      expect(q.options).toHaveLength(8)
       expect(new Set(q.options.map(o => o.label)).size).toBe(q.options.length)
       const matches = q.options.filter(
         o => o.letter === q.pitch.letter && o.accidental === q.pitch.accidental)

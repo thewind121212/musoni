@@ -35,9 +35,11 @@ drill", never "rewind mid-sprint".
 
 Shared, module-agnostic, reuse-first building blocks:
 
-- `core/components/` — UI primitives (Button, Panel, SegmentedControl) and
+- `core/components/` — UI primitives (Button, Panel, OptionCards) and
   **Staff**, the only component allowed to touch VexFlow. Staff repaints itself
-  from the `--staff` token so notation stays legible in dark mode.
+  from the `--staff` token so notation stays legible in dark mode, and exports
+  `ClefGlyph` (a clef on a short stave) so level choices can show real notation
+  instead of an icon-library stand-in.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling) used by both the note-id generator and Staff.
 - `core/scoring.ts` — difficulty-weighted scoring, shared by any drill.
@@ -86,6 +88,10 @@ web/src/
 `--correct`, `--wrong`, `--staff`) and re-exported to Tailwind through `@theme`.
 Components use token utilities (`bg-raised`, `text-ink-soft`) rather than raw
 palette values, so light and dark are one definition.
+
+Motion lives in three places, each behind `prefers-reduced-motion`: route
+changes (`app/PageTransition`), drill phase changes (`NoteIdDrill`), and answer
+feedback plus note entry inside the run phase.
 
 Locked conventions: one accent (cobalt); `rounded-2xl` for every surface and
 answer key, full-round for segmented chips; correct and wrong are carried by

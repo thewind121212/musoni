@@ -41,6 +41,11 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       level **and** length
 - [x] Drill route lazy-loaded: home ships 77 kB gzip instead of 815 kB
 - [x] 43 web tests green after the redesign
+- [x] Setup screen rebuilt as visual option cards: real VexFlow clef badges per level,
+      note names shown as themselves, natural/sharp/flat signs, Phosphor icons
+- [x] Motion added where it was missing: route slide, drill phase cross-fade, card press
+- [x] Answer options locked to 8 with accidentals on; answer pad lays rows out
+      full-width so 7 naturals still fill the block
 
 ## In Progress
 

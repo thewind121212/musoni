@@ -24,11 +24,19 @@ interface: no clutter around the staff.
 - Training list: the note-id card (current level and best score), and a disabled
   placeholder card for the Phase 2 rhythm drill.
 
+Route changes slide in from the right, and the drill's own phase changes
+cross-fade, so entering a drill and starting a session both read as motion
+rather than as a swap.
+
 ### Note reading (`/train/note-id`)
 
 One route, three phases held in the drill store. No URL change while training.
 
-**Setup phase** carries everything that used to be a separate settings screen:
+**Setup phase** carries everything that used to be a separate settings screen.
+Every choice is a card with a visual, not a text pill: the clef options render
+real VexFlow clefs, note-naming shows the names themselves, accidentals show the
+natural, sharp and flat signs, and session length and sound use Phosphor icons.
+Groups stagger in on entry.
 
 | Control | Options |
 |---|---|
@@ -43,7 +51,8 @@ full-width Start button.
 
 **Run phase** is the drill itself: Quit, a large tabular countdown that turns red
 for the last ten seconds, the running correct count and streak, a thin time bar,
-the staff on a raised surface, and the answer grid in the bottom thumb zone.
+the staff on a raised surface, and the answer keys in the bottom thumb zone laid
+out in full-width rows of at most four.
 Feedback fills the correct key green with a check and a wrong pick red with a
 cross, then auto-advances.
 

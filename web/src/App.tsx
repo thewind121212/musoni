@@ -1,6 +1,8 @@
 import { Suspense, lazy } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'motion/react'
 import { HomeScreen } from './app/HomeScreen'
+import { PageTransition } from './app/PageTransition'
 
 // VexFlow is the heaviest dependency in the app and only the drill needs it,
 // so the drill route is split out and the home screen paints without it.
@@ -14,18 +16,23 @@ const NoteIdDrill = lazy(() =>
  * routes join this table later.
  */
 export default function App() {
+  const location = useLocation()
   return (
-    <Routes>
-      <Route path="/" element={<HomeScreen />} />
-      <Route
-        path="/train/note-id"
-        element={
-          <Suspense fallback={<div className="mx-auto max-w-md px-4 pt-10 text-ink-faint">Loading drill</div>}>
-            <NoteIdDrill />
-          </Suspense>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><HomeScreen /></PageTransition>} />
+        <Route
+          path="/train/note-id"
+          element={
+            <PageTransition>
+              <Suspense fallback={<div className="mx-auto max-w-md px-4 pt-10 text-ink-faint">Loading</div>}>
+                <NoteIdDrill />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AnimatePresence>
   )
 }

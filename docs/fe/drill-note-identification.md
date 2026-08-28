@@ -20,7 +20,10 @@ full rationale.
 
 - Pick a random note within the current difficulty's range (clef + staff position).
 - If the accidentals setting is ON and level allows: note may carry # or ♭.
-- **Answer options: 7–8 generated choices per question, exactly one correct.**
+- **Answer options: exactly 8 generated choices per question with accidentals on,
+  exactly one correct.** Naturals-only mode offers the 7 natural names, because
+  seven is how many there are; the answer pad lays that out as a filled 4 + 3
+  block so a shorter row never reads as a missing key.
   - Naturals-only mode: the 7 natural names (C–B / Do–Si).
   - Accidentals mode: a mix of naturals, sharps, and flats *near the target note*,
     deliberately including confusable neighbors and enharmonic pairs

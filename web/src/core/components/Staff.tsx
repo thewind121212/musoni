@@ -64,3 +64,52 @@ export function Staff({ clef, pitch, width = 320, height = 190 }: Props) {
 
   return <div ref={ref} className="w-full" />
 }
+
+/**
+ * A small clef on a short stave, used as the visual badge for a level. Real
+ * notation rather than an icon-library approximation, and it lives here because
+ * this file is the app's only VexFlow touchpoint.
+ */
+export function ClefGlyph({ clef, width = 54, height = 64 }: { clef: Clef; width?: number; height?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const draw = () => {
+      el.innerHTML = ''
+      const ink = getComputedStyle(el).getPropertyValue('--staff').trim() || '#111'
+      const renderer = new Renderer(el, Renderer.Backends.SVG)
+      renderer.resize(width, height)
+      const ctx = renderer.getContext()
+      ctx.setFillStyle(ink)
+      ctx.setStrokeStyle(ink)
+
+      const stave = new Stave(2, 10, width - 4)
+      stave.addClef(clef)
+      stave.setStyle({ fillStyle: ink, strokeStyle: ink })
+      stave.setContext(ctx).draw()
+
+      const svg = el.querySelector('svg')
+      if (svg) {
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`)
+        svg.removeAttribute('width')
+        svg.removeAttribute('height')
+        svg.style.width = '100%'
+        svg.style.height = 'auto'
+        svg.setAttribute('aria-hidden', 'true')
+      }
+    }
+
+    draw()
+    const scheme = window.matchMedia?.('(prefers-color-scheme: dark)')
+    scheme?.addEventListener?.('change', draw)
+    return () => {
+      scheme?.removeEventListener?.('change', draw)
+      el.innerHTML = ''
+    }
+  }, [clef, width, height])
+
+  return <div ref={ref} className="w-full" />
+}

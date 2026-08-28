@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { CheckIcon, XIcon } from '@phosphor-icons/react'
 import { useDrillStore } from '../store'
+import { AnswerGrid } from './AnswerGrid'
 import { optionIndexFromKey } from '../keyboard'
 import { Staff } from '../../../core/components/Staff'
 import { playPitch } from '../../../core/audio/playPitch'
@@ -94,33 +94,7 @@ export function RunPhase() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
-        {question.options.map((option, i) => {
-          const isCorrect = !!feedback && i === feedback.correctIndex
-          const isWrongPick = !!feedback && i === feedback.chosenIndex && !isCorrect
-          const tone = isCorrect
-            ? 'bg-correct text-white border-transparent'
-            : isWrongPick
-              ? 'bg-wrong text-white border-transparent'
-              : 'border-line bg-raised text-ink'
-          return (
-            <button
-              key={option.label}
-              disabled={!!feedback}
-              onClick={() => answer(i)}
-              className={
-                'relative flex min-h-16 items-center justify-center rounded-2xl border text-xl font-medium ' +
-                'transition-[background-color,border-color,color] duration-150 active:scale-[0.97] ' +
-                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ' + tone
-              }
-            >
-              {option.label}
-              {isCorrect && <CheckIcon size={16} weight="bold" className="absolute top-1.5 right-1.5" />}
-              {isWrongPick && <XIcon size={16} weight="bold" className="absolute top-1.5 right-1.5" />}
-            </button>
-          )
-        })}
-      </div>
+      <AnswerGrid options={question.options} feedback={feedback} onAnswer={answer} />
     </div>
   )
 }
