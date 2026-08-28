@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
   naming: 'solfege',
   sound: true,
   lang: 'vi',
+  activityExpanded: false,
 } as const
 import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount } from './progressStore'
 

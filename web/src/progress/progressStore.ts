@@ -11,6 +11,8 @@ export interface Settings {
   naming: Naming
   sound: boolean
   lang: Lang
+  /** Whether the activity panel shows the full calendar or just this week. */
+  activityExpanded: boolean
 }
 export interface SessionResult {
   drill: 'note-id'; level: number; accidentals: boolean; naming: Naming; durationSec: number
@@ -29,6 +31,9 @@ const DEFAULTS: Settings = {
   naming: 'solfege',
   sound: true,
   lang: DEFAULT_LANG,
+  // Opens short: the week answers "am I current" in one glance, and the
+  // calendar is there for anyone who wants the longer view.
+  activityExpanded: false,
 }
 
 // Formats a Date as a LOCAL calendar-day key (YYYY-MM-DD), as opposed to

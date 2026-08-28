@@ -1,8 +1,10 @@
-import { FireIcon, TrophyIcon, CalendarCheckIcon } from '@phosphor-icons/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { CaretDownIcon, FireIcon, TrophyIcon, CalendarCheckIcon } from '@phosphor-icons/react'
 import {
   getDailyMinutes, getStreak, getLongestStreak, getActiveDayCount, localDayKey,
 } from '../progress/progressStore'
-import { ActivityGrid } from './ActivityGrid'
+import { ActivityGrid, ActivityWeek } from './ActivityGrid'
+import { useAppStore } from './store'
 import { useT } from './useT'
 
 /**
@@ -12,6 +14,9 @@ import { useT } from './useT'
  */
 export function ActivityPanel() {
   const t = useT()
+  const { settings, updateSettings } = useAppStore()
+  const reduce = useReducedMotion()
+  const expanded = settings.activityExpanded
   const minutesByDay = getDailyMinutes()
   const today = minutesByDay[localDayKey(new Date())] ?? 0
   const practisedToday = today > 0
@@ -54,10 +59,61 @@ export function ActivityPanel() {
       </div>
 
       <div className="mt-5">
-        <ActivityGrid minutesByDay={minutesByDay} />
+        <AnimatePresence mode="wait" initial={false}>
+          {expanded ? (
+            <motion.div
+              key="calendar"
+              initial={reduce ? false : { opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={reduce ? undefined : { opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden"
+            >
+              <ActivityGrid minutesByDay={minutesByDay} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="week"
+              initial={reduce ? false : { opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={reduce ? undefined : { opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden"
+            >
+              <ActivityWeek minutesByDay={minutesByDay} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="mt-4 flex gap-2 border-t border-line pt-4">
+      <button
+        onClick={() => updateSettings({ activityExpanded: !expanded })}
+        aria-expanded={expanded}
+        className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl py-2 text-xs
+                   font-medium text-ink-faint transition-colors duration-150 hover:bg-surface
+                   hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2
+                   focus-visible:outline-accent"
+      >
+        {expanded ? t('activity.collapse') : t('activity.expand')}
+        <motion.span
+          animate={{ rotate: expanded ? 180 : 0 }}
+          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          className="flex"
+        >
+          <CaretDownIcon size={13} weight="bold" />
+        </motion.span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            initial={reduce ? false : { opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={reduce ? undefined : { opacity: 0, height: 0 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="mt-1 flex gap-2 border-t border-line pt-4">
         <div className="flex flex-1 items-center gap-2">
           <TrophyIcon size={15} weight="fill" className="shrink-0 text-ink-faint" />
           <span className="flex min-w-0 flex-col">
@@ -78,7 +134,10 @@ export function ActivityPanel() {
             <span className="tnum text-sm font-semibold">{activeDays}</span>
           </span>
         </div>
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

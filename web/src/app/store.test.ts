@@ -19,3 +19,14 @@ describe('app store', () => {
     expect(getSettings().level).toBe(3)
   })
 })
+
+describe('activity panel mode', () => {
+  it('opens collapsed on a first visit', () => {
+    expect(useAppStore.getState().settings.activityExpanded).toBe(false)
+  })
+  it('remembers being expanded across a reload', () => {
+    useAppStore.getState().updateSettings({ activityExpanded: true })
+    // A fresh read of storage is what the next page load would see.
+    expect(getSettings().activityExpanded).toBe(true)
+  })
+})
