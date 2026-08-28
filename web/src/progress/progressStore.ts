@@ -1,15 +1,16 @@
 import type { Naming } from '../core/music/types'
+import { DEFAULT_DURATION_SECONDS } from '../config/constants'
 
-export interface Settings { naming: Naming; accidentals: boolean; sound: boolean }
+export interface Settings { naming: Naming; accidentals: boolean; sound: boolean; durationSec: number }
 export interface SessionResult {
-  drill: 'note-id'; level: number; accidentals: boolean; naming: Naming
+  drill: 'note-id'; level: number; accidentals: boolean; naming: Naming; durationSec: number
   correct: number; wrong: number; accuracy: number; avgMs: number
   bestStreak: number; weight: number; practiceScore: number; at: string
 }
 interface Doc { version: 1; settings: Settings; days: Record<string, { sessions: SessionResult[] }> }
 
 const KEY = 'musoni-progress-v1'
-const DEFAULTS: Settings = { naming: 'letters', accidentals: false, sound: true }
+const DEFAULTS: Settings = { naming: 'letters', accidentals: false, sound: true, durationSec: DEFAULT_DURATION_SECONDS }
 
 // Formats a Date as a LOCAL calendar-day key (YYYY-MM-DD), as opposed to
 // Date#toISOString which is always UTC. Day buckets must use the viewer's
@@ -40,7 +41,7 @@ function load(): Doc {
 }
 function save(doc: Doc): void { localStorage.setItem(KEY, JSON.stringify(doc)) }
 
-export function getSettings(): Settings { return load().settings }
+export function getSettings(): Settings { return { ...DEFAULTS, ...load().settings } }
 export function saveSettings(s: Settings): void { const d = load(); d.settings = s; save(d) }
 
 export function recordSession(r: SessionResult): void {
@@ -57,11 +58,18 @@ export function getRange(from: string, to: string): Record<string, SessionResult
   }
   return out
 }
-export function getBest(drill: string, level: number): SessionResult | null {
+/**
+ * Best session for a drill at a given level AND session length. Duration is part
+ * of the key because practiceScore scales with how long you played: a 5-minute
+ * score would permanently out-rank every 30-second one and the comparison would
+ * stop meaning anything.
+ */
+export function getBest(drill: string, level: number, durationSec: number): SessionResult | null {
   let best: SessionResult | null = null
   for (const v of Object.values(load().days)) {
     for (const s of v.sessions) {
-      if (s.drill === drill && s.level === level && (!best || s.practiceScore > best.practiceScore)) best = s
+      if (s.drill === drill && s.level === level && s.durationSec === durationSec
+        && (!best || s.practiceScore > best.practiceScore)) best = s
     }
   }
   return best

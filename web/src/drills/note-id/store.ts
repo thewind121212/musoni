@@ -2,10 +2,17 @@ import { create } from 'zustand'
 import { generateQuestion, type Question } from './generator'
 import { difficultyWeight, practiceScore, accuracy } from '../../core/scoring'
 import { recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
-import { SESSION_SECONDS } from '../../config/constants'
+
+/**
+ * The note-id drill is a self-contained SPA: one route, three phases.
+ * `setup` picks level + settings, `running` is the sprint, `finished` shows the
+ * result. Phases are store state, not routes, so nothing about the training
+ * flow touches the URL or the browser history.
+ */
+export type Phase = 'setup' | 'running' | 'finished'
 
 interface DrillState {
-  status: 'idle' | 'running' | 'finished'
+  phase: Phase
   level: 1 | 2 | 3 | 4
   settings: Settings
   question: Question | null
@@ -22,26 +29,28 @@ interface DrillState {
   answer: (index: number, now?: number) => void
   nextQuestion: (now?: number) => void
   tick: (now?: number) => void
+  backToSetup: () => void
 }
 
 export const useDrillStore = create<DrillState>((set, get) => ({
-  status: 'idle', level: 1,
-  settings: { naming: 'letters', accidentals: false, sound: true },
+  phase: 'setup',
+  level: 1,
+  settings: { naming: 'letters', accidentals: false, sound: true, durationSec: 60 },
   question: null, endsAt: null, askedAt: 0,
   correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
   feedback: null, lastResult: null,
 
   start: (level, settings, now = Date.now()) => set({
-    status: 'running', level, settings,
+    phase: 'running', level, settings,
     question: generateQuestion(level, settings.accidentals, settings.naming),
-    endsAt: now + SESSION_SECONDS * 1000, askedAt: now,
+    endsAt: now + settings.durationSec * 1000, askedAt: now,
     correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
     feedback: null, lastResult: null,
   }),
 
   answer: (index, now = Date.now()) => {
     const s = get()
-    if (s.status !== 'running' || !s.question || s.feedback) return
+    if (s.phase !== 'running' || !s.question || s.feedback) return
     const ok = index === s.question.correctIndex
     const streak = ok ? s.streak + 1 : 0
     set({
@@ -55,7 +64,7 @@ export const useDrillStore = create<DrillState>((set, get) => ({
 
   nextQuestion: (now = Date.now()) => {
     const s = get()
-    if (s.status !== 'running') return
+    if (s.phase !== 'running') return
     set({
       feedback: null, askedAt: now,
       question: generateQuestion(s.level, s.settings.accidentals, s.settings.naming),
@@ -64,12 +73,13 @@ export const useDrillStore = create<DrillState>((set, get) => ({
 
   tick: (now = Date.now()) => {
     const s = get()
-    if (s.status !== 'running' || s.endsAt === null || now < s.endsAt) return
+    if (s.phase !== 'running' || s.endsAt === null || now < s.endsAt) return
     const total = s.correct + s.wrong
     const weight = difficultyWeight(s.level, s.settings.accidentals)
     const result: SessionResult = {
       drill: 'note-id', level: s.level,
       accidentals: s.settings.accidentals, naming: s.settings.naming,
+      durationSec: s.settings.durationSec,
       correct: s.correct, wrong: s.wrong,
       accuracy: accuracy(s.correct, s.wrong),
       avgMs: total === 0 ? 0 : Math.round(s.sumMs / total),
@@ -78,6 +88,8 @@ export const useDrillStore = create<DrillState>((set, get) => ({
       at: new Date(now).toISOString(),
     }
     recordSession(result)
-    set({ status: 'finished', lastResult: result, question: null, feedback: null })
+    set({ phase: 'finished', lastResult: result, question: null, feedback: null })
   },
+
+  backToSetup: () => set({ phase: 'setup', question: null, feedback: null }),
 }))

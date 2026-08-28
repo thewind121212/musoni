@@ -15,15 +15,29 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 
 Modules never import each other's stores; sharing goes through `app` or props.
 
-Navigation is React Router's job (routes `/`, `/drill`, `/results`, `/settings`) —
-stores never track the active screen.
+## Routing vs drill phases
+
+React Router covers **app-level** navigation only: `/` (home) and one route per
+drill (`/train/note-id`). Account, library and settings pages join that table
+later.
+
+Inside a drill route the flow is **not** routed. Each drill is a self-contained
+SPA with phases held in its own store:
+
+`setup` (level, session length, drill settings) -> `running` (the sprint) ->
+`finished` (result), plus `backToSetup()`.
+
+Training therefore never pushes history entries: no route change when a session
+starts, ends, or is retried, so the browser back button always means "leave the
+drill", never "rewind mid-sprint".
 
 ## Core components (`core/`)
 
 Shared, module-agnostic, reuse-first building blocks:
 
-- `core/components/` — UI primitives and **Staff**, the only component
-  allowed to touch VexFlow.
+- `core/components/` — UI primitives (Button, Panel, SegmentedControl) and
+  **Staff**, the only component allowed to touch VexFlow. Staff repaints itself
+  from the `--staff` token so notation stays legible in dark mode.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling) used by both the note-id generator and Staff.
 - `core/scoring.ts` — difficulty-weighted scoring, shared by any drill.
@@ -55,9 +69,25 @@ note-ranges. Nothing tunable is inlined.
 
 ```
 web/src/
-├── app/            # global module: app store, screens (Home, Results, Settings)
-├── core/           # components (incl. Staff) / music / scoring / audio / engine (placeholder)
-├── drills/note-id/ # drill 1 module: store, generator, DrillScreen
+├── app/            # global module: app store (settings + level), HomeScreen, WeekStrip
+├── core/           # components (Button, Panel, SegmentedControl, Staff) / music /
+│                   #   scoring / audio / engine (placeholder)
+├── drills/note-id/ # drill module: store (phases), generator, keyboard,
+│                   #   NoteIdDrill + phases/ (Setup, Run, Result)
 ├── progress/       # progressStore (localStorage door, cloud plug)
-└── config/         # tunable constants
+├── config/         # tunable constants (levels, durations, tick, audio)
+└── index.css       # Tailwind v4 entry + design tokens
 ```
+
+## Styling
+
+**Tailwind v4** via `@tailwindcss/vite`, with semantic design tokens declared in
+`src/index.css` (`--surface`, `--raised`, `--line`, `--ink*`, `--accent`,
+`--correct`, `--wrong`, `--staff`) and re-exported to Tailwind through `@theme`.
+Components use token utilities (`bg-raised`, `text-ink-soft`) rather than raw
+palette values, so light and dark are one definition.
+
+Locked conventions: one accent (cobalt); `rounded-2xl` for every surface and
+answer key, full-round for segmented chips; correct and wrong are carried by
+colour **and** an icon, never colour alone; all motion sits behind
+`prefers-reduced-motion`.

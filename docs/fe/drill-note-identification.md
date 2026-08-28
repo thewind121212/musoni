@@ -39,8 +39,12 @@ VexFlow draws a single note on a staff (clef per level), large and centered.
 
 ## Session format
 
-**60-second sprint** — answer as many as possible. Tracks correct, wrong,
-accuracy, average response time, best streak.
+A timed sprint of the chosen **session length** (30s, 1 min, 2 min, or 5 min;
+1 min is the default). Tracks correct, wrong, accuracy, average response time,
+and best streak.
+
+Because practiceScore grows with how long you play, personal bests are keyed on
+level **and** session length: a 5-minute score never out-ranks a 30-second one.
 
 ## Settings (user-chosen, saved in localStorage)
 
@@ -49,6 +53,7 @@ accuracy, average response time, best streak.
 | Note naming | **Letters** (C D E F G A B) / **Solfège** (Do Re Mi Fa Sol La Si) | Buttons and answers display in the chosen system |
 | Accidentals | ON / OFF | OFF = naturals only ever appear, regardless of level |
 | Sound | ON / OFF | Pitch playback on answer |
+| Session length | 30s / 1 min / 2 min / 5 min | How long the sprint runs |
 
 Levels control *where* notes live; settings control *how you answer* and *what
 note pool is allowed*.

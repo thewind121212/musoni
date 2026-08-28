@@ -11,32 +11,42 @@ desktop, never the other way around. Concretely:
 - One-hand portrait use is the default posture; no hover-dependent UI.
 - Test every screen at mobile viewport first (~375px wide) before desktop.
 
-Four screens, minimal. The sheet music is the interface — no clutter around the staff.
+Two app routes, and inside the drill route three phases. The sheet music is the
+interface: no clutter around the staff.
 
-## 1. Home / Drill Picker
+## App routes
 
-- Card for Note Identification (Phase 1: the only active card; Complete-the-Measure
-  card appears in Phase 2): shows current level, best score, accuracy at a glance.
-- "Your week" strip: practiceScore + accuracy trend over last 7 days.
-- Settings gear in the corner.
+### Home (`/`)
 
-## 2. Drill Screen
+- Title and one-line purpose.
+- **Last 7 days** chart: daily practice score, today highlighted, plus the week
+  total and how many days were active.
+- Training list: the note-id card (current level and best score), and a disabled
+  placeholder card for the Phase 2 rhythm drill.
 
-- Staff rendered big and centered (VexFlow).
-- 7–8 answer buttons below, thumb-reachable.
-- Timer + progress at top, streak indicator.
-- Instant green/red feedback, correct answer shown on miss, auto-advance.
+### Note reading (`/train/note-id`)
 
-## 3. Results Screen
+One route, three phases held in the drill store. No URL change while training.
 
-- Session: practiceScore, correct count, accuracy, average response time, best streak.
-- Comparison with previous best (same level + settings combo).
-- Buttons: Again / Next level / Home.
+**Setup phase** carries everything that used to be a separate settings screen:
 
-## 4. Settings
+| Control | Options |
+|---|---|
+| Level | Treble / Treble+ / Bass / Both (L1-L4), with a one-line description |
+| Session length | 30s / 1 min / 2 min / 5 min |
+| Note names | C D E (letters) / Do Re Mi (solfege) |
+| Sharps and flats | Naturals only / Include # and b |
+| Sound | Play the note / Silent |
 
-- Note naming: Letters / Solfège
-- Accidentals: on / off
-- Sound: on / off
+It also shows the personal best for the chosen level **and** length, then a
+full-width Start button.
 
-Flow: Home → Drill → Results → (Again | Home). Settings reachable from Home.
+**Run phase** is the drill itself: Quit, a large tabular countdown that turns red
+for the last ten seconds, the running correct count and streak, a thin time bar,
+the staff on a raised surface, and the answer grid in the bottom thumb zone.
+Feedback fills the correct key green with a check and a wrong pick red with a
+cross, then auto-advances.
+
+**Result phase**: practice score with the difficulty multiplier, a four-tile grid
+(correct, accuracy, average answer, best streak), a personal-best badge or the
+score to beat, then Again / Change setup / Home.

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey } from './progressStore'
 
 const session = (over = {}) => ({
-  drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const,
+  drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
   correct: 10, wrong: 2, accuracy: 10 / 12, avgMs: 900, bestStreak: 6,
   weight: 1, practiceScore: 83, at: '2026-08-28T10:00:00Z', ...over,
 })
@@ -11,9 +11,9 @@ beforeEach(() => localStorage.clear())
 
 describe('progressStore', () => {
   it('default settings', () =>
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true }))
+    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 }))
   it('settings round-trip', () => {
-    saveSettings({ naming: 'solfege', accidentals: true, sound: false })
+    saveSettings({ naming: 'solfege', accidentals: true, sound: false, durationSec: 120 })
     expect(getSettings().naming).toBe('solfege')
   })
   it('records under the LOCAL date key derived from `at`', () => {
@@ -50,21 +50,34 @@ describe('progressStore', () => {
     recordSession(session({ practiceScore: 50 }))
     recordSession(session({ practiceScore: 90 }))
     recordSession(session({ practiceScore: 200, level: 2 }))
-    expect(getBest('note-id', 1)!.practiceScore).toBe(90)
-    expect(getBest('note-id', 3)).toBeNull()
+    expect(getBest('note-id', 1, 60)!.practiceScore).toBe(90)
+    expect(getBest('note-id', 3, 60)).toBeNull()
   })
   it('recovers from corrupted localStorage', () => {
     localStorage.setItem('musoni-progress-v1', '{not json')
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true })
+    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 })
   })
   it('recovers from valid JSON that is the wrong shape (null)', () => {
     localStorage.setItem('musoni-progress-v1', 'null')
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true })
+    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 })
     expect(getDay('2026-08-28')).toEqual([])
   })
   it('recovers from valid JSON that is the wrong shape ({})', () => {
     localStorage.setItem('musoni-progress-v1', '{}')
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true })
+    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 })
     expect(getDay('2026-08-28')).toEqual([])
+  })
+})
+
+describe('getBest is keyed on session length', () => {
+  it('does not let a longer session out-rank a shorter one', () => {
+    recordSession(session({ durationSec: 60, practiceScore: 100 }))
+    recordSession(session({ durationSec: 300, practiceScore: 900 }))
+    expect(getBest('note-id', 1, 60)!.practiceScore).toBe(100)
+    expect(getBest('note-id', 1, 300)!.practiceScore).toBe(900)
+  })
+  it('returns null when that length has never been played', () => {
+    recordSession(session({ durationSec: 60 }))
+    expect(getBest('note-id', 1, 30)).toBeNull()
   })
 })

@@ -1,6 +1,5 @@
 import type { Clef } from '../core/music/types'
 
-export const SESSION_SECONDS = 60
 export const POINTS_PER_CORRECT = 10
 export const ACCIDENTALS_WEIGHT = 1.4
 export const ACCIDENTAL_CHANCE = 0.4
@@ -29,3 +28,27 @@ export const LEVELS: Record<1 | 2 | 3 | 4, { weight: number; pools: { clef: Clef
     ],
   },
 }
+
+/** Session lengths the user can pick in the drill setup phase. */
+export const DURATIONS = [
+  { seconds: 30, label: '30s', note: 'Quick check' },
+  { seconds: 60, label: '1 min', note: 'Daily default' },
+  { seconds: 120, label: '2 min', note: 'Focused set' },
+  { seconds: 300, label: '5 min', note: 'Deep practice' },
+] as const
+
+export const DEFAULT_DURATION_SECONDS = 60
+
+/** Level descriptions shown in setup. */
+export const LEVEL_INFO: Record<1 | 2 | 3 | 4, { name: string; detail: string }> = {
+  1: { name: 'Treble', detail: 'On the staff only' },
+  2: { name: 'Treble +', detail: 'Adds ledger lines' },
+  3: { name: 'Bass', detail: 'Bass clef range' },
+  4: { name: 'Both', detail: 'Treble and bass mixed' },
+}
+
+/** Drill clock resolution. */
+export const TICK_MS = 200
+/** Pitch playback. */
+export const AUDIO_GAIN = 0.25
+export const AUDIO_DURATION_SEC = 0.4

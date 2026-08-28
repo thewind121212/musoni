@@ -1,51 +1,78 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/* Musoni design tokens.
+   Locks: one accent (cobalt), zinc neutrals, radius system = surfaces 1rem / chips full.
+   Correct + wrong are semantic only, never the brand accent, and always ship with an icon. */
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-correct: var(--correct);
+  --color-wrong: var(--wrong);
+  --color-staff: var(--staff);
+}
+
+:root {
+  --surface: oklch(0.985 0.002 250);
+  --raised: oklch(1 0 0);
+  --line: oklch(0.905 0.005 250);
+  --ink: oklch(0.21 0.012 255);
+  --ink-soft: oklch(0.45 0.012 255);
+  --ink-faint: oklch(0.62 0.01 255);
+  --accent: oklch(0.53 0.19 262);
+  --accent-ink: oklch(0.99 0 0);
+  --correct: oklch(0.55 0.15 155);
+  --wrong: oklch(0.56 0.19 25);
+  --staff: oklch(0.21 0.012 255);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: oklch(0.17 0.012 258);
+    --raised: oklch(0.215 0.014 258);
+    --line: oklch(0.31 0.014 258);
+    --ink: oklch(0.97 0.003 250);
+    --ink-soft: oklch(0.76 0.011 255);
+    --ink-faint: oklch(0.58 0.012 255);
+    --accent: oklch(0.68 0.17 258);
+    --accent-ink: oklch(0.17 0.012 258);
+    --correct: oklch(0.72 0.16 155);
+    --wrong: oklch(0.68 0.18 25);
+    --staff: oklch(0.97 0.003 250);
+    color-scheme: dark;
+  }
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  /* the drill is a fixed one-screen surface: never bounce-scroll mid-answer */
+  overscroll-behavior-y: none;
 }
 
-.screen {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 16px;
-}
+/* Tabular figures everywhere a number changes in place (timer, score, streak). */
+.tnum { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
 
-.btn {
-  min-height: 48px;
-  font-size: 18px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  background: #fff;
-}
-
-.btn.active {
-  background: #2563eb;
-  color: #fff;
-}
-
-.btn-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.btn-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.card {
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  padding: 16px;
-}
-
-.btn.correct {
-  background: #16a34a;
-  color: #fff;
-}
-
-.btn.wrong {
-  background: #dc2626;
-  color: #fff;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

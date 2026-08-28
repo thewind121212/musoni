@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { optionIndexFromKey } from './DrillScreen'
+import { optionIndexFromKey } from './keyboard'
 
 describe('optionIndexFromKey', () => {
   it('maps digit keys to zero-based option indices', () => {

@@ -11,11 +11,11 @@ Phase 1: train note-identification speed on the staff. Later: rhythm drills, ear
 
 ## Current Phase
 
-**Phase 1 — implemented, pending human browser verification** (web only, no login, localStorage progress)
+**Phase 1 — implemented and redesigned, pending human browser verification** (web only, no login, localStorage progress)
 
 ## State
 
-All 14 implementation-plan tasks are complete and merged to `main`: web app (note-id drill, 4 screens, React Router, Zustand stores, VexFlow staff rendering, weighted scoring, localStorage progress) and Go `/health` stub. 31 web tests (Vitest) + 1 Go test green, `npm run build` clean. Not yet spot-checked in a real browser.
+Phase 1 is complete on `main` and has since been redesigned: the note-id drill runs as a self-contained SPA (setup / run / result phases) at `/train/note-id`, styled with Tailwind v4 over semantic light and dark tokens, with a Go `/health` stub behind it. 43 web tests (Vitest) + 1 Go test green, `npm run build` clean. Not yet spot-checked in a real browser.
 
 ## Done
 
@@ -30,9 +30,17 @@ All 14 implementation-plan tasks are complete and merged to `main`: web app (not
 - [x] FE architecture: modules + Zustand store per module + core components — `docs/fe/architecture.md`, enforced by `.claude/skills/fe-design/`
 - [x] Implementation workflow: gitignored `tmp/DD-MM-YYYY-<feature>/` plan + progress folders — `.claude/skills/impl-plan/`
 - [x] `web/` scaffolded (Vite + React + TS); `server/` scaffolded (Go, `net/http`, `/health` on `:8080`)
-- [x] Drill 1 (Note Identification) implemented: question generator, weighted scoring, 4 screens (Home, Drill, Results, Settings), React Router, Zustand `app` + `drills/note-id` stores, VexFlow `Staff` component, Web Audio pitch playback
+- [x] Drill 1 (Note Identification) implemented: question generator, weighted scoring, Zustand `app` + `drills/note-id` stores, VexFlow `Staff` component, Web Audio pitch playback
 - [x] `progressStore` (localStorage, versioned doc, cloud-sync plug) implemented and covered by tests
 - [x] 37 web tests (Vitest) + 1 Go test green; `npm run build` clean
+- [x] UI redesign: Tailwind v4 + semantic light/dark tokens, Geist type, Phosphor icons,
+      Motion feedback; the hand-rolled `index.css` classes are gone
+- [x] Drill restructured as a self-contained SPA: React Router is app-level only
+      (`/`, `/train/note-id`), phases (setup / run / result) live in the drill store
+- [x] Session length setting (30s / 1 min / 2 min / 5 min); personal bests keyed on
+      level **and** length
+- [x] Drill route lazy-loaded: home ships 77 kB gzip instead of 815 kB
+- [x] 43 web tests green after the redesign
 
 ## In Progress
 
@@ -41,12 +49,12 @@ All 14 implementation-plan tasks are complete and merged to `main`: web app (not
 ## Next
 
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
-- Phase 2 hygiene (deferred from Phase 1 review): best-score comparison ignores the settings combo
-  (`screens.md` says same level + settings); WeekStrip charts practiceScore only, not accuracy;
-  make the UTC-vs-local day-key regression test timezone-independent (the fix itself is verified,
-  the test is only meaningful in negative-UTC-offset zones); stock `<title>`/README/favicon;
-  1.36MB JS chunk (lazy-load VexFlow on the `/drill` route); move the 250ms tick interval and
-  audio gain into `config/`
+- Phase 2 hygiene (still open from the Phase 1 review): WeekStrip charts practice score only,
+  not accuracy; make the UTC-vs-local day-key regression test timezone-independent (the fix
+  itself is verified, the test only discriminates in negative-UTC-offset zones); stock
+  `<title>`, README and favicon.
+  Closed during the redesign: best-score now keyed on level and length, VexFlow lazy-loaded,
+  tick interval and audio gain moved into `config/`.
 
 ## Parked (Phase 2+)
 

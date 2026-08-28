@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { useDrillStore } from './store'
 import { getDay, localDayKey } from '../../progress/progressStore'
 
-const settings = { naming: 'letters' as const, accidentals: false, sound: false }
+const settings = { naming: 'letters' as const, accidentals: false, sound: false, durationSec: 60 }
 const T0 = new Date('2026-08-28T10:00:00Z').getTime()
 const DAY0 = localDayKey(new Date(T0))
 
@@ -12,7 +12,7 @@ describe('drill store', () => {
   it('start → running with a question and 60s clock', () => {
     useDrillStore.getState().start(1, settings, T0)
     const s = useDrillStore.getState()
-    expect(s.status).toBe('running')
+    expect(s.phase).toBe('running')
     expect(s.question).not.toBeNull()
     expect(s.endsAt).toBe(T0 + 60_000)
   })
@@ -45,7 +45,7 @@ describe('drill store', () => {
     st.answer(st.question!.correctIndex, T0 + 800)
     useDrillStore.getState().tick(T0 + 61_000)
     const s = useDrillStore.getState()
-    expect(s.status).toBe('finished')
+    expect(s.phase).toBe('finished')
     expect(s.lastResult!.correct).toBe(1)
     expect(s.lastResult!.weight).toBe(1)
     expect(getDay(DAY0)).toHaveLength(1)
@@ -71,7 +71,7 @@ describe('drill store', () => {
     useDrillStore.getState().tick(T0 + 63_000)
     const postState = useDrillStore.getState()
     expect(postState.correct).toBe(preFinishState.correct)
-    expect(postState.status).toBe('finished')
+    expect(postState.phase).toBe('finished')
     expect(postState.question).toBeNull()
   })
   it('recordSession fires exactly once', () => {
@@ -82,5 +82,28 @@ describe('drill store', () => {
     expect(getDay(DAY0)).toHaveLength(1)
     useDrillStore.getState().tick(T0 + 62_000)
     expect(getDay(DAY0)).toHaveLength(1)
+  })
+})
+
+describe('phases and session length', () => {
+  it('starts in setup', () => {
+    useDrillStore.setState({ phase: 'setup' })
+    expect(useDrillStore.getState().phase).toBe('setup')
+  })
+  it('honours the chosen session length', () => {
+    useDrillStore.getState().start(1, { ...settings, durationSec: 300 }, T0)
+    expect(useDrillStore.getState().endsAt).toBe(T0 + 300_000)
+  })
+  it('records the length it was played at', () => {
+    useDrillStore.getState().start(2, { ...settings, durationSec: 30 }, T0)
+    useDrillStore.getState().tick(T0 + 31_000)
+    expect(useDrillStore.getState().lastResult!.durationSec).toBe(30)
+  })
+  it('backToSetup returns to the setup phase and clears the question', () => {
+    useDrillStore.getState().start(1, settings, T0)
+    useDrillStore.getState().backToSetup()
+    const s = useDrillStore.getState()
+    expect(s.phase).toBe('setup')
+    expect(s.question).toBeNull()
   })
 })

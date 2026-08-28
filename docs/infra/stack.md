@@ -9,7 +9,11 @@
 | Notation | VexFlow | Low-level = right for *generated* drill snippets (one note, one measure) | OSMD (great for full MusicXML scores — add later if "read real pieces" feature comes; it's built on VexFlow, no conflict) |
 | BE language | Go, stdlib `net/http` | User knows Go; no framework needed for a health endpoint | — |
 | FE state | Zustand, one store per module (`app` global + one per drill) | Tiny API, no boilerplate; per-module stores keep drills independent (see `docs/fe/architecture.md`) | Redux (boilerplate), Context-only (rerender sprawl) |
-| FE routing | React Router (`/`, `/drill`, `/results`, `/settings`) | URL per screen, standard navigation; stores never track screens | App-store screen switching (no URLs, no back button) |
+| FE routing | React Router, **app level only** (`/`, `/train/note-id`) | Drills are self-contained SPAs: phases live in the drill store, so training never pushes history and Back always means "leave the drill" | A route per screen (settings/results as URLs), which turned mid-session navigation into a browser-history problem |
+| Styling | Tailwind v4 via `@tailwindcss/vite`, semantic tokens in `src/index.css` | Utility-first over one token layer means light and dark are defined once; replaced the hand-rolled CSS classes | Hand-written CSS (what Phase 1 shipped, and it looked it), CSS modules |
+| Fonts | Geist + Geist Mono, self-hosted via `@fontsource-variable` | No render-blocking third-party request; mono carries the timer and score figures | Inter (generic default), Google Fonts `<link>` |
+| Motion | `motion` (motion/react) | Answer feedback and phase transitions only, all behind `prefers-reduced-motion` | CSS-only (no exit animations), GSAP (overkill here) |
+| Icons | `@phosphor-icons/react` | One icon family; replaced the emoji in the UI | Emoji, hand-rolled SVG paths |
 | Persistence (Phase 1) | localStorage via `progressStore` module | No login yet; versioned JSON doc is the cloud plug | — |
 | Audio | Web Audio API | Cheap pitch playback, no library needed at first | Tone.js (adopt if audio needs grow) |
 | Diagrams | Mermaid in markdown | Text-based → maintainable by doc-sync; renders on GitHub | Drawing tools (not auto-maintainable) |
