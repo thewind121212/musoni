@@ -16,3 +16,12 @@ Documentation is a deliverable of every change, not an afterthought. For ANY cha
    its doc updates is incomplete work — never "later", never a follow-up.
 
 No exceptions for "small" changes, refactors, or fixes.
+
+## MANDATORY: FE design rules
+
+For ANY frontend task in `web/` (components, screens, state, styling, structure),
+you MUST use the `fe-design` skill (`.claude/skills/fe-design/`) and run its
+checklist. Core rules: reuse-first core components (pure — no stores/persistence);
+one Zustand store per module (`app` global + one per drill); persistence only via
+`progressStore`; VexFlow only in the core Staff renderer; tunables in `config/`;
+mobile-first always. Architecture doc: `docs/fe/architecture.md`.

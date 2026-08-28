@@ -27,6 +27,7 @@ Design approved and documented. Implementation **not started**.
 - [x] UI screens — `docs/fe/screens.md`
 - [x] Backend placeholder plan — `docs/be/server.md`
 - [x] Doc-sync rule + skill — `CLAUDE.md`, `.claude/skills/doc-sync/`
+- [x] FE architecture: modules + Zustand store per module + core components — `docs/fe/architecture.md`, enforced by `.claude/skills/fe-design/`
 
 ## In Progress
 

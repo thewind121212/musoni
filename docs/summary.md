@@ -55,6 +55,8 @@ graph TB
     RESULTS["Results screen"]
     SET["Settings screen"]
 
+    APPSTORE["App Store (Zustand)<br/>settings, active screen"]
+    DRILLSTORE["Drill Store (Zustand)<br/>note-id session state"]
     ENGINE["Drill Engine (core)<br/>generate → render → answer → feedback → next"]
     GEN["Question Generator<br/>(note-id)"]
     REND["Notation Renderer<br/>(VexFlow)"]
@@ -64,14 +66,17 @@ graph TB
 
     HOME --> DRILL --> RESULTS
     HOME --> SET
-    DRILL --> ENGINE
+    SET --> APPSTORE
+    DRILL --> DRILLSTORE
+    DRILLSTORE --> ENGINE
+    APPSTORE --> STORE
+    DRILLSTORE --> STORE
     ENGINE --> GEN
     ENGINE --> REND
     ENGINE --> SCORE
     ENGINE --> AUDIO
-    SCORE --> STORE
-    RESULTS --> STORE
-    SET --> STORE
+    SCORE --> DRILLSTORE
+    RESULTS --> DRILLSTORE
   end
 ```
 
