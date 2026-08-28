@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
   sound: true,
   lang: 'vi',
 } as const
-import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak } from './progressStore'
+import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount } from './progressStore'
 
 const session = (over = {}) => ({
   drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
@@ -123,3 +123,49 @@ describe('getStreak', () => {
   })
 })
 
+
+describe('activity history', () => {
+  const day = (offset: number) => {
+    const d = new Date('2026-08-28T12:00:00')
+    d.setDate(d.getDate() + offset)
+    return d
+  }
+  const on = (offset: number, durationSec = 60) =>
+    session({ at: day(offset).toISOString(), durationSec })
+
+  it('sums minutes per day', () => {
+    recordSession(on(0, 60))
+    recordSession(on(0, 120))
+    recordSession(on(-1, 300))
+    const minutes = getDailyMinutes()
+    expect(minutes[localDayKey(day(0))]).toBe(3)
+    expect(minutes[localDayKey(day(-1))]).toBe(5)
+  })
+
+  it('omits days with no sessions', () => {
+    recordSession(on(0))
+    expect(getDailyMinutes()[localDayKey(day(-1))]).toBeUndefined()
+  })
+
+  it('finds the longest run, not the current one', () => {
+    // A four-day run last week, then a gap, then two days now.
+    for (const offset of [-10, -9, -8, -7, -1, 0]) recordSession(on(offset))
+    expect(getLongestStreak()).toBe(4)
+    expect(getStreak(day(0))).toBe(2)
+  })
+
+  it('counts a single day as a streak of one', () => {
+    recordSession(on(0))
+    expect(getLongestStreak()).toBe(1)
+  })
+
+  it('is zero with no history', () => {
+    expect(getLongestStreak()).toBe(0)
+    expect(getActiveDayCount()).toBe(0)
+  })
+
+  it('counts active days regardless of how many sessions each holds', () => {
+    recordSession(on(0)); recordSession(on(0)); recordSession(on(-3))
+    expect(getActiveDayCount()).toBe(2)
+  })
+})

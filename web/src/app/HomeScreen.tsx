@@ -5,7 +5,7 @@ import {
   TrophyIcon, WaveformIcon,
 } from '@phosphor-icons/react'
 import { StatChip } from '../core/components/StatChip'
-import { WeekStrip } from './WeekStrip'
+import { ActivityPanel } from './ActivityPanel'
 import { useAppStore } from './store'
 import { getBest } from '../progress/progressStore'
 import { useT } from './useT'
@@ -36,8 +36,10 @@ export function HomeScreen() {
         <LanguageToggle className="-mr-1 mt-1" />
       </motion.header>
 
-      <div className="mt-6 flex flex-col gap-6 md:mt-10 md:grid md:grid-cols-5 md:items-start md:gap-8">
-      <motion.div {...enter(0.12)} className="flex flex-col gap-3 md:col-span-3 md:order-1">
+      <div className="mt-6 flex flex-col gap-6 md:mt-10 md:gap-8">
+        <motion.div {...enter(0.06)}><ActivityPanel /></motion.div>
+
+        <motion.div {...enter(0.12)} className="flex flex-col gap-3">
         <h2 className="text-xs font-semibold tracking-wide text-ink-faint uppercase">{t('home.training')}</h2>
 
         <motion.div whileTap={reduce ? undefined : { scale: 0.98 }}>
@@ -90,7 +92,6 @@ export function HomeScreen() {
         </div>
       </motion.div>
 
-      <motion.div {...enter(0.06)} className="md:col-span-2 md:order-2"><WeekStrip /></motion.div>
       </div>
     </div>
   )

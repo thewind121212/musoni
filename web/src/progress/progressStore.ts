@@ -117,3 +117,41 @@ export function getStreak(now: Date = new Date()): number {
   }
   return streak
 }
+
+/** Minutes practised per local day, for every day that has sessions. */
+export function getDailyMinutes(): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const [day, value] of Object.entries(load().days)) {
+    const seconds = value.sessions.reduce((sum, s) => sum + s.durationSec, 0)
+    if (seconds > 0) out[day] = Math.round(seconds / 60)
+  }
+  return out
+}
+
+/**
+ * The longest run of consecutive practised days on record.
+ *
+ * Walks the practised days in order rather than day by day from today, so the
+ * cost is the number of days practised rather than the age of the account.
+ */
+export function getLongestStreak(): number {
+  const days = Object.keys(load().days)
+    .filter(d => (load().days[d]?.sessions.length ?? 0) > 0)
+    .sort()
+  if (days.length === 0) return 0
+
+  const dayNumber = (key: string) => Math.round(new Date(key + 'T00:00:00').getTime() / 86_400_000)
+
+  let longest = 1
+  let run = 1
+  for (let i = 1; i < days.length; i++) {
+    run = dayNumber(days[i]) - dayNumber(days[i - 1]) === 1 ? run + 1 : 1
+    if (run > longest) longest = run
+  }
+  return longest
+}
+
+/** Number of days with at least one session. */
+export function getActiveDayCount(): number {
+  return Object.values(load().days).filter(d => d.sessions.length > 0).length
+}
