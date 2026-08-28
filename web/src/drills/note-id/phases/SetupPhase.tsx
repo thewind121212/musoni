@@ -13,13 +13,13 @@ import { ClefGlyph } from '../../../core/components/Staff'
 import { DURATIONS, LEVEL_INFO } from '../../../config/constants'
 
 const LEVEL_OPTIONS = [
-  { value: 1 as const, label: LEVEL_INFO[1].name, hint: LEVEL_INFO[1].detail, visual: <ClefGlyph clef="treble" width={30} height={44} /> },
-  { value: 2 as const, label: LEVEL_INFO[2].name, hint: LEVEL_INFO[2].detail, visual: <ClefGlyph clef="treble" width={30} height={44} /> },
-  { value: 3 as const, label: LEVEL_INFO[3].name, hint: LEVEL_INFO[3].detail, visual: <ClefGlyph clef="bass" width={34} height={44} /> },
+  { value: 1 as const, label: LEVEL_INFO[1].name, hint: LEVEL_INFO[1].detail, visual: <ClefGlyph clef="treble" /> },
+  { value: 2 as const, label: LEVEL_INFO[2].name, hint: LEVEL_INFO[2].detail, visual: <ClefGlyph clef="treble" /> },
+  { value: 3 as const, label: LEVEL_INFO[3].name, hint: LEVEL_INFO[3].detail, visual: <ClefGlyph clef="bass" /> },
   { value: 4 as const, label: LEVEL_INFO[4].name, hint: LEVEL_INFO[4].detail, visual: (
-    <span className="flex items-center gap-0.5">
-      <ClefGlyph clef="treble" width={22} height={40} />
-      <ClefGlyph clef="bass" width={26} height={40} />
+    <span className="flex h-full items-center gap-1.5">
+      <ClefGlyph clef="treble" />
+      <ClefGlyph clef="bass" />
     </span>
   ) },
 ]

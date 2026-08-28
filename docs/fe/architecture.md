@@ -40,6 +40,14 @@ Shared, module-agnostic, reuse-first building blocks:
   from the `--staff` token so notation stays legible in dark mode, and exports
   `ClefGlyph` (a clef on a short stave) so level choices can show real notation
   instead of an icon-library stand-in.
+
+  Two sizing rules live there, both learned from a bug that rendered the clef
+  badges blank: VexFlow reserves blank space above a stave (lines land at
+  y=40..80 inside the render box), so a viewBox taken from the nominal box cuts
+  the notation off. `ClefGlyph` crops to the drawn ink; `Staff` instead pins its
+  viewBox to the stave lines plus `LEDGER_ROOM`, because cropping per note would
+  resize the box and make the staff jump between questions. `Staff.test.ts`
+  guards both.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling) used by both the note-id generator and Staff.
 - `core/scoring.ts` — difficulty-weighted scoring, shared by any drill.
