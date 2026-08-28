@@ -42,7 +42,7 @@ export function ResultPhase() {
             </div>
           )}
           <div className="text-sm text-ink-soft">
-            {t('result.session', { level: t(`level.${result.level as 1 | 2 | 3 | 4}`) })}
+            {t('result.session', { level: t(`level.${result.level}` as 'level.1') })}
           </div>
           <div className="tnum text-6xl font-semibold tracking-tight md:text-7xl">{result.practiceScore}</div>
           <div className="text-sm text-ink-faint">

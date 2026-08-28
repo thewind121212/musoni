@@ -3,7 +3,6 @@ import { type Settings, getSettings, saveSettings } from '../progress/progressSt
 
 interface AppState {
   settings: Settings
-  level: 1 | 2 | 3 | 4
   updateSettings: (p: Partial<Settings>) => void
   setLevel: (l: 1 | 2 | 3 | 4) => void
 }
@@ -13,7 +12,6 @@ if (typeof document !== 'undefined') document.documentElement.lang = initialSett
 
 export const useAppStore = create<AppState>((set, get) => ({
   settings: initialSettings,
-  level: 1,
   updateSettings: p => {
     const settings = { ...get().settings, ...p }
     saveSettings(settings)
@@ -22,5 +20,5 @@ export const useAppStore = create<AppState>((set, get) => ({
     document.documentElement.lang = settings.lang
     set({ settings })
   },
-  setLevel: level => set({ level }),
+  setLevel: level => get().updateSettings({ level }),
 }))

@@ -20,15 +20,16 @@ import { useT } from '../../../app/useT'
 const LEVELS = [1, 2, 3, 4] as const
 
 export function SetupPhase() {
-  const { settings, level, updateSettings, setLevel } = useAppStore()
+  const { settings, updateSettings, setLevel } = useAppStore()
+  const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
   const best = getBest('note-id', level, settings.durationSec)
 
   const levelOptions = LEVELS.map(l => ({
     value: l,
-    label: t(`level.${l}`),
-    hint: t(`level.${l}.detail`),
+    label: t(`level.${l}` as 'level.1'),
+    hint: t(`level.${l}.detail` as 'level.1.detail'),
     visual: l === 3
       ? <ClefGlyph clef="bass" />
       : l === 4

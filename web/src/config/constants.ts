@@ -27,12 +27,23 @@ export const LEVELS: Record<1 | 2 | 3 | 4, { weight: number; pools: { clef: Clef
   },
 }
 
-/** Session lengths the user can pick in the drill setup phase. */
+/**
+ * Session lengths, from note-naming pedagogy rather than round numbers.
+ *
+ * One minute is an established convention for timed note-naming (the
+ * "One-Minute Club" used in piano teaching), and "two minutes, twice a day" is
+ * a commonly taught drill pattern. Thirty seconds is not from the literature: it
+ * exists so a day never gets skipped for lack of time, since the research on
+ * sight-reading is consistent that frequency matters more than session length.
+ *
+ * There is deliberately no five-minute option. Recommended daily sight-reading
+ * practice totals roughly 5-15 minutes across everything, so a single
+ * five-minute naming sprint crowds out the reading it is supposed to serve.
+ */
 export const DURATIONS = [
-  { seconds: 30, label: '30s', note: 'Quick check' },
-  { seconds: 60, label: '1 min', note: 'Daily default' },
-  { seconds: 120, label: '2 min', note: 'Focused set' },
-  { seconds: 300, label: '5 min', note: 'Deep practice' },
+  { seconds: 30, label: '30s', note: 'Keep the streak' },
+  { seconds: 60, label: '1 min', note: 'The standard drill' },
+  { seconds: 120, label: '2 min', note: 'Twice a day' },
 ] as const
 
 export const DEFAULT_DURATION_SECONDS = 60

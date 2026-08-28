@@ -4,7 +4,7 @@ import { getSettings } from '../progress/progressStore'
 
 beforeEach(() => {
   localStorage.clear()
-  useAppStore.setState({ level: 1, settings: getSettings() })
+  useAppStore.setState({ settings: getSettings() })
 })
 
 describe('app store', () => {
@@ -13,8 +13,9 @@ describe('app store', () => {
     expect(useAppStore.getState().settings.naming).toBe('solfege')
     expect(getSettings().naming).toBe('solfege')
   })
-  it('setLevel', () => {
+  it('setLevel persists, so the chosen level survives a reload', () => {
     useAppStore.getState().setLevel(3)
-    expect(useAppStore.getState().level).toBe(3)
+    expect(useAppStore.getState().settings.level).toBe(3)
+    expect(getSettings().level).toBe(3)
   })
 })

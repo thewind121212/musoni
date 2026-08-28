@@ -12,7 +12,8 @@ import { useT } from './useT'
 import { LanguageToggle } from './LanguageToggle'
 
 export function HomeScreen() {
-  const { level, settings } = useAppStore()
+  const settings = useAppStore(s => s.settings)
+  const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
   const best = getBest('note-id', level, settings.durationSec)
@@ -62,7 +63,7 @@ export function HomeScreen() {
             <span className="mt-4 flex gap-2">
               <StatChip
                 icon={<MusicNoteIcon size={14} weight="fill" />}
-                label={t('stat.level')} value={t(`level.${level}`)}
+                label={t('stat.level')} value={t(`level.${level}` as 'level.1')}
               />
               <StatChip
                 icon={<TimerIcon size={14} weight="bold" />}

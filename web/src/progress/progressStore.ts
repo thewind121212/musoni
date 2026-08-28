@@ -1,12 +1,15 @@
 import type { Naming } from '../core/music/types'
-import { DEFAULT_DURATION_SECONDS } from '../config/constants'
+import { DEFAULT_DURATION_SECONDS, DURATIONS } from '../config/constants'
 import { DEFAULT_LANG, type Lang } from '../core/i18n/translate'
 
 export interface Settings {
-  naming: Naming
-  accidentals: boolean
-  sound: boolean
+  /** Workout parameters: what is being practised. Presets set these. */
+  level: 1 | 2 | 3 | 4
   durationSec: number
+  accidentals: boolean
+  /** Preferences: how the user likes to work. Presets never touch these. */
+  naming: Naming
+  sound: boolean
   lang: Lang
 }
 export interface SessionResult {
@@ -20,10 +23,11 @@ const KEY = 'musoni-progress-v1'
 // Vietnamese market first, and Vietnamese music teaching leads with solfege,
 // so the drill speaks Do Re Mi out of the box rather than C D E.
 const DEFAULTS: Settings = {
-  naming: 'solfege',
-  accidentals: false,
-  sound: true,
+  level: 1,
   durationSec: DEFAULT_DURATION_SECONDS,
+  accidentals: false,
+  naming: 'solfege',
+  sound: true,
   lang: DEFAULT_LANG,
 }
 
@@ -56,7 +60,15 @@ function load(): Doc {
 }
 function save(doc: Doc): void { localStorage.setItem(KEY, JSON.stringify(doc)) }
 
-export function getSettings(): Settings { return { ...DEFAULTS, ...load().settings } }
+export function getSettings(): Settings {
+  const settings = { ...DEFAULTS, ...load().settings }
+  // A length that is no longer offered (the five-minute sprint was retired)
+  // would leave the setup screen with nothing selected, so fall back.
+  if (!DURATIONS.some(d => d.seconds === settings.durationSec)) {
+    settings.durationSec = DEFAULT_DURATION_SECONDS
+  }
+  return settings
+}
 export function saveSettings(s: Settings): void { const d = load(); d.settings = s; save(d) }
 
 export function recordSession(r: SessionResult): void {

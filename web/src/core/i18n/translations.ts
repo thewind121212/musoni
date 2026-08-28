@@ -33,6 +33,14 @@ export const en = {
   'week.days_one': '{count} day',
   'week.last7': 'Last 7 days',
 
+  'preset.quickStart': 'Quick start',
+  'preset.orCustom': 'Or set it up yourself',
+  'preset.warmup': 'Warm-up',
+  'preset.daily': 'Daily',
+  'preset.challenge': 'Challenge',
+  'preset.recent': 'Recent',
+  'preset.withAccidentals': 'with sharps',
+
   'setup.back': 'Back to home',
   'setup.clef': 'Clef and range',
   'setup.clef.what': 'Which notes can appear on the staff',
@@ -60,7 +68,6 @@ export const en = {
   'duration.30': '30 sec',
   'duration.60': '1 min',
   'duration.120': '2 min',
-  'duration.300': '5 min',
 
   'naming.letters': 'Letters',
   'naming.letters.hint': 'A to G',
@@ -122,6 +129,14 @@ export const vi: Record<TranslationKey, string> = {
   'week.days_one': '{count} ngày',
   'week.last7': '7 ngày qua',
 
+  'preset.quickStart': 'Bắt đầu nhanh',
+  'preset.orCustom': 'Hoặc tự chọn',
+  'preset.warmup': 'Khởi động',
+  'preset.daily': 'Hằng ngày',
+  'preset.challenge': 'Thử thách',
+  'preset.recent': 'Gần đây',
+  'preset.withAccidentals': 'có thăng giáng',
+
   'setup.back': 'Về trang chủ',
   'setup.clef': 'Khóa nhạc và quãng',
   'setup.clef.what': 'Những nốt có thể xuất hiện trên khuông',
@@ -149,7 +164,6 @@ export const vi: Record<TranslationKey, string> = {
   'duration.30': '30 giây',
   'duration.60': '1 phút',
   'duration.120': '2 phút',
-  'duration.300': '5 phút',
 
   'naming.letters': 'Chữ cái',
   'naming.letters.hint': 'A đến G',

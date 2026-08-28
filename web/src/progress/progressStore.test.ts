@@ -3,10 +3,11 @@ import { describe, it, expect, beforeEach } from 'vitest'
 // The shipped defaults: Vietnamese first, and solfege with it, because that is
 // how notes are taught in the target market.
 const DEFAULT_SETTINGS = {
-  naming: 'solfege',
-  accidentals: false,
-  sound: true,
+  level: 1,
   durationSec: 60,
+  accidentals: false,
+  naming: 'solfege',
+  sound: true,
   lang: 'vi',
 } as const
 import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak } from './progressStore'
@@ -23,7 +24,7 @@ describe('progressStore', () => {
   it('default settings', () =>
     expect(getSettings()).toEqual(DEFAULT_SETTINGS))
   it('settings round-trip', () => {
-    saveSettings({ naming: 'solfege', accidentals: true, sound: false, durationSec: 120, lang: 'en' as const })
+    saveSettings({ ...DEFAULT_SETTINGS, naming: 'solfege', accidentals: true, sound: false, durationSec: 120, lang: 'en' })
     expect(getSettings().naming).toBe('solfege')
   })
   it('records under the LOCAL date key derived from `at`', () => {
@@ -119,5 +120,22 @@ describe('getStreak', () => {
   it('breaks on a missed day', () => {
     recordSession(on(0)); recordSession(on(-1)); recordSession(on(-3))
     expect(getStreak(today)).toBe(2)
+  })
+})
+
+describe('retired session lengths', () => {
+  it('falls back to the default when a stored length is no longer offered', () => {
+    // The five-minute sprint was retired; anyone who had it selected should not
+    // be left with nothing selected on the setup screen.
+    localStorage.setItem('musoni-progress-v1', JSON.stringify({
+      version: 1, settings: { ...DEFAULT_SETTINGS, durationSec: 300 }, days: {},
+    }))
+    expect(getSettings().durationSec).toBe(60)
+  })
+  it('keeps a length that is still offered', () => {
+    localStorage.setItem('musoni-progress-v1', JSON.stringify({
+      version: 1, settings: { ...DEFAULT_SETTINGS, durationSec: 120 }, days: {},
+    }))
+    expect(getSettings().durationSec).toBe(120)
   })
 })
