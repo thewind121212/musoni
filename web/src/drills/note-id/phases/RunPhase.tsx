@@ -57,7 +57,7 @@ export function RunPhase() {
 
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col px-4 pb-6 md:max-w-3xl md:px-8 md:pb-10">
-      <header className="flex items-baseline justify-between pt-5">
+      <header className="flex items-center justify-between pt-5">
         <button
           onClick={() => useDrillStore.getState().backToSetup()}
           aria-label="Quit this session"
