@@ -28,11 +28,10 @@ export function DrillScreen() {
   useEffect(() => {                       // keys 1..8 answer options (desktop)
     const onKey = (e: KeyboardEvent) => {
       const i = Number(e.key) - 1
-      const q = useDrillStore.getState().question
-      if (q && i >= 0 && i < q.options.length) {
-        useDrillStore.getState().answer(i)
-        if (useAppStore.getState().settings.sound) playPitch(q.pitch)
-      }
+      const s = useDrillStore.getState()
+      if (!s.question || s.feedback || i < 0 || i >= s.question.options.length) return
+      s.answer(i)
+      if (useAppStore.getState().settings.sound) playPitch(s.question.pitch)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
