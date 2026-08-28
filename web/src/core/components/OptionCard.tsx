@@ -9,7 +9,12 @@ export interface Option<T> {
 }
 
 interface Props<T extends string | number | boolean> {
+  /** Short heading for the group. */
   label: string
+  /** One line saying what the choice actually controls. */
+  description: string
+  /** Small mark shown beside the heading. */
+  icon: ReactNode
   options: readonly Option<T>[]
   value: T
   onChange: (value: T) => void
@@ -22,12 +27,19 @@ interface Props<T extends string | number | boolean> {
  * reads as music rather than as a settings form.
  */
 export function OptionCards<T extends string | number | boolean>({
-  label, options, value, onChange, columns = 2,
+  label, description, icon, options, value, onChange, columns = 2,
 }: Props<T>) {
   return (
     <fieldset className="border-0 p-0">
-      <legend className="mb-2 text-xs font-semibold tracking-wide text-ink-faint uppercase">
-        {label}
+      <legend className="mb-3 flex w-full items-start gap-2.5">
+        <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg
+                         border border-line bg-raised text-ink-soft">
+          {icon}
+        </span>
+        <span className="flex flex-col">
+          <span className="text-[15px] leading-snug font-semibold text-ink">{label}</span>
+          <span className="text-xs leading-snug text-ink-faint">{description}</span>
+        </span>
       </legend>
       <div className={'grid gap-2 ' + (columns === 4 ? 'grid-cols-4' : 'grid-cols-2')}>
         {options.map(option => {

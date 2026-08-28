@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import {
-  CaretLeftIcon, LightningIcon, PlayIcon, SpeakerHighIcon, SpeakerSlashIcon,
-  TimerIcon, TrophyIcon,
+  CaretLeftIcon, LightningIcon, MusicNoteIcon, PlayIcon, SpeakerHighIcon,
+  SpeakerSlashIcon, TextAaIcon, TimerIcon, TrophyIcon,
 } from '@phosphor-icons/react'
 import { useAppStore } from '../../../app/store'
 import { useDrillStore } from '../store'
@@ -53,15 +53,45 @@ export function SetupPhase() {
   }))
 
   const groups = [
-    <OptionCards key="level" label="Clef and range" options={LEVEL_OPTIONS} value={level} onChange={setLevel} />,
-    <OptionCards key="length" label="Session length" columns={4} options={durationOptions}
-      value={settings.durationSec} onChange={durationSec => updateSettings({ durationSec })} />,
-    <OptionCards key="naming" label="Note names" options={NAMING_OPTIONS}
-      value={settings.naming} onChange={naming => updateSettings({ naming })} />,
-    <OptionCards key="accidentals" label="Sharps and flats" options={ACCIDENTAL_OPTIONS}
-      value={settings.accidentals} onChange={accidentals => updateSettings({ accidentals })} />,
-    <OptionCards key="sound" label="Sound" options={SOUND_OPTIONS}
-      value={settings.sound} onChange={sound => updateSettings({ sound })} />,
+    <OptionCards
+      key="level"
+      label="Clef and range"
+      description="Which notes can appear on the staff"
+      icon={<MusicNoteIcon size={15} weight="fill" />}
+      options={LEVEL_OPTIONS} value={level} onChange={setLevel}
+    />,
+    <OptionCards
+      key="length"
+      label="Session length"
+      description="How long one sprint runs"
+      icon={<TimerIcon size={15} weight="bold" />}
+      columns={4} options={durationOptions}
+      value={settings.durationSec} onChange={durationSec => updateSettings({ durationSec })}
+    />,
+    <OptionCards
+      key="naming"
+      label="Note names"
+      description="How the answer keys are labelled"
+      icon={<TextAaIcon size={15} weight="bold" />}
+      options={NAMING_OPTIONS}
+      value={settings.naming} onChange={naming => updateSettings({ naming })}
+    />,
+    <OptionCards
+      key="accidentals"
+      label="Sharps and flats"
+      description="Add the black-key notes to the pool"
+      icon={<span className="text-[15px] leading-none font-semibold">&#9839;</span>}
+      options={ACCIDENTAL_OPTIONS}
+      value={settings.accidentals} onChange={accidentals => updateSettings({ accidentals })}
+    />,
+    <OptionCards
+      key="sound"
+      label="Sound"
+      description="Hear the pitch after each answer"
+      icon={<SpeakerHighIcon size={15} weight="bold" />}
+      options={SOUND_OPTIONS}
+      value={settings.sound} onChange={sound => updateSettings({ sound })}
+    />,
   ]
 
   return (
