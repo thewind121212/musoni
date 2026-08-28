@@ -2,6 +2,24 @@ import type { Clef } from '../core/music/types'
 
 export const POINTS_PER_CORRECT = 10
 export const ACCIDENTALS_WEIGHT = 1.4
+
+/**
+ * Endurance reward, applied per doubling of session length.
+ *
+ * Holding concentration for ten minutes is harder than for thirty seconds, and
+ * a pure pace score not only ignores that, it penalises it: fatigue drags the
+ * average down, so a short burst would out-score a long sustained session.
+ *
+ * The reward is logarithmic rather than linear, so each doubling adds the same
+ * modest amount and long sessions cannot run away with the scoreboard the way
+ * a raw total would. At 0.3 a doubling is worth 30%, so ten minutes is worth
+ * twice one minute at the same pace, and a ten-minute session at half pace ties
+ * a one-minute session at full pace.
+ */
+export const ENDURANCE_PER_DOUBLING = 0.3
+
+/** Floor for very short sessions, so a 30-second drill still counts properly. */
+export const MIN_ENDURANCE_BONUS = 0.6
 export const ACCIDENTAL_CHANCE = 0.4
 export const FEEDBACK_MS = 700
 

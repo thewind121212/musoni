@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useAppStore } from '../../../app/store'
 import { useDrillStore } from '../store'
 import { getBest } from '../../../progress/progressStore'
+import { enduranceBonus } from '../../../core/scoring'
 import { Button } from '../../../core/components/Button'
 import { useT } from '../../../app/useT'
 
@@ -45,8 +46,14 @@ export function ResultPhase() {
             {t('result.session', { level: t(`level.${result.level}` as 'level.1') })}
           </div>
           <div className="tnum text-6xl font-semibold tracking-tight md:text-7xl">{result.practiceScore}</div>
-          <div className="text-sm text-ink-faint">
-            {t('result.scoreCaption', { weight: result.weight.toFixed(2) })}
+          <div className="mt-1 flex flex-wrap items-center gap-1.5 text-sm text-ink-faint">
+            <span>{t('result.scoreCaption')}</span>
+            <span className="rounded-full border border-line px-2 py-0.5 text-xs">
+              {t('result.difficulty', { weight: result.weight.toFixed(2) })}
+            </span>
+            <span className="rounded-full border border-line px-2 py-0.5 text-xs">
+              {t('result.endurance', { bonus: enduranceBonus(result.durationSec).toFixed(2) })}
+            </span>
           </div>
         </div>
 

@@ -97,7 +97,9 @@ export const en = {
 
   'result.personalBest': 'Personal best',
   'result.session': '{level} session',
-  'result.scoreCaption': 'practice score, difficulty {weight}x',
+  'result.scoreCaption': 'practice score',
+  'result.difficulty': 'difficulty {weight}x',
+  'result.endurance': 'endurance {bonus}x',
   'result.correct': 'Correct',
   'result.accuracy': 'Accuracy',
   'result.avgAnswer': 'Average answer',
@@ -200,7 +202,9 @@ export const vi: Record<TranslationKey, string> = {
 
   'result.personalBest': 'Kỷ lục cá nhân',
   'result.session': 'Lượt {level}',
-  'result.scoreCaption': 'điểm luyện tập, độ khó {weight}x',
+  'result.scoreCaption': 'điểm luyện tập',
+  'result.difficulty': 'độ khó {weight}x',
+  'result.endurance': 'bền bỉ {bonus}x',
   'result.correct': 'Đúng',
   'result.accuracy': 'Độ chính xác',
   'result.avgAnswer': 'Thời gian trung bình',
