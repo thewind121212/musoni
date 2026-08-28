@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { generateQuestion, type Question } from './generator'
 import { difficultyWeight, practiceScore, accuracy } from '../../core/scoring'
-import { recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
+import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
 
 /**
  * The note-id drill is a self-contained SPA: one route, three phases.
@@ -35,7 +35,7 @@ interface DrillState {
 export const useDrillStore = create<DrillState>((set, get) => ({
   phase: 'setup',
   level: 1,
-  settings: { naming: 'letters', accidentals: false, sound: true, durationSec: 60 },
+  settings: getSettings(),
   question: null, endsAt: null, askedAt: 0,
   correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
   feedback: null, lastResult: null,

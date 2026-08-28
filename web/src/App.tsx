@@ -25,7 +25,7 @@ export default function App() {
           path="/train/note-id"
           element={
             <PageTransition>
-              <Suspense fallback={<div className="mx-auto max-w-md px-4 pt-10 text-ink-faint">Loading</div>}>
+              <Suspense fallback={<div className="mx-auto max-w-md px-4 pt-10 text-ink-faint" />}>
                 <NoteIdDrill />
               </Suspense>
             </PageTransition>

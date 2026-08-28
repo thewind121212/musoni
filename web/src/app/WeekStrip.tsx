@@ -1,5 +1,6 @@
 import { FireIcon } from '@phosphor-icons/react'
 import { getRange, getStreak, localDayKey } from '../progress/progressStore'
+import { useT } from './useT'
 
 /**
  * Where the user stands right now, with the past week as context underneath.
@@ -7,6 +8,7 @@ import { getRange, getStreak, localDayKey } from '../progress/progressStore'
  * and never "am I current".
  */
 export function WeekStrip() {
+  const t = useT()
   const days: string[] = []
   for (let i = 6; i >= 0; i--) days.push(localDayKey(new Date(Date.now() - i * 86_400_000)))
 
@@ -22,18 +24,18 @@ export function WeekStrip() {
     <section className="rounded-2xl border border-line bg-raised p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[10px] font-semibold tracking-wide text-ink-faint uppercase">Today</div>
+          <div className="text-[10px] font-semibold tracking-wide text-ink-faint uppercase">{t('week.today')}</div>
           {practisedToday ? (
             <>
               <div className="tnum text-3xl leading-tight font-semibold">{today}</div>
               <div className="text-xs text-ink-faint">
-                points from {todaySessions} {todaySessions === 1 ? 'session' : 'sessions'}
+                {t('week.points', { count: todaySessions })}
               </div>
             </>
           ) : (
             <>
-              <div className="text-xl leading-tight font-semibold text-ink-soft">Not yet</div>
-              <div className="text-xs text-ink-faint">One session keeps it going</div>
+              <div className="text-xl leading-tight font-semibold text-ink-soft">{t('week.notYet')}</div>
+              <div className="text-xs text-ink-faint">{t('week.keepGoing')}</div>
             </>
           )}
         </div>
@@ -46,8 +48,9 @@ export function WeekStrip() {
             }
           >
             <FireIcon size={15} weight="fill" />
-            <span className="tnum text-sm font-semibold">{streak}</span>
-            <span className="text-xs">day{streak === 1 ? '' : 's'}</span>
+            <span className="text-sm font-semibold">
+              <span className="tnum">{t('week.days', { count: streak })}</span>
+            </span>
           </div>
         )}
       </div>
@@ -75,7 +78,7 @@ export function WeekStrip() {
           )
         })}
       </div>
-      <div className="mt-1 text-[10px] text-ink-faint">Last 7 days</div>
+      <div className="mt-1 text-[10px] text-ink-faint">{t('week.last7')}</div>
     </section>
   )
 }

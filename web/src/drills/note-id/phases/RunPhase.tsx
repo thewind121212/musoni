@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { XIcon } from '@phosphor-icons/react'
 import { useDrillStore } from '../store'
+import { useT } from '../../../app/useT'
 import { AnswerGrid } from './AnswerGrid'
 import { optionIndexFromKey } from '../keyboard'
 import { Staff } from '../../../core/components/Staff'
@@ -11,6 +12,7 @@ import { FEEDBACK_MS, TICK_MS } from '../../../config/constants'
 export function RunPhase() {
   const { question, endsAt, correct, streak, feedback, settings } = useDrillStore()
   const reduce = useReducedMotion()
+  const t = useT()
   const [, forceRender] = useState(0)
 
   useEffect(() => {
@@ -60,8 +62,8 @@ export function RunPhase() {
       <header className="flex items-center justify-between pt-5">
         <button
           onClick={() => useDrillStore.getState().backToSetup()}
-          aria-label="Quit this session"
-          title="Quit this session"
+          aria-label={t('run.quit')}
+          title={t('run.quit')}
           className="-ml-2 flex size-10 items-center justify-center rounded-full text-ink-faint
                      transition-colors duration-150 hover:bg-line hover:text-ink active:scale-95
                      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -72,7 +74,8 @@ export function RunPhase() {
           {secondsLeft}
         </div>
         <div className="tnum text-sm text-ink-soft md:text-base">
-          {correct} correct{streak > 2 && <span className="ml-2 text-accent">{streak} in a row</span>}
+          {t('run.correct', { count: correct })}
+          {streak > 2 && <span className="ml-2 text-accent">{t('run.streak', { count: streak })}</span>}
         </div>
       </header>
 

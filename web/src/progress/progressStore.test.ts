@@ -1,4 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+
+// The shipped defaults: Vietnamese first, and solfege with it, because that is
+// how notes are taught in the target market.
+const DEFAULT_SETTINGS = {
+  naming: 'solfege',
+  accidentals: false,
+  sound: true,
+  durationSec: 60,
+  lang: 'vi',
+} as const
 import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak } from './progressStore'
 
 const session = (over = {}) => ({
@@ -11,9 +21,9 @@ beforeEach(() => localStorage.clear())
 
 describe('progressStore', () => {
   it('default settings', () =>
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 }))
+    expect(getSettings()).toEqual(DEFAULT_SETTINGS))
   it('settings round-trip', () => {
-    saveSettings({ naming: 'solfege', accidentals: true, sound: false, durationSec: 120 })
+    saveSettings({ naming: 'solfege', accidentals: true, sound: false, durationSec: 120, lang: 'en' as const })
     expect(getSettings().naming).toBe('solfege')
   })
   it('records under the LOCAL date key derived from `at`', () => {
@@ -55,16 +65,16 @@ describe('progressStore', () => {
   })
   it('recovers from corrupted localStorage', () => {
     localStorage.setItem('musoni-progress-v1', '{not json')
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 })
+    expect(getSettings()).toEqual(DEFAULT_SETTINGS)
   })
   it('recovers from valid JSON that is the wrong shape (null)', () => {
     localStorage.setItem('musoni-progress-v1', 'null')
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 })
+    expect(getSettings()).toEqual(DEFAULT_SETTINGS)
     expect(getDay('2026-08-28')).toEqual([])
   })
   it('recovers from valid JSON that is the wrong shape ({})', () => {
     localStorage.setItem('musoni-progress-v1', '{}')
-    expect(getSettings()).toEqual({ naming: 'letters', accidentals: false, sound: true, durationSec: 60 })
+    expect(getSettings()).toEqual(DEFAULT_SETTINGS)
     expect(getDay('2026-08-28')).toEqual([])
   })
 })

@@ -1,7 +1,14 @@
 import type { Naming } from '../core/music/types'
 import { DEFAULT_DURATION_SECONDS } from '../config/constants'
+import { DEFAULT_LANG, type Lang } from '../core/i18n/translate'
 
-export interface Settings { naming: Naming; accidentals: boolean; sound: boolean; durationSec: number }
+export interface Settings {
+  naming: Naming
+  accidentals: boolean
+  sound: boolean
+  durationSec: number
+  lang: Lang
+}
 export interface SessionResult {
   drill: 'note-id'; level: number; accidentals: boolean; naming: Naming; durationSec: number
   correct: number; wrong: number; accuracy: number; avgMs: number
@@ -10,7 +17,15 @@ export interface SessionResult {
 interface Doc { version: 1; settings: Settings; days: Record<string, { sessions: SessionResult[] }> }
 
 const KEY = 'musoni-progress-v1'
-const DEFAULTS: Settings = { naming: 'letters', accidentals: false, sound: true, durationSec: DEFAULT_DURATION_SECONDS }
+// Vietnamese market first, and Vietnamese music teaching leads with solfege,
+// so the drill speaks Do Re Mi out of the box rather than C D E.
+const DEFAULTS: Settings = {
+  naming: 'solfege',
+  accidentals: false,
+  sound: true,
+  durationSec: DEFAULT_DURATION_SECONDS,
+  lang: DEFAULT_LANG,
+}
 
 // Formats a Date as a LOCAL calendar-day key (YYYY-MM-DD), as opposed to
 // Date#toISOString which is always UTC. Day buckets must use the viewer's

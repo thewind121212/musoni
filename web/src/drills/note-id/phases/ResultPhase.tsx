@@ -5,7 +5,7 @@ import { useAppStore } from '../../../app/store'
 import { useDrillStore } from '../store'
 import { getBest } from '../../../progress/progressStore'
 import { Button } from '../../../core/components/Button'
-import { LEVEL_INFO } from '../../../config/constants'
+import { useT } from '../../../app/useT'
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
@@ -20,6 +20,7 @@ export function ResultPhase() {
   const settings = useAppStore(s => s.settings)
   const result = useDrillStore(s => s.lastResult)
   const reduce = useReducedMotion()
+  const t = useT()
   if (!result) return null
 
   const best = getBest('note-id', result.level, result.durationSec)
@@ -37,39 +38,39 @@ export function ResultPhase() {
         <div>
           {isBest && (
             <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-ink">
-              <TrophyIcon size={13} weight="fill" /> Personal best
+              <TrophyIcon size={13} weight="fill" /> {t('result.personalBest')}
             </div>
           )}
           <div className="text-sm text-ink-soft">
-            {LEVEL_INFO[result.level as 1 | 2 | 3 | 4].name} session
+            {t('result.session', { level: t(`level.${result.level as 1 | 2 | 3 | 4}`) })}
           </div>
           <div className="tnum text-6xl font-semibold tracking-tight md:text-7xl">{result.practiceScore}</div>
           <div className="text-sm text-ink-faint">
-            practice score, difficulty {result.weight.toFixed(2)}x
+            {t('result.scoreCaption', { weight: result.weight.toFixed(2) })}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-          <Stat value={String(result.correct)} label="Correct" />
-          <Stat value={`${Math.round(result.accuracy * 100)}%`} label="Accuracy" />
-          <Stat value={`${(result.avgMs / 1000).toFixed(1)}s`} label="Average answer" />
-          <Stat value={String(result.bestStreak)} label="Best streak" />
+          <Stat value={String(result.correct)} label={t('result.correct')} />
+          <Stat value={`${Math.round(result.accuracy * 100)}%`} label={t('result.accuracy')} />
+          <Stat value={`${(result.avgMs / 1000).toFixed(1)}s`} label={t('result.avgAnswer')} />
+          <Stat value={String(result.bestStreak)} label={t('result.bestStreak')} />
         </div>
 
         {!isBest && best && (
           <p className="text-sm text-ink-faint">
-            Your best at this level and length is {best.practiceScore}.
+            {t('result.yourBest', { score: best.practiceScore })}
           </p>
         )}
 
         <div className="flex flex-col gap-2">
           <Button variant="primary" className="h-14 text-lg" onClick={again}>
-            <ArrowClockwiseIcon size={20} weight="bold" /> Again
+            <ArrowClockwiseIcon size={20} weight="bold" /> {t('result.again')}
           </Button>
           <div className="grid grid-cols-2 gap-2">
-            <Button onClick={() => useDrillStore.getState().backToSetup()}>Change setup</Button>
+            <Button onClick={() => useDrillStore.getState().backToSetup()}>{t('result.changeSetup')}</Button>
             <Link to="/" className="contents">
-              <Button className="w-full"><HouseIcon size={18} weight="bold" /> Home</Button>
+              <Button className="w-full"><HouseIcon size={18} weight="bold" /> {t('result.home')}</Button>
             </Link>
           </div>
         </div>

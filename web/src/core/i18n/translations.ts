@@ -1,0 +1,186 @@
+/**
+ * UI strings. Vietnamese is the primary market and the default language.
+ *
+ * English is the source of truth for the key set: `vi` is typed against it, so
+ * adding a key without translating it is a compile error rather than a string
+ * that silently falls back in front of a user.
+ *
+ * Plural keys: write the general form under the base key and a `_one` variant
+ * beside it. `translate` picks the variant with Intl.PluralRules, which is why
+ * Vietnamese (no plural marking) needs no variants of its own.
+ */
+export const en = {
+  'lang.name': 'English',
+
+  'home.tagline': 'Read sheet music faster, a few minutes a day.',
+  'home.training': 'Training',
+  'home.noteReading': 'Note reading',
+  'home.noteReading.what': 'Name the note on the staff',
+  'home.measure': 'Complete the measure',
+  'home.measure.soon': 'Rhythm training, coming next',
+
+  'stat.level': 'Level',
+  'stat.length': 'Length',
+  'stat.best': 'Best',
+  'stat.none': 'None',
+
+  'week.today': 'Today',
+  'week.points': 'points from {count} sessions',
+  'week.points_one': 'points from {count} session',
+  'week.notYet': 'Not yet',
+  'week.keepGoing': 'One session keeps it going',
+  'week.days': '{count} days',
+  'week.days_one': '{count} day',
+  'week.last7': 'Last 7 days',
+
+  'setup.back': 'Back to home',
+  'setup.clef': 'Clef and range',
+  'setup.clef.what': 'Which notes can appear on the staff',
+  'setup.length': 'Session length',
+  'setup.length.what': 'How long one sprint runs',
+  'setup.naming': 'Note names',
+  'setup.naming.what': 'How the answer keys are labelled',
+  'setup.accidentals': 'Sharps and flats',
+  'setup.accidentals.what': 'Add the black-key notes to the pool',
+  'setup.sound': 'Sound',
+  'setup.sound.what': 'Hear the pitch after each answer',
+  'setup.bestHere': 'Best here',
+  'setup.noScoreYet': 'No score yet at this setup',
+  'setup.start': 'Start',
+
+  'level.1': 'Treble',
+  'level.1.detail': 'On the staff only',
+  'level.2': 'Treble +',
+  'level.2.detail': 'Adds ledger lines',
+  'level.3': 'Bass',
+  'level.3.detail': 'Bass clef range',
+  'level.4': 'Both',
+  'level.4.detail': 'Treble and bass mixed',
+
+  'duration.30': '30 sec',
+  'duration.60': '1 min',
+  'duration.120': '2 min',
+  'duration.300': '5 min',
+
+  'naming.letters': 'Letters',
+  'naming.letters.hint': 'A to G',
+  'naming.solfege': 'Solfege',
+  'naming.solfege.hint': 'Do to Si',
+
+  'accidentals.off': 'Naturals only',
+  'accidentals.off.hint': 'White keys',
+  'accidentals.on': 'Sharps and flats',
+  'accidentals.on.hint': 'Adds # and b',
+
+  'sound.on': 'Play the note',
+  'sound.on.hint': 'Hear each answer',
+  'sound.off': 'Silent',
+  'sound.off.hint': 'No audio',
+
+  'run.quit': 'Quit this session',
+  'run.correct': '{count} correct',
+  'run.streak': '{count} in a row',
+
+  'result.personalBest': 'Personal best',
+  'result.session': '{level} session',
+  'result.scoreCaption': 'practice score, difficulty {weight}x',
+  'result.correct': 'Correct',
+  'result.accuracy': 'Accuracy',
+  'result.avgAnswer': 'Average answer',
+  'result.bestStreak': 'Best streak',
+  'result.yourBest': 'Your best at this level and length is {score}.',
+  'result.again': 'Again',
+  'result.changeSetup': 'Change setup',
+  'result.home': 'Home',
+
+  'drill.loading': 'Loading',
+} as const
+
+export type TranslationKey = keyof typeof en
+
+export const vi: Record<TranslationKey, string> = {
+  'lang.name': 'Tiếng Việt',
+
+  'home.tagline': 'Đọc bản nhạc nhanh hơn, mỗi ngày vài phút.',
+  'home.training': 'Luyện tập',
+  'home.noteReading': 'Đọc nốt nhạc',
+  'home.noteReading.what': 'Gọi tên nốt trên khuông nhạc',
+  'home.measure': 'Hoàn thành ô nhịp',
+  'home.measure.soon': 'Luyện tiết tấu, sắp có',
+
+  'stat.level': 'Cấp độ',
+  'stat.length': 'Thời lượng',
+  'stat.best': 'Cao nhất',
+  'stat.none': 'Chưa có',
+
+  'week.today': 'Hôm nay',
+  'week.points': 'điểm từ {count} lượt tập',
+  'week.points_one': 'điểm từ {count} lượt tập',
+  'week.notYet': 'Chưa tập',
+  'week.keepGoing': 'Tập một lượt để giữ chuỗi',
+  'week.days': '{count} ngày',
+  'week.days_one': '{count} ngày',
+  'week.last7': '7 ngày qua',
+
+  'setup.back': 'Về trang chủ',
+  'setup.clef': 'Khóa nhạc và quãng',
+  'setup.clef.what': 'Những nốt có thể xuất hiện trên khuông',
+  'setup.length': 'Thời lượng',
+  'setup.length.what': 'Mỗi lượt tập kéo dài bao lâu',
+  'setup.naming': 'Tên nốt',
+  'setup.naming.what': 'Cách ghi tên trên phím trả lời',
+  'setup.accidentals': 'Dấu thăng và giáng',
+  'setup.accidentals.what': 'Thêm các nốt phím đen vào bài tập',
+  'setup.sound': 'Âm thanh',
+  'setup.sound.what': 'Nghe cao độ sau mỗi câu trả lời',
+  'setup.bestHere': 'Cao nhất ở mức này',
+  'setup.noScoreYet': 'Chưa có điểm với thiết lập này',
+  'setup.start': 'Bắt đầu',
+
+  'level.1': 'Khóa Sol',
+  'level.1.detail': 'Chỉ trong khuông nhạc',
+  'level.2': 'Khóa Sol +',
+  'level.2.detail': 'Thêm dòng kẻ phụ',
+  'level.3': 'Khóa Fa',
+  'level.3.detail': 'Quãng của khóa Fa',
+  'level.4': 'Cả hai',
+  'level.4.detail': 'Trộn khóa Sol và khóa Fa',
+
+  'duration.30': '30 giây',
+  'duration.60': '1 phút',
+  'duration.120': '2 phút',
+  'duration.300': '5 phút',
+
+  'naming.letters': 'Chữ cái',
+  'naming.letters.hint': 'A đến G',
+  'naming.solfege': 'Đô Rê Mi',
+  'naming.solfege.hint': 'Do đến Si',
+
+  'accidentals.off': 'Chỉ nốt tự nhiên',
+  'accidentals.off.hint': 'Phím trắng',
+  'accidentals.on': 'Có thăng giáng',
+  'accidentals.on.hint': 'Thêm # và b',
+
+  'sound.on': 'Phát nốt nhạc',
+  'sound.on.hint': 'Nghe mỗi câu trả lời',
+  'sound.off': 'Tắt tiếng',
+  'sound.off.hint': 'Không có âm thanh',
+
+  'run.quit': 'Thoát lượt tập',
+  'run.correct': 'đúng {count}',
+  'run.streak': '{count} liên tiếp',
+
+  'result.personalBest': 'Kỷ lục cá nhân',
+  'result.session': 'Lượt {level}',
+  'result.scoreCaption': 'điểm luyện tập, độ khó {weight}x',
+  'result.correct': 'Đúng',
+  'result.accuracy': 'Độ chính xác',
+  'result.avgAnswer': 'Thời gian trung bình',
+  'result.bestStreak': 'Chuỗi dài nhất',
+  'result.yourBest': 'Kỷ lục của bạn ở mức này là {score}.',
+  'result.again': 'Tập lại',
+  'result.changeSetup': 'Đổi thiết lập',
+  'result.home': 'Trang chủ',
+
+  'drill.loading': 'Đang tải',
+}

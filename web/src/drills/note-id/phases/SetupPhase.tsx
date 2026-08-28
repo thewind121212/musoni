@@ -10,86 +10,104 @@ import { getBest } from '../../../progress/progressStore'
 import { Button } from '../../../core/components/Button'
 import { OptionCards } from '../../../core/components/OptionCard'
 import { ClefGlyph } from '../../../core/components/Staff'
-import { DURATIONS, LEVEL_INFO } from '../../../config/constants'
+import { DURATIONS } from '../../../config/constants'
+import { useT } from '../../../app/useT'
 
-const LEVEL_OPTIONS = [
-  { value: 1 as const, label: LEVEL_INFO[1].name, hint: LEVEL_INFO[1].detail, visual: <ClefGlyph clef="treble" /> },
-  { value: 2 as const, label: LEVEL_INFO[2].name, hint: LEVEL_INFO[2].detail, visual: <ClefGlyph clef="treble" /> },
-  { value: 3 as const, label: LEVEL_INFO[3].name, hint: LEVEL_INFO[3].detail, visual: <ClefGlyph clef="bass" /> },
-  { value: 4 as const, label: LEVEL_INFO[4].name, hint: LEVEL_INFO[4].detail, visual: (
-    <span className="flex h-full items-center gap-1.5">
-      <ClefGlyph clef="treble" />
-      <ClefGlyph clef="bass" />
-    </span>
-  ) },
-]
 
-const NAMING_OPTIONS = [
-  { value: 'letters' as const, label: 'Letters', hint: 'A to G', visual: <span className="text-xl font-semibold tracking-tight">C D E</span> },
-  { value: 'solfege' as const, label: 'Solfege', hint: 'Do to Si', visual: <span className="text-xl font-semibold tracking-tight">Do Re Mi</span> },
-]
 
-const ACCIDENTAL_OPTIONS = [
-  { value: false, label: 'Naturals only', hint: 'White keys', visual: <span className="text-3xl leading-none">&#9838;</span> },
-  { value: true, label: 'Sharps and flats', hint: 'Adds # and b', visual: <span className="text-3xl leading-none">&#9839; &#9837;</span> },
-]
 
-const SOUND_OPTIONS = [
-  { value: true, label: 'Play the note', hint: 'Hear each answer', visual: <SpeakerHighIcon size={30} weight="duotone" /> },
-  { value: false, label: 'Silent', hint: 'No audio', visual: <SpeakerSlashIcon size={30} weight="duotone" /> },
-]
+
+const LEVELS = [1, 2, 3, 4] as const
 
 export function SetupPhase() {
   const { settings, level, updateSettings, setLevel } = useAppStore()
   const reduce = useReducedMotion()
+  const t = useT()
   const best = getBest('note-id', level, settings.durationSec)
+
+  const levelOptions = LEVELS.map(l => ({
+    value: l,
+    label: t(`level.${l}`),
+    hint: t(`level.${l}.detail`),
+    visual: l === 3
+      ? <ClefGlyph clef="bass" />
+      : l === 4
+        ? (
+          <span className="flex h-full items-center gap-1.5">
+            <ClefGlyph clef="treble" />
+            <ClefGlyph clef="bass" />
+          </span>
+        )
+        : <ClefGlyph clef="treble" />,
+  }))
 
   const durationOptions = DURATIONS.map(d => ({
     value: d.seconds,
-    label: d.label,
+    label: t(`duration.${d.seconds}` as 'duration.60'),
     visual: d.seconds <= 30
       ? <LightningIcon size={26} weight="duotone" />
       : <TimerIcon size={26} weight="duotone" />,
   }))
 
+  const namingOptions = [
+    { value: 'letters' as const, label: t('naming.letters'), hint: t('naming.letters.hint'),
+      visual: <span className="text-xl font-semibold tracking-tight">C D E</span> },
+    { value: 'solfege' as const, label: t('naming.solfege'), hint: t('naming.solfege.hint'),
+      visual: <span className="text-xl font-semibold tracking-tight">Do Re Mi</span> },
+  ]
+
+  const accidentalOptions = [
+    { value: false, label: t('accidentals.off'), hint: t('accidentals.off.hint'),
+      visual: <span className="text-3xl leading-none">&#9838;</span> },
+    { value: true, label: t('accidentals.on'), hint: t('accidentals.on.hint'),
+      visual: <span className="text-3xl leading-none">&#9839; &#9837;</span> },
+  ]
+
+  const soundOptions = [
+    { value: true, label: t('sound.on'), hint: t('sound.on.hint'),
+      visual: <SpeakerHighIcon size={30} weight="duotone" /> },
+    { value: false, label: t('sound.off'), hint: t('sound.off.hint'),
+      visual: <SpeakerSlashIcon size={30} weight="duotone" /> },
+  ]
+
   const groups = [
     <OptionCards
       key="level"
-      label="Clef and range"
-      description="Which notes can appear on the staff"
+      label={t('setup.clef')}
+      description={t('setup.clef.what')}
       icon={<MusicNoteIcon size={15} weight="fill" />}
-      options={LEVEL_OPTIONS} value={level} onChange={setLevel}
+      options={levelOptions} value={level} onChange={setLevel}
     />,
     <OptionCards
       key="length"
-      label="Session length"
-      description="How long one sprint runs"
+      label={t('setup.length')}
+      description={t('setup.length.what')}
       icon={<TimerIcon size={15} weight="bold" />}
       columns={4} options={durationOptions}
       value={settings.durationSec} onChange={durationSec => updateSettings({ durationSec })}
     />,
     <OptionCards
       key="naming"
-      label="Note names"
-      description="How the answer keys are labelled"
+      label={t('setup.naming')}
+      description={t('setup.naming.what')}
       icon={<TextAaIcon size={15} weight="bold" />}
-      options={NAMING_OPTIONS}
+      options={namingOptions}
       value={settings.naming} onChange={naming => updateSettings({ naming })}
     />,
     <OptionCards
       key="accidentals"
-      label="Sharps and flats"
-      description="Add the black-key notes to the pool"
+      label={t('setup.accidentals')}
+      description={t('setup.accidentals.what')}
       icon={<span className="text-[15px] leading-none font-semibold">&#9839;</span>}
-      options={ACCIDENTAL_OPTIONS}
+      options={accidentalOptions}
       value={settings.accidentals} onChange={accidentals => updateSettings({ accidentals })}
     />,
     <OptionCards
       key="sound"
-      label="Sound"
-      description="Hear the pitch after each answer"
+      label={t('setup.sound')}
+      description={t('setup.sound.what')}
       icon={<SpeakerHighIcon size={15} weight="bold" />}
-      options={SOUND_OPTIONS}
+      options={soundOptions}
       value={settings.sound} onChange={sound => updateSettings({ sound })}
     />,
   ]
@@ -97,10 +115,10 @@ export function SetupPhase() {
   return (
     <div className="mx-auto w-full max-w-md px-4 pt-4 pb-8 md:max-w-3xl md:px-8 md:pt-8">
       <div className="flex items-center gap-1">
-        <Link to="/" aria-label="Back to home">
+        <Link to="/" aria-label={t('setup.back')}>
           <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
         </Link>
-        <h1 className="text-lg font-semibold md:text-2xl">Note reading</h1>
+        <h1 className="text-lg font-semibold md:text-2xl">{t('home.noteReading')}</h1>
       </div>
 
       <div className="mt-4 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-7">
@@ -124,15 +142,15 @@ export function SetupPhase() {
           <div className="flex items-center gap-2 text-sm text-ink-soft">
             <TrophyIcon size={16} weight="fill" className="text-ink-faint" />
             {best
-              ? <span>Best here <span className="tnum font-semibold text-ink">{best.practiceScore}</span></span>
-              : <span>No score yet at this setup</span>}
+              ? <span>{t('setup.bestHere')} <span className="tnum font-semibold text-ink">{best.practiceScore}</span></span>
+              : <span>{t('setup.noScoreYet')}</span>}
           </div>
           <Button
             variant="primary"
             className="h-14 w-full text-lg md:w-56"
             onClick={() => useDrillStore.getState().start(level, settings)}
           >
-            <PlayIcon size={20} weight="fill" /> Start
+            <PlayIcon size={20} weight="fill" /> {t('setup.start')}
           </Button>
         </motion.div>
       </div>
