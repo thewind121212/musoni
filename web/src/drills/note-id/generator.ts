@@ -84,25 +84,44 @@ export function buildOptions(naming: Naming, accidentals: boolean, spelling: Exc
   return [...naturals, ...blacks]
 }
 
+/** Same letter, accidental and octave: the note a reader would see as a repeat. */
+function samePitch(a: Pitch, b: Pitch): boolean {
+  return a.letter === b.letter && a.accidental === b.accidental && a.octave === b.octave
+}
+
+/**
+ * @param previous the note just asked, never asked twice in a row. Back-to-back
+ * repeats read as a glitch and are answered from memory rather than from
+ * reading, so they teach nothing.
+ */
 export function generateQuestion(
-  level: 1 | 2 | 3 | 4, accidentals: boolean, naming: Naming, rng: () => number = Math.random,
+  level: 1 | 2 | 3 | 4,
+  accidentals: boolean,
+  naming: Naming,
+  rng: () => number = Math.random,
+  previous?: Pitch | null,
 ): Question {
   const pool = pick(LEVELS[level].pools, rng)
   const lo = diatonicIndex(parsePitch(pool.low))
   const hi = diatonicIndex(parsePitch(pool.high))
-  const base = pitchFromDiatonic(lo + Math.floor(rng() * (hi - lo + 1)))
-
-  let accidental: Accidental = ''
-  if (accidentals && rng() < ACCIDENTAL_CHANCE) {
-    const a: Accidental = rng() < 0.5 ? '#' : 'b'
-    accidental = isExcluded(base.letter, a) ? (a === '#' ? 'b' : '#') : a
+  // Redraw on a repeat. The pool always holds more than one note, so this
+  // settles immediately; the cap only exists so a degenerate rng cannot hang.
+  let pitch: Pitch = { letter: 'C', accidental: '', octave: 4 }
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const base = pitchFromDiatonic(lo + Math.floor(rng() * (hi - lo + 1)))
+    let accidental: Accidental = ''
+    if (accidentals && rng() < ACCIDENTAL_CHANCE) {
+      const a: Accidental = rng() < 0.5 ? '#' : 'b'
+      accidental = isExcluded(base.letter, a) ? (a === '#' ? 'b' : '#') : a
+    }
+    pitch = { ...base, accidental }
+    if (!previous || !samePitch(pitch, previous)) break
   }
-  const pitch: Pitch = { ...base, accidental }
 
   // A natural question leaves the black keys spelled as sharps, the commoner
   // default; a printed accidental sets the row to its own spelling so the
   // answer is always present.
-  const spelling: Exclude<Accidental, ''> = accidental === 'b' ? 'b' : '#'
+  const spelling: Exclude<Accidental, ''> = pitch.accidental === 'b' ? 'b' : '#'
   const options = buildOptions(naming, accidentals, spelling)
   const correctIndex = options.findIndex(
     o => o.letter === pitch.letter && o.accidental === pitch.accidental)

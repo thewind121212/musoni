@@ -23,7 +23,7 @@ describe('drill store', () => {
     const s = useDrillStore.getState()
     expect(s.correct).toBe(1)
     expect(s.streak).toBe(1)
-    expect(s.feedback).toEqual({ correctIndex: q.correctIndex, chosenIndex: q.correctIndex })
+    expect(s.feedback).toEqual({ correctIndex: q.correctIndex, chosenIndex: q.correctIndex, correct: true })
     expect(s.sumMs).toBe(1000)
   })
   it('wrong answer resets streak, keeps bestStreak', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parsePitch, diatonicIndex, pitchFromDiatonic, midi, freq, label, isExcluded } from './pitch'
+import { parsePitch, diatonicIndex, pitchFromDiatonic, midi, freq, label, isExcluded, nearestOctave } from './pitch'
 
 describe('pitch', () => {
   it('parses "E4"', () => expect(parsePitch('E4')).toEqual({ letter: 'E', accidental: '', octave: 4 }))
@@ -27,5 +27,29 @@ describe('pitch', () => {
     expect(isExcluded('C', 'b')).toBe(true)
     expect(isExcluded('F', 'b')).toBe(true)
     expect(isExcluded('F', '#')).toBe(false)
+  })
+})
+
+describe('nearestOctave', () => {
+  const at = (s: string) => parsePitch(s)
+
+  it('keeps the same octave when that is nearest', () => {
+    expect(nearestOctave('G', '', at('E4'))).toEqual({ letter: 'G', accidental: '', octave: 4 })
+  })
+  it('drops an octave when the name sits just below the reference', () => {
+    // B is at the top of its octave, so against C4 the nearest B is B3.
+    expect(nearestOctave('B', '', at('C4'))).toEqual({ letter: 'B', accidental: '', octave: 3 })
+  })
+  it('climbs an octave when the name sits just above', () => {
+    // C is at the bottom of its octave, so against B4 the nearest C is C5.
+    expect(nearestOctave('C', '', at('B4'))).toEqual({ letter: 'C', accidental: '', octave: 5 })
+  })
+  it('never lands more than a fourth away', () => {
+    for (const letter of ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const) {
+      for (const ref of ['C4', 'E4', 'G4', 'B4', 'F5', 'A3']) {
+        const placed = nearestOctave(letter, '', at(ref))
+        expect(Math.abs(diatonicIndex(placed) - diatonicIndex(at(ref)))).toBeLessThanOrEqual(3)
+      }
+    }
   })
 })

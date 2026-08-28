@@ -99,3 +99,26 @@ describe('generateQuestion', () => {
     expect(isExcluded('E', 'b')).toBe(false) // Eb is not excluded
   })
 })
+
+describe('no repeats', () => {
+  it('never asks the same note twice in a row', () => {
+    let previous = generateQuestion(2, true, 'letters').pitch
+    for (let i = 0; i < 500; i++) {
+      const next = generateQuestion(2, true, 'letters', Math.random, previous).pitch
+      expect(
+        `${next.letter}${next.accidental}${next.octave}`,
+        'the same note was asked twice in a row',
+      ).not.toBe(`${previous.letter}${previous.accidental}${previous.octave}`)
+      previous = next
+    }
+  })
+
+  it('still works on the narrowest level, where repeats are likeliest', () => {
+    let previous = generateQuestion(1, false, 'letters').pitch
+    for (let i = 0; i < 300; i++) {
+      const next = generateQuestion(1, false, 'letters', Math.random, previous).pitch
+      expect(next.octave * 7 + next.letter).not.toBe(previous.octave * 7 + previous.letter)
+      previous = next
+    }
+  })
+})

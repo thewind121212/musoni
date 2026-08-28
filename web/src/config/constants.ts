@@ -21,7 +21,13 @@ export const ENDURANCE_PER_DOUBLING = 0.3
 /** Floor for very short sessions, so a 30-second drill still counts properly. */
 export const MIN_ENDURANCE_BONUS = 0.6
 export const ACCIDENTAL_CHANCE = 0.4
-export const FEEDBACK_MS = 700
+/**
+ * A correct answer flashes and moves on; a miss holds long enough to read the
+ * staff and see where the note actually was. Dwelling on answers the reader
+ * already knows is what made the drill feel slow.
+ */
+export const FEEDBACK_CORRECT_MS = 260
+export const FEEDBACK_WRONG_MS = 1100
 
 export const LEVELS: Record<1 | 2 | 3 | 4, { weight: number; pools: { clef: Clef; low: string; high: string }[] }> = {
   1: {

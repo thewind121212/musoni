@@ -27,3 +27,25 @@ export function isExcluded(letter: Letter, accidental: Accidental): boolean {
   return (accidental === '#' && (letter === 'E' || letter === 'B')) ||
          (accidental === 'b' && (letter === 'C' || letter === 'F'))
 }
+
+/**
+ * Places a note name at the octave nearest a reference note.
+ *
+ * Answer keys carry a name but no octave, so showing a wrong choice on the
+ * staff needs one. The nearest octave is the one the reader meant: picking
+ * "Mi" against a printed Mi in the next octave is a different mistake from
+ * reading the line wrong, and drawing it far away would misrepresent it.
+ */
+export function nearestOctave(letter: Letter, accidental: Accidental, target: Pitch): Pitch {
+  const targetIndex = diatonicIndex(target)
+  let best = { letter, accidental, octave: target.octave }
+  let bestDistance = Infinity
+  for (const octave of [target.octave - 1, target.octave, target.octave + 1]) {
+    const distance = Math.abs(diatonicIndex({ letter, accidental, octave }) - targetIndex)
+    if (distance < bestDistance) {
+      bestDistance = distance
+      best = { letter, accidental, octave }
+    }
+  }
+  return best
+}

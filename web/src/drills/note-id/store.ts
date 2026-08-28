@@ -23,7 +23,7 @@ interface DrillState {
   streak: number
   bestStreak: number
   sumMs: number
-  feedback: { correctIndex: number; chosenIndex: number } | null
+  feedback: { correctIndex: number; chosenIndex: number; correct: boolean } | null
   lastResult: SessionResult | null
   start: (level: 1 | 2 | 3 | 4, settings: Settings, now?: number) => void
   answer: (index: number, now?: number) => void
@@ -58,7 +58,7 @@ export const useDrillStore = create<DrillState>((set, get) => ({
       wrong: s.wrong + (ok ? 0 : 1),
       streak, bestStreak: Math.max(s.bestStreak, streak),
       sumMs: s.sumMs + (now - s.askedAt),
-      feedback: { correctIndex: s.question.correctIndex, chosenIndex: index },
+      feedback: { correctIndex: s.question.correctIndex, chosenIndex: index, correct: ok },
     })
   },
 
@@ -67,7 +67,9 @@ export const useDrillStore = create<DrillState>((set, get) => ({
     if (s.phase !== 'running') return
     set({
       feedback: null, askedAt: now,
-      question: generateQuestion(s.level, s.settings.accidentals, s.settings.naming),
+      question: generateQuestion(
+        s.level, s.settings.accidentals, s.settings.naming, undefined, s.question?.pitch,
+      ),
     })
   },
 

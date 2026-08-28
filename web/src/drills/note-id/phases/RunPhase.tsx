@@ -6,8 +6,9 @@ import { useT } from '../../../app/useT'
 import { AnswerGrid } from './AnswerGrid'
 import { optionIndexFromKey } from '../keyboard'
 import { Staff } from '../../../core/components/Staff'
+import { nearestOctave } from '../../../core/music/pitch'
 import { playPitch } from '../../../core/audio/playPitch'
-import { FEEDBACK_MS, TICK_MS } from '../../../config/constants'
+import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '../../../config/constants'
 
 export function RunPhase() {
   const { question, endsAt, correct, streak, feedback, settings } = useDrillStore()
@@ -25,7 +26,10 @@ export function RunPhase() {
 
   useEffect(() => {
     if (!feedback) return
-    const id = setTimeout(() => useDrillStore.getState().nextQuestion(), FEEDBACK_MS)
+    const id = setTimeout(
+      () => useDrillStore.getState().nextQuestion(),
+      feedback.correct ? FEEDBACK_CORRECT_MS : FEEDBACK_WRONG_MS,
+    )
     return () => clearTimeout(id)
   }, [feedback])
 
@@ -48,6 +52,13 @@ export function RunPhase() {
   const secondsLeft = Math.ceil(msLeft / 1000)
   const fraction = endsAt ? msLeft / (settings.durationSec * 1000) : 0
   const lastTen = secondsLeft <= 10
+
+  // On a miss, the note the reader picked, placed at the octave nearest the
+  // printed one so the staff shows how far off the read was.
+  const wrongPick = feedback && !feedback.correct ? question.options[feedback.chosenIndex] : null
+  const wrongChoice = wrongPick
+    ? nearestOctave(wrongPick.letter, wrongPick.accidental, question.pitch)
+    : null
 
   const answer = (i: number) => {
     const s = useDrillStore.getState()
@@ -96,7 +107,12 @@ export function RunPhase() {
               exit={reduce ? undefined : { opacity: 0 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Staff clef={question.clef} pitch={question.pitch} />
+              <Staff
+                clef={question.clef}
+                pitch={question.pitch}
+                tone={feedback ? (feedback.correct ? 'correct' : 'wrong') : 'neutral'}
+                chosen={wrongChoice}
+              />
             </motion.div>
           </AnimatePresence>
         </div>

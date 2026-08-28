@@ -55,13 +55,31 @@ function useRedrawOnThemeChange(draw: () => void, deps: unknown[]) {
   }, deps)
 }
 
-interface StaffProps { clef: Clef; pitch: Pitch; width?: number; height?: number }
+export type StaffTone = 'neutral' | 'correct' | 'wrong'
+
+interface StaffProps {
+  clef: Clef
+  pitch: Pitch
+  width?: number
+  height?: number
+  /** Colours the printed note once it has been answered. */
+  tone?: StaffTone
+  /** The reader's wrong choice, drawn beside the answer so the gap is visible. */
+  chosen?: Pitch | null
+}
+
+/** Reads a semantic colour token, so notation follows the theme like everything else. */
+function token(el: HTMLElement, name: string, fallback: string): string {
+  return getComputedStyle(el).getPropertyValue(name).trim() || fallback
+}
 
 /**
  * The only component in the app allowed to touch VexFlow.
  * Renders one note on one stave, scaled to its container.
  */
-export function Staff({ clef, pitch, width = 320, height = 260 }: StaffProps) {
+export function Staff({
+  clef, pitch, width = 320, height = 260, tone = 'neutral', chosen = null,
+}: StaffProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   useRedrawOnThemeChange(() => {
@@ -69,6 +87,13 @@ export function Staff({ clef, pitch, width = 320, height = 260 }: StaffProps) {
     if (!el) return
     el.innerHTML = ''
     const ink = inkColor(el)
+    const answerInk = tone === 'correct'
+      ? token(el, '--correct', ink)
+      : tone === 'wrong'
+        ? token(el, '--correct', ink) // the printed note is always the right answer
+        : ink
+    const wrongInk = token(el, '--wrong', ink)
+
     const renderer = new Renderer(el, Renderer.Backends.SVG)
     renderer.resize(width, height)
     const ctx = renderer.getContext()
@@ -80,12 +105,24 @@ export function Staff({ clef, pitch, width = 320, height = 260 }: StaffProps) {
     stave.setStyle({ fillStyle: ink, strokeStyle: ink })
     stave.setContext(ctx).draw()
 
-    const key = `${pitch.letter.toLowerCase()}${pitch.accidental}/${pitch.octave}`
-    const note = new StaveNote({ keys: [key], duration: 'q', clef })
-    if (pitch.accidental) note.addModifier(new Accidental(pitch.accidental))
-    note.setStyle({ fillStyle: ink, strokeStyle: ink })
+    const build = (p: Pitch, colour: string) => {
+      const note = new StaveNote({
+        keys: [`${p.letter.toLowerCase()}${p.accidental}/${p.octave}`],
+        duration: 'q',
+        clef,
+      })
+      if (p.accidental) note.addModifier(new Accidental(p.accidental))
+      note.setStyle({ fillStyle: colour, strokeStyle: colour })
+      return note
+    }
 
-    const voice = new Voice({ numBeats: 1, beatValue: 4 }).addTickables([note])
+    // On a miss the reader's choice is drawn next to the answer, so the mistake
+    // is shown as a distance on the staff rather than only as a red key.
+    const notes = chosen
+      ? [build(pitch, answerInk), build(chosen, wrongInk)]
+      : [build(pitch, answerInk)]
+
+    const voice = new Voice({ numBeats: notes.length, beatValue: 4 }).addTickables(notes)
     new Formatter().joinVoices([voice]).format([voice], width - 90)
     voice.draw(ctx, stave)
 
@@ -104,7 +141,8 @@ export function Staff({ clef, pitch, width = 320, height = 260 }: StaffProps) {
       svg.style.width = '100%'
       svg.style.height = 'auto'
     }
-  }, [clef, pitch.letter, pitch.accidental, pitch.octave, width, height])
+  }, [clef, pitch.letter, pitch.accidental, pitch.octave, width, height, tone,
+      chosen?.letter, chosen?.accidental, chosen?.octave])
 
   return <div ref={ref} className="w-full" />
 }
