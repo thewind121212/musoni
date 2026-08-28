@@ -31,7 +31,7 @@ export function HomeScreen() {
           <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">musoni</h1>
           <p className="mt-1 text-ink-soft md:text-lg">{t('home.tagline')}</p>
         </div>
-        <LanguageToggle />
+        <LanguageToggle className="-mr-1 mt-1" />
       </motion.header>
 
       <div className="mt-6 flex flex-col gap-6 md:mt-10 md:grid md:grid-cols-5 md:items-start md:gap-8">

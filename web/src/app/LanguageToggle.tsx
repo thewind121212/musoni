@@ -1,33 +1,29 @@
+import { TranslateIcon } from '@phosphor-icons/react'
 import { useAppStore } from './store'
-import { LANGS } from '../core/i18n/translate'
-import { translate } from '../core/i18n/translate'
+import { LANGS, translate } from '../core/i18n/translate'
 
 /**
- * Language switch. Each option is written in its own language, so someone who
- * cannot read the current one can still find theirs.
+ * Language switch, kept small: with only two languages a cycle button beats a
+ * row of options, and the label is written in the language it switches to so it
+ * is legible to someone who cannot read the current one.
  */
-export function LanguageToggle() {
+export function LanguageToggle({ className = '' }: { className?: string }) {
   const { settings, updateSettings } = useAppStore()
+  const next = LANGS[(LANGS.indexOf(settings.lang) + 1) % LANGS.length]
 
   return (
-    <div role="radiogroup" aria-label="Language" className="flex rounded-full border border-line p-0.5">
-      {LANGS.map(lang => {
-        const selected = settings.lang === lang
-        return (
-          <button
-            key={lang}
-            role="radio"
-            aria-checked={selected}
-            onClick={() => updateSettings({ lang })}
-            className={
-              'rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150 ' +
-              (selected ? 'bg-accent text-accent-ink' : 'text-ink-faint hover:text-ink')
-            }
-          >
-            {translate(lang, 'lang.name')}
-          </button>
-        )
-      })}
-    </div>
+    <button
+      onClick={() => updateSettings({ lang: next })}
+      aria-label={`${translate(next, 'lang.name')}`}
+      title={translate(next, 'lang.name')}
+      className={
+        'flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold ' +
+        'text-ink-faint transition-colors duration-150 hover:bg-line hover:text-ink ' +
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ' + className
+      }
+    >
+      <TranslateIcon size={13} weight="bold" />
+      {settings.lang.toUpperCase()}
+    </button>
   )
 }
