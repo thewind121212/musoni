@@ -26,7 +26,13 @@ export function translate(lang: Lang, key: TranslationKey, params?: TranslationP
     if (dict[variant] !== undefined) resolved = variant
   }
 
-  const template = dict[resolved] ?? en[resolved as TranslationKey] ?? en[key] ?? key
+  const template = dict[resolved] ?? en[resolved as TranslationKey] ?? en[key]
+  if (template === undefined) {
+    // Rendering the key is how `duration.480` reached the interface. Say so
+    // loudly in development so the next one is caught before it ships.
+    if (import.meta.env?.DEV) console.warn(`[i18n] missing key: ${key}`)
+    return key
+  }
   if (!params) return template
   return template.replace(/\{(\w+)\}/g, (whole, name: string) =>
     params[name] !== undefined ? String(params[name]) : whole,

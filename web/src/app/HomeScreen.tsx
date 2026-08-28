@@ -9,6 +9,7 @@ import { WeekStrip } from './WeekStrip'
 import { useAppStore } from './store'
 import { getBest } from '../progress/progressStore'
 import { useT } from './useT'
+import { formatDuration } from '../core/i18n/formatDuration'
 import { LanguageToggle } from './LanguageToggle'
 
 export function HomeScreen() {
@@ -17,7 +18,7 @@ export function HomeScreen() {
   const reduce = useReducedMotion()
   const t = useT()
   const best = getBest('note-id', level)
-  const durationLabel = t(`duration.${settings.durationSec}` as 'duration.60')
+  const durationLabel = formatDuration(settings.durationSec, t)
 
   const enter = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 16 },
