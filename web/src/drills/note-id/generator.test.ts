@@ -39,4 +39,27 @@ describe('generateQuestion', () => {
     const q = generateQuestion(1, false, 'solfege')
     expect(q.options.map(o => o.label)).toContain('Do')
   })
+  it('excluded accidental flips to the other: E# becomes Eb, Cb becomes C#', () => {
+    // Custom rng to force letter E with excluded # accidental, should flip to b
+    let callCount = 0
+    const stubbedRng = () => {
+      callCount++
+      // call 1: pool pick (returns 0 for pool 0)
+      if (callCount === 1) return 0
+      // call 2: pitch range (return value that will land on E in treble, diatonic ~32)
+      // Treble E4-F5 is diatonic indices 28-33, let's aim for E4 (index 28)
+      if (callCount === 2) return 0 // 0 * (33-28+1) = 0, so 28+0 = 28 = E4
+      // call 3: accidental chance trigger (must be < 0.4 to trigger)
+      if (callCount === 3) return 0.2 // triggers accidental
+      // call 4: accidental type pick (< 0.5 for #, which is excluded for E)
+      if (callCount === 4) return 0.2 // triggers # (< 0.5)
+      // after that: Fisher-Yates shuffle rng calls
+      return Math.random()
+    }
+    const q = generateQuestion(1, true, 'letters', stubbedRng)
+    // Verify we got letter E with an accidental (should be 'b', the flip of excluded '#')
+    expect(q.pitch.letter).toBe('E')
+    expect(q.pitch.accidental).toBe('b') // flipped from excluded #
+    expect(isExcluded('E', 'b')).toBe(false) // Eb is not excluded
+  })
 })

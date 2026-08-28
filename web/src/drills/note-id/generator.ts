@@ -20,7 +20,7 @@ export function generateQuestion(
   let accidental: Accidental = ''
   if (accidentals && rng() < ACCIDENTAL_CHANCE) {
     const a: Accidental = rng() < 0.5 ? '#' : 'b'
-    if (!isExcluded(base.letter, a)) accidental = a
+    accidental = isExcluded(base.letter, a) ? (a === '#' ? 'b' : '#') : a
   }
   const pitch: Pitch = { ...base, accidental }
 
