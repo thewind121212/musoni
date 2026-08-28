@@ -17,8 +17,10 @@
 
 ```
 musoni/
-├── CLAUDE.md                  # project instructions incl. mandatory doc-sync rule
-├── .claude/skills/doc-sync/   # doc-maintenance skill
+├── CLAUDE.md                  # project instructions: mandatory doc-sync, impl-plan, fe-design rules
+├── .claude/skills/            # doc-sync, impl-plan, fe-design skills
+├── tmp/                       # gitignored: per-implementation working folders
+│   └── DD-MM-YYYY-<feature>/  #   plan.md (checkbox steps) + notes.md (impl-plan skill)
 ├── docs/
 │   ├── STATUS.md              # living project dashboard — read first
 │   ├── summary.md             # system summary: phases + C4 diagrams

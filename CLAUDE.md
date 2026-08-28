@@ -17,6 +17,14 @@ Documentation is a deliverable of every change, not an afterthought. For ANY cha
 
 No exceptions for "small" changes, refactors, or fixes.
 
+## MANDATORY: implementation workflow
+
+Before implementing ANY feature or task, you MUST use the `impl-plan` skill
+(`.claude/skills/impl-plan/`): create `tmp/DD-MM-YYYY-<feature>/` (gitignored),
+write `plan.md` (goal, doc-impact, checkbox steps) before any code, check off
+steps as you go, log decisions in `notes.md`. Resume work from the first
+unchecked step.
+
 ## MANDATORY: FE design rules
 
 For ANY frontend task in `web/` (components, screens, state, styling, structure),

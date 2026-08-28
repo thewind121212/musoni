@@ -1,0 +1,10 @@
+# implementation working folders (impl-plan skill) — local only, never committed
+tmp/
+
+# dependencies & build output
+node_modules/
+dist/
+
+# env & editor
+.env
+.env.*

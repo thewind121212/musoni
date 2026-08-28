@@ -28,6 +28,7 @@ Design approved and documented. Implementation **not started**.
 - [x] Backend placeholder plan — `docs/be/server.md`
 - [x] Doc-sync rule + skill — `CLAUDE.md`, `.claude/skills/doc-sync/`
 - [x] FE architecture: modules + Zustand store per module + core components — `docs/fe/architecture.md`, enforced by `.claude/skills/fe-design/`
+- [x] Implementation workflow: gitignored `tmp/DD-MM-YYYY-<feature>/` plan + progress folders — `.claude/skills/impl-plan/`
 
 ## In Progress
 
