@@ -9,11 +9,14 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 
 | Module | Store | Holds |
 |---|---|---|
-| `app` (global) | `app/store.ts` | app-wide state: user settings, active screen |
+| `app` (global) | `app/store.ts` | app-wide state: user settings, selected level |
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer |
 | *(Phase 2)* `drills/complete-measure` | its own store | its session state |
 
 Modules never import each other's stores; sharing goes through `app` or props.
+
+Navigation is React Router's job (routes `/`, `/drill`, `/results`, `/settings`) —
+stores never track the active screen.
 
 ## Core components (`core/`)
 

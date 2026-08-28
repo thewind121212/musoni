@@ -55,7 +55,7 @@ graph TB
     RESULTS["Results screen"]
     SET["Settings screen"]
 
-    APPSTORE["App Store (Zustand)<br/>settings, active screen"]
+    APPSTORE["App Store (Zustand)<br/>settings, level"]
     DRILLSTORE["Drill Store (Zustand)<br/>note-id session state"]
     ENGINE["Drill Engine (core)<br/>generate → render → answer → feedback → next"]
     GEN["Question Generator<br/>(note-id)"]
