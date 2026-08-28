@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { XIcon } from '@phosphor-icons/react'
 import { useDrillStore } from '../store'
 import { AnswerGrid } from './AnswerGrid'
 import { optionIndexFromKey } from '../keyboard'
@@ -59,9 +60,13 @@ export function RunPhase() {
       <header className="flex items-baseline justify-between pt-5">
         <button
           onClick={() => useDrillStore.getState().backToSetup()}
-          className="text-sm text-ink-faint hover:text-ink"
+          aria-label="Quit this session"
+          title="Quit this session"
+          className="-ml-2 flex size-10 items-center justify-center rounded-full text-ink-faint
+                     transition-colors duration-150 hover:bg-line hover:text-ink active:scale-95
+                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
-          Quit
+          <XIcon size={20} weight="bold" />
         </button>
         <div className={'tnum text-3xl font-semibold md:text-5xl ' + (lastTen ? 'text-wrong' : 'text-ink')}>
           {secondsLeft}
