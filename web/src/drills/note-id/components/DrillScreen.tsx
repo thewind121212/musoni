@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useAppStore } from '../../../app/store'
 import { useDrillStore } from '../store'
 import { Staff } from '../../../core/components/Staff'
 import { playPitch } from '../../../core/audio/playPitch'
 import { FEEDBACK_MS } from '../../../config/constants'
+
+// Pure helper: maps a keydown's `key` to a valid option index, or null if the
+// key doesn't correspond to one. Exported so the parsing/validation logic can
+// be unit-tested without rendering the component.
+export function optionIndexFromKey(key: string, optionCount: number): number | null {
+  const i = Number(key) - 1
+  if (!Number.isInteger(i) || i < 0 || i >= optionCount) return null
+  return i
+}
 
 export function DrillScreen() {
   const navigate = useNavigate()
@@ -27,9 +36,10 @@ export function DrillScreen() {
   useEffect(() => { if (status === 'finished') navigate('/results') }, [status, navigate])
   useEffect(() => {                       // keys 1..8 answer options (desktop)
     const onKey = (e: KeyboardEvent) => {
-      const i = Number(e.key) - 1
       const s = useDrillStore.getState()
-      if (!s.question || s.feedback || i < 0 || i >= s.question.options.length) return
+      if (!s.question || s.feedback) return
+      const i = optionIndexFromKey(e.key, s.question.options.length)
+      if (i === null) return
       s.answer(i)
       if (useAppStore.getState().settings.sound) playPitch(s.question.pitch)
     }
@@ -37,7 +47,13 @@ export function DrillScreen() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  if (!question) return null
+  if (!question) {
+    // 'finished' already navigates to /results via the effect above; render
+    // nothing for that one transitional frame. Any other no-question state
+    // (idle, or landing on /drill directly / via Back) has nothing to show.
+    if (status === 'finished') return null
+    return <Navigate to="/" replace />
+  }
   const secondsLeft = endsAt ? Math.max(0, Math.ceil((endsAt - Date.now()) / 1000)) : 0
 
   return (
@@ -54,8 +70,11 @@ export function DrillScreen() {
           return (
             <button key={o.label} className={`btn ${cls}`} disabled={!!feedback}
               onClick={() => {
-                useDrillStore.getState().answer(i)
-                if (sound) playPitch(useDrillStore.getState().question!.pitch)
+                const s = useDrillStore.getState()
+                if (!s.question || s.feedback) return
+                const pitch = s.question.pitch
+                s.answer(i)
+                if (sound) playPitch(pitch)
               }}>
               {o.label}
             </button>

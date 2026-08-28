@@ -1,9 +1,9 @@
-import { getRange } from '../progress/progressStore'
+import { getRange, localDayKey } from '../progress/progressStore'
 
 export function WeekStrip() {
   const days: string[] = []
   for (let i = 6; i >= 0; i--) {
-    days.push(new Date(Date.now() - i * 86_400_000).toISOString().slice(0, 10))
+    days.push(localDayKey(new Date(Date.now() - i * 86_400_000)))
   }
   const range = getRange(days[0], days[6])
   const totals = days.map(d => (range[d] ?? []).reduce((sum, s) => sum + s.practiceScore, 0))

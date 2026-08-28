@@ -11,10 +11,30 @@ interface Doc { version: 1; settings: Settings; days: Record<string, { sessions:
 const KEY = 'musoni-progress-v1'
 const DEFAULTS: Settings = { naming: 'letters', accidentals: false, sound: true }
 
+// Formats a Date as a LOCAL calendar-day key (YYYY-MM-DD), as opposed to
+// Date#toISOString which is always UTC. Day buckets must use the viewer's
+// local day so sessions aren't misattributed to the previous/next day for
+// users outside UTC (e.g. a session at 1am in UTC+7 is still "today" locally).
+export function localDayKey(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
+function isValidDoc(x: unknown): x is Doc {
+  if (typeof x !== 'object' || x === null) return false
+  const o = x as Record<string, unknown>
+  return typeof o.settings === 'object' && o.settings !== null
+    && typeof o.days === 'object' && o.days !== null
+}
+
 function load(): Doc {
   const raw = localStorage.getItem(KEY)
   if (raw) {
-    try { return JSON.parse(raw) as Doc } catch { /* corrupted — fall through to defaults */ }
+    try {
+      const parsed: unknown = JSON.parse(raw)
+      if (isValidDoc(parsed)) return parsed
+      // valid JSON, wrong shape (e.g. 'null' or '{}') — fall through to defaults
+    } catch { /* corrupted — fall through to defaults */ }
   }
   return { version: 1, settings: { ...DEFAULTS }, days: {} }
 }
@@ -25,7 +45,7 @@ export function saveSettings(s: Settings): void { const d = load(); d.settings =
 
 export function recordSession(r: SessionResult): void {
   const d = load()
-  const day = r.at.slice(0, 10)
+  const day = localDayKey(new Date(r.at))
   ;(d.days[day] ??= { sessions: [] }).sessions.push(r)
   save(d)
 }

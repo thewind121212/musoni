@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useDrillStore } from './store'
-import { getDay } from '../../progress/progressStore'
+import { getDay, localDayKey } from '../../progress/progressStore'
 
 const settings = { naming: 'letters' as const, accidentals: false, sound: false }
 const T0 = new Date('2026-08-28T10:00:00Z').getTime()
+const DAY0 = localDayKey(new Date(T0))
 
 beforeEach(() => localStorage.clear())
 
@@ -47,7 +48,7 @@ describe('drill store', () => {
     expect(s.status).toBe('finished')
     expect(s.lastResult!.correct).toBe(1)
     expect(s.lastResult!.weight).toBe(1)
-    expect(getDay('2026-08-28')).toHaveLength(1)
+    expect(getDay(DAY0)).toHaveLength(1)
   })
   it('answer is ignored while feedback is pending', () => {
     useDrillStore.getState().start(1, settings, T0)
@@ -78,8 +79,8 @@ describe('drill store', () => {
     const st = useDrillStore.getState()
     st.answer(st.question!.correctIndex, T0 + 800)
     useDrillStore.getState().tick(T0 + 61_000)
-    expect(getDay('2026-08-28')).toHaveLength(1)
+    expect(getDay(DAY0)).toHaveLength(1)
     useDrillStore.getState().tick(T0 + 62_000)
-    expect(getDay('2026-08-28')).toHaveLength(1)
+    expect(getDay(DAY0)).toHaveLength(1)
   })
 })
