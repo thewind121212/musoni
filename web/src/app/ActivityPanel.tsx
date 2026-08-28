@@ -7,22 +7,32 @@ import { ActivityGrid, ActivityWeek } from './ActivityGrid'
 import { useAppStore } from './store'
 import { useT } from './useT'
 
+function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <div className="flex flex-1 items-center gap-2">
+      <span className="shrink-0 text-ink-faint">{icon}</span>
+      <span className="flex min-w-0 flex-col">
+        <span className="truncate text-[10px] tracking-wide text-ink-faint uppercase">{label}</span>
+        <span className="tnum text-sm font-semibold">{value}</span>
+      </span>
+    </div>
+  )
+}
+
 /**
- * Where the reader stands: today first, then the streak, then the calendar of
- * every practised day. History earns its place by showing consistency, which is
- * the thing the training actually depends on.
+ * Where the reader stands: today first, then the streak, then either this week
+ * or the full calendar of every practised day.
  */
 export function ActivityPanel() {
   const t = useT()
   const { settings, updateSettings } = useAppStore()
   const reduce = useReducedMotion()
   const expanded = settings.activityExpanded
+
   const minutesByDay = getDailyMinutes()
   const today = minutesByDay[localDayKey(new Date())] ?? 0
   const practisedToday = today > 0
   const streak = getStreak()
-  const longest = getLongestStreak()
-  const activeDays = getActiveDayCount()
 
   return (
     <section className="rounded-2xl border border-line bg-raised p-5">
@@ -58,38 +68,55 @@ export function ActivityPanel() {
         )}
       </div>
 
-      <div className="mt-3.5">
-        <AnimatePresence mode="wait" initial={false}>
-          {expanded ? (
-            <motion.div
-              key="calendar"
-              initial={reduce ? false : { opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={reduce ? undefined : { opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden -mx-1.5 px-1.5 py-1.5"
-            >
-              <ActivityGrid minutesByDay={minutesByDay} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="week"
-              initial={reduce ? false : { opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={reduce ? undefined : { opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden -mx-1.5 px-1.5 py-1.5"
-            >
+      {/*
+        One box that resizes, rather than one view collapsing to nothing before
+        the next grows. `layout` animates the height while popLayout takes the
+        outgoing view out of flow, so the two cross-fade over each other and the
+        panel is never briefly empty.
+
+        The padding is not decoration: today's ring is drawn outside its square,
+        and overflow-hidden would clip it without room to sit in.
+      */}
+      <motion.div
+        layout={reduce ? false : 'size'}
+        transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+        className="mt-3.5 -mx-1.5 overflow-hidden px-1.5 py-1.5"
+      >
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={expanded ? 'calendar' : 'week'}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduce ? undefined : { opacity: 0 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+          >
+            {expanded ? (
+              <>
+                <ActivityGrid minutesByDay={minutesByDay} />
+                <div className="mt-4 flex gap-2 border-t border-line pt-4">
+                  <Stat
+                    icon={<TrophyIcon size={15} weight="fill" />}
+                    label={t('activity.longestStreak')}
+                    value={t('week.days', { count: getLongestStreak() })}
+                  />
+                  <Stat
+                    icon={<CalendarCheckIcon size={15} weight="fill" />}
+                    label={t('activity.activeDays')}
+                    value={String(getActiveDayCount())}
+                  />
+                </div>
+              </>
+            ) : (
               <ActivityWeek minutesByDay={minutesByDay} />
-            </motion.div>
-          )}
+            )}
+          </motion.div>
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       <button
         onClick={() => updateSettings({ activityExpanded: !expanded })}
         aria-expanded={expanded}
-        className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl py-2 text-xs
+        className="mt-2 flex w-full items-center justify-center gap-1 rounded-xl py-2 text-xs
                    font-medium text-ink-faint transition-colors duration-150 hover:bg-surface
                    hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2
                    focus-visible:outline-accent"
@@ -103,41 +130,6 @@ export function ActivityPanel() {
           <CaretDownIcon size={13} weight="bold" />
         </motion.span>
       </button>
-
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            initial={reduce ? false : { opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={reduce ? undefined : { opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="mt-1 flex gap-2 border-t border-line pt-4">
-        <div className="flex flex-1 items-center gap-2">
-          <TrophyIcon size={15} weight="fill" className="shrink-0 text-ink-faint" />
-          <span className="flex min-w-0 flex-col">
-            <span className="truncate text-[10px] tracking-wide text-ink-faint uppercase">
-              {t('activity.longestStreak')}
-            </span>
-            <span className="tnum text-sm font-semibold">
-              {t('week.days', { count: longest })}
-            </span>
-          </span>
-        </div>
-        <div className="flex flex-1 items-center gap-2">
-          <CalendarCheckIcon size={15} weight="fill" className="shrink-0 text-ink-faint" />
-          <span className="flex min-w-0 flex-col">
-            <span className="truncate text-[10px] tracking-wide text-ink-faint uppercase">
-              {t('activity.activeDays')}
-            </span>
-            <span className="tnum text-sm font-semibold">{activeDays}</span>
-          </span>
-        </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   )
 }
