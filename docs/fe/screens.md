@@ -1,7 +1,17 @@
 # FE Screens (Phase 1)
 
-Four screens, minimal, mobile-browser-first. The sheet music is the interface —
-no clutter around the staff.
+## Design principle: MOBILE-FIRST, ALWAYS
+
+Training must be super comfortable on a phone — that's where quick daily practice
+happens. Every screen is designed for a phone screen first, then adapted up to
+desktop, never the other way around. Concretely:
+
+- All tap targets (answer buttons especially) big and thumb-reachable, bottom half of the screen.
+- Staff sized to be instantly readable on a small screen.
+- One-hand portrait use is the default posture; no hover-dependent UI.
+- Test every screen at mobile viewport first (~375px wide) before desktop.
+
+Four screens, minimal. The sheet music is the interface — no clutter around the staff.
 
 ## 1. Home / Drill Picker
 
