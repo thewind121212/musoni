@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.screen {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.btn {
+  min-height: 48px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+.btn.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.btn.correct {
+  background: #16a34a;
+  color: #fff;
+}
+
+.btn.wrong {
+  background: #dc2626;
+  color: #fff;
+}
