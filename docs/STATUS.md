@@ -36,7 +36,7 @@ Design approved and documented. Implementation **not started**.
 
 ## Next
 
-- Write the Phase 1 implementation plan
+- Execute the Phase 1 plan: `tmp/28-08-2026-phase1-note-id/plan.md` (local, gitignored — 14 tasks)
 - Scaffold `web/` (Vite + React + TS) and `server/` (Go hello-world)
 - Implement Drill 1 per `docs/fe/drill-note-identification.md`
 
