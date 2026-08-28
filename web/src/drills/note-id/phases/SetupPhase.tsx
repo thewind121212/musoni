@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import {
-  CaretLeftIcon, LightningIcon, MusicNoteIcon, PlayIcon, SpeakerHighIcon,
-  SpeakerSlashIcon, TextAaIcon, TimerIcon, TrophyIcon,
+  CaretLeftIcon, MusicNoteIcon, PlayIcon, SpeakerHighIcon,
+  SpeakerSlashIcon, TextAaIcon, TrophyIcon,
 } from '@phosphor-icons/react'
 import { useAppStore } from '../../../app/store'
 import { useDrillStore } from '../store'
@@ -10,7 +10,7 @@ import { getBest } from '../../../progress/progressStore'
 import { Button } from '../../../core/components/Button'
 import { OptionCards } from '../../../core/components/OptionCard'
 import { ClefGlyph } from '../../../core/components/Staff'
-import { DURATIONS } from '../../../config/constants'
+import { DurationPicker } from './DurationPicker'
 import { useT } from '../../../app/useT'
 
 
@@ -24,7 +24,7 @@ export function SetupPhase() {
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
-  const best = getBest('note-id', level, settings.durationSec)
+  const best = getBest('note-id', level)
 
   const levelOptions = LEVELS.map(l => ({
     value: l,
@@ -40,14 +40,6 @@ export function SetupPhase() {
           </span>
         )
         : <ClefGlyph clef="treble" />,
-  }))
-
-  const durationOptions = DURATIONS.map(d => ({
-    value: d.seconds,
-    label: t(`duration.${d.seconds}` as 'duration.60'),
-    visual: d.seconds <= 30
-      ? <LightningIcon size={26} weight="duotone" />
-      : <TimerIcon size={26} weight="duotone" />,
   }))
 
   const namingOptions = [
@@ -79,13 +71,11 @@ export function SetupPhase() {
       icon={<MusicNoteIcon size={15} weight="fill" />}
       options={levelOptions} value={level} onChange={setLevel}
     />,
-    <OptionCards
+    <DurationPicker
       key="length"
-      label={t('setup.length')}
-      description={t('setup.length.what')}
-      icon={<TimerIcon size={15} weight="bold" />}
-      columns={4} options={durationOptions}
-      value={settings.durationSec} onChange={durationSec => updateSettings({ durationSec })}
+      durationSec={settings.durationSec}
+      onChange={durationSec => updateSettings({ durationSec })}
+      t={t}
     />,
     <OptionCards
       key="naming"

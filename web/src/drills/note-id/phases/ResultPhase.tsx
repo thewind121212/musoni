@@ -23,7 +23,7 @@ export function ResultPhase() {
   const t = useT()
   if (!result) return null
 
-  const best = getBest('note-id', result.level, result.durationSec)
+  const best = getBest('note-id', result.level)
   const isBest = best !== null && best.practiceScore === result.practiceScore
   const again = () => useDrillStore.getState().start(result.level as 1 | 2 | 3 | 4, settings)
 

@@ -16,7 +16,7 @@ export function HomeScreen() {
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
-  const best = getBest('note-id', level, settings.durationSec)
+  const best = getBest('note-id', level)
   const durationLabel = t(`duration.${settings.durationSec}` as 'duration.60')
 
   const enter = (delay: number) => ({

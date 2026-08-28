@@ -84,7 +84,7 @@ export const useDrillStore = create<DrillState>((set, get) => ({
       accuracy: accuracy(s.correct, s.wrong),
       avgMs: total === 0 ? 0 : Math.round(s.sumMs / total),
       bestStreak: s.bestStreak, weight,
-      practiceScore: practiceScore(s.correct, s.wrong, weight),
+      practiceScore: practiceScore(s.correct, s.wrong, weight, s.settings.durationSec),
       at: new Date(now).toISOString(),
     }
     recordSession(result)

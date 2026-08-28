@@ -61,8 +61,8 @@ describe('progressStore', () => {
     recordSession(session({ practiceScore: 50 }))
     recordSession(session({ practiceScore: 90 }))
     recordSession(session({ practiceScore: 200, level: 2 }))
-    expect(getBest('note-id', 1, 60)!.practiceScore).toBe(90)
-    expect(getBest('note-id', 3, 60)).toBeNull()
+    expect(getBest('note-id', 1)!.practiceScore).toBe(90)
+    expect(getBest('note-id', 3)).toBeNull()
   })
   it('recovers from corrupted localStorage', () => {
     localStorage.setItem('musoni-progress-v1', '{not json')
@@ -80,16 +80,16 @@ describe('progressStore', () => {
   })
 })
 
-describe('getBest is keyed on session length', () => {
-  it('does not let a longer session out-rank a shorter one', () => {
+describe('getBest spans every session length', () => {
+  it('compares sessions of different lengths directly, since the score is a pace', () => {
     recordSession(session({ durationSec: 60, practiceScore: 100 }))
-    recordSession(session({ durationSec: 300, practiceScore: 900 }))
-    expect(getBest('note-id', 1, 60)!.practiceScore).toBe(100)
-    expect(getBest('note-id', 1, 300)!.practiceScore).toBe(900)
+    recordSession(session({ durationSec: 300, practiceScore: 140 }))
+    expect(getBest('note-id', 1)!.practiceScore).toBe(140)
   })
-  it('returns null when that length has never been played', () => {
-    recordSession(session({ durationSec: 60 }))
-    expect(getBest('note-id', 1, 30)).toBeNull()
+  it('does not fragment into a bucket per custom length', () => {
+    recordSession(session({ durationSec: 60, practiceScore: 300 }))
+    recordSession(session({ durationSec: 437, practiceScore: 80 }))
+    expect(getBest('note-id', 1)!.practiceScore).toBe(300)
   })
 })
 
@@ -123,19 +123,3 @@ describe('getStreak', () => {
   })
 })
 
-describe('retired session lengths', () => {
-  it('falls back to the default when a stored length is no longer offered', () => {
-    // The five-minute sprint was retired; anyone who had it selected should not
-    // be left with nothing selected on the setup screen.
-    localStorage.setItem('musoni-progress-v1', JSON.stringify({
-      version: 1, settings: { ...DEFAULT_SETTINGS, durationSec: 300 }, days: {},
-    }))
-    expect(getSettings().durationSec).toBe(60)
-  })
-  it('keeps a length that is still offered', () => {
-    localStorage.setItem('musoni-progress-v1', JSON.stringify({
-      version: 1, settings: { ...DEFAULT_SETTINGS, durationSec: 120 }, days: {},
-    }))
-    expect(getSettings().durationSec).toBe(120)
-  })
-})

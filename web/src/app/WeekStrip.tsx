@@ -13,7 +13,10 @@ export function WeekStrip() {
   for (let i = 6; i >= 0; i--) days.push(localDayKey(new Date(Date.now() - i * 86_400_000)))
 
   const range = getRange(days[0], days[6])
-  const totals = days.map(d => (range[d] ?? []).reduce((sum, s) => sum + s.practiceScore, 0))
+  // Minutes, not score: practiceScore is a per-minute pace, so summing it would
+  // say nothing about how much was actually practised.
+  const totals = days.map(d =>
+    Math.round((range[d] ?? []).reduce((sum, s) => sum + s.durationSec, 0) / 60))
   const max = Math.max(...totals, 1)
   const today = totals[totals.length - 1]
   const todaySessions = (range[days[6]] ?? []).length
@@ -27,9 +30,11 @@ export function WeekStrip() {
           <div className="text-[10px] font-semibold tracking-wide text-ink-faint uppercase">{t('week.today')}</div>
           {practisedToday ? (
             <>
-              <div className="tnum text-3xl leading-tight font-semibold">{today}</div>
+              <div className="tnum text-3xl leading-tight font-semibold">
+                {t('week.minutes', { count: today })}
+              </div>
               <div className="text-xs text-ink-faint">
-                {t('week.points', { count: todaySessions })}
+                {t('week.sessions', { count: todaySessions })}
               </div>
             </>
           ) : (
@@ -68,7 +73,7 @@ export function WeekStrip() {
                     (totals[i] === 0 ? 'bg-line' : isToday ? 'bg-accent' : 'bg-accent/40')
                   }
                   style={{ height: `${height}%` }}
-                  title={`${day}: ${totals[i]} points`}
+                  title={`${day}: ${totals[i]} min`}
                 />
               </div>
               <span className={'text-[10px] ' + (isToday ? 'font-semibold text-ink' : 'text-ink-faint')}>

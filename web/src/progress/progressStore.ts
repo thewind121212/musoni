@@ -1,5 +1,5 @@
 import type { Naming } from '../core/music/types'
-import { DEFAULT_DURATION_SECONDS, DURATIONS } from '../config/constants'
+import { DEFAULT_DURATION_SECONDS } from '../config/constants'
 import { DEFAULT_LANG, type Lang } from '../core/i18n/translate'
 
 export interface Settings {
@@ -60,15 +60,7 @@ function load(): Doc {
 }
 function save(doc: Doc): void { localStorage.setItem(KEY, JSON.stringify(doc)) }
 
-export function getSettings(): Settings {
-  const settings = { ...DEFAULTS, ...load().settings }
-  // A length that is no longer offered (the five-minute sprint was retired)
-  // would leave the setup screen with nothing selected, so fall back.
-  if (!DURATIONS.some(d => d.seconds === settings.durationSec)) {
-    settings.durationSec = DEFAULT_DURATION_SECONDS
-  }
-  return settings
-}
+export function getSettings(): Settings { return { ...DEFAULTS, ...load().settings } }
 export function saveSettings(s: Settings): void { const d = load(); d.settings = s; save(d) }
 
 export function recordSession(r: SessionResult): void {
@@ -86,16 +78,18 @@ export function getRange(from: string, to: string): Record<string, SessionResult
   return out
 }
 /**
- * Best session for a drill at a given level AND session length. Duration is part
- * of the key because practiceScore scales with how long you played: a 5-minute
- * score would permanently out-rank every 30-second one and the comparison would
- * stop meaning anything.
+ * Best session for a drill at a given level, across every session length.
+ *
+ * Length is deliberately not part of the key: practiceScore is a per-minute
+ * pace, so a 30-second sprint and a 10-minute session are already on the same
+ * scale. Keying by length would also fragment bests into a bucket per custom
+ * duration, where almost every session is trivially a "personal best".
  */
-export function getBest(drill: string, level: number, durationSec: number): SessionResult | null {
+export function getBest(drill: string, level: number): SessionResult | null {
   let best: SessionResult | null = null
   for (const v of Object.values(load().days)) {
     for (const s of v.sessions) {
-      if (s.drill === drill && s.level === level && s.durationSec === durationSec
+      if (s.drill === drill && s.level === level
         && (!best || s.practiceScore > best.practiceScore)) best = s
     }
   }

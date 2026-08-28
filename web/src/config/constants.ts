@@ -28,23 +28,26 @@ export const LEVELS: Record<1 | 2 | 3 | 4, { weight: number; pools: { clef: Clef
 }
 
 /**
- * Session lengths, from note-naming pedagogy rather than round numbers.
+ * Offered session lengths. One minute is an established convention for timed
+ * note-naming (the "One-Minute Club" used in piano teaching) and two minutes
+ * twice a day is a commonly taught drill pattern. Thirty seconds is not from
+ * the literature: it exists so a day is never skipped for lack of time, since
+ * the research is consistent that frequency beats session length.
  *
- * One minute is an established convention for timed note-naming (the
- * "One-Minute Club" used in piano teaching), and "two minutes, twice a day" is
- * a commonly taught drill pattern. Thirty seconds is not from the literature: it
- * exists so a day never gets skipped for lack of time, since the research on
- * sight-reading is consistent that frequency matters more than session length.
- *
- * There is deliberately no five-minute option. Recommended daily sight-reading
- * practice totals roughly 5-15 minutes across everything, so a single
- * five-minute naming sprint crowds out the reading it is supposed to serve.
+ * Any length is allowed beyond these, via the custom stepper. That is safe
+ * because the score is a pace rather than a total (see core/scoring), so a
+ * long session cannot out-rank a short one just by lasting longer.
  */
 export const DURATIONS = [
-  { seconds: 30, label: '30s', note: 'Keep the streak' },
-  { seconds: 60, label: '1 min', note: 'The standard drill' },
-  { seconds: 120, label: '2 min', note: 'Twice a day' },
+  { seconds: 30, label: '30s' },
+  { seconds: 60, label: '1 min' },
+  { seconds: 120, label: '2 min' },
+  { seconds: 300, label: '5 min' },
 ] as const
+
+/** Bounds for the custom length stepper, in minutes. */
+export const CUSTOM_MINUTES_MIN = 1
+export const CUSTOM_MINUTES_MAX = 30
 
 export const DEFAULT_DURATION_SECONDS = 60
 

@@ -18,8 +18,8 @@ describe('translate', () => {
   })
 
   it('picks the English singular via plural rules', () => {
-    expect(translate('en', 'week.points', { count: 1 })).toBe('points from 1 session')
-    expect(translate('en', 'week.points', { count: 3 })).toBe('points from 3 sessions')
+    expect(translate('en', 'week.sessions', { count: 1 })).toBe('in 1 session')
+    expect(translate('en', 'week.sessions', { count: 3 })).toBe('in 3 sessions')
   })
 
   it('uses one Vietnamese form for any count', () => {
