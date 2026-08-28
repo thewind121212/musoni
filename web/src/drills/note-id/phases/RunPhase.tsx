@@ -55,7 +55,7 @@ export function RunPhase() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col px-4 pb-6">
+    <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col px-4 pb-6 md:max-w-3xl md:px-8 md:pb-10">
       <header className="flex items-baseline justify-between pt-5">
         <button
           onClick={() => useDrillStore.getState().backToSetup()}
@@ -63,10 +63,10 @@ export function RunPhase() {
         >
           Quit
         </button>
-        <div className={'tnum text-3xl font-semibold ' + (lastTen ? 'text-wrong' : 'text-ink')}>
+        <div className={'tnum text-3xl font-semibold md:text-5xl ' + (lastTen ? 'text-wrong' : 'text-ink')}>
           {secondsLeft}
         </div>
-        <div className="tnum text-sm text-ink-soft">
+        <div className="tnum text-sm text-ink-soft md:text-base">
           {correct} correct{streak > 2 && <span className="ml-2 text-accent">{streak} in a row</span>}
         </div>
       </header>
@@ -78,8 +78,8 @@ export function RunPhase() {
         />
       </div>
 
-      <div className="flex flex-1 items-center justify-center py-6">
-        <div className="w-full rounded-2xl border border-line bg-raised px-3 py-6">
+      <div className="flex flex-1 items-center justify-center py-6 md:py-10">
+        <div className="w-full rounded-2xl border border-line bg-raised px-3 py-6 md:mx-auto md:max-w-2xl md:px-10 md:py-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={`${question.pitch.letter}${question.pitch.accidental}${question.pitch.octave}${question.clef}`}
@@ -94,7 +94,9 @@ export function RunPhase() {
         </div>
       </div>
 
-      <AnswerGrid options={question.options} feedback={feedback} onAnswer={answer} />
+      <div className="md:mx-auto md:w-full md:max-w-2xl">
+        <AnswerGrid options={question.options} feedback={feedback} onAnswer={answer} />
+      </div>
     </div>
   )
 }

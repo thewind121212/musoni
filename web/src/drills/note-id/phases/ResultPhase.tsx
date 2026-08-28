@@ -27,7 +27,7 @@ export function ResultPhase() {
   const again = () => useDrillStore.getState().start(result.level as 1 | 2 | 3 | 4, settings)
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col justify-center gap-6 px-4 py-10">
+    <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col justify-center gap-6 px-4 py-10 md:max-w-2xl md:px-8">
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -43,13 +43,13 @@ export function ResultPhase() {
           <div className="text-sm text-ink-soft">
             {LEVEL_INFO[result.level as 1 | 2 | 3 | 4].name} session
           </div>
-          <div className="tnum text-6xl font-semibold tracking-tight">{result.practiceScore}</div>
+          <div className="tnum text-6xl font-semibold tracking-tight md:text-7xl">{result.practiceScore}</div>
           <div className="text-sm text-ink-faint">
             practice score, difficulty {result.weight.toFixed(2)}x
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
           <Stat value={String(result.correct)} label="Correct" />
           <Stat value={`${Math.round(result.accuracy * 100)}%`} label="Accuracy" />
           <Stat value={`${(result.avgMs / 1000).toFixed(1)}s`} label="Average answer" />

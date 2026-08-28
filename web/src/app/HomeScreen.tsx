@@ -18,15 +18,14 @@ export function HomeScreen() {
   })
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pt-10 pb-12">
+    <div className="mx-auto w-full max-w-md px-4 pt-10 pb-12 md:max-w-4xl md:px-8 md:pt-16">
       <motion.header {...enter(0)}>
-        <h1 className="text-3xl font-semibold tracking-tight">musoni</h1>
-        <p className="mt-1 text-ink-soft">Read sheet music faster, a few minutes a day.</p>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">musoni</h1>
+        <p className="mt-1 text-ink-soft md:text-lg">Read sheet music faster, a few minutes a day.</p>
       </motion.header>
 
-      <motion.div {...enter(0.06)}><WeekStrip /></motion.div>
-
-      <motion.div {...enter(0.12)} className="flex flex-col gap-3">
+      <div className="mt-6 flex flex-col gap-6 md:mt-10 md:grid md:grid-cols-5 md:items-start md:gap-8">
+      <motion.div {...enter(0.12)} className="flex flex-col gap-3 md:col-span-3 md:order-1">
         <h2 className="text-xs font-semibold tracking-wide text-ink-faint uppercase">Training</h2>
 
         <motion.div whileTap={reduce ? undefined : { scale: 0.98 }}>
@@ -64,6 +63,9 @@ export function HomeScreen() {
           <LockSimpleIcon size={16} className="text-ink-faint" />
         </div>
       </motion.div>
+
+      <motion.div {...enter(0.06)} className="md:col-span-2 md:order-2"><WeekStrip /></motion.div>
+      </div>
     </div>
   )
 }

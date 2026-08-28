@@ -22,13 +22,18 @@
   --color-staff: var(--staff);
 }
 
+/* The app is a white-paper surface by default: musicians read notation on white,
+   and dark ink on light paper is the reading posture the drill is training. The
+   dark palette below is kept, but it is opt-in through an explicit
+   data-theme="dark" attribute rather than following the OS, so the reading
+   surface never flips underneath a practice session. */
 :root {
   --surface: oklch(0.985 0.002 250);
   --raised: oklch(1 0 0);
   --line: oklch(0.905 0.005 250);
-  --ink: oklch(0.21 0.012 255);
-  --ink-soft: oklch(0.45 0.012 255);
-  --ink-faint: oklch(0.62 0.01 255);
+  --ink: oklch(0.24 0.012 255);
+  --ink-soft: oklch(0.44 0.012 255);
+  --ink-faint: oklch(0.52 0.012 255);
   --accent: oklch(0.53 0.19 262);
   --accent-ink: oklch(0.99 0 0);
   --correct: oklch(0.55 0.15 155);
@@ -37,21 +42,19 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface: oklch(0.17 0.012 258);
-    --raised: oklch(0.215 0.014 258);
-    --line: oklch(0.31 0.014 258);
-    --ink: oklch(0.97 0.003 250);
-    --ink-soft: oklch(0.76 0.011 255);
-    --ink-faint: oklch(0.58 0.012 255);
-    --accent: oklch(0.68 0.17 258);
-    --accent-ink: oklch(0.17 0.012 258);
-    --correct: oklch(0.72 0.16 155);
-    --wrong: oklch(0.68 0.18 25);
-    --staff: oklch(0.97 0.003 250);
-    color-scheme: dark;
-  }
+:root[data-theme="dark"] {
+  --surface: oklch(0.17 0.012 258);
+  --raised: oklch(0.215 0.014 258);
+  --line: oklch(0.31 0.014 258);
+  --ink: oklch(0.97 0.003 250);
+  --ink-soft: oklch(0.76 0.011 255);
+  --ink-faint: oklch(0.58 0.012 255);
+  --accent: oklch(0.68 0.17 258);
+  --accent-ink: oklch(0.17 0.012 258);
+  --correct: oklch(0.72 0.16 155);
+  --wrong: oklch(0.68 0.18 25);
+  --staff: oklch(0.97 0.003 250);
+  color-scheme: dark;
 }
 
 html { -webkit-text-size-adjust: 100%; }

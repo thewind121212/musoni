@@ -46,6 +46,11 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] Motion added where it was missing: route slide, drill phase cross-fade, card press
 - [x] Answer options locked to 8 with accidentals on; answer pad lays rows out
       full-width so 7 naturals still fill the block
+- [x] Fixed blank clef badges: notation boxes now sized from real stave geometry
+      (VexFlow reserves space above the stave), covered by `Staff.test.ts`
+- [x] Hybrid layout: desktop is a first-class target, not a narrow phone column.
+      Home goes two-column, setup lays options in a grid, the drill widens with a
+      larger staff and timer, and keyboard hints (1-8) show on `md:` and up
 
 ## In Progress
 

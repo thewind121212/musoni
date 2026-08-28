@@ -39,13 +39,18 @@ function inkColor(el: HTMLElement): string {
   return getComputedStyle(el).getPropertyValue('--staff').trim() || '#111'
 }
 
-/** Repaints whenever the OS colour scheme flips, since the ink colour is a token. */
-function useRedrawOnSchemeChange(draw: () => void, deps: unknown[]) {
+/**
+ * Repaints when the theme changes, because the ink colour is read from a token
+ * at draw time. The app is white-locked and only switches on an explicit
+ * data-theme attribute, so that attribute is what is watched, not the OS
+ * preference.
+ */
+function useRedrawOnThemeChange(draw: () => void, deps: unknown[]) {
   useEffect(() => {
     draw()
-    const scheme = window.matchMedia?.('(prefers-color-scheme: dark)')
-    scheme?.addEventListener?.('change', draw)
-    return () => scheme?.removeEventListener?.('change', draw)
+    const observer = new MutationObserver(draw)
+    observer.observe(document.documentElement, { attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 }
@@ -59,7 +64,7 @@ interface StaffProps { clef: Clef; pitch: Pitch; width?: number; height?: number
 export function Staff({ clef, pitch, width = 320, height = 260 }: StaffProps) {
   const ref = useRef<HTMLDivElement>(null)
 
-  useRedrawOnSchemeChange(() => {
+  useRedrawOnThemeChange(() => {
     const el = ref.current
     if (!el) return
     el.innerHTML = ''
@@ -112,7 +117,7 @@ export function Staff({ clef, pitch, width = 320, height = 260 }: StaffProps) {
 export function ClefGlyph({ clef }: { clef: Clef }) {
   const ref = useRef<HTMLDivElement>(null)
 
-  useRedrawOnSchemeChange(() => {
+  useRedrawOnThemeChange(() => {
     const el = ref.current
     if (!el) return
     el.innerHTML = ''

@@ -1,15 +1,27 @@
 # FE Screens (Phase 1)
 
-## Design principle: MOBILE-FIRST, ALWAYS
+## Design principle: MOBILE-FIRST TECHNIQUE, HYBRID TARGET
 
-Training must be super comfortable on a phone — that's where quick daily practice
-happens. Every screen is designed for a phone screen first, then adapted up to
-desktop, never the other way around. Concretely:
+Training must be super comfortable on a phone, because that is where quick daily
+practice happens. But desktop is a first-class target too, not a stretched phone
+column: a 448px strip marooned in the middle of a wide screen is a bad desktop
+app.
 
-- All tap targets (answer buttons especially) big and thumb-reachable, bottom half of the screen.
-- Staff sized to be instantly readable on a small screen.
-- One-hand portrait use is the default posture; no hover-dependent UI.
-- Test every screen at mobile viewport first (~375px wide) before desktop.
+So the *technique* stays mobile-first (base styles are the phone layout, `md:`
+adds the desktop one, never the reverse) while the *target* is both:
+
+- All tap targets, answer keys especially, stay big and thumb-reachable in the
+  bottom half of the phone screen.
+- Staff is instantly readable on a small screen, and grows on a large one.
+- One-hand portrait is the default phone posture; nothing depends on hover.
+- Desktop widens the container, enlarges the staff, timer and answer keys, and
+  moves multi-group layouts into columns rather than one long scroll.
+- Keyboard shortcuts (keys 1-8 for the answers) are surfaced on `md:` and up,
+  where a physical keyboard is likely, and hidden on phones where they are noise.
+- Check every screen at ~375px first, then at a desktop width. Both must look
+  deliberate.
+
+Breakpoint: `md` (768px) is the single hinge between the two layouts.
 
 Two app routes, and inside the drill route three phases. The sheet music is the
 interface: no clutter around the staff.

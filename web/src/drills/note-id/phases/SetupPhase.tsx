@@ -65,15 +65,15 @@ export function SetupPhase() {
   ]
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 pt-4 pb-8">
+    <div className="mx-auto w-full max-w-md px-4 pt-4 pb-8 md:max-w-3xl md:px-8 md:pt-8">
       <div className="flex items-center gap-1">
         <Link to="/" aria-label="Back to home">
           <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
         </Link>
-        <h1 className="text-lg font-semibold">Note reading</h1>
+        <h1 className="text-lg font-semibold md:text-2xl">Note reading</h1>
       </div>
 
-      <div className="mt-4 flex flex-col gap-6">
+      <div className="mt-4 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-7">
         {groups.map((group, i) => (
           <motion.div
             key={group.key}
@@ -89,7 +89,7 @@ export function SetupPhase() {
           initial={reduce ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32, delay: groups.length * 0.05, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-3 md:col-span-2 md:flex-row md:items-center md:justify-between md:gap-6"
         >
           <div className="flex items-center gap-2 text-sm text-ink-soft">
             <TrophyIcon size={16} weight="fill" className="text-ink-faint" />
@@ -99,7 +99,7 @@ export function SetupPhase() {
           </div>
           <Button
             variant="primary"
-            className="h-14 w-full text-lg"
+            className="h-14 w-full text-lg md:w-56"
             onClick={() => useDrillStore.getState().start(level, settings)}
           >
             <PlayIcon size={20} weight="fill" /> Start

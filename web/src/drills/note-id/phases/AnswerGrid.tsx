@@ -41,12 +41,20 @@ export function AnswerGrid({ options, feedback, onAnswer }: Props) {
                 onClick={() => onAnswer(index)}
                 className={
                   'relative flex min-h-16 flex-1 items-center justify-center rounded-2xl border ' +
-                  'text-xl font-medium transition-[background-color,border-color,color,transform] ' +
+                  'text-xl font-medium md:min-h-20 md:text-2xl ' +
+                  'transition-[background-color,border-color,color,transform] ' +
                   'duration-150 active:scale-[0.96] focus-visible:outline-2 ' +
                   'focus-visible:outline-offset-2 focus-visible:outline-accent ' + tone
                 }
               >
                 {option.label}
+                {/* The 1..8 shortcuts only exist for a physical keyboard, so the
+                    hint only appears where one is likely. */}
+                {!feedback && (
+                  <span className="absolute top-1.5 left-2 hidden text-[11px] text-ink-faint md:block">
+                    {index + 1}
+                  </span>
+                )}
                 {isCorrect && <CheckIcon size={15} weight="bold" className="absolute top-1.5 right-1.5" />}
                 {isWrongPick && <XIcon size={15} weight="bold" className="absolute top-1.5 right-1.5" />}
               </button>

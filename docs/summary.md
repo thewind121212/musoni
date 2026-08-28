@@ -11,9 +11,10 @@ A web app for pure sheet-music reading training combined with music theory.
 Train reading speed with short drills, track improvement day by day.
 Ear training joins in a future phase (see phase plan below).
 
-**Design principle: mobile-first, always** — training must be super comfortable
-on a phone; desktop adapts from the mobile design, never the reverse
-(details: `fe/screens.md`).
+**Design principle: mobile-first technique, hybrid target** - training must be
+super comfortable on a phone, and desktop is a first-class layout rather than a
+narrow phone column on a wide screen. Base styles are the phone; `md:` adds the
+desktop layout, never the reverse (details: `fe/screens.md`).
 
 ## Phase plan
 

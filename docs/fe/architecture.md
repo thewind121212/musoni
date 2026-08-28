@@ -101,6 +101,10 @@ Motion lives in three places, each behind `prefers-reduced-motion`: route
 changes (`app/PageTransition`), drill phase changes (`NoteIdDrill`), and answer
 feedback plus note entry inside the run phase.
 
+Layout is mobile-first with a single hinge at `md` (768px): base utilities
+describe the phone, `md:` utilities describe desktop. Both are first-class
+targets (see `screens.md`).
+
 Locked conventions: one accent (cobalt); `rounded-2xl` for every surface and
 answer key, full-round for segmented chips; correct and wrong are carried by
 colour **and** an icon, never colour alone; all motion sits behind
