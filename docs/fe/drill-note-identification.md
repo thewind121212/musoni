@@ -2,12 +2,19 @@
 
 Train reading speed: a note appears on the staff, name it as fast as possible.
 
-## Question lifecycle (Drill Engine core)
+## Question lifecycle (drill store)
 
 `generate → render → answer → feedback → next`
 
-The engine is drill-agnostic: each drill plugs in a generator, renderer config, and
-answer checker. Future drills (Complete-the-Measure, ear training) are new plugins.
+As built, this lifecycle lives in the note-id drill's own Zustand store
+(`drills/note-id/store.ts`) — there is no separate drill-agnostic engine yet.
+The store's `start` / `answer` / `tick` / `nextQuestion` actions call the
+generator, scoring (`core/scoring.ts`), and `progress/progressStore` directly.
+`core/engine/` is a reserved, currently-empty placeholder: extracting a shared
+engine out of this store is the natural refactor if/when a second drill
+(Complete-the-Measure, Phase 2) needs to reuse the same lifecycle — it isn't
+built speculatively ahead of that need. See `docs/fe/architecture.md` for the
+full rationale.
 
 ## Question generation
 
