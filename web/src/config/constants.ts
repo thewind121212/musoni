@@ -3,8 +3,6 @@ import type { Clef } from '../core/music/types'
 export const POINTS_PER_CORRECT = 10
 export const ACCIDENTALS_WEIGHT = 1.4
 export const ACCIDENTAL_CHANCE = 0.4
-export const OPTION_COUNT_MIN = 8
-export const OPTION_COUNT_MAX = 8
 export const FEEDBACK_MS = 700
 
 export const LEVELS: Record<1 | 2 | 3 | 4, { weight: number; pools: { clef: Clef; low: string; high: string }[] }> = {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateQuestion } from './generator'
+import { generateQuestion, buildOptions } from './generator'
 import { diatonicIndex, parsePitch, isExcluded } from '../../core/music/pitch'
 import { LEVELS } from '../../config/constants'
 
@@ -13,17 +13,54 @@ describe('generateQuestion', () => {
     expect(c.letter).toBe(q.pitch.letter)
     expect(q.pitch.accidental).toBe('')
   })
-  it('accidentals mode: exactly 8 unique options, exactly one matches printed note', () => {
+  it('accidentals mode: a full 12-key chromatic pad, exactly one matches the printed note', () => {
     for (let i = 0; i < 50; i++) {
       const q = generateQuestion(2, true, 'letters')
-      expect(q.options).toHaveLength(8)
-      expect(new Set(q.options.map(o => o.label)).size).toBe(q.options.length)
+      expect(q.options).toHaveLength(12)
+      expect(q.options.filter(o => o.row === 'natural')).toHaveLength(7)
+      expect(q.options.filter(o => o.row === 'accidental')).toHaveLength(5)
+      expect(new Set(q.options.map(o => o.label)).size).toBe(12)
       const matches = q.options.filter(
         o => o.letter === q.pitch.letter && o.accidental === q.pitch.accidental)
       expect(matches).toHaveLength(1)
       expect(q.options[q.correctIndex]).toEqual(matches[0])
       expect(isExcluded(q.pitch.letter, q.pitch.accidental)).toBe(false)
     }
+  })
+
+  it('spells the black keys to match the printed note', () => {
+    for (let i = 0; i < 200; i++) {
+      const q = generateQuestion(2, true, 'letters')
+      if (q.pitch.accidental === '') continue
+      expect(q.spelling).toBe(q.pitch.accidental)
+      const blacks = q.options.filter(o => o.row === 'accidental')
+      expect(blacks.every(o => o.accidental === q.pitch.accidental)).toBe(true)
+    }
+  })
+
+  it('keeps every key in the same place across questions', () => {
+    const shape = (spelling: '#' | 'b') => buildOptions('letters', true, spelling).map(o => o.label)
+    expect(shape('#')).toEqual(['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C#', 'D#', 'F#', 'G#', 'A#'])
+    expect(shape('b')).toEqual(['C', 'D', 'E', 'F', 'G', 'A', 'B', 'Db', 'Eb', 'Gb', 'Ab', 'Bb'])
+
+    // Whatever the question, a given key stays at a given index.
+    for (let i = 0; i < 50; i++) {
+      const q = generateQuestion(2, true, 'letters')
+      expect(q.options.map(o => o.label)).toEqual(shape(q.spelling))
+    }
+  })
+
+  it('lays the black keys in the piano gaps, not evenly', () => {
+    const blacks = buildOptions('letters', true, '#').filter(o => o.row === 'accidental')
+    // Slots 0,1 then 2,3,4: the gap where E meets F carries no black key.
+    expect(blacks.map(o => o.slot)).toEqual([0, 1, 2, 3, 4])
+    expect(blacks.map(o => o.label)).toEqual(['C#', 'D#', 'F#', 'G#', 'A#'])
+  })
+
+  it('drops the black keys entirely when accidentals are off', () => {
+    const q = generateQuestion(2, false, 'letters')
+    expect(q.options).toHaveLength(7)
+    expect(q.options.every(o => o.row === 'natural')).toBe(true)
   })
   it('respects level range and clef', () => {
     for (let i = 0; i < 100; i++) {

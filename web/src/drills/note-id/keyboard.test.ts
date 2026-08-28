@@ -1,19 +1,33 @@
 import { describe, it, expect } from 'vitest'
 import { optionIndexFromKey } from './keyboard'
+import { buildOptions } from './generator'
+
+const withAccidentals = buildOptions('letters', true, '#')
+const naturalsOnly = buildOptions('letters', false, '#')
 
 describe('optionIndexFromKey', () => {
-  it('maps digit keys to zero-based option indices', () => {
-    expect(optionIndexFromKey('1', 8)).toBe(0)
-    expect(optionIndexFromKey('8', 8)).toBe(7)
+  it('maps the number row to the natural keys', () => {
+    expect(optionIndexFromKey('1', withAccidentals)).toBe(0)
+    expect(withAccidentals[0].label).toBe('C')
+    expect(optionIndexFromKey('7', withAccidentals)).toBe(6)
+    expect(withAccidentals[6].label).toBe('B')
   })
-  it('rejects non-digit keys (regression: De Morgan guard inversion)', () => {
-    expect(optionIndexFromKey('Shift', 8)).toBeNull()
-    expect(optionIndexFromKey('ArrowUp', 8)).toBeNull()
-    expect(optionIndexFromKey('a', 8)).toBeNull()
-    expect(optionIndexFromKey('F5', 8)).toBeNull()
+  it('maps q w e r t to the accidental keys', () => {
+    const q = optionIndexFromKey('q', withAccidentals)!
+    expect(withAccidentals[q].label).toBe('C#')
+    const t = optionIndexFromKey('t', withAccidentals)!
+    expect(withAccidentals[t].label).toBe('A#')
   })
-  it('rejects digits outside the option range', () => {
-    expect(optionIndexFromKey('0', 8)).toBeNull()
-    expect(optionIndexFromKey('9', 8)).toBeNull()
+  it('is case insensitive', () => {
+    expect(optionIndexFromKey('Q', withAccidentals)).toBe(optionIndexFromKey('q', withAccidentals))
+  })
+  it('rejects keys with no answer behind them (regression: NaN slipped a range check)', () => {
+    for (const key of ['Shift', 'ArrowUp', 'a', 'F5', '0', '8', '9']) {
+      expect(optionIndexFromKey(key, withAccidentals)).toBeNull()
+    }
+  })
+  it('rejects the accidental keys when accidentals are off', () => {
+    expect(optionIndexFromKey('q', naturalsOnly)).toBeNull()
+    expect(optionIndexFromKey('1', naturalsOnly)).toBe(0)
   })
 })

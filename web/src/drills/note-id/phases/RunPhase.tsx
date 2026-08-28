@@ -31,7 +31,7 @@ export function RunPhase() {
     const onKey = (e: KeyboardEvent) => {
       const s = useDrillStore.getState()
       if (!s.question || s.feedback) return
-      const i = optionIndexFromKey(e.key, s.question.options.length)
+      const i = optionIndexFromKey(e.key, s.question.options)
       if (i === null) return
       s.answer(i)
       if (s.settings.sound) playPitch(s.question.pitch)
