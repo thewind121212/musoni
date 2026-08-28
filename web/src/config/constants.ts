@@ -49,6 +49,13 @@ export const DURATIONS = [
 export const CUSTOM_MINUTES_MIN = 1
 export const CUSTOM_MINUTES_MAX = 30
 
+/**
+ * Where the custom stepper opens. It must not be one of the offered lengths:
+ * landing on a preset would make the custom option look broken, because the
+ * stepper only shows when the chosen length is not already a preset.
+ */
+export const DEFAULT_CUSTOM_MINUTES = 10
+
 export const DEFAULT_DURATION_SECONDS = 60
 
 /** Level descriptions shown in setup. */
@@ -64,3 +71,20 @@ export const TICK_MS = 200
 /** Pitch playback. */
 export const AUDIO_GAIN = 0.25
 export const AUDIO_DURATION_SEC = 0.4
+
+/** True when a length is one of the offered presets. */
+export function isPresetDuration(seconds: number): boolean {
+  return DURATIONS.some(d => d.seconds === seconds)
+}
+
+/**
+ * The length the custom stepper should open on.
+ *
+ * It must never be a preset. The stepper is only rendered when the chosen
+ * length is not one of the offered four, so opening custom on the length
+ * already selected left the stepper hidden and the option looking dead.
+ */
+export function customOpeningSeconds(currentSeconds: number): number {
+  if (!isPresetDuration(currentSeconds)) return currentSeconds
+  return DEFAULT_CUSTOM_MINUTES * 60
+}
