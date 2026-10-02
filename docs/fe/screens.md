@@ -33,7 +33,9 @@ interface: no clutter around the staff.
 - Title and one-line purpose.
 - **Last 7 days** chart: daily practice score, today highlighted, plus the week
   total and how many days were active.
-- Training list: the note-id card (current level and best score), and a disabled
+- Training list: the note-id card, whose level / length / best sit in one
+  three-column `StatStrip` (equal columns, labels and values wrap, so it fits a
+  320px phone), and a disabled
   placeholder card for the Phase 2 rhythm drill.
 
 Route changes slide in from the right, and the drill's own phase changes
@@ -62,7 +64,9 @@ It also shows the personal best for the chosen level **and** length, then a
 full-width Start button.
 
 **Run phase** is the drill itself: Quit, a large tabular countdown that turns red
-for the last ten seconds, the running correct count and streak, a thin time bar,
+for the last ten seconds centred in a three-column header, a green check pill
+with the right-answer count and a red cross pill with the wrong-answer count, a
+thin time bar with the streak (3+) on a fixed-height line under it,
 the staff on a raised surface, and the answer keys in the bottom thumb zone laid
 out in full-width rows of at most four.
 Feedback fills the correct key green with a check and a wrong pick red with a
