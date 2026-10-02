@@ -33,8 +33,19 @@ describe('HomeScreen', () => {
   it('switches language through the app store and keeps it', async () => {
     renderHome()
     await userEvent.click(screen.getByRole('button', { name: 'Tiếng Việt' }))
-    expect(screen.getByText('Luyện tập')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Luyện tập' })).toBeInTheDocument()
     expect(getSettings().lang).toBe('vi')
+  })
+
+  it('plays its entrance on the first visit only, not when the reader comes back', () => {
+    // Regression: returning from a drill blanked every block and slid it in again.
+    useAppStore.setState({ homeIntroPlayed: false })
+    const first = renderHome()
+    expect(screen.getByRole('banner').style.opacity).toBe('0')
+    first.unmount()
+
+    renderHome()
+    expect(screen.getByRole('banner').style.opacity).not.toBe('0')
   })
 
   it('opens the calendar and remembers that it is open', async () => {

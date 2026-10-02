@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { MusicNoteIcon, MusicNotesIcon, TimerIcon, TrophyIcon, WaveformIcon } from '@phosphor-icons/react'
 import { ActivityPanel, PracticeCard } from '@/app/components/organisms'
@@ -11,7 +12,12 @@ import { formatDuration } from '@/core/i18n/formatDuration'
 
 /** Page: reads the app store and progress, and hands plain values to the components below. */
 export function HomeScreen() {
-  const { settings, updateSettings } = useAppStore()
+  const { settings, updateSettings, markHomeIntroPlayed } = useAppStore()
+  // Read once at mount: the entrance plays on the first visit only. Returning
+  // from a drill remounts this page, and replaying the stagger blanked every
+  // block and slid it in again.
+  const [playIntro] = useState(() => !useAppStore.getState().homeIntroPlayed)
+  useEffect(() => markHomeIntroPlayed(), [markHomeIntroPlayed])
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
@@ -20,7 +26,7 @@ export function HomeScreen() {
   const minutesByDay = getDailyMinutes()
 
   const enter = (delay: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 16 },
+    initial: reduce || !playIntro ? false : { opacity: 0, y: 16 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.4, delay, ease: [0.16, 1, 0.3, 1] as const },
   })
@@ -62,6 +68,7 @@ export function HomeScreen() {
             icon={<MusicNotesIcon size={24} weight="fill" />}
             title={t('home.noteReading')}
             description={t('home.noteReading.what')}
+            actionLabel={t('home.practice')}
             stats={[
               {
                 icon: <MusicNoteIcon size={12} weight="fill" />,
