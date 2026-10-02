@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-08-28
+> Last updated: 2026-10-02
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -51,6 +51,9 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] Hybrid layout: desktop is a first-class target, not a narrow phone column.
       Home goes two-column, setup lays options in a grid, the drill widens with a
       larger staff and timer, and keyboard hints (1-8) show on `md:` and up
+- [x] CI: GitHub Actions runs web typecheck, oxlint (zero warnings), Vitest and Go vet/test
+      on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
+- [x] Lint clean: the run timer no longer calls `Date.now()` during render
 
 ## In Progress
 
