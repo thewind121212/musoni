@@ -21,7 +21,7 @@ answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
-losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 304 web tests (Vitest) + 1 Go test
+losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 305 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -130,7 +130,10 @@ a real browser.
       298 web tests green — `docs/fe/screens.md`
 - [x] **Names on keys** setting (setup switch, on by default): off leaves the answer
       keys bare, so the reader trains finding the note on a keyboard; the marked keys
-      show their names after each answer. Stored as `keyLabels`. 304 web tests green —
+      show their names after each answer. Stored as `keyLabels`. The answer pad is now
+      drawn like a real piano (long white keys, black keys over the gaps, always shown
+      as landmarks), and the run screen fits 320×568 and 1280×800 without scrolling
+      (it overflowed before). 305 web tests green —
       `docs/fe/drill-note-identification.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
 
 ## In Progress

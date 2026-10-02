@@ -1,9 +1,7 @@
+import type { CSSProperties } from 'react'
 import type { NoteOption } from '@/drills/note-id/generator'
 import { PianoKey, type KeyMark } from '@/drills/note-id/components/molecules'
-
-// Columns in a 14-wide grid, so each white key spans two and each black key
-// straddles the boundary between its neighbours.
-const BLACK_KEY_COLUMN = [2, 4, 8, 10, 12]
+import { BLACK_KEY_BOUNDARY, blackKeyPosition } from '@/drills/note-id/keyboard'
 
 interface Props {
   options: NoteOption[]
@@ -14,24 +12,28 @@ interface Props {
 }
 
 /**
- * The answer keys, laid out as a piano: the five accidentals sit above the gaps
- * between white keys (two, a space where E meets F, then three), the seven
- * naturals run along the bottom.
+ * The answer keys, drawn as a piano: seven long white keys side by side, and
+ * the five black keys laid over the gaps between them (two, none where E meets
+ * F, then three).
  *
+ * The black keys are always drawn, since they are how a pianist finds a note
+ * on a keyboard. Without accidentals they are landmarks only, not answers.
  * Keys hold the same position on every question, so the pad is a layout to
- * learn rather than a list to re-read, and the shape matches the instrument the
- * notation is being read for.
+ * learn rather than a list to re-read.
  */
 export function AnswerPad({ options, feedback, onAnswer, showLabels = true }: Props) {
   const naturals = options.filter(o => o.row === 'natural')
   const accidentals = options.filter(o => o.row === 'accidental')
 
-  const key = (option: NoteOption, index: number, size: string) => {
-    const mark: KeyMark = !feedback
+  const markOf = (index: number): KeyMark =>
+    !feedback
       ? 'none'
       : index === feedback.correctIndex
         ? 'correct'
         : index === feedback.chosenIndex ? 'wrong' : 'none'
+
+  const key = (option: NoteOption, className: string, style?: CSSProperties) => {
+    const index = options.indexOf(option)
     return (
       <PianoKey
         key={option.label}
@@ -39,35 +41,32 @@ export function AnswerPad({ options, feedback, onAnswer, showLabels = true }: Pr
         showLabel={showLabels}
         keyHint={option.keyHint}
         row={option.row}
-        mark={mark}
+        mark={markOf(index)}
         disabled={!!feedback}
         onPress={() => onAnswer(index)}
-        className={size}
+        className={className}
+        style={style}
       />
     )
   }
 
   return (
-    <div className="select-none">
-      {accidentals.length > 0 && (
-        <div className="grid grid-cols-14 gap-1.5 md:gap-2">
-          {accidentals.map(option => (
-            <div
-              key={option.label}
-              className="col-span-2 flex"
-              style={{ gridColumnStart: BLACK_KEY_COLUMN[option.slot] }}
-            >
-              {key(option, options.indexOf(option), 'h-14 w-full md:h-16')}
-            </div>
+    <div className="relative h-[clamp(8.5rem,24dvh,10rem)] select-none md:h-[clamp(9.5rem,22dvh,11rem)]">
+      <div data-testid="white-keys" className="flex h-full gap-1">
+        {naturals.map(option => key(option, 'h-full min-w-0 flex-1'))}
+      </div>
+      <div data-testid="black-keys">
+        {accidentals.length > 0
+          ? accidentals.map(option =>
+            key(option, 'absolute top-0 h-[58%]', blackKeyPosition(option.slot)))
+          : BLACK_KEY_BOUNDARY.map((_, slot) => (
+            <span
+              key={slot}
+              aria-hidden="true"
+              className="pointer-events-none absolute top-0 z-10 h-[58%] rounded-b-lg bg-ink shadow-md"
+              style={blackKeyPosition(slot)}
+            />
           ))}
-        </div>
-      )}
-      <div
-        className={
-          'grid grid-cols-7 gap-1.5 md:gap-2 ' + (accidentals.length > 0 ? 'mt-1.5 md:mt-2' : '')
-        }
-      >
-        {naturals.map(option => key(option, options.indexOf(option), 'h-16 w-full md:h-20'))}
       </div>
     </div>
   )

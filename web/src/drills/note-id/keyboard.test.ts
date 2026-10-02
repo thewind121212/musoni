@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { optionIndexFromKey } from './keyboard'
+import { BLACK_KEY_BOUNDARY, blackKeyPosition, optionIndexFromKey } from './keyboard'
 import { buildOptions } from './generator'
 
 const withAccidentals = buildOptions('letters', true, '#')
@@ -41,5 +41,14 @@ describe('optionIndexFromKey', () => {
   it('rejects the black keys when accidentals are off', () => {
     expect(optionIndexFromKey(press('w'), naturalsOnly)).toBeNull()
     expect(optionIndexFromKey(press('a'), naturalsOnly)).toBe(0)
+  })
+})
+
+describe('blackKeyPosition', () => {
+  it('centres a black key on the white-key boundary it straddles', () => {
+    BLACK_KEY_BOUNDARY.forEach((boundary, slot) => {
+      const { left, width } = blackKeyPosition(slot)
+      expect(parseFloat(left) + parseFloat(width) / 2).toBeCloseTo((boundary / 7) * 100)
+    })
   })
 })

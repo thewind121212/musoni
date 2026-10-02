@@ -150,9 +150,13 @@ replaces the note layer, which fades in (`animate-note-in`); feedback recolours
 the same note in place without replaying it. Before, the whole staff faded out
 and back in on every answer.
 
-The answer pad is a **fixed piano**: seven white keys along the bottom and, with
-accidentals on, five black keys above the real gaps between them, in the same
-positions on every question (see `drill-note-identification.md`). Feedback
+The answer pad is a **fixed piano drawn like a real keyboard**: seven long white
+keys side by side with their names at the foot, and the five black keys over the
+top of the gaps (always drawn; pressable only with accidentals on), in the same
+positions on every question. The pad's height follows the screen (about a
+quarter of it, 136-160 px on phones, up to 176 px on desktop), and on short
+screens the staff and its padding shrink, so the whole run screen fits without
+scrolling at 320×568 and 1280×800 (see `drill-note-identification.md`). Feedback
 fills the correct key green with a check and a wrong pick red with a cross; the
 staff turns the printed note green and, on a miss, draws the picked note beside
 it in red, and the line under the staff names it in words: "Đây là Sol, bạn

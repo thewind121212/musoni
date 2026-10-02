@@ -10,28 +10,30 @@ const withSharps = buildOptions('letters', true, '#')
 // A key's name is its label, plus its keyboard hint (one lowercase letter) while it can be pressed.
 const keyNamed = (name: string) => screen.getByRole('button', { name: new RegExp(`^${name}[a-z]?$`) })
 const labelOf = (el: Element) => el.textContent!.replace(/[a-z]$/, '')
-const rows = (container: HTMLElement) => container.firstElementChild!.children
 
 describe('AnswerPad', () => {
-  it('renders the seven white keys alone when accidentals are off', () => {
-    const { container } = render(<AnswerPad options={naturalsOnly} feedback={null} onAnswer={() => {}} />)
+  it('without accidentals, answers on seven white keys and draws the black keys as landmarks only', () => {
+    render(<AnswerPad options={naturalsOnly} feedback={null} onAnswer={() => {}} />)
     expect(screen.getAllByRole('button')).toHaveLength(7)
-    expect(rows(container)).toHaveLength(1)
+    expect(screen.getByTestId('black-keys').children).toHaveLength(5)
+    for (const landmark of screen.getByTestId('black-keys').children) {
+      expect(landmark).toHaveAttribute('aria-hidden', 'true')
+    }
   })
 
-  it('puts black keys in a row above, in the gaps of a real keyboard', () => {
-    const { container } = render(<AnswerPad options={withSharps} feedback={null} onAnswer={() => {}} />)
+  it('with accidentals, lays the five black keys over the gaps of a real keyboard', () => {
+    render(<AnswerPad options={withSharps} feedback={null} onAnswer={() => {}} />)
     expect(screen.getAllByRole('button')).toHaveLength(12)
-    const [blackRow, whiteRow] = rows(container)
-    expect([...blackRow.children].map(labelOf)).toEqual(['C#', 'D#', 'F#', 'G#', 'A#'])
-    // Gap after E: F# skips a column, so it starts at 8, not 6.
-    const columnOf = (label: string) =>
-      [...blackRow.children].find(k => labelOf(k) === label)!.getAttribute('style')
-    expect(columnOf('C#')).toContain('grid-column-start: 2')
-    expect(columnOf('D#')).toContain('grid-column-start: 4')
-    expect(columnOf('F#')).toContain('grid-column-start: 8')
-    expect(columnOf('A#')).toContain('grid-column-start: 12')
-    expect([...whiteRow.children].map(labelOf)).toEqual(['C', 'D', 'E', 'F', 'G', 'A', 'B'])
+    const black = [...screen.getByTestId('black-keys').children]
+    expect(black.map(labelOf)).toEqual(['C#', 'D#', 'F#', 'G#', 'A#'])
+    expect([...screen.getByTestId('white-keys').children].map(labelOf))
+      .toEqual(['C', 'D', 'E', 'F', 'G', 'A', 'B'])
+    const leftOf = (label: string) =>
+      parseFloat((black.find(k => labelOf(k) === label) as HTMLElement).style.left)
+    // Gap where E meets F: F# sits two white keys right of D#, G# only one right of F#.
+    expect(leftOf('D#') - leftOf('C#')).toBeCloseTo(100 / 7)
+    expect(leftOf('F#') - leftOf('D#')).toBeCloseTo(200 / 7)
+    expect(leftOf('G#') - leftOf('F#')).toBeCloseTo(100 / 7)
   })
 
   it("reports the option's index in the full list, not its place within its row", async () => {
