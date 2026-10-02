@@ -50,7 +50,10 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       (VexFlow reserves space above the stave), covered by `Staff.test.ts`
 - [x] Hybrid layout: desktop is a first-class target, not a narrow phone column.
       Home goes two-column, setup lays options in a grid, the drill widens with a
-      larger staff and timer, and keyboard hints (1-8) show on `md:` and up
+      larger staff and timer, and keyboard hints show on `md:` and up
+- [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
+      sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
+      `W E T Y U` = black keys. Kawai samples requested; swap pending network access
 - [x] CI: GitHub Actions runs web typecheck, oxlint (zero warnings), Vitest and Go vet/test
       on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
 - [x] Lint clean: the run timer no longer calls `Date.now()` during render

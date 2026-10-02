@@ -15,7 +15,7 @@
 | Motion | `motion` (motion/react) | Answer feedback and phase transitions only, all behind `prefers-reduced-motion` | CSS-only (no exit animations), GSAP (overkill here) |
 | Icons | `@phosphor-icons/react` | One icon family; replaced the emoji in the UI | Emoji, hand-rolled SVG paths |
 | Persistence (Phase 1) | localStorage via `progressStore` module | No login yet; versioned JSON doc is the cloud plug | — |
-| Audio | Web Audio API | Cheap pitch playback, no library needed at first | Tone.js (adopt if audio needs grow) |
+| Audio | Web Audio API + sampled piano in `web/public/audio/piano/` | 16 Salamander Grand Piano V3 notes (Yamaha C5, CC BY 3.0, Alexander Holm; attribution in `LICENSE.md` next to the files), one per minor third and pitch-shifted between, ~260 kB total, fetched when a sprint opens; sine tone is the fallback | Kawai upright set (FreePats "Upright Piano KW", the requested sound): not reachable from the build environment yet, drop-in swap of the files + `PIANO_SAMPLES`; Tone.js / smplr (a dependency for one sampler) |
 | Diagrams | Mermaid in markdown | Text-based → maintainable by doc-sync; renders on GitHub | Drawing tools (not auto-maintainable) |
 
 ## Repo layout

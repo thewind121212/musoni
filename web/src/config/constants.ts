@@ -96,6 +96,23 @@ export const TICK_MS = 200
 export const AUDIO_GAIN = 0.25
 export const AUDIO_DURATION_SEC = 0.4
 
+/**
+ * Sampled piano. One recording every minor third, so no note is shifted more
+ * than a semitone from a real recording, which keeps the timbre
+ * honest while the whole set stays near 260 kB. Covers every note the levels
+ * can print (E2 to C6, plus accidentals). Source and licence:
+ * public/audio/piano/LICENSE.md.
+ */
+export const PIANO_SAMPLE_URL = `${import.meta.env.BASE_URL}audio/piano/`
+export const PIANO_SAMPLES = [
+  'D#2', 'F#2', 'A2', 'C3', 'D#3', 'F#3', 'A3', 'C4',
+  'D#4', 'F#4', 'A4', 'C5', 'D#5', 'F#5', 'A5', 'C6',
+] as const
+export const PIANO_GAIN = 0.9
+/** How long a note rings before its release starts. */
+export const PIANO_HOLD_SEC = 1.2
+export const PIANO_RELEASE_SEC = 0.3
+
 /** True when a length is one of the offered presets. */
 export function isPresetDuration(seconds: number): boolean {
   return DURATIONS.some(d => d.seconds === seconds)
