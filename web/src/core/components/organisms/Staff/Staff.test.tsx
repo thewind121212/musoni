@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { Renderer, Stave } from 'vexflow'
-import { LEDGER_ROOM } from './Staff'
+import { render } from '@testing-library/react'
+import { ClefGlyph, LEDGER_ROOM, Staff } from './Staff'
 
 /**
  * Regression: the clef badges rendered blank because the SVG was sized from the
@@ -61,5 +62,31 @@ describe('the staff box stays put as the note moves', () => {
 
     expect(highestNoteY - STEM).toBeGreaterThan(top)
     expect(lowestNoteY + STEM).toBeLessThan(bottom)
+  })
+})
+
+// Geometry is guarded above; these only prove the components mount
+// and draw for every input shape a drill can hand them.
+describe('Staff renders', () => {
+  it('draws a plain note', () => {
+    const { container } = render(<Staff clef="treble" pitch={{ letter: 'C', accidental: '', octave: 4 }} />)
+    expect(container.querySelector('svg')).not.toBeNull()
+  })
+
+  it('draws an accidental in the bass clef with a wrong pick beside it', () => {
+    const { container } = render(
+      <Staff
+        clef="bass" pitch={{ letter: 'F', accidental: '#', octave: 2 }}
+        tone="wrong" chosen={{ letter: 'G', accidental: 'b', octave: 2 }}
+      />,
+    )
+    expect(container.querySelector('svg')).not.toBeNull()
+  })
+})
+
+describe('ClefGlyph renders', () => {
+  it.each(['treble', 'bass'] as const)('draws a %s clef', clef => {
+    const { container } = render(<ClefGlyph clef={clef} />)
+    expect(container.querySelector('svg')).not.toBeNull()
   })
 })

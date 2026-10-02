@@ -98,6 +98,27 @@ Rules:
   barrel re-exports a chunk never uses. Without it, importing one atom on the
   home screen pulled every drill-only atom into the home chunk.
 
+## Testing components
+
+Every component has a `X.test.tsx` beside it, written with Testing Library
+(`render`, `screen`, `userEvent`; jest-dom matchers). What goes in it:
+
+- **One render test with default or minimal props**, so a component that
+  crashes on mount is caught.
+- **Tests for logic that can change and break**: branches (marked keys, the
+  streak pill, the best badge), mappings (pad key to option index, black-key
+  columns, month labels), clamps (custom length bounds), formatting (percent,
+  seconds, multipliers), callbacks with the right arguments, and a11y state
+  (`aria-checked`, `aria-expanded`, screen-reader text).
+- **Never constants**: no assertions on static copy, fixed class lists or a
+  constant's value. Copy is used to *find* elements, not as the thing under test.
+
+Pages are tested against the real stores, reset per test with
+`resetStores()`; sessions come from `session()` (`src/test/fixtures.ts`).
+Pure components get `t` from `src/test/i18n.ts` (English). Audio and VexFlow
+are mocked in page and organism tests, and covered by their own tests.
+There is no coverage-percentage gate: it rewards testing constants.
+
 ## Persistence
 
 One door: `progress/progressStore` (see `data-model.md`). Stores write through
