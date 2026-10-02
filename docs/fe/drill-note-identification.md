@@ -31,11 +31,14 @@ full rationale.
 The answer options are not sampled per question. They are a piano, and the keys
 never move:
 
-- **Naturals** (always): the seven white keys along the bottom, C D E F G A B
-  (or Do Re Mi Fa Sol La Si).
-- **Accidentals** (only when the setting is ON): the five black keys above them,
-  sitting over the real gaps between white keys (two, a space where E meets F,
-  then three). In naturals-only mode the black row disappears entirely.
+- It is drawn like a real keyboard: seven long white keys side by side, names at
+  their foot, and the five black keys laid over the top of the gaps between them
+  (two, none where E meets F, then three), each 0.6 of a white key wide.
+- **Naturals** (always): the white keys, C D E F G A B (or Do Re Mi Fa Sol La Si).
+- **Accidentals** (only when the setting is ON): the black keys are answers too,
+  with a smaller name. With the setting OFF the black keys are still drawn, as
+  landmarks a pianist finds notes by, but they cannot be pressed and are hidden
+  from screen readers.
 - The black keys are **spelled to match the printed note**: a question printed
   with a flat is answered on a row of flats (Db Eb Gb Ab Bb); a sharp or natural
   question shows sharps (C# D# F# G# A#). The correct answer is therefore always
@@ -102,7 +105,9 @@ session is trivially a record.
 | Setting | Options | Effect |
 |---|---|---|
 | Note naming | **Solfège** (Do Re Mi Fa Sol La Si, default) / **Letters** (C D E F G A B) | Keys and answers display in the chosen system. Solfège is the default because Vietnamese teaching leads with it |
-| Accidentals | ON / OFF | OFF = naturals only ever appear, and the black keys are hidden |
+| Accidentals | ON / OFF | OFF = naturals only ever appear, and the black keys are landmarks only |
+| Answer keys | **Piano** (default) / Boxes | Piano draws a keyboard (black keys over the white ones, always shown). Boxes is the older look: two rows of buttons, the black row hidden without accidentals |
+| Names on keys | ON (default) / OFF | Note names printed on the answer keys. OFF trains finding the note on a bare keyboard rather than matching a name; the right key and a wrong pick show their names once answered, and every key keeps its name for screen readers. Scoring is unchanged |
 | Sound | ON / OFF | Pitch playback on answer |
 | Session length | 30s / 1 min / 2 min / 5 min / Other (1-30 min stepper) | How long the sprint runs |
 

@@ -2,6 +2,8 @@ import type { Naming } from '../core/music/types'
 import { DEFAULT_DURATION_SECONDS } from '../config/constants'
 import { DEFAULT_LANG, type Lang } from '../core/i18n/translate'
 
+export type PadStyle = 'piano' | 'boxes'
+
 export interface Settings {
   /** Workout parameters: what is being practised. Presets set these. */
   level: 1 | 2 | 3 | 4
@@ -10,6 +12,10 @@ export interface Settings {
   /** Preferences: how the user likes to work. Presets never touch these. */
   naming: Naming
   sound: boolean
+  /** Note names printed on the answer keys. Off trains finding the note on a bare keyboard. */
+  keyLabels: boolean
+  /** Answer keys drawn as a piano keyboard, or as two rows of boxes. */
+  padStyle: PadStyle
   lang: Lang
   /** Whether the activity panel shows the full calendar or just this week. */
   activityExpanded: boolean
@@ -36,6 +42,8 @@ const DEFAULTS: Settings = {
   accidentals: false,
   naming: 'solfege',
   sound: true,
+  keyLabels: true,
+  padStyle: 'piano',
   lang: DEFAULT_LANG,
   // Opens short: the week answers "am I current" in one glance, and the
   // calendar is there for anyone who wants the longer view.

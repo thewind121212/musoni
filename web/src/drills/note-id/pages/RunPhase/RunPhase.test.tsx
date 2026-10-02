@@ -21,7 +21,7 @@ const { playPitch, preloadPiano } = await import('@/core/audio/playPitch')
 
 const settings = {
   level: 1 as const, durationSec: 60, accidentals: true, naming: 'letters' as const,
-  sound: true, lang: 'vi' as const, activityExpanded: false,
+  sound: true, keyLabels: true, padStyle: 'piano' as const, lang: 'vi' as const, activityExpanded: false,
 }
 
 const renderRun = () =>
@@ -246,5 +246,15 @@ describe('RunPhase leaving mid-session', () => {
     act(() => { vi.advanceTimersByTime(0) })
     expect(useDrillStore.getState().phase).toBe('setup')
     expect(useAppStore.getState().pausedSession).toBeNull()
+  })
+})
+
+describe('RunPhase key labels', () => {
+  it("follows the session's names-on-keys setting", () => {
+    const q = () => useDrillStore.getState().question!
+    act(() => useDrillStore.getState().start(1, { ...settings, keyLabels: false }, Date.now()))
+    renderRun()
+    const label = q().options[0].label
+    expect(screen.getByRole('button', { name: label })).not.toHaveTextContent(label)
   })
 })

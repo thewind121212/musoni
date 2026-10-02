@@ -30,3 +30,18 @@ export function optionIndexFromKey(
   const index = options.findIndex(o => o.keyHint === pressed)
   return index === -1 ? null : index
 }
+
+// Where each black key sits, as the white-key boundary it straddles: C#
+// between the 1st and 2nd white key, D# between the 2nd and 3rd, none where E
+// meets F, then three.
+export const BLACK_KEY_BOUNDARY = [1, 2, 4, 5, 6]
+const WHITE_KEYS = 7
+/** Black key width as a share of a white key's, close to a real keyboard. */
+const BLACK_KEY_WIDTH = 0.6
+
+/** Inline position for the black key in `slot`, as percentages of the pad. */
+export function blackKeyPosition(slot: number) {
+  const width = (BLACK_KEY_WIDTH / WHITE_KEYS) * 100
+  const centre = (BLACK_KEY_BOUNDARY[slot] / WHITE_KEYS) * 100
+  return { left: `${(centre - width / 2).toFixed(3)}%`, width: `${width.toFixed(3)}%` }
+}

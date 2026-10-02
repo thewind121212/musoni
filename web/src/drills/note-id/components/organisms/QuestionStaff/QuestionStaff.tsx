@@ -17,7 +17,7 @@ interface Props {
  */
 export function QuestionStaff({ clef, pitch, tone, chosen }: Props) {
   return (
-    <div className="mx-auto w-full max-w-md md:max-w-xl">
+    <div className="mx-auto w-full max-w-md md:max-w-xl [@media(max-height:900px)]:max-w-sm [@media(max-height:900px)]:md:max-w-md">
       <Staff clef={clef} pitch={pitch} tone={tone} chosen={chosen} width={QUESTION_STAFF_WIDTH} />
     </div>
   )

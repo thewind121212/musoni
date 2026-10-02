@@ -68,5 +68,20 @@ describe('SetupPhase', () => {
     renderSetup()
     expect(screen.getByText('Bass \u00B7 2 min \u00B7 \u266F \u266D')).toBeInTheDocument()
   })
-})
 
+  it('turns note names on the keys off and on', async () => {
+    renderSetup()
+    const toggle = screen.getByRole('switch', { name: 'Names on keys' })
+    await userEvent.click(toggle)
+    expect(getSettings().keyLabels).toBe(false)
+    await userEvent.click(toggle)
+    expect(getSettings().keyLabels).toBe(true)
+  })
+
+  it('starts on the piano and saves a switch to boxes', async () => {
+    renderSetup()
+    expect(screen.getByRole('radio', { name: 'Piano' })).toHaveAttribute('aria-checked', 'true')
+    await userEvent.click(screen.getByRole('radio', { name: 'Boxes' }))
+    expect(getSettings().padStyle).toBe('boxes')
+  })
+})

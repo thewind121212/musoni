@@ -176,7 +176,7 @@ export function RunPhase() {
           {streak > 2 && t('run.streak', { count: streak })}
         </div>
 
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 md:py-8">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 md:py-8 [@media(max-height:900px)]:md:py-3 [@media(max-height:700px)]:gap-1 [@media(max-height:700px)]:py-1">
           <QuestionStaff
             clef={question.clef}
             pitch={question.pitch}
@@ -197,7 +197,11 @@ export function RunPhase() {
         </div>
 
         <div className="md:mx-auto md:w-full md:max-w-2xl">
-          <AnswerPad options={question.options} feedback={feedback} onAnswer={answer} />
+          <AnswerPad
+            options={question.options} feedback={feedback} onAnswer={answer}
+            showLabels={settings.keyLabels}
+            layout={settings.padStyle}
+          />
         </div>
       </div>
       <PausePanel
