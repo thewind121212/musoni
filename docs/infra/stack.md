@@ -46,6 +46,16 @@ musoni/
   `src/test/setup.ts` wires cleanup and the matchers), `cd server && go test ./...`
 - Imports: `@/` resolves to `web/src` (Vite `resolve.alias` + `paths` in `tsconfig.app.json`)
 - Build: `cd web && npm run build` (`tsc -b && vite build`, output in `web/dist/`)
+- Lint: `cd web && npm run lint` (oxlint; CI runs it with `--deny-warnings`)
+
+## CI
+
+GitHub Actions, `.github/workflows/ci.yml`, on every pull request and on pushes to `main`:
+
+- `web` job (Node 22): `npm ci`, typecheck (`tsc -b`), lint (`oxlint --deny-warnings`), tests (`vitest run`)
+- `server` job (Go version from `server/go.mod`): `go vet ./...`, `go test ./...`
+
+A lint warning fails CI, so keep oxlint at zero warnings.
 
 ## Deployment
 

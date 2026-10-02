@@ -75,6 +75,9 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] Home fixes: coming back from a drill no longer blanks and re-slides every block (the
       entrance plays once per visit), and the practice card's `>` arrow is now
       "Luyện tập →" as a filled amber button (new `--cta` token; compact on the title row on phones, larger on desktop). 229 web tests green
+- [x] CI: GitHub Actions runs web typecheck, oxlint (zero warnings), Vitest and Go vet/test
+      on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
+- [x] Lint clean: the run timer no longer calls `Date.now()` during render
 
 ## In Progress
 
