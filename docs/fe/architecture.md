@@ -27,9 +27,14 @@ SPA with phases held in its own store:
 `setup` (level, session length, drill settings) -> `running` (the sprint) ->
 `finished` (result), plus `backToSetup()`.
 
-Training therefore never pushes history entries: no route change when a session
-starts, ends, or is retried, so the browser back button always means "leave the
-drill", never "rewind mid-sprint".
+Training never changes the URL: no route change when a session starts, ends, or
+is retried. Back still steps through the drill rather than out of it: a running
+or finished session holds **one history entry** (same URL, state marked by
+`app/drillStep`) above setup's. `NoteIdDrill` keeps that entry in step with the
+phase and reads a step back off it: back during a session opens the pause sheet
+(and the entry comes back, so back again stays put), back from the result returns
+to setup, and only back from setup leaves the drill. `useBackLink` knows about
+the entry, so the result screen's Home link steps back past setup in one go.
 
 ## Core components (`core/`)
 

@@ -12,7 +12,7 @@ const NoteIdDrill = lazy(loadNoteIdDrill)
 
 /**
  * App-level routes only. Each drill owns one route and runs its own phases
- * internally, so training never pushes history entries. Account and library
+ * internally, so training never changes the URL. Account and library
  * routes join this table later.
  */
 export default function App() {

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAppStore } from '@/app/store'
+import { isDrillStep, type DrillStepState } from '@/app/drillStep'
 import { useDrillStore } from '@/drills/note-id/store'
 import { SetupPhase } from '../SetupPhase'
 import { RunPhase } from '../RunPhase'
@@ -9,8 +10,13 @@ import { ResultPhase } from '../ResultPhase'
 
 /**
  * One route, three phases. Training never changes the URL: starting, finishing
- * and retrying a session are store transitions, so the back button belongs to
- * the app (home, and later account pages) rather than to the drill.
+ * and retrying a session are store transitions.
+ *
+ * Back still has to make sense inside the drill. A running or finished session
+ * holds one history entry above setup's (see `app/drillStep`), so back, or a
+ * phone's edge-swipe, during a session opens the pause sheet rather than
+ * dropping the reader on home, and back from the result returns to setup. Only
+ * back from setup leaves the drill.
  *
  * Phases cross-fade so the jump from setup into a running sprint reads as one
  * continuous surface rather than a hard swap.
@@ -56,6 +62,24 @@ export function NoteIdDrill() {
 
   const phase = useDrillStore(s => s.phase)
   const reduce = useReducedMotion()
+
+  // Keep one history entry for the session above setup's, and read a step back
+  // off it as the reader's back.
+  const onStep = isDrillStep(location.state)
+  const wasOnStep = useRef(onStep)
+  useEffect(() => {
+    const steppedBack = wasOnStep.current && !onStep
+    wasOnStep.current = onStep
+    const drill = useDrillStore.getState()
+    if (steppedBack && phase === 'running') drill.pause('menu')
+    if (steppedBack && phase === 'finished') return drill.backToSetup()
+    if (phase !== 'setup' && !onStep) {
+      const step: DrillStepState = { drillStep: true, baseIsFirst: location.key === 'default' }
+      navigate(location.pathname, { state: step })
+    } else if (phase === 'setup' && onStep) {
+      navigate(-1)
+    }
+  }, [phase, onStep, navigate, location.pathname, location.key])
 
   return (
     <AnimatePresence mode="wait" initial={false}>

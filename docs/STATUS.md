@@ -21,7 +21,7 @@ answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
-losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 309 web tests (Vitest) + 1 Go test
+losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 313 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -141,6 +141,11 @@ a real browser.
       drill chunk when idle; a loading screen (keys pressing in turn, "Đang mở bài
       luyện…") covers a cold load. 309 web tests green — `docs/fe/screens.md`,
       `docs/infra/stack.md`
+- [x] **Back stays in the drill**: back or a phone's edge-swipe during a session opens the
+      pause sheet instead of dropping the reader on home; back from the result returns to
+      setup, and only back from setup leaves. The session holds one history entry of its
+      own (`app/drillStep`); the result's Home link skips past setup. 313 web tests green —
+      `docs/fe/architecture.md`, `docs/fe/screens.md`
 
 ## In Progress
 
