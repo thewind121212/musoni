@@ -97,7 +97,7 @@ a real browser.
   - oxlint warning: `Date.now()` during render in `RunPhase.tsx:51`.
   - Drill chunk is ~700 kB gzip (VexFlow + fonts); home is ~128 kB gzip.
     Worth a look before launch.
-  - No CI: tests, typecheck and lint only run locally.
+  - CI (GitHub Actions) is in review as PR #1; until it merges, checks run locally only.
   Closed since the Phase 1 review: WeekStrip removed (the activity panel charts
   minutes, not score), best-score keying settled (level only, since score is a
   pace), VexFlow lazy-loaded, tick interval and audio gain moved into `config/`.
