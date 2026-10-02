@@ -79,8 +79,9 @@ export function RunPhase() {
 
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col px-4 pb-6 md:max-w-3xl md:px-8 md:pb-10">
-      {/* Three equal columns so the timer stays centred however wide the counts get. */}
-      <header className="grid grid-cols-3 items-center pt-5">
+      {/* Equal side columns keep the timer centred; they grow with the counts
+          rather than letting long ones overlap it. */}
+      <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pt-5">
         <button
           onClick={() => useDrillStore.getState().backToSetup()}
           aria-label={t('run.quit')}
@@ -98,16 +99,20 @@ export function RunPhase() {
             where the reader can see it rather than only resetting the streak. */}
         <div className="flex justify-end gap-1.5">
           <span
-            aria-label={t('run.correct', { count: correct })}
+            data-testid="run-correct"
             className="tnum flex items-center gap-1 rounded-full bg-correct/12 px-2.5 py-1 text-sm font-semibold text-correct md:text-base"
           >
-            <CheckIcon size={14} weight="bold" aria-hidden />{correct}
+            <CheckIcon size={14} weight="bold" aria-hidden />
+            <span aria-hidden>{correct}</span>
+            <span className="sr-only">{t('run.correct', { count: correct })}</span>
           </span>
           <span
-            aria-label={t('run.wrong', { count: wrong })}
+            data-testid="run-wrong"
             className="tnum flex items-center gap-1 rounded-full bg-wrong/12 px-2.5 py-1 text-sm font-semibold text-wrong md:text-base"
           >
-            <XIcon size={14} weight="bold" aria-hidden />{wrong}
+            <XIcon size={14} weight="bold" aria-hidden />
+            <span aria-hidden>{wrong}</span>
+            <span className="sr-only">{t('run.wrong', { count: wrong })}</span>
           </span>
         </div>
       </header>
