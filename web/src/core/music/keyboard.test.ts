@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { BLACK_KEY_BOUNDARY, blackKeyPosition, optionIndexFromKey } from './keyboard'
-import { buildOptions } from './generator'
+import { buildOptions } from './pianoKeys'
 
 const withAccidentals = buildOptions('letters', true, '#')
 const withFlats = buildOptions('letters', true, 'b')

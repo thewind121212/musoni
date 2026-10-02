@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { CheckIcon, XIcon } from '@phosphor-icons/react'
-import { KeyHint } from '@/drills/note-id/components/atoms'
+import { KeyHint } from '@/core/components/atoms'
 
 /** What a key says after an answer: the right note, the reader's miss, or nothing. */
 export type KeyMark = 'none' | 'correct' | 'wrong'

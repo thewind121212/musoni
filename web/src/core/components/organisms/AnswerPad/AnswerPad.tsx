@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
-import type { NoteOption } from '@/drills/note-id/generator'
-import { PianoKey, type KeyMark } from '@/drills/note-id/components/molecules'
-import { BLACK_KEY_BOUNDARY, blackKeyPosition } from '@/drills/note-id/keyboard'
+import type { NoteOption } from '@/core/music/pianoKeys'
+import { PianoKey, type KeyMark } from '@/core/components/molecules'
+import { BLACK_KEY_BOUNDARY, blackKeyPosition } from '@/core/music/keyboard'
 
 interface Props {
   options: NoteOption[]

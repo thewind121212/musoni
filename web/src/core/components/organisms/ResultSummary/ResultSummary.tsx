@@ -1,12 +1,14 @@
 import { TrophyIcon } from '@phosphor-icons/react'
 import { Chip } from '@/core/components/atoms'
-import { SessionStats } from '@/drills/note-id/components/molecules'
+import { SessionStats } from '@/core/components/molecules'
 import { enduranceBonus } from '@/core/scoring'
 import type { Translate } from '@/core/i18n/translate'
 import type { SessionResult } from '@/progress/progressStore'
 
 interface Props {
   result: SessionResult
+  /** The session's level as the drill names it ("Treble", "Do Mi Sol"). */
+  levelName: string
   /** This session set the best score for its level. */
   isBest: boolean
   /** Recent average at this level, for the change chip; null hides it. */
@@ -15,7 +17,7 @@ interface Props {
 }
 
 /** The finished session: its score and what went into it, then the four figures behind it. */
-export function ResultSummary({ result, isBest, average = null, t }: Props) {
+export function ResultSummary({ result, levelName, isBest, average = null, t }: Props) {
   const delta = average === null ? null : result.practiceScore - average
   return (
     <>
@@ -26,7 +28,7 @@ export function ResultSummary({ result, isBest, average = null, t }: Props) {
           </div>
         )}
         <div className="text-sm text-ink-soft">
-          {t('result.session', { level: t(`level.${result.level}` as 'level.1') })}
+          {t('result.session', { level: levelName })}
         </div>
         <div className="flex flex-wrap items-end gap-x-3 gap-y-1">
           <div className="tnum text-6xl leading-none font-semibold tracking-tight md:text-7xl">{result.practiceScore}</div>
