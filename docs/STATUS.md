@@ -57,6 +57,12 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
       (one three-column `StatStrip`), and the drill header counts wrong answers next to
       right ones (green check / red cross pills)
+- [x] Guard tests for the piano / keyboard / phone-fix work: `RunPhase` (right and wrong
+      counts, streak from 3, held-key repeat, Cmd/Ctrl chords, one answer per note,
+      sound on/off), `playPitch` (sine fallback, sample rate and pitch shift, fetch-once,
+      failed loads, no Web Audio) and `StatStrip` (shrinkable columns, no truncation).
+      Component tests mount with `src/test/render.tsx`, no Testing Library dependency.
+      125 web tests green
 
 ## In Progress
 
