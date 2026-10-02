@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { generateQuestion, type Question } from './generator'
+import type { Clef, Pitch } from '../../core/music/types'
 import { difficultyWeight, practiceScore, accuracy } from '../../core/scoring'
 import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
 
@@ -10,6 +11,15 @@ import { getSettings, recordSession, type Settings, type SessionResult } from '.
  * flow touches the URL or the browser history.
  */
 export type Phase = 'setup' | 'running' | 'finished'
+
+/** One wrong answer, kept for the result screen's notes-to-review list. */
+export interface Miss {
+  clef: Clef
+  pitch: Pitch
+  /** Key labels as the reader saw them, in their chosen naming. */
+  answer: string
+  chosen: string
+}
 
 interface DrillState {
   phase: Phase
@@ -25,6 +35,8 @@ interface DrillState {
   sumMs: number
   feedback: { correctIndex: number; chosenIndex: number; correct: boolean } | null
   lastResult: SessionResult | null
+  /** This session's misses, in order. Kept after finishing for the result screen; not persisted. */
+  misses: Miss[]
   start: (level: 1 | 2 | 3 | 4, settings: Settings, now?: number) => void
   answer: (index: number, now?: number) => void
   nextQuestion: (now?: number) => void
@@ -38,14 +50,14 @@ export const useDrillStore = create<DrillState>((set, get) => ({
   settings: getSettings(),
   question: null, endsAt: null, askedAt: 0,
   correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
-  feedback: null, lastResult: null,
+  feedback: null, lastResult: null, misses: [],
 
   start: (level, settings, now = Date.now()) => set({
     phase: 'running', level, settings,
     question: generateQuestion(level, settings.accidentals, settings.naming),
     endsAt: now + settings.durationSec * 1000, askedAt: now,
     correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
-    feedback: null, lastResult: null,
+    feedback: null, lastResult: null, misses: [],
   }),
 
   answer: (index, now = Date.now()) => {
@@ -59,6 +71,12 @@ export const useDrillStore = create<DrillState>((set, get) => ({
       streak, bestStreak: Math.max(s.bestStreak, streak),
       sumMs: s.sumMs + (now - s.askedAt),
       feedback: { correctIndex: s.question.correctIndex, chosenIndex: index, correct: ok },
+      misses: ok ? s.misses : [...s.misses, {
+        clef: s.question.clef,
+        pitch: s.question.pitch,
+        answer: s.question.options[s.question.correctIndex].label,
+        chosen: s.question.options[index].label,
+      }],
     })
   },
 

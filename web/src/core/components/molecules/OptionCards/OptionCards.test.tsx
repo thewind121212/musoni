@@ -55,4 +55,18 @@ describe('OptionCards', () => {
     await userEvent.click(screen.getByRole('radio', { name: 'On' }))
     expect(onChange).toHaveBeenCalledWith(true)
   })
+
+  it('row layout still checks and reports like the stacked one', async () => {
+    const onChange = vi.fn()
+    render(
+      <OptionCards
+        layout="row" label="Note names" icon={<svg />}
+        options={options} value="letters" onChange={onChange}
+      />,
+    )
+    expect(screen.getByRole('radio', { name: /Letters/ })).toHaveAttribute('aria-checked', 'true')
+    await userEvent.click(screen.getByRole('radio', { name: /Solfège/ }))
+    expect(onChange).toHaveBeenCalledWith('solfege')
+  })
 })
+

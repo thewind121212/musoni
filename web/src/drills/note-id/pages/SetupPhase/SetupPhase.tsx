@@ -1,16 +1,16 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import {
-  CaretLeftIcon, MusicNoteIcon, PlayIcon, SpeakerHighIcon,
-  SpeakerSlashIcon, TextAaIcon, TrophyIcon,
+  CaretLeftIcon, MusicNoteIcon, PlayIcon, SlidersHorizontalIcon, TrophyIcon,
 } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { useDrillStore } from '@/drills/note-id/store'
 import { getBest } from '@/progress/progressStore'
-import { Button } from '@/core/components/atoms'
-import { OptionCards } from '@/core/components/molecules'
+import { Button, FieldLegend, Switch } from '@/core/components/atoms'
+import { OptionCards, SegmentedControl, SettingRow } from '@/core/components/molecules'
+import { formatDuration } from '@/core/i18n/formatDuration'
 import { ClefGlyph } from '@/core/components/organisms'
 import { DurationPicker } from '@/drills/note-id/components/molecules'
 
@@ -41,32 +41,24 @@ export function SetupPhase() {
         : <ClefGlyph clef="treble" />,
   }))
 
-  const namingOptions = [
-    { value: 'letters' as const, label: t('naming.letters'), hint: t('naming.letters.hint'),
-      visual: <span className="text-xl font-semibold tracking-tight">C D E</span> },
-    { value: 'solfege' as const, label: t('naming.solfege'), hint: t('naming.solfege.hint'),
-      visual: <span className="text-xl font-semibold tracking-tight">Do Re Mi</span> },
+  const namingSegments = [
+    { value: 'letters' as const, label: 'C D E' },
+    { value: 'solfege' as const, label: 'Do Re Mi' },
   ]
 
-  const accidentalOptions = [
-    { value: false, label: t('accidentals.off'), hint: t('accidentals.off.hint'),
-      visual: <span className="text-3xl leading-none">&#9838;</span> },
-    { value: true, label: t('accidentals.on'), hint: t('accidentals.on.hint'),
-      visual: <span className="text-3xl leading-none">&#9839; &#9837;</span> },
-  ]
+  const summary = [
+    t(`level.${level}` as 'level.1'),
+    formatDuration(settings.durationSec, t),
+    ...(settings.accidentals ? ['\u266F \u266D'] : []),
+  ].join(' \u00B7 ')
 
-  const soundOptions = [
-    { value: true, label: t('sound.on'), hint: t('sound.on.hint'),
-      visual: <SpeakerHighIcon size={30} weight="duotone" /> },
-    { value: false, label: t('sound.off'), hint: t('sound.off.hint'),
-      visual: <SpeakerSlashIcon size={30} weight="duotone" /> },
-  ]
-
+  // Level and length are what a session practises, so they keep their large
+  // controls; the rest are yes-or-no or two-way preferences, one row each.
   const groups = [
     <OptionCards
       key="level"
+      layout="row"
       label={t('setup.clef')}
-      description={t('setup.clef.what')}
       icon={<MusicNoteIcon size={15} weight="fill" />}
       options={levelOptions} value={level} onChange={setLevel}
     />,
@@ -76,73 +68,85 @@ export function SetupPhase() {
       onChange={durationSec => updateSettings({ durationSec })}
       t={t}
     />,
-    <OptionCards
-      key="naming"
-      label={t('setup.naming')}
-      description={t('setup.naming.what')}
-      icon={<TextAaIcon size={15} weight="bold" />}
-      options={namingOptions}
-      value={settings.naming} onChange={naming => updateSettings({ naming })}
-    />,
-    <OptionCards
-      key="accidentals"
-      label={t('setup.accidentals')}
-      description={t('setup.accidentals.what')}
-      icon={<span className="text-[15px] leading-none font-semibold">&#9839;</span>}
-      options={accidentalOptions}
-      value={settings.accidentals} onChange={accidentals => updateSettings({ accidentals })}
-    />,
-    <OptionCards
-      key="sound"
-      label={t('setup.sound')}
-      description={t('setup.sound.what')}
-      icon={<SpeakerHighIcon size={15} weight="bold" />}
-      options={soundOptions}
-      value={settings.sound} onChange={sound => updateSettings({ sound })}
-    />,
+    <fieldset key="prefs" className="border-0 p-0">
+      <FieldLegend icon={<SlidersHorizontalIcon size={15} weight="bold" />} label={t('setup.notesAndSound')} />
+      <div className="divide-y divide-line rounded-2xl border border-line bg-raised">
+        <SettingRow label={t('setup.accidentals')} hint={t('setup.accidentals.hint')}>
+          <Switch
+            checked={settings.accidentals}
+            label={t('setup.accidentals')}
+            onChange={accidentals => updateSettings({ accidentals })}
+          />
+        </SettingRow>
+        <SettingRow label={t('setup.naming')}>
+          <SegmentedControl
+            compact
+            label={t('setup.naming')}
+            segments={namingSegments}
+            value={settings.naming}
+            onChange={naming => updateSettings({ naming })}
+          />
+        </SettingRow>
+        <SettingRow label={t('setup.sound')} hint={t('setup.sound.hint')}>
+          <Switch
+            checked={settings.sound}
+            label={t('setup.sound')}
+            onChange={sound => updateSettings({ sound })}
+          />
+        </SettingRow>
+      </div>
+    </fieldset>,
   ]
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 pt-4 pb-8 md:max-w-3xl md:px-8 md:pt-8">
-      <div className="flex items-center gap-1">
-        <Link to="/" onClick={backLink} aria-label={t('setup.back')}>
-          <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
-        </Link>
-        <h1 className="text-lg font-semibold md:text-2xl">{t('home.noteReading')}</h1>
+    <div className="flex min-h-[100dvh] flex-col">
+      <div className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-8 md:max-w-3xl md:px-8 md:pt-8">
+        <div className="flex items-center gap-1">
+          <Link to="/" onClick={backLink} aria-label={t('setup.back')}>
+            <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
+          </Link>
+          <h1 className="text-lg font-semibold md:text-2xl">{t('home.noteReading')}</h1>
+        </div>
+
+        <div className="mt-4 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-7">
+          {groups.map((group, i) => (
+            <motion.div
+              key={group.key}
+              initial={reduce ? false : { opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.32, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+              className={group.key === 'level' ? 'md:col-span-2' : undefined}
+            >
+              {group}
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-7">
-        {groups.map((group, i) => (
-          <motion.div
-            key={group.key}
-            initial={reduce ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.32, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {group}
-          </motion.div>
-        ))}
-
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.32, delay: groups.length * 0.05, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col gap-3 md:col-span-2 md:flex-row md:items-center md:justify-between md:gap-6"
-        >
-          <div className="flex items-center gap-2 text-sm text-ink-soft">
-            <TrophyIcon size={16} weight="fill" className="text-ink-faint" />
-            {best
-              ? <span>{t('setup.bestHere')} <span className="tnum font-semibold text-ink">{best.practiceScore}</span></span>
-              : <span>{t('setup.noScoreYet')}</span>}
+      {/* Sticky, so Start is on screen however far the settings run. Sticky
+          rather than fixed: the phase wrapper animates a transform, which
+          would pin a fixed bar to the wrapper instead of the viewport. */}
+      <div className="sticky bottom-0 border-t border-line bg-raised/90 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-2.5 px-4 pt-3
+                        pb-[max(1rem,env(safe-area-inset-bottom))] md:max-w-3xl md:flex-row
+                        md:items-center md:justify-between md:gap-6 md:px-8 md:py-4">
+          <div className="flex items-center justify-between gap-3 text-sm text-ink-soft md:flex-col md:items-start md:gap-0.5">
+            <span>{summary}</span>
+            <span className="flex items-center gap-1.5">
+              <TrophyIcon size={15} weight="fill" className="text-ink-faint" />
+              {best
+                ? <span>{t('setup.bestHere')} <span className="tnum font-semibold text-ink">{best.practiceScore}</span></span>
+                : <span>{t('setup.noScoreYet')}</span>}
+            </span>
           </div>
           <Button
-            variant="primary"
+            variant="cta"
             className="h-14 w-full text-lg md:w-56"
             onClick={() => useDrillStore.getState().start(level, settings)}
           >
             <PlayIcon size={20} weight="fill" /> {t('setup.start')}
           </Button>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

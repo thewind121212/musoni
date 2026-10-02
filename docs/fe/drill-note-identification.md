@@ -50,7 +50,8 @@ instrument, instead of a list to re-read every question.
 
 VexFlow draws a single note on a staff (clef per level), large and centered.
 On feedback the staff itself answers too: the printed note turns green, and on
-a miss the note the reader picked is drawn beside it in red, at the octave
+a miss the note the reader picked is drawn beside it in red (and named in words
+under the staff), at the octave
 nearest the printed note (`core/music/pitch.nearestOctave`), so the mistake
 shows as a distance on the staff rather than only as a red key.
 
@@ -154,3 +155,15 @@ practiceScore = round(pace × 10 × difficultyWeight × accuracy × endurance)
 Each session record snapshots its settings, level and length (see
 `data-model.md`), which enables both one honest overall trend chart and
 per-setting breakdown charts.
+
+## Misses and the result screen
+
+Every wrong answer is kept in the drill store as `misses` (clef, pitch, and the
+answer and picked key labels in the reader's naming). They reset when a session
+starts and stay after it finishes, for the result screen's **notes to review**.
+They are not persisted: `SessionResult` and the saved document are unchanged.
+
+The result also sets the score against `getRecentAverage` (progress store): the
+mean practice score at the same level over the last 7 local days, leaving out
+the session being shown.
+

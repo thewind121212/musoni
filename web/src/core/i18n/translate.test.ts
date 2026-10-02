@@ -9,12 +9,12 @@ describe('translate', () => {
   })
 
   it('interpolates named params', () => {
-    expect(translate('en', 'result.yourBest', { score: 718 })).toContain('718')
-    expect(translate('vi', 'result.yourBest', { score: 718 })).toContain('718')
+    expect(translate('en', 'result.weekAverage', { score: 718 })).toContain('718')
+    expect(translate('vi', 'result.weekAverage', { score: 718 })).toContain('718')
   })
 
   it('leaves an unknown placeholder alone rather than blanking it', () => {
-    expect(translate('en', 'result.yourBest')).toContain('{score}')
+    expect(translate('en', 'result.weekAverage')).toContain('{score}')
   })
 
   it('picks the English singular via plural rules', () => {

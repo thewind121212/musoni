@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS = {
   lang: 'vi',
   activityExpanded: false,
 } as const
-import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount } from './progressStore'
+import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount, getRecentAverage } from './progressStore'
 
 const session = (over = {}) => ({
   drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
@@ -171,5 +171,28 @@ describe('activity history', () => {
   it('counts active days regardless of how many sessions each holds', () => {
     recordSession(on(0)); recordSession(on(0)); recordSession(on(-3))
     expect(getActiveDayCount()).toBe(2)
+  })
+})
+
+describe('getRecentAverage', () => {
+  const now = new Date('2026-08-28T12:00:00')
+  const at = (offset: number) => {
+    const d = new Date(now)
+    d.setDate(d.getDate() + offset)
+    return d.toISOString()
+  }
+
+  it('averages the last week at the level, leaving out the session being compared', () => {
+    recordSession(session({ at: at(0), practiceScore: 200 }))
+    recordSession(session({ at: at(-1), practiceScore: 100 }))
+    recordSession(session({ at: at(-6), practiceScore: 50 }))
+    recordSession(session({ at: at(-7), practiceScore: 1 }))
+    recordSession(session({ at: at(-1), practiceScore: 999, level: 2 }))
+    expect(getRecentAverage('note-id', 1, at(0), 7, now)).toBe(75)
+  })
+
+  it('is null with nothing else to compare against', () => {
+    recordSession(session({ at: at(0) }))
+    expect(getRecentAverage('note-id', 1, at(0), 7, now)).toBeNull()
   })
 })

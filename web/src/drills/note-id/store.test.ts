@@ -39,6 +39,21 @@ describe('drill store', () => {
     expect(s.streak).toBe(0)
     expect(s.bestStreak).toBe(1)
   })
+  it('keeps each miss with the note and both key labels, and starts the next session clean', () => {
+    useDrillStore.getState().start(1, settings, T0)
+    const q = useDrillStore.getState().question!
+    useDrillStore.getState().answer(q.correctIndex, T0 + 300)
+    useDrillStore.getState().nextQuestion(T0 + 300)
+    const q2 = useDrillStore.getState().question!
+    const wrongIdx = (q2.correctIndex + 1) % q2.options.length
+    useDrillStore.getState().answer(wrongIdx, T0 + 900)
+    expect(useDrillStore.getState().misses).toEqual([{
+      clef: q2.clef, pitch: q2.pitch,
+      answer: q2.options[q2.correctIndex].label, chosen: q2.options[wrongIdx].label,
+    }])
+    useDrillStore.getState().start(1, settings, T0 + 5000)
+    expect(useDrillStore.getState().misses).toEqual([])
+  })
   it('tick past endsAt finishes and records the session', () => {
     useDrillStore.getState().start(1, settings, T0)
     const st = useDrillStore.getState()

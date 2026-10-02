@@ -1,3 +1,5 @@
 export * from './OptionCards'
+export * from './ScoreCompare'
 export * from './SegmentedControl'
+export * from './SettingRow'
 export * from './StatStrip'

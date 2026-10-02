@@ -42,4 +42,14 @@ describe('ResultSummary', () => {
     render(<ResultSummary result={{ ...result, level: 3 }} isBest={false} t={t} />)
     expect(screen.getByText(`${t('level.3')} session`)).toBeInTheDocument()
   })
+
+  it('shows the change against the recent average only when there is one', () => {
+    const { rerender } = render(<ResultSummary result={result} isBest={false} t={t} />)
+    expect(screen.queryByText(/this week/)).toBeNull()
+    rerender(<ResultSummary result={result} isBest={false} average={30} t={t} />)
+    expect(screen.getByText('+7 on this week')).toBeInTheDocument()
+    rerender(<ResultSummary result={result} isBest={false} average={40} t={t} />)
+    expect(screen.getByText('\u22123 on this week')).toBeInTheDocument()
+  })
 })
+

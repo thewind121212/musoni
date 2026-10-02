@@ -50,7 +50,10 @@ Shared, module-agnostic, reuse-first building blocks:
   the notation off. `ClefGlyph` crops to the drawn ink; `Staff` instead pins its
   viewBox to the stave lines plus `LEDGER_ROOM`, because cropping per note would
   resize the box and make the staff jump between questions. `Staff.test.ts`
-  guards both.
+  guards both. Staff draws in two layers sharing that viewBox: the stave and
+  clef underneath (redrawn only when the clef or size changes) and the notes on
+  top (keyed on the question, so only the note is replaced and fades in).
+  The tests also pin that a new question keeps the stave's SVG node.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling) used by both the note-id generator and Staff.
 - `core/music/pitch.nearestOctave` places an answer key (a name with no octave)
@@ -100,9 +103,9 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 
 | Level | What it is | Examples |
 |---|---|---|
-| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `KeyHint` |
-| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `LanguageToggle`, `ComingSoonCard`, `PianoKey`, `DurationPicker` |
-| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary` |
+| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine` |
+| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PianoKey`, `DurationPicker` |
+| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `MissedNotes` |
 | template | layout shell with no content of its own | `PageTransition` |
 | page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `SetupPhase`, `RunPhase`, `ResultPhase` |
 

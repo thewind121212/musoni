@@ -102,6 +102,26 @@ export function getBest(drill: string, level: number): SessionResult | null {
 }
 
 /**
+ * Average practice score at a level over the last `days` local days, today
+ * included, leaving out the session at `excludeAt` (the one being compared).
+ * Null when there is nothing to compare against.
+ */
+export function getRecentAverage(
+  drill: string, level: number, excludeAt: string, days = 7, now: Date = new Date(),
+): number | null {
+  const from = new Date(now)
+  from.setDate(from.getDate() - (days - 1))
+  const scores: number[] = []
+  for (const sessions of Object.values(getRange(localDayKey(from), localDayKey(now)))) {
+    for (const s of sessions) {
+      if (s.drill === drill && s.level === level && s.at !== excludeAt) scores.push(s.practiceScore)
+    }
+  }
+  if (scores.length === 0) return null
+  return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+}
+
+/**
  * Consecutive days ending today that have at least one session.
  *
  * A day with no sessions yet does not break the streak until it is over, so an

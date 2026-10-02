@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
-type Variant = 'primary' | 'ghost' | 'quiet'
+type Variant = 'primary' | 'cta' | 'ghost' | 'quiet'
 
 const BASE =
   'inline-flex items-center justify-center gap-2 rounded-2xl font-medium ' +
@@ -10,6 +10,8 @@ const BASE =
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent text-accent-ink hover:brightness-110',
+  /** Amber, reserved for starting practice. */
+  cta: 'bg-cta font-semibold text-cta-ink shadow-sm hover:brightness-95',
   ghost: 'border border-line bg-raised text-ink hover:border-ink-faint',
   quiet: 'text-ink-soft hover:text-ink',
 }
