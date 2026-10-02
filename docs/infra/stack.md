@@ -46,4 +46,8 @@ musoni/
 
 ## Deployment
 
-Not decided yet — Phase 1 runs locally. Capture the decision here when made.
+The frontend is connected to **Vercel** through its GitHub integration (project
+`musoni`, root directory `web/`, no `vercel.json`, so Vite defaults apply). Every
+PR branch gets a preview deployment, which the Vercel bot links on the PR. The
+production domain and the Go server's hosting are not decided or documented yet;
+capture them here when made.
