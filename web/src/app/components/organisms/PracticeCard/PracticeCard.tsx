@@ -35,8 +35,9 @@ export function PracticeCard({ to, icon, title, description, actionLabel, stats 
             "start" buttons, so it reads as something to tap at a glance and
             stays apart from the blue icon tile. Phones get a compact pill on
             the title row, so the description keeps the full width below;
-            wider screens get a larger one on the right. Only one shows. */}
-        <span className="flex items-center gap-4">
+            wider screens get a larger one on the right. Only one shows. On
+            phones the icon sits at the top, so a wrapped title stays beside it. */}
+        <span className="flex items-start gap-4 sm:items-center">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-ink">
             {icon}
           </span>

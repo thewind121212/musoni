@@ -40,8 +40,9 @@ interface: no clutter around the staff.
   "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), a filled amber
   pill (`--cta`, not the blue accent) so it reads as a button at first glance.
   On phones it is a compact pill at the right of the title row, leaving the
-  description the full width below; from `sm` up it is a larger pill on the
-  right of the card.
+  description the full width below, and the icon tile sits at the top of the
+  row so a title that wraps on a 320px phone stays beside it; from `sm` up it
+  is a larger pill on the right of the card, centred in the row.
 
 Route changes slide in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
