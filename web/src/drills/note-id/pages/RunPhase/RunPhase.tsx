@@ -12,7 +12,8 @@ import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '@/config/consta
 export function RunPhase() {
   const { question, endsAt, correct, wrong, streak, feedback, settings } = useDrillStore()
   const t = useT()
-  const [, forceRender] = useState(0)
+  // The clock lives in state, refreshed each tick, so render stays pure.
+  const [now, setNow] = useState(() => Date.now())
 
   // Start fetching the piano samples as the sprint opens, so the first answers
   // are already on the piano rather than the sine fallback.
@@ -22,8 +23,9 @@ export function RunPhase() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      useDrillStore.getState().tick()
-      forceRender(n => n + 1)
+      const at = Date.now()
+      useDrillStore.getState().tick(at)
+      setNow(at)
     }, TICK_MS)
     return () => clearInterval(id)
   }, [])
@@ -55,7 +57,7 @@ export function RunPhase() {
 
   if (!question) return null
 
-  const msLeft = endsAt ? Math.max(0, endsAt - Date.now()) : 0
+  const msLeft = endsAt ? Math.max(0, endsAt - now) : 0
   const secondsLeft = Math.ceil(msLeft / 1000)
   const fraction = endsAt ? msLeft / (settings.durationSec * 1000) : 0
   const lastTen = secondsLeft <= 10
