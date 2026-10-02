@@ -100,6 +100,7 @@ export const en = {
 
   'run.quit': 'Quit this session',
   'run.correct': '{count} correct',
+  'run.wrong': '{count} wrong',
   'run.streak': '{count} in a row',
 
   'result.personalBest': 'Personal best',
@@ -212,6 +213,7 @@ export const vi: Record<TranslationKey, string> = {
 
   'run.quit': 'Thoát lượt tập',
   'run.correct': 'đúng {count}',
+  'run.wrong': 'sai {count}',
   'run.streak': '{count} liên tiếp',
 
   'result.personalBest': 'Kỷ lục cá nhân',

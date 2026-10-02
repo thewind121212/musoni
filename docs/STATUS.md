@@ -60,7 +60,7 @@ a real browser.
       `vi` default + `en`, compact cycle switch in the home header, `<html lang>`
       follows the setting; solfège (Do Re Mi) is now the default naming
 - [x] Home leads with where the user stands: today's minutes, streak pill, and
-      labelled Level / Length / Best chips on the drill card
+      labelled Level / Length / Best on the drill card (now one `StatStrip`)
 - [x] **Pace-based scoring + any session length**: score = correct per minute ×
       10 × difficulty × accuracy; lengths 30s / 1 / 2 / 5 min plus an Other stepper
       (1-30 min). Bests keyed on **level only**, across lengths
@@ -77,6 +77,9 @@ a real browser.
       sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
       `W E T Y U` = black keys; held-key repeats are ignored. Kawai samples requested;
       swap pending network access
+- [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
+      (one three-column `StatStrip`), and the drill header counts wrong answers next to
+      right ones (green check / red cross pills)
 - [x] 105 web tests (Vitest) + 1 Go test green; `tsc -b && vite build` clean
 - [x] Docs caught up with everything above (2026-10-02)
 

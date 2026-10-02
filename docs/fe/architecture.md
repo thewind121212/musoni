@@ -36,7 +36,7 @@ drill", never "rewind mid-sprint".
 Shared, module-agnostic, reuse-first building blocks:
 
 - `core/components/` — UI primitives (Button, Panel, SegmentedControl,
-  OptionCards with marked group headers, StatChip for labelled figures) and
+  OptionCards with marked group headers, StatStrip for a row of labelled figures) and
   **Staff**, the only component allowed to touch VexFlow. Staff repaints itself
   from the `--staff` token so notation stays legible in dark mode, and exports
   `ClefGlyph` (a clef on a short stave) so level choices can show real notation
@@ -117,7 +117,7 @@ web/src/
 ├── app/            # global module: app store (settings), useT, HomeScreen,
 │                   #   ActivityPanel + ActivityGrid (+ activityWeeks), LanguageToggle
 ├── core/           # components (Button, Panel, SegmentedControl, OptionCard,
-│                   #   StatChip, Staff) / music / scoring / audio / i18n /
+│                   #   StatStrip, Staff) / music / scoring / audio / i18n /
 │                   #   engine (placeholder)
 ├── drills/note-id/ # drill module: store (phases), generator (piano pad), keyboard,
 │                   #   NoteIdDrill + phases/ (Setup, DurationPicker, Run,

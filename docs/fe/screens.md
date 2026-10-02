@@ -59,9 +59,10 @@ interface: no clutter around the staff.
   - The mode is a persisted setting (`activityExpanded`), so the panel opens the
     way it was left. Switching is one box that resizes while the two views
     cross-fade, behind `prefers-reduced-motion`.
-- Training list: the note-id card with a line saying what the drill asks, and
-  three labelled stat chips (Level, Length, Best), then a disabled placeholder
-  card for the Phase 2 rhythm drill.
+- Training list: the note-id card with a line saying what the drill asks, its
+  Level / Length / Best in one three-column `StatStrip` (equal columns, labels
+  and values wrap, so it fits a 320px phone), then a disabled placeholder card
+  for the Phase 2 rhythm drill.
 
 Route changes slide in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
@@ -91,9 +92,13 @@ card grid. Groups stagger in on entry.
 It also shows the personal best for the chosen level (across all lengths), then
 a full-width Start button.
 
-**Run phase** is the drill itself: a quit icon (X), a large tabular countdown
-that turns red for the last ten seconds, the running correct count and streak,
-a thin time bar, the staff on a raised surface, and the answer pad in the bottom
+**Run phase** is the drill itself. The header is three columns
+(`1fr auto 1fr`, so long counts never push into the timer): a quit icon (X), a
+large tabular countdown centred that turns red for the last ten seconds, and a
+green check pill with the right-answer count beside a red cross pill with the
+wrong-answer count (each with screen-reader text). Under the thin time bar sits
+the streak (3+) on a fixed-height line, so the staff does not jump when it
+appears. Then the staff on a raised surface, and the answer pad in the bottom
 thumb zone.
 
 The answer pad is a **fixed piano**: seven white keys along the bottom and, with
