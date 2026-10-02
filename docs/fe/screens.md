@@ -80,8 +80,8 @@ first 150 ms, so a quick load never flashes it.
   starts straight away on the setup the stats show. A quieter underlined
   "Đổi thiết lập" / "Change setup" link under it opens the setup phase instead.
   From `sm` up the button sits on the right with the link to its left.
-- **Paused-session bar**: when the reader left a session mid-way (back,
-  swipe), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn
+- **Paused-session bar**: when the reader left a session mid-way without ending
+  it (back and swipe now pause in place, so this is rarer), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn
   9:40 · 12 đúng, 2 sai" with an amber "Tập tiếp" / "Resume" that goes back in
   and resumes straight away (route state `resume`). "Luyện ngay" or "Đổi thiết
   lập" instead ends the paused session as an early end (see below).
@@ -152,7 +152,9 @@ vertical drag neither bounces the page nor pulls it down to refresh. The surface
 itself has `touch-action: none`, so drags never pan, pinch or double-tap zoom,
 while taps on the keys still answer. Browsers read the overscroll setting for the
 page only from `<html>`, not `<body>`. Home, setup and result scroll as usual. The
-browser's edge-swipe back can't be blocked by a page; it pauses the session (below).
+browser's edge-swipe back can't be blocked by a page, but it no longer leaves the
+drill: the session sits on a history entry of its own, so swiping back opens the
+pause sheet (below).
 
 The staff **holds still between questions**: the stave and clef are one layer
 drawn once per clef, and the notes a second layer on top. A new question only
@@ -182,7 +184,9 @@ the session waits:
 | ✕ or Esc, before any answer | straight back to setup; nothing to keep |
 | ✕ or Esc, after answering | **pause sheet**: "Đã tạm dừng", time left / right / wrong, a note that ending now is not scored but the time played still counts toward today's goal, amber "Tiếp tục tập" and a red-text "Kết thúc lượt" |
 | switches app or locks the phone (page hidden) | pauses; on return the same sheet greets them: "Chào mừng quay lại", the time left large, the same two actions |
-| back or swipe to home | pauses and home shows the paused-session bar; with no answers the session is simply dropped |
+| back or edge-swipe during the session | **pause sheet**, as for ✕; the reader stays in the drill. Back again keeps them there; "Kết thúc lượt" ends it |
+| back from the result | setup; back from setup goes home |
+| leaves the drill another way (home link from a deep link, closing the tab mid-way) | pauses and home shows the paused-session bar; with no answers the session is simply dropped |
 
 Both are one bottom sheet (`PausePanel`, built on `vaul`) on every width,
 centred and at most `max-w-md` on desktop. It slides up and back down, drags

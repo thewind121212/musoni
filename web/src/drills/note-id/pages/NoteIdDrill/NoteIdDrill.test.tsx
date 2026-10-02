@@ -1,6 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { act, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { resetStores, session } from '@/test/fixtures'
 
 vi.mock('@/core/audio/playPitch', () => ({ playPitch: vi.fn(), preloadPiano: vi.fn(() => Promise.resolve()) }))
@@ -65,5 +66,59 @@ describe('NoteIdDrill', () => {
     expect(useDrillStore.getState().pausedAt).toBeNull()
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(useAppStore.getState().pausedSession).toBeNull()
+  })
+
+  describe('back inside the drill', () => {
+    // Home, then the drill: the way a reader arrives.
+    const renderFromHome = () => {
+      const router = createMemoryRouter(
+        [{ path: '/', element: <p>home</p> }, { path: '/train/note-id', element: <NoteIdDrill /> }],
+        { initialEntries: ['/', '/train/note-id'], initialIndex: 1 },
+      )
+      render(<RouterProvider router={router} />)
+      return router
+    }
+    const back = (router: ReturnType<typeof createMemoryRouter>) => act(() => router.navigate(-1))
+
+    it('pauses a running session instead of leaving for home', async () => {
+      const router = renderFromHome()
+      await userEvent.click(screen.getByRole('button', { name: /Start/ }))
+      await back(router)
+      expect(router.state.location.pathname).toBe('/train/note-id')
+      expect(useDrillStore.getState().phase).toBe('running')
+      expect(useDrillStore.getState().pauseReason).toBe('menu')
+      // Back again still holds the reader in the paused session.
+      await back(router)
+      expect(router.state.location.pathname).toBe('/train/note-id')
+    })
+
+    it('goes from the result back to setup, then home', async () => {
+      const router = renderFromHome()
+      await userEvent.click(screen.getByRole('button', { name: /Start/ }))
+      act(() => useDrillStore.setState({ phase: 'finished', lastResult: session() }))
+      await back(router)
+      expect(useDrillStore.getState().phase).toBe('setup')
+      expect(screen.getByRole('button', { name: /Start/ })).toBeInTheDocument()
+      await back(router)
+      expect(router.state.location.pathname).toBe('/')
+    })
+
+    it("takes the result screen's Home link straight home, past setup", async () => {
+      const router = renderFromHome()
+      await userEvent.click(screen.getByRole('button', { name: /Start/ }))
+      act(() => useDrillStore.setState({ phase: 'finished', lastResult: session() }))
+      await userEvent.click(await screen.findByRole('link', { name: /Home/ }))
+      expect(router.state.location.pathname).toBe('/')
+    })
+
+    it('drops the session entry when the drill returns to setup by itself', async () => {
+      const router = renderFromHome()
+      await userEvent.click(screen.getByRole('button', { name: /Start/ }))
+      // Ending with no answers goes straight to setup; back from there leaves.
+      act(() => useDrillStore.getState().endEarly())
+      await act(async () => {})
+      await back(router)
+      expect(router.state.location.pathname).toBe('/')
+    })
   })
 })

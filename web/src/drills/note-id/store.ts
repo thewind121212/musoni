@@ -7,8 +7,9 @@ import { getSettings, recordSession, type Settings, type SessionResult } from '.
 /**
  * The note-id drill is a self-contained SPA: one route, three phases.
  * `setup` picks level + settings, `running` is the sprint, `finished` shows the
- * result. Phases are store state, not routes, so nothing about the training
- * flow touches the URL or the browser history.
+ * result. Phases are store state, not routes, so the training flow never
+ * touches the URL. (The drill page mirrors the session onto one history entry
+ * so back works inside the drill; see NoteIdDrill.)
  */
 export type Phase = 'setup' | 'running' | 'finished'
 
