@@ -3,11 +3,11 @@ import { useLocation } from 'react-router-dom'
 import { ProgressBar } from '@/core/components/atoms'
 import { AnswerPad, PausePanel, QuestionStaff, RunHeader } from '@/drills/note-id/components/organisms'
 import { MissLine } from '@/drills/note-id/components/atoms'
-import { playedMs, useDrillStore } from '@/drills/note-id/store'
+import { playedMs, useDrillStore, type PauseReason } from '@/drills/note-id/store'
 import { useAppStore } from '@/app/store'
 import { optionIndexFromKey } from '@/drills/note-id/keyboard'
 import { useT } from '@/app/useT'
-import { formatElapsed } from '@/core/i18n/formatDuration'
+import { formatClock, formatElapsed } from '@/core/i18n/formatDuration'
 import { nearestOctave } from '@/core/music/pitch'
 import { playPitch, preloadPiano } from '@/core/audio/playPitch'
 import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '@/config/constants'
@@ -39,6 +39,9 @@ export function RunPhase() {
   const { pathname } = useLocation()
   // The clock lives in state, refreshed each tick, so render stays pure.
   const [now, setNow] = useState(() => Date.now())
+  // The sheet keeps its last content while it slides away after resuming.
+  const [shownReason, setShownReason] = useState<PauseReason>('menu')
+  if (pauseReason && pauseReason !== shownReason) setShownReason(pauseReason)
 
   useEffect(() => {
     mountedCount++
@@ -98,11 +101,12 @@ export function RunPhase() {
     const onKey = (e: KeyboardEvent) => {
       // A held key auto-repeats; without this it would answer the next
       // question too, the moment the feedback flash clears.
-      if (e.repeat) return
+      // The pause sheet handles its own Esc (it resumes) and marks the event;
+      // acting on it here as well would pause again straight away.
+      if (e.repeat || e.defaultPrevented) return
       const s = useDrillStore.getState()
       if (e.key === 'Escape') {
         if (s.pausedAt === null) quit()
-        else s.resume()
         return
       }
       if (!s.question || s.feedback || s.pausedAt !== null) return
@@ -186,19 +190,17 @@ export function RunPhase() {
           <AnswerPad options={question.options} feedback={feedback} onAnswer={answer} />
         </div>
       </div>
-      {pausedAt !== null && (
-        <PausePanel
-          reason={pauseReason ?? 'menu'}
-          secondsLeft={secondsLeft}
-          timeLeft={formatElapsed(secondsLeft, t)}
-          played={formatElapsed(playedMs({ endsAt, pausedAt, settings }) / 1000, t)}
-          correct={correct}
-          wrong={wrong}
-          onResume={() => useDrillStore.getState().resume()}
-          onEnd={() => useDrillStore.getState().endEarly()}
-          t={t}
-        />
-      )}
+      <PausePanel
+        open={pausedAt !== null}
+        reason={shownReason}
+        timeLeft={formatClock(secondsLeft)}
+        played={formatElapsed(playedMs({ endsAt, pausedAt, settings }) / 1000, t)}
+        correct={correct}
+        wrong={wrong}
+        onResume={() => useDrillStore.getState().resume()}
+        onEnd={() => useDrillStore.getState().endEarly()}
+        t={t}
+      />
     </>
   )
 }

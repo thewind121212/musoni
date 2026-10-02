@@ -72,8 +72,8 @@ interface: no clutter around the staff.
   "Đổi thiết lập" / "Change setup" link under it opens the setup phase instead.
   From `sm` up the button sits on the right with the link to its left.
 - **Paused-session bar**: when the reader left a session mid-way (back,
-  swipe), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn 18
-  giây · 12 đúng, 2 sai" with an amber "Tập tiếp" / "Resume" that goes back in
+  swipe), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn
+  9:40 · 12 đúng, 2 sai" with an amber "Tập tiếp" / "Resume" that goes back in
   and resumes straight away (route state `resume`). "Luyện ngay" or "Đổi thiết
   lập" instead ends the paused session as an early end (see below).
 
@@ -156,9 +156,16 @@ the session waits:
 | How the reader leaves | What happens |
 |---|---|
 | ✕ or Esc, before any answer | straight back to setup; nothing to keep |
-| ✕ or Esc, after answering | **pause sheet** (bottom sheet on a phone, dialog on desktop): "Đã tạm dừng", time left / right / wrong, a note that ending now is not scored but the time played still counts toward today's goal, amber "Tiếp tục tập" (focused, so Enter or Esc carries on) and a red-text "Kết thúc lượt" |
-| switches app or locks the phone (page hidden) | pauses; on return a **welcome-back card**: "Chào mừng quay lại", the seconds left, the same two actions |
+| ✕ or Esc, after answering | **pause sheet**: "Đã tạm dừng", time left / right / wrong, a note that ending now is not scored but the time played still counts toward today's goal, amber "Tiếp tục tập" and a red-text "Kết thúc lượt" |
+| switches app or locks the phone (page hidden) | pauses; on return the same sheet greets them: "Chào mừng quay lại", the time left large, the same two actions |
 | back or swipe to home | pauses and home shows the paused-session bar; with no answers the session is simply dropped |
+
+Both are one bottom sheet (`PausePanel`, built on `vaul`) on every width,
+centred and at most `max-w-md` on desktop. It slides up and back down, drags
+down, and closes on Esc or a tap on the scrim; every way of closing it resumes.
+Time left is a clock ("9:40", "0:18", `formatClock`), never words, so a
+30-minute session fits its third of the sheet at 320px; the run timer uses the
+same clock from a minute up and bare seconds below.
 
 While paused the run screen is `inert` under a scrim and answer keys are
 ignored; paused time is handed back on resume, so the per-note time stays

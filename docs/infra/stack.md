@@ -13,6 +13,7 @@
 | Styling | Tailwind v4 via `@tailwindcss/vite`, semantic tokens in `src/index.css` | Utility-first over one token layer means light and dark are defined once; replaced the hand-rolled CSS classes | Hand-written CSS (what Phase 1 shipped, and it looked it), CSS modules |
 | Fonts | Geist + Geist Mono, self-hosted via `@fontsource-variable` | No render-blocking third-party request; mono carries the timer and score figures | Inter (generic default), Google Fonts `<link>` |
 | Motion | `motion` (motion/react) | Answer feedback and phase transitions only, all behind `prefers-reduced-motion` | CSS-only (no exit animations), GSAP (overkill here) |
+| Bottom sheets | `vaul` (on Radix Dialog) | Slide in and out, drag to dismiss, focus trap, Esc and scrim close, scroll lock; a hand-rolled sheet had none of it | Hand-rolled overlay (no animation, no drag), Radix Dialog alone (no sheet gestures) |
 | Icons | `@phosphor-icons/react` | One icon family; replaced the emoji in the UI | Emoji, hand-rolled SVG paths |
 | Persistence (Phase 1) | localStorage via `progressStore` module | No login yet; versioned JSON doc is the cloud plug | — |
 | i18n | Hand-rolled typed translator in `core/i18n/` (Vietnamese default, English second) | Two languages and ~180 keys need no library; typing `vi` against the English key set makes a missing translation a build error; plurals come free from `Intl.PluralRules` | i18next / react-intl (dependency and runtime weight for a lookup table) |

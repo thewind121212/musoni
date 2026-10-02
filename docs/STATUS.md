@@ -21,7 +21,7 @@ answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
-losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 293 web tests (Vitest) + 1 Go test
+losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 297 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -120,6 +120,10 @@ a real browser.
       Fixes the bug where a session abandoned by back and reopened after its clock ran
       out was saved as a full session and could set a best. 293 web tests green —
       `docs/fe/screens.md`, `docs/fe/drill-note-identification.md`, `docs/fe/data-model.md`
+- [x] Pause sheet fixes (user feedback on #12): the sheet is now a `vaul` drawer that slides
+      in and out and drags down (it had no animation), and time left is a clock ("9:40")
+      so long sessions no longer overflow its column; the run timer shows m:ss from a minute
+      up. Tests now fail on both regressions and on Esc re-pausing. 297 web tests green
 
 ## In Progress
 

@@ -159,7 +159,8 @@ describe('RunPhase leaving mid-session', () => {
     pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
     act(() => { vi.advanceTimersByTime(2000) })
   }
-  const timer = () => screen.getByRole('banner').children[1].textContent
+  // `hidden`: while the sheet is open the page behind it is hidden from assistive tech.
+  const timer = () => screen.getByRole('banner', { hidden: true }).children[1].textContent
 
   it('pauses on ✕ once something was answered, and the clock stands still', () => {
     renderRun()
@@ -179,14 +180,24 @@ describe('RunPhase leaving mid-session', () => {
     expect(useDrillStore.getState().correct).toBe(1)
   })
 
-  it('toggles the pause with Esc', () => {
+  // Esc goes to the focused element, so the sheet sees it as well as the page.
+  const pressEsc = () => fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' })
+
+  it('pauses on Esc, and a second Esc resumes without pausing again', () => {
     renderRun()
     answerOnce()
-    pressKey({ key: 'Escape' })
+    pressEsc()
     expect(useDrillStore.getState().pausedAt).not.toBeNull()
-    pressKey({ key: 'Escape' })
+    pressEsc()
     expect(useDrillStore.getState().pausedAt).toBeNull()
-    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('shows a long session\'s time left as a clock (regression: "9 phút 40 giây" overflowed the sheet)', () => {
+    useDrillStore.getState().start(1, { ...settings, durationSec: 600 }, Date.now())
+    renderRun()
+    answerOnce()
+    fireEvent.click(quitButton())
+    expect(screen.getByRole('dialog')).toHaveTextContent(/9:5\d/)
   })
 
   it('resumes from the sheet, or ends early with the session marked partial', () => {

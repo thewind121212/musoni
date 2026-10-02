@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatDuration, formatElapsed } from './formatDuration'
+import { formatClock, formatDuration, formatElapsed } from './formatDuration'
 import { translate } from './translate'
 import { DURATIONS } from '../../config/constants'
 import type { TranslationKey } from './translations'
@@ -38,5 +38,15 @@ describe('formatElapsed', () => {
     expect(formatElapsed(60, en)).toBe('1 minute')
     expect(formatElapsed(125, en)).toBe('2 min 5 sec')
     expect(formatElapsed(125, vi)).toBe('2 phút 5 giây')
+  })
+})
+
+describe('formatClock', () => {
+  it('reads as minutes and seconds at any length, so it fits a narrow column', () => {
+    expect(formatClock(18)).toBe('0:18')
+    expect(formatClock(17.2)).toBe('0:18')
+    expect(formatClock(580)).toBe('9:40')
+    expect(formatClock(1800)).toBe('30:00')
+    expect(formatClock(-3)).toBe('0:00')
   })
 })

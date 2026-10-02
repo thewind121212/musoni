@@ -62,7 +62,8 @@ Shared, module-agnostic, reuse-first building blocks:
 - `core/scoring.ts` — pace-based scoring with difficulty and endurance
   multipliers, shared by any drill.
 - `core/i18n/` — the translator (see i18n below), `formatDuration` and
-  `formatElapsed` (time played: "12 giây", "2 phút 5 giây").
+  `formatElapsed` (time played: "12 giây", "2 phút 5 giây") and `formatClock`
+  (time left: "9:40").
 - `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
   `piano.ts` holds the pure nearest-sample math.
 - `core/engine/` — reserved for a shared drill lifecycle
@@ -106,7 +107,7 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 |---|---|---|
 | atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine` |
 | molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PausedNotice`, `PianoKey`, `DurationPicker`, `SessionStats` |
-| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` |
+| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet) |
 | template | layout shell with no content of its own | `PageTransition` |
 | page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `SetupPhase`, `RunPhase`, `ResultPhase` |
 

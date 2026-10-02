@@ -105,7 +105,7 @@ export const en = {
   'pause.end': 'End session',
   'away.title': 'Welcome back',
   'away.body': 'The session paused itself when you left, so no time slipped away.',
-  'away.detail': 'seconds left \u00B7 {correct} correct \u00B7 {wrong} wrong',
+  'away.detail': 'left \u00B7 {correct} correct \u00B7 {wrong} wrong',
 
   'result.personalBest': 'Personal best',
   'result.session': '{level} session',
@@ -235,7 +235,7 @@ export const vi: Record<TranslationKey, string> = {
   'pause.end': 'Kết thúc lượt',
   'away.title': 'Chào mừng quay lại',
   'away.body': 'Lượt tập đã tự tạm dừng khi bạn rời ứng dụng, nên thời gian không bị trôi mất.',
-  'away.detail': 'giây còn lại \u00B7 {correct} đúng \u00B7 {wrong} sai',
+  'away.detail': 'còn lại \u00B7 {correct} đúng \u00B7 {wrong} sai',
 
   'result.personalBest': 'Kỷ lục cá nhân',
   'result.session': 'Lượt {level}',

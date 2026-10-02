@@ -1,6 +1,7 @@
 import { XIcon } from '@phosphor-icons/react'
 import { CountPill } from '@/core/components/atoms'
 import type { Translate } from '@/core/i18n/translate'
+import { formatClock } from '@/core/i18n/formatDuration'
 
 interface Props {
   secondsLeft: number
@@ -29,7 +30,9 @@ export function RunHeader({ secondsLeft, urgent, correct, wrong, onQuit, t }: Pr
         <XIcon size={20} weight="bold" />
       </button>
       <div className={'tnum text-center text-3xl font-semibold md:text-5xl ' + (urgent ? 'text-wrong' : 'text-ink')}>
-        {secondsLeft}
+        {/* Bare seconds in the last minute; minutes and seconds above it, so a
+            long session reads "9:40" rather than "580". */}
+        {secondsLeft >= 60 ? formatClock(secondsLeft) : secondsLeft}
       </div>
       {/* Right and wrong side by side, each with its icon, so a miss is counted
           where the reader can see it rather than only resetting the streak. */}

@@ -8,8 +8,8 @@ const base = { secondsLeft: 60, urgent: false, correct: 0, wrong: 0, onQuit: () 
 
 describe('RunHeader', () => {
   it('renders at the start of a sprint', () => {
-    render(<RunHeader {...base} />)
-    expect(screen.getByText('60')).toBeInTheDocument()
+    render(<RunHeader {...base} secondsLeft={30} />)
+    expect(screen.getByText('30')).toBeInTheDocument()
     expect(screen.getByText('0 correct')).toBeInTheDocument()
     expect(screen.getByText('0 wrong')).toBeInTheDocument()
   })
@@ -32,5 +32,12 @@ describe('RunHeader', () => {
     render(<RunHeader {...base} onQuit={onQuit} />)
     await userEvent.click(screen.getByRole('button', { name: 'Quit this session' }))
     expect(onQuit).toHaveBeenCalledOnce()
+  })
+
+  it('shows minutes and seconds from a minute up, bare seconds below', () => {
+    const { rerender } = render(<RunHeader {...base} secondsLeft={580} />)
+    expect(screen.getByText('9:40')).toBeInTheDocument()
+    rerender(<RunHeader {...base} secondsLeft={59} />)
+    expect(screen.getByText('59')).toBeInTheDocument()
   })
 })

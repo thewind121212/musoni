@@ -28,3 +28,12 @@ export function formatElapsed(seconds: number, t: Translate): string {
   const sec = total % 60
   return sec === 0 ? t('duration.minutes', { count: min }) : t('duration.minSec', { min, sec })
 }
+
+/**
+ * A countdown as a clock ("0:18", "9:40", "30:00"). Fixed width per length,
+ * unlike words, so it fits a narrow column at any session length.
+ */
+export function formatClock(seconds: number): string {
+  const total = Math.max(0, Math.ceil(seconds))
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`
+}

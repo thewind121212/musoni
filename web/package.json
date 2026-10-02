@@ -24,6 +24,7 @@
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2",
     "tailwindcss": "^4.3.3",
+    "vaul": "^1.1.2",
     "vexflow": "^5.0.0",
     "zustand": "^5.0.15"
   },

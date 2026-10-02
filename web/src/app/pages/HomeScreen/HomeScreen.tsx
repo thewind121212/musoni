@@ -8,7 +8,7 @@ import { useT } from '@/app/useT'
 import {
   getActiveDayCount, getBest, getDailyMinutes, getLongestStreak, getStreak, localDayKey,
 } from '@/progress/progressStore'
-import { formatDuration, formatElapsed } from '@/core/i18n/formatDuration'
+import { formatClock, formatDuration } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
 
 /** Page: reads the app store and progress, and hands plain values to the components below. */
@@ -102,7 +102,7 @@ export function HomeScreen() {
           to={pausedSession.to}
           title={t('home.paused')}
           detail={t('home.paused.detail', {
-            left: formatElapsed(pausedSession.secondsLeft, t),
+            left: formatClock(pausedSession.secondsLeft),
             correct: pausedSession.correct,
             wrong: pausedSession.wrong,
           })}
