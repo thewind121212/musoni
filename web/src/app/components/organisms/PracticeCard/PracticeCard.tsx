@@ -5,6 +5,8 @@ import { ArrowRightIcon } from '@phosphor-icons/react'
 import { StatStrip, type Stat } from '@/core/components/molecules'
 
 const ARROW = 'transition-transform duration-150 group-hover:translate-x-0.5'
+const PILL = 'flex shrink-0 items-center rounded-full bg-cta font-semibold text-cta-ink shadow-sm '
+  + 'transition-[filter] duration-150 group-hover:brightness-95'
 
 interface Props {
   /** Route the card opens. */
@@ -29,28 +31,26 @@ export function PracticeCard({ to, icon, title, description, actionLabel, stats 
                    transition-colors duration-150 hover:border-accent
                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        {/* The call to action is neutral ink rather than the accent, so it
-            does not compete with the blue icon tile. Phones get small text on
+        {/* The call to action is a filled amber pill, a colour reserved for
+            "start" buttons, so it reads as something to tap at a glance and
+            stays apart from the blue icon tile. Phones get a compact pill on
             the title row, so the description keeps the full width below;
-            wider screens get a pill on the right. Only one shows at a time. */}
+            wider screens get a larger one on the right. Only one shows. */}
         <span className="flex items-center gap-4">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-ink">
             {icon}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="flex items-baseline justify-between gap-2">
+            <span className="flex items-start justify-between gap-2">
               <span className="font-medium">{title}</span>
-              <span className="flex shrink-0 items-center gap-0.5 text-xs font-semibold text-ink sm:hidden">
+              <span className={`${PILL} gap-1 px-2.5 py-1 text-xs sm:hidden`}>
                 {actionLabel}
                 <ArrowRightIcon size={12} weight="bold" aria-hidden className={ARROW} />
               </span>
             </span>
             <span className="block text-sm text-ink-faint">{description}</span>
           </span>
-          <span
-            className="hidden shrink-0 items-center gap-1.5 rounded-full bg-ink px-3.5 py-1.5 text-sm font-semibold
-                       text-surface transition-colors duration-150 group-hover:bg-ink-soft sm:flex"
-          >
+          <span className={`${PILL} hidden gap-1.5 px-4 py-2 text-sm sm:flex`}>
             {actionLabel}
             <ArrowRightIcon size={14} weight="bold" aria-hidden className={ARROW} />
           </span>

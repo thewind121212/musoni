@@ -153,7 +153,7 @@ web/src/
 
 **Tailwind v4** via `@tailwindcss/vite`, with semantic design tokens declared in
 `src/index.css` (`--surface`, `--raised`, `--line`, `--ink*`, `--accent`,
-`--correct`, `--wrong`, `--staff`) and re-exported to Tailwind through `@theme`.
+`--cta`, `--correct`, `--wrong`, `--staff`) and re-exported to Tailwind through `@theme`.
 Components use token utilities (`bg-raised`, `text-ink-soft`) rather than raw
 palette values, so light and dark are one definition.
 
@@ -165,7 +165,9 @@ Layout is mobile-first with a single hinge at `md` (768px): base utilities
 describe the phone, `md:` utilities describe desktop. Both are first-class
 targets (see `screens.md`).
 
-Locked conventions: one accent (cobalt); `rounded-2xl` for every surface and
+Locked conventions: one accent (cobalt); one call-to-action colour (amber
+`--cta`, used only for "start practising" buttons so they read as tappable at a
+glance); `rounded-2xl` for every surface and
 answer key, full-round for segmented chips; correct and wrong are carried by
 colour **and** an icon, never colour alone; all motion sits behind
 `prefers-reduced-motion`.

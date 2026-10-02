@@ -37,10 +37,10 @@ interface: no clutter around the staff.
   three-column `StatStrip` (equal columns, labels and values wrap, so it fits a
   320px phone), and a disabled
   placeholder card for the Phase 2 rhythm drill. The card's call to action is
-  "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), in neutral ink
-  rather than the accent so it does not compete with the blue icon tile. On
-  phones it is small text at the right of the title row, leaving the
-  description the full width below; from `sm` up it is an ink pill on the
+  "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), a filled amber
+  pill (`--cta`, not the blue accent) so it reads as a button at first glance.
+  On phones it is a compact pill at the right of the title row, leaving the
+  description the full width below; from `sm` up it is a larger pill on the
   right of the card.
 
 Route changes slide in from the right, and the drill's own phase changes
