@@ -16,6 +16,7 @@ export const en = {
   'home.training': 'Training',
   'home.noteReading': 'Note reading',
   'home.noteReading.what': 'Name the note on the staff',
+  'home.practice': 'Practice',
   'home.measure': 'Complete the measure',
   'home.measure.soon': 'Rhythm training, coming next',
 
@@ -100,6 +101,7 @@ export const en = {
 
   'run.quit': 'Quit this session',
   'run.correct': '{count} correct',
+  'run.wrong': '{count} wrong',
   'run.streak': '{count} in a row',
 
   'result.personalBest': 'Personal best',
@@ -128,6 +130,7 @@ export const vi: Record<TranslationKey, string> = {
   'home.training': 'Luyện tập',
   'home.noteReading': 'Đọc nốt nhạc',
   'home.noteReading.what': 'Gọi tên nốt trên khuông nhạc',
+  'home.practice': 'Luyện tập',
   'home.measure': 'Hoàn thành ô nhịp',
   'home.measure.soon': 'Luyện tiết tấu, sắp có',
 
@@ -212,6 +215,7 @@ export const vi: Record<TranslationKey, string> = {
 
   'run.quit': 'Thoát lượt tập',
   'run.correct': 'đúng {count}',
+  'run.wrong': 'sai {count}',
   'run.streak': '{count} liên tiếp',
 
   'result.personalBest': 'Kỷ lục cá nhân',

@@ -31,9 +31,14 @@ export interface Question {
 
 const LETTERS: Letter[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
-/** Natural keys carry 1..7; black keys carry the row above on a QWERTY board. */
-const NATURAL_KEYS = ['1', '2', '3', '4', '5', '6', '7']
-const ACCIDENTAL_KEYS = ['q', 'w', 'e', 'r', 't']
+/**
+ * The computer keyboard laid out as a piano, the convention of DAW "musical
+ * typing": the home row A S D F G H J is the white keys C to B, and the row
+ * above holds the black keys in the gaps where a piano has them (W E between
+ * C-D-E, nothing over the E-F gap at R, then T Y U).
+ */
+const NATURAL_KEYS = ['a', 's', 'd', 'f', 'g', 'h', 'j']
+const ACCIDENTAL_KEYS = ['w', 'e', 't', 'y', 'u']
 
 /**
  * The five black keys, as the white key they sit above when spelled sharp and

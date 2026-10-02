@@ -37,8 +37,19 @@ VexFlow draws a single note on a staff (clef per level), large and centered.
 ## Answering
 
 - Big tappable buttons (mobile-first) + keyboard shortcuts on desktop.
-- Instant feedback: green/red, correct answer shown on a miss, auto-advance.
-- Optional sound: the actual pitch plays on answer (Web Audio, toggleable).
+- Keyboard shortcuts follow a piano ("musical typing", as in DAWs), matched on
+  the physical key (`KeyboardEvent.code`) so Caps Lock and IME input still work:
+  - home row `A S D F G H J` = white keys C D E F G A B
+  - row above `W E T Y U` = black keys C#/Db, D#/Eb, F#/Gb, G#/Ab, A#/Bb
+    (`R` sits over the E-F gap and does nothing, like the piano)
+  - chords with Ctrl / Cmd / Alt are left to the browser.
+- Instant feedback on the staff: a correct answer turns the note green; a miss
+  draws the printed note green (the right answer, in place) and the key the
+  reader pressed as a red note beside it, at the octave nearest the printed one.
+  The answer pad mirrors it (green check / red cross); auto-advance.
+- Optional sound: the actual pitch plays on answer on a sampled piano
+  (Salamander Grand, see `docs/infra/stack.md`), lazy-loaded when the sprint
+  opens, with a sine tone as the fallback until the samples arrive.
 
 ## Session format
 

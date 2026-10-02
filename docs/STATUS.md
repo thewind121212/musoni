@@ -50,7 +50,31 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       (VexFlow reserves space above the stave), covered by `Staff.test.ts`
 - [x] Hybrid layout: desktop is a first-class target, not a narrow phone column.
       Home goes two-column, setup lays options in a grid, the drill widens with a
-      larger staff and timer, and keyboard hints (1-8) show on `md:` and up
+      larger staff and timer, and keyboard hints show on `md:` and up
+- [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
+      sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
+      `W E T Y U` = black keys. Kawai samples requested; swap pending network access
+- [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
+      (one three-column `StatStrip`), and the drill header counts wrong answers next to
+      right ones (green check / red cross pills)
+- [x] Guard tests for the piano / keyboard / phone-fix work: `RunPhase` (right and wrong
+      counts, streak from 3, held-key repeat, Cmd/Ctrl chords, one answer per note,
+      sound on/off), `playPitch` (sine fallback, sample rate and pitch shift, fetch-once,
+      failed loads, no Web Audio) and `StatStrip` (shrinkable columns, no truncation).
+      125 web tests green
+- [x] Atomic component structure (Phase 1 of the test plan): every component sits at one
+      level (atoms / molecules / organisms / templates / pages) in its own folder, per module;
+      only pages read stores and progress. New shared atoms `CountPill`, `ProgressBar`, `Chip`,
+      `StatTile`, `IconStat`, `FieldLegend`; drill pieces `PianoKey`, `AnswerPad`, `RunHeader`,
+      `QuestionStaff`, `ResultSummary`. `@/` import alias, Testing Library added. No visible
+      change (screenshots match `main`), 125 tests green — `docs/fe/architecture.md`
+- [x] Component tests (test plan Phase 2): a `.test.tsx` beside every component and page,
+      Testing Library + jest-dom. Each renders with default props and tests only logic that
+      can break (no assertions on constants); deliberately breaking 13 pieces of logic
+      fails a test every time. `src/test/render.tsx` removed. 228 web tests green
+- [x] Home fixes: coming back from a drill no longer blanks and re-slides every block (the
+      entrance plays once per visit), and the practice card's `>` arrow is now
+      "Luyện tập →" as a filled amber button (new `--cta` token; compact on the title row on phones, larger on desktop). 229 web tests green
 
 ## In Progress
 
