@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-08-28
+> Last updated: 2026-10-02
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -59,10 +59,11 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 ## Next
 
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
-- Phase 2 hygiene (still open from the Phase 1 review): WeekStrip charts practice score only,
-  not accuracy; make the UTC-vs-local day-key regression test timezone-independent (the fix
-  itself is verified, the test only discriminates in negative-UTC-offset zones); stock
-  `<title>`, README and favicon.
+- Phase 2 hygiene from the Phase 1 review: all closed (2026-10-02). The local-day-key
+  regression test now pins its timezone per case (UTC+7 and UTC−7), so it fails on any
+  runner if bucketing regresses to UTC; real `<title>`, description and favicon; project
+  README and a real `web/README.md`. The WeekStrip item is moot: WeekStrip was replaced by
+  the activity panel, which charts practice minutes by design.
   Closed during the redesign: best-score now keyed on level and length, VexFlow lazy-loaded,
   tick interval and audio gain moved into `config/`.
 
