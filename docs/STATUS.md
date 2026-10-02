@@ -20,8 +20,8 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 125 web tests (Vitest) + 1 Go test
-green, `tsc` + `npm run build` clean, oxlint 1 warning. Not yet spot-checked in
+English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 230 web tests (Vitest) + 1 Go test
+green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
 ## Done
@@ -84,7 +84,6 @@ a real browser.
       counts, streak from 3, held-key repeat, Cmd/Ctrl chords, one answer per note,
       sound on/off), `playPitch` (sine fallback, sample rate and pitch shift, fetch-once,
       failed loads, no Web Audio) and `StatStrip` (shrinkable columns, no truncation).
-      Component tests mount with `src/test/render.tsx`, no Testing Library dependency.
       125 web tests green
 - [x] Atomic component structure (Phase 1 of the test plan): every component sits at one
       level (atoms / molecules / organisms / templates / pages) in its own folder, per module;
@@ -92,7 +91,16 @@ a real browser.
       `StatTile`, `IconStat`, `FieldLegend`; drill pieces `PianoKey`, `AnswerPad`, `RunHeader`,
       `QuestionStaff`, `ResultSummary`. `@/` import alias, Testing Library added. No visible
       change (screenshots match `main`), 125 tests green — `docs/fe/architecture.md`
-- [x] 125 web tests (Vitest) + 1 Go test green; `tsc -b && vite build` clean
+- [x] Component tests (test plan Phase 2): a `.test.tsx` beside every component and page,
+      Testing Library + jest-dom. Each renders with default props and tests only logic that
+      can break (no assertions on constants); deliberately breaking 13 pieces of logic
+      fails a test every time. `src/test/render.tsx` removed. 228 web tests green
+- [x] Home fixes: coming back from a drill no longer blanks and re-slides every block (the
+      entrance plays once per visit), and the practice card's `>` arrow is now
+      "Luyện tập →" as a filled amber button (new `--cta` token; compact on the title row on phones, larger on desktop). 229 web tests green
+- [x] CI: GitHub Actions runs web typecheck, oxlint (zero warnings), Vitest and Go vet/test
+      on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
+- [x] Lint clean: the run timer no longer calls `Date.now()` during render
 - [x] Docs caught up with everything above (2026-10-02)
 
 ## In Progress
@@ -104,25 +112,19 @@ a real browser.
 
 ## Next
 
-- Test plan Phase 2a: a `.test.tsx` beside every atom and molecule, written with Testing
-  Library; move `StatStrip`/`RunPhase` tests off `src/test/render.tsx` and delete it
-- Test plan Phase 2b: organism tests, then a Vitest coverage gate for components
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene:
-  - Make the UTC-vs-local day-key regression test timezone-independent (the fix
-    itself is verified, the test only discriminates in some UTC offsets).
-  - README and favicon are still the stock ones (the `<title>` is fixed).
   - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
     setup or delete it.
   - Result copy still says "your best at this level **and length**"
     (`result.yourBest`, English only); bests are level-only now.
-  - oxlint warning: `Date.now()` during render in `drills/note-id/pages/RunPhase/RunPhase.tsx:58`.
-  - Drill chunk is ~700 kB gzip (VexFlow + fonts); home is ~128 kB gzip.
-    Worth a look before launch.
-  - CI (GitHub Actions) is in review as PR #1; until it merges, checks run locally only.
-  Closed since the Phase 1 review: WeekStrip removed (the activity panel charts
-  minutes, not score), best-score keying settled (level only, since score is a
-  pace), VexFlow lazy-loaded, tick interval and audio gain moved into `config/`.
+  - Drill chunk is ~1.2 MB raw (VexFlow + fonts). Worth a look before launch.
+  Closed: the local-day-key regression test pins its timezone per case (UTC+7 and
+  UTC−7), so it fails on any runner if bucketing regresses to UTC; real `<title>`,
+  description and favicon; project README and a real `web/README.md`; CI and a
+  zero-warning lint; WeekStrip removed (the activity panel charts minutes, not
+  score); best-score keying settled (level only, since score is a pace); VexFlow
+  lazy-loaded; tick interval and audio gain moved into `config/`.
 
 ## Parked (Phase 2+)
 

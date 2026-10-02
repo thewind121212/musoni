@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 // The shipped defaults: Vietnamese first, and solfege with it, because that is
 // how notes are taught in the target market.
@@ -43,20 +43,23 @@ describe('progressStore', () => {
     const r = getRange(from, to)
     expect(Object.keys(r)).toEqual([to])
   })
-  it('buckets by LOCAL day, not UTC day, when they differ', () => {
-    // 1am UTC is still the previous evening in negative-offset timezones and
-    // the previous evening in UTC itself is late enough to roll into the next
-    // UTC day for positive-offset timezones. Rather than assume the test
-    // runner's offset, derive the expected bucket the same way production
-    // code does and assert the UTC-slice key is NOT used when it would differ.
-    const at = '2026-08-28T00:30:00Z'
-    recordSession(session({ at }))
-    const expectedKey = localDayKey(new Date(at))
-    const utcSliceKey = at.slice(0, 10)
-    expect(getDay(expectedKey)).toHaveLength(1)
-    if (utcSliceKey !== expectedKey) {
-      expect(getDay(utcSliceKey)).toHaveLength(0)
-    }
+  // Pins the zone per case so the check discriminates on any runner, not only
+  // one whose own offset happens to put the session on a different UTC day.
+  // Node re-reads TZ when it is assigned, so this works mid-process.
+  describe.each([
+    // 1:30am in Ho Chi Minh City is still the previous day in UTC.
+    { tz: 'Asia/Ho_Chi_Minh', at: '2026-08-27T18:30:00Z', local: '2026-08-28', utc: '2026-08-27' },
+    // 5:30pm in Los Angeles is already the next day in UTC.
+    { tz: 'America/Los_Angeles', at: '2026-08-28T00:30:00Z', local: '2026-08-27', utc: '2026-08-28' },
+  ])('in $tz', ({ tz, at, local, utc }) => {
+    beforeEach(() => { vi.stubEnv('TZ', tz) })
+    afterEach(() => { vi.unstubAllEnvs() })
+
+    it('buckets by LOCAL day, not UTC day', () => {
+      recordSession(session({ at }))
+      expect(getDay(local)).toHaveLength(1)
+      expect(getDay(utc)).toHaveLength(0)
+    })
   })
   it('getBest picks highest practiceScore for drill+level', () => {
     recordSession(session({ practiceScore: 50 }))

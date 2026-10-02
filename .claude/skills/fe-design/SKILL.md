@@ -70,6 +70,7 @@ A folder may group components that only make sense together.
 - [ ] Reuse check done in `core/components/` and module `components/`
 - [ ] Component placed at the right atomic level, in its own folder with `index.ts` and level barrel export
 - [ ] Only pages read stores / `useT()` / progress; lower levels take props
+- [ ] `X.test.tsx` beside the component: one render with default props + tests for its logic; no assertions on constants (see `docs/fe/architecture.md` "Testing components")
 - [ ] New state placed in the right Zustand store (module first, global only if app-wide)
 - [ ] Core components kept pure (no stores, no persistence, no drill knowledge)
 - [ ] Persistence only through `progressStore`

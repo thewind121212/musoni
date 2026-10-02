@@ -23,6 +23,7 @@
 
 ```
 musoni/
+├── README.md                  # what it is, how to run and check it
 ├── CLAUDE.md                  # project instructions: mandatory doc-sync, impl-plan, fe-design rules
 ├── .claude/skills/            # doc-sync, impl-plan, fe-design skills
 ├── tmp/                       # gitignored: per-implementation working folders
@@ -41,10 +42,21 @@ musoni/
 
 - `web/`: `cd web && npm install && npm run dev` — Vite dev server (default `http://localhost:5173`)
 - `server/`: `cd server && go run .` — serves `GET /health` on `:8080`
-- Tests: `cd web && npm test` (Vitest + jsdom; `@testing-library/react` and
-  `@testing-library/user-event` for component tests), `cd server && go test ./...`
+- Tests: `cd web && npm test` (Vitest + jsdom; `@testing-library/react`,
+  `@testing-library/user-event` and `@testing-library/jest-dom` for component tests;
+  `src/test/setup.ts` wires cleanup and the matchers), `cd server && go test ./...`
 - Imports: `@/` resolves to `web/src` (Vite `resolve.alias` + `paths` in `tsconfig.app.json`)
 - Build: `cd web && npm run build` (`tsc -b && vite build`, output in `web/dist/`)
+- Lint: `cd web && npm run lint` (oxlint; CI runs it with `--deny-warnings`)
+
+## CI
+
+GitHub Actions, `.github/workflows/ci.yml`, on every pull request and on pushes to `main`:
+
+- `web` job (Node 22): `npm ci`, typecheck (`tsc -b`), lint (`oxlint --deny-warnings`), tests (`vitest run`)
+- `server` job (Go version from `server/go.mod`): `go vet ./...`, `go test ./...`
+
+A lint warning fails CI, so keep oxlint at zero warnings.
 
 ## Deployment
 
