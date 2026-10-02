@@ -16,8 +16,8 @@ adds the desktop one, never the reverse) while the *target* is both:
 - One-hand portrait is the default phone posture; nothing depends on hover.
 - Desktop widens the container, enlarges the staff, timer and answer keys, and
   moves multi-group layouts into columns rather than one long scroll.
-- Keyboard shortcuts (1-7 on the white keys, q w e r t on the black keys) are
-  surfaced on `md:` and up,
+- Keyboard shortcuts (piano layout: `A`-`J` white keys, `W E T Y U` black keys)
+  are surfaced on `md:` and up,
   where a physical keyboard is likely, and hidden on phones where they are noise.
 - Check every screen at ~375px first, then at a desktop width. Both must look
   deliberate.

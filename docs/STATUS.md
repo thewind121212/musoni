@@ -20,7 +20,7 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch. Go `/health` stub behind it. 98 web tests (Vitest) + 1 Go test
+English switch, and answers play on a sampled piano. Go `/health` stub behind it. 105 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint 1 warning. Not yet spot-checked in
 a real browser.
 
@@ -55,7 +55,7 @@ a real browser.
 - [x] Quit is an icon; drill header center-aligned
 - [x] **Fixed 12-key piano answer pad**: 7 naturals along the bottom, 5 black keys
       above the real gaps (hidden in naturals-only mode), spelled to match the
-      printed note. Keyboard 1-7 + q w e r t. Replaces the old 8 sampled options
+      printed note. Replaces the old 8 sampled options
 - [x] **Vietnamese-first i18n**: typed translator in `core/i18n/` (no dependency),
       `vi` default + `en`, compact cycle switch in the home header, `<html lang>`
       follows the setting; solfège (Do Re Mi) is now the default naming
@@ -73,7 +73,11 @@ a real browser.
 - [x] **Activity calendar**: minutes per day (not score), short week view by default,
       expandable to a 20-week heatmap with longest streak and active days; mode is
       persisted; fixed today missing from its own calendar and the clipped today ring
-- [x] 98 web tests (Vitest) + 1 Go test green; `tsc -b && vite build` clean
+- [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
+      sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
+      `W E T Y U` = black keys; held-key repeats are ignored. Kawai samples requested;
+      swap pending network access
+- [x] 105 web tests (Vitest) + 1 Go test green; `tsc -b && vite build` clean
 - [x] Docs caught up with everything above (2026-10-02)
 
 ## In Progress
@@ -94,7 +98,7 @@ a real browser.
     setup or delete it.
   - Result copy still says "your best at this level **and length**"
     (`result.yourBest`, English only); bests are level-only now.
-  - oxlint warning: `Date.now()` during render in `RunPhase.tsx:51`.
+  - oxlint warning: `Date.now()` during render in `RunPhase.tsx:60`.
   - Drill chunk is ~700 kB gzip (VexFlow + fonts); home is ~128 kB gzip.
     Worth a look before launch.
   - CI (GitHub Actions) is in review as PR #1; until it merges, checks run locally only.

@@ -56,15 +56,24 @@ shows as a distance on the staff rather than only as a red key.
 
 ## Answering
 
-- Big tappable keys (mobile-first) + keyboard shortcuts on desktop:
-  **1-7** along the naturals, **q w e r t** on the black keys, mirroring the two
-  rows of the on-screen piano. Shortcuts resolve by matching the key each option
-  advertises (`keyboard.ts`), not by parsing a digit.
-- Instant feedback: the correct key fills green, a wrong pick red, then
-  auto-advance. A correct answer flashes for **260 ms** and moves on; a miss
-  holds for **1.1 s**, long enough to look at the staff
-  (`FEEDBACK_CORRECT_MS` / `FEEDBACK_WRONG_MS` in `config/`).
-- Optional sound: the actual pitch plays on answer (Web Audio, toggleable).
+- Big tappable keys (mobile-first) + keyboard shortcuts on desktop.
+- Keyboard shortcuts follow a piano ("musical typing", as in DAWs), matched on
+  the physical key (`KeyboardEvent.code`) so Caps Lock and IME input still work:
+  - home row `A S D F G H J` = white keys C D E F G A B
+  - row above `W E T Y U` = black keys C#/Db, D#/Eb, F#/Gb, G#/Ab, A#/Bb
+    (`R` sits over the E-F gap and does nothing, like the piano)
+  - chords with Ctrl / Cmd / Alt are left to the browser, and auto-repeat
+    keydowns from a held key are ignored so it cannot answer the next note.
+  Shortcuts resolve by matching the key each option advertises (`keyboard.ts`),
+  not by parsing a digit.
+- Instant feedback: the correct key fills green with a check, a wrong pick red
+  with a cross, and the staff mirrors it (see Rendering), then auto-advance. A
+  correct answer flashes for **260 ms** and moves on; a miss holds for **1.1 s**,
+  long enough to look at the staff (`FEEDBACK_CORRECT_MS` / `FEEDBACK_WRONG_MS`
+  in `config/`).
+- Optional sound: the actual pitch plays on answer on a sampled piano
+  (Salamander Grand, see `docs/infra/stack.md`), lazy-loaded when the sprint
+  opens, with a sine tone as the fallback until the samples arrive.
 
 ## Session format
 

@@ -59,7 +59,8 @@ Shared, module-agnostic, reuse-first building blocks:
 - `core/scoring.ts` — pace-based scoring with difficulty and endurance
   multipliers, shared by any drill.
 - `core/i18n/` — the translator (see i18n below) and `formatDuration`.
-- `core/audio/` — pitch playback (Web Audio).
+- `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
+  `piano.ts` holds the pure nearest-sample math.
 - `core/engine/` — reserved for a shared drill lifecycle
   (`generate → render → answer → feedback → next`) if a second drill needs
   one. **As built for Phase 1 it is an empty placeholder**: the note-id
