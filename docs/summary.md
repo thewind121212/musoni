@@ -8,8 +8,9 @@
 ## What is Musoni
 
 A web app for pure sheet-music reading training combined with music theory.
-Train reading speed with short drills, track improvement day by day.
-Ear training joins in a future phase (see phase plan below).
+Train reading speed and playing by ear with short drills, track improvement
+day by day: note reading (see a note, name it) and Nghe & Đàn (hear a note in a
+key, play it on the keys).
 
 **Design principle: mobile-first technique, hybrid target** - training must be
 super comfortable on a phone, and desktop is a first-class layout rather than a
@@ -21,14 +22,14 @@ desktop layout, never the reverse (details: `fe/screens.md`).
 | Phase | Scope | Monetization |
 |---|---|---|
 | **1 (now)** | Note Identification drill, web only, no login, localStorage progress, activity calendar; Vietnamese-first UI (English second) | Free |
-| **2** | Complete-the-Measure drill (design done: `fe/drill-complete-measure.md`), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats |
-| **3** | Ear training, more theory drills | Premium |
+| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), "read the shape" drill, Complete-the-Measure (design done: `fe/drill-complete-measure.md`, to be reshaped into tap-the-rhythm), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
+| **3** | More ear training (echo phrases, chords), more theory drills | Premium |
 
 ## Level 1 — Context: who uses it, what it does
 
 ```mermaid
 graph LR
-  U["Musician / Learner"] -->|trains sheet-music reading & theory| APP["Musoni App"]
+  U["Musician / Learner"] -->|trains sheet-music reading, playing by ear & theory| APP["Musoni App"]
 ```
 
 ## Level 2 — Containers: deployable pieces and their links
@@ -52,21 +53,24 @@ Solid lines = Phase 1 (live). Dotted lines = Phase 2 (planned).
 graph TB
   subgraph "FE container"
     HOME["Home route /<br/>drill list + activity calendar"]
-    DRILLROUTE["Drill route /train/note-id<br/>self-contained SPA"]
+    DRILLROUTE["Drill routes /train/note-id, /train/hear-play<br/>each a self-contained SPA"]
+    ROUTEHOOKS["Route hooks (app)<br/>useDrillRoute, useRunGuards"]
     SETUP["Setup phase<br/>level, length, settings"]
     RUN["Run phase<br/>the sprint"]
     RESULT["Result phase<br/>score + best"]
 
     APPSTORE["App Store (Zustand)<br/>settings, level, language"]
     I18N["i18n<br/>(typed translator, core; vi default, en)"]
-    DRILLSTORE["Drill Store (Zustand)<br/>note-id session lifecycle:<br/>start → answer → next → finish"]
-    GEN["Question Generator<br/>(note-id)"]
+    DRILLSTORE["Drill Stores (Zustand, one per drill)<br/>session lifecycle:<br/>start → answer → next → finish"]
+    GEN["Question Generators<br/>(note-id: a note to read;<br/>hear-play: a key + a note to hear)"]
+    MUSIC["Music theory<br/>(core: pitch, piano keys, keys + cadence)"]
     REND["Staff<br/>(VexFlow, core/components)"]
     SCORE["Scoring<br/>(pace × difficulty × accuracy × endurance, core)"]
     STORE["Progress Store<br/>(localStorage, cloud-plug)"]
-    AUDIO["Audio Feedback<br/>(Web Audio, core, optional)"]
+    AUDIO["Audio<br/>(Web Audio, core: notes, chords, scheduled sequences)"]
 
     HOME -->|router| DRILLROUTE
+    DRILLROUTE --> ROUTEHOOKS
     DRILLROUTE --> SETUP
     SETUP -->|start| RUN
     RUN -->|time up| RESULT
@@ -79,26 +83,32 @@ graph TB
     HOME --> STORE
     APPSTORE --> STORE
     DRILLSTORE --> GEN
+    GEN --> MUSIC
     DRILLSTORE --> SCORE
     DRILLSTORE --> STORE
     APPSTORE -->|language| I18N
   end
 ```
 
-Routing is app-level only: the router owns `/` and `/train/note-id`, while the
-three drill phases (setup, run, result) are store state inside that single
-route, so training never changes the URL.
+Routing is app-level only: the router owns `/`, `/train/note-id` and
+`/train/hear-play`, while each drill's three phases (setup, run, result) are
+store state inside its single route, so training never changes the URL. The
+route side every drill shares (home's route state, back inside the drill,
+pausing when the reader leaves) lives in two app hooks, and the screens' shared
+parts (pad, header, pause sheet, result summaries) in `core/components`.
 
-As built, there is no separate "Drill Engine" component: the note-id
-Drill Store itself holds the session lifecycle (`start` → `answer` →
+As built, there is no separate "Drill Engine" component: each Drill Store
+holds the session lifecycle (`start` → `answer` →
 `tick`/`next` → `finish`) and calls the Question Generator, Scoring, and
 Progress Store directly. The Run phase calls Staff (VexFlow rendering) and
 Audio Feedback directly using state read from the Drill Store.
 `core/engine/` exists in the repo only as an empty placeholder folder —
-no code has been written against it. If a second drill (Phase 2:
-Complete-the-Measure) needs to share lifecycle code, extracting a real
-`core/engine` at that point is the natural refactor; for one drill,
-inlining it in the store was the honest simpler choice.
+no code has been written against it. The second drill (Nghe & Đàn) kept its
+own store too: the two share the session shape (clock, pause, partial
+results) but differ in what a question is and when its clock starts, so the
+shared parts went into hooks and components instead. A third drill is the
+point to extract the clock and pause logic into `core/engine` if it repeats
+again.
 
 ### API Server (`server/`) — details in `docs/be/`
 

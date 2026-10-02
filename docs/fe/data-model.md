@@ -20,6 +20,8 @@ keyed by local day for the day-by-day tracker:
     "sound": true,
     "keyLabels": true,
     "padStyle": "piano",
+    "earLevel": 1,
+    "earDurationSec": 120,
     "lang": "vi",
     "activityExpanded": false
   },
@@ -58,8 +60,15 @@ keyed by local day for the day-by-day tracker:
 | `sound` | `true` | preference |
 | `padStyle` | `"piano"` | preference: answer keys as a drawn piano or as boxes (`"boxes"`, the older look). Added 2026-10-02 via the defaults merge |
 | `keyLabels` | `true` | preference: note names on the answer keys. Added 2026-10-02; older docs get it from the defaults merge, so no version bump |
+| `earLevel` | `1` | workout parameter for Nghe & Đàn (its own level, 1-4). Added 2026-10-02 via the defaults merge |
+| `earDurationSec` | `120` | workout parameter for Nghe & Đàn (its own length, same choices as `durationSec`). Added 2026-10-02 |
 | `lang` | `"vi"` | preference (`"vi"` / `"en"`) |
 | `activityExpanded` | `false` | preference: home activity panel shows the full calendar |
+
+`drill` is `"note-id"` or `"hear-play"` (`DrillId`). For a `hear-play` session,
+`level` is its own level (1-4, see `drill-hear-play.md`), `accidentals` says
+whether black keys were answers (L2 up), and `weight` is the level's weight.
+Bests and averages are keyed on drill and level.
 
 A session may also carry `"partial": true`: it stopped before its clock ran out
 (the reader ended it). Its `durationSec` is the time actually played and its

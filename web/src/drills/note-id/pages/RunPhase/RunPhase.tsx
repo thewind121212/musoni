@@ -1,21 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { ProgressBar } from '@/core/components/atoms'
-import { AnswerPad, PausePanel, QuestionStaff, RunHeader } from '@/drills/note-id/components/organisms'
-import { MissLine } from '@/drills/note-id/components/atoms'
+import { MissLine, ProgressBar } from '@/core/components/atoms'
+import { AnswerPad, PausePanel, QuestionStaff, RunHeader } from '@/core/components/organisms'
 import { playedMs, useDrillStore, type PauseReason } from '@/drills/note-id/store'
-import { useAppStore } from '@/app/store'
-import { optionIndexFromKey } from '@/drills/note-id/keyboard'
+import { useRunGuards } from '@/app/useRunGuards'
+import { optionIndexFromKey } from '@/core/music/keyboard'
 import { useT } from '@/app/useT'
 import { formatClock, formatElapsed } from '@/core/i18n/formatDuration'
 import { nearestOctave } from '@/core/music/pitch'
 import { playPitch, preloadPiano } from '@/core/audio/playPitch'
 import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '@/config/constants'
-
-// How many RunPhase instances are mounted. StrictMode unmounts and remounts
-// every component once in development, so an unmount only means the reader
-// left if nothing has mounted again by the next task.
-let mountedCount = 0
 
 /** The ✕ button and Esc: pause to ask, or just leave when nothing was answered yet. */
 function quit() {
@@ -29,58 +22,18 @@ function quit() {
  * the header, staff and pad.
  *
  * Leaving never runs the clock down unseen. ✕ and Esc pause and ask; hiding
- * the page (switching apps, locking the phone) pauses and welcomes the reader
- * back; leaving the route (back, swipe) pauses and tells home, which offers
- * the way back in.
+ * the page or leaving the route pauses too (see `useRunGuards`).
  */
 export function RunPhase() {
   const { question, endsAt, correct, wrong, streak, feedback, settings, pausedAt, pauseReason } = useDrillStore()
   const t = useT()
-  const { pathname } = useLocation()
   // The clock lives in state, refreshed each tick, so render stays pure.
   const [now, setNow] = useState(() => Date.now())
   // The sheet keeps its last content while it slides away after resuming.
   const [shownReason, setShownReason] = useState<PauseReason>('menu')
   if (pauseReason && pauseReason !== shownReason) setShownReason(pauseReason)
 
-  useEffect(() => {
-    mountedCount++
-    return () => {
-      mountedCount--
-      setTimeout(() => {
-        if (mountedCount > 0) return
-        const s = useDrillStore.getState()
-        if (s.phase !== 'running') return
-        // Nothing answered means nothing to come back for.
-        if (s.correct + s.wrong === 0) return s.backToSetup()
-        s.pause('away')
-        const left = useDrillStore.getState()
-        useAppStore.getState().setPausedSession({
-          to: pathname,
-          secondsLeft: Math.ceil((left.endsAt! - left.pausedAt!) / 1000),
-          correct: left.correct,
-          wrong: left.wrong,
-        })
-      }, 0)
-    }
-  }, [pathname])
-
-  useEffect(() => {
-    const onVisibility = () => {
-      if (document.hidden) useDrillStore.getState().pause('away')
-    }
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => document.removeEventListener('visibilitychange', onVisibility)
-  }, [])
-
-  // The sprint is one fixed screen: a stray drag must not bounce the page or
-  // pull it down to refresh. Browsers take this from <html> only, not <body>.
-  useEffect(() => {
-    const root = document.documentElement
-    const before = root.style.overscrollBehavior
-    root.style.overscrollBehavior = 'none'
-    return () => { root.style.overscrollBehavior = before }
-  }, [])
+  useRunGuards(useDrillStore.getState)
 
   // Start fetching the piano samples as the sprint opens, so the first answers
   // are already on the piano rather than the sine fallback.

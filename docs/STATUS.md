@@ -7,11 +7,12 @@
 ## What is Musoni
 
 A web app for pure sheet-music reading training combined with music theory.
-Phase 1: train note-identification speed on the staff. Later: rhythm drills, ear training, subscriptions.
+Phase 1: train note-identification speed on the staff. Phase 2 has begun with a second
+drill, Nghe & Đàn (hear a note in a key, play it on the keys). Later: more drills, login, subscriptions.
 
 ## Current Phase
 
-**Phase 1 — implemented and redesigned, pending human browser verification** (web only, no login, localStorage progress)
+**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill** (web only, no login, localStorage progress; pending human browser verification)
 
 ## State
 
@@ -21,7 +22,10 @@ answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
-losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 313 web tests (Vitest) + 1 Go test
+losing or miscounting the session. A second drill, **Nghe & Đàn** (`/train/hear-play`),
+plays a cadence and one note and has the reader find it on the same piano pad, then
+reveals it on the staff (relative pitch, four levels, the key moves from L2).
+Components follow atomic-design levels. Go `/health` stub behind it. 362 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -146,19 +150,35 @@ a real browser.
       setup, and only back from setup leaves. The session holds one history entry of its
       own (`app/drillStep`); the result's Home link skips past setup. 313 web tests green —
       `docs/fe/architecture.md`, `docs/fe/screens.md`
+- [x] **Drill 2: Nghe & Đàn** (hear & play, relative pitch): an I-IV-V-I cadence sets the
+      key, one note plays, the reader plays it on the 12-key pad (home note dotted), and it
+      is revealed on the staff; right answers walk home to the tonic, misses play the pick
+      then the note. Levels: home chord in C / Do-Sol in 3 keys / full scale in 5 keys /
+      all 12 notes in 7 keys; the key changes every 6 questions from L2, with the cadence
+      again (and on replay, Space). Own level and length settings (`earLevel`,
+      `earDurationSec`, 2 min default), own bests; shares the pad, header, pause sheet,
+      result screens and route behaviour with drill 1 (promoted to `core/components`,
+      `app/useDrillRoute`, `app/useRunGuards`). Scheduled audio (`playSequence`,
+      `stopSounds`). Fits 320×568, 375×812, 1280×800. 362 web tests green —
+      `docs/fe/drill-hear-play.md`, `docs/fe/architecture.md`, `docs/fe/screens.md`,
+      `docs/fe/data-model.md`, `docs/summary.md`
 
 ## In Progress
 
 - Human browser spot-check: visual staff rendering across levels, the piano pad
   in both spellings, the wrong-note overlay on the staff, audio pitch playback,
   the activity panel expand/collapse, both languages, full play-through at 375px
-  viewport — not runnable headlessly, remains for a human pass
+  viewport, and listening to Nghe & Đàn (cadence, walk home, miss playback) on a
+  phone — not runnable headlessly, remains for a human pass
 
 ## Next
 
-- Phase 2 planning: Drill 2 proposed as "Nghe & Đàn" (hear a cadence and a note, play it
-  back on the pad; trains relative pitch), with "read the shape" and Complete-the-Measure
-  as runners-up. Awaiting the go-ahead before a design doc.
+- Nghe & Đàn follow-ups: echo phrases (2-3 notes played back in order) once the
+  single-note drill has been tried; a human ear check of the cadence and the timings
+  (`EAR_*` in `config/`).
+- Drill 3 candidate: "read the shape" (2-4 note groups on the staff, played in order);
+  chords as their own drill after it; Complete-the-Measure to be reshaped into
+  tap-the-rhythm.
 - Login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene:
   - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
@@ -174,4 +194,4 @@ a real browser.
 
 - Complete-the-Measure drill (design already written)
 - Login, subscriptions (Stripe), cloud sync of progress
-- Ear training
+- More ear training (chords by ear, echo phrases)

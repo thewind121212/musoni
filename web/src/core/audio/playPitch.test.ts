@@ -19,7 +19,12 @@ class FakeAudioContext {
   private param() {
     return { value: 0, setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }
   }
-  createGain() { return { ...this.node(), gain: this.param() } }
+  gains: { gain: { setValueAtTime: ReturnType<typeof vi.fn> } }[] = []
+  createGain() {
+    const g = { ...this.node(), gain: this.param() }
+    this.gains.push(g)
+    return g
+  }
   createOscillator() {
     const o = { ...this.node(), type: '', frequency: this.param() }
     this.oscillators.push(o)
@@ -114,3 +119,34 @@ describe('playPitch', () => {
     expect(() => playPitch(C4)).not.toThrow()
   })
 })
+
+const E4 = { letter: 'E', accidental: '', octave: 4 } as const
+const G4 = { letter: 'G', accidental: '', octave: 4 } as const
+
+describe('playSequence', () => {
+  it('schedules each event on the audio clock, a voice per chord note', async () => {
+    const { playSequence, preloadPiano } = await load()
+    await preloadPiano()
+    ctx().currentTime = 10
+    playSequence([{ pitches: [C4, E4, G4], at: 0, hold: 0.5 }, { pitches: [C4], at: 0.6, hold: 1 }])
+    const starts = ctx().sources.map(s => (s as unknown as { start: ReturnType<typeof vi.fn> }).start.mock.calls[0][0])
+    expect(starts).toEqual([10, 10, 10, 10.6])
+  })
+
+  it('shares one note\'s level across a chord, so a chord is no louder than the melody', async () => {
+    const { playSequence } = await load()
+    playSequence([{ pitches: [C4], at: 0, hold: 0.5 }, { pitches: [C4, E4, G4, C4], at: 1, hold: 0.5 }])
+    const levels = ctx().gains.map(g => g.gain.setValueAtTime.mock.calls[0][0] as number)
+    expect(levels.slice(1).every(l => l === levels[0] / 2)).toBe(true)
+  })
+
+  it('stopSounds cuts off everything still playing or scheduled', async () => {
+    const { playSequence, stopSounds } = await load()
+    playSequence([{ pitches: [C4], at: 0, hold: 0.5 }, { pitches: [E4], at: 2, hold: 0.5 }])
+    const stops = ctx().oscillators.map(o => (o as unknown as { stop: ReturnType<typeof vi.fn> }).stop)
+    stops.forEach(s => s.mockClear())
+    stopSounds()
+    expect(stops.every(s => s.mock.calls.length === 1)).toBe(true)
+  })
+})
+

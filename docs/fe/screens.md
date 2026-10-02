@@ -33,7 +33,7 @@ next language on tap. Its accessible label and tooltip name the target language
 written in that language, so it stays findable to someone who cannot read the
 current one. The document `lang` attribute follows the setting.
 
-Two app routes, and inside the drill route three phases. The sheet music is the
+Three app routes (home and one per drill), and inside each drill route three phases. The sheet music is the
 interface: no clutter around the staff.
 
 ## App routes
@@ -73,8 +73,10 @@ first 150 ms, so a quick load never flashes it.
     cross-fade, behind `prefers-reduced-motion`.
 - Training list: the note-id card with a line saying what the drill asks, its
   Level / Length / Best in one three-column `StatStrip` (equal columns, labels
-  and values wrap, so it fits a 320px phone), then a disabled placeholder card
-  for the Phase 2 rhythm drill. The card is **one tap to practise**: a
+  and values wrap, so it fits a 320px phone), then the **Nghe & Đàn** card
+  (an ear icon, "Nghe một nốt, đàn lại trên phím", its own level, length and
+  best), then a disabled placeholder card for the rhythm drill. Each drill card
+  is built the same way. The card is **one tap to practise**: a
   full-width amber "Luyện ngay" / "Practice now" button (`--cta`, never the blue
   accent) opens the drill with `autostart` in the route state, so a session
   starts straight away on the setup the stats show. A quieter underlined
@@ -223,3 +225,30 @@ A session **ended early** gets its own result: a grey "Kết thúc sớm" pill, 
 touch the best but the time counts, a goal ring with today's minutes, the same
 four figures and notes to review, then amber "Tập lượt mới" / Change setup /
 Home. No score, no comparison bar.
+
+### Nghe & Đàn (`/train/hear-play`)
+
+Same shape as note reading: one route, setup / run / result in the drill's own
+store, the same back behaviour, pause sheet, early end and result screen. Design
+and rules: `drill-hear-play.md`.
+
+**Setup**: a one-line explanation under the title ("Một chuỗi hợp âm ngắn báo
+giọng, rồi một nốt vang lên…"), then **Nốt và giọng**, four row cards, each with
+a small keyboard lighting the level's notes (`MiniKeyboard`): Hợp âm chủ / Năm
+nốt / Cả gam / Nửa cung. Then the same length picker (its own value, 2 min by
+default) and **Phím trả lời**: note names, Piano / Ô and names on keys, shared
+with note reading. No sound switch: this drill is sound. The same sticky bar
+with summary, best at the level, and amber Start.
+
+**Run**: the same header, time bar and pad. Under the bar, the key ("Giọng Fa
+trưởng", in the reader's naming) with a blue **Đổi giọng** badge while a new
+key's first note is being asked, and the streak on the right. The middle is the
+`ListenStage`: before the answer, a large ear in a soft blue circle that pulses
+while sound plays, and "Đàn lại nốt vừa nghe"; the treble staff is laid out
+underneath but hidden, so nothing jumps when it appears. Under it, a **Nghe
+lại** button (with a `Space` hint on desktop). On answer the staff fades in with
+the note (green, plus the pick in red on a miss), and the button's line becomes
+the verdict: a green "Đúng là Mi" or the red "Nốt đúng là Sib, bạn đàn Re". The
+key's home note on the pad carries a small blue dot (named "nốt chủ" for screen
+readers). Checked to fit without scrolling at 320×568, 375×812 and 1280×800.
+

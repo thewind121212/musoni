@@ -38,45 +38,97 @@ export function preloadPiano(): Promise<void> {
   return loading
 }
 
-function playSine(audio: AudioContext, p: Pitch, durationSec: number) {
+/** A note or chord scheduled `at` seconds from now, ringing for `hold` seconds before it releases. */
+export interface SoundEvent {
+  pitches: Pitch[]
+  at: number
+  hold: number
+}
+
+/** Every voice started or scheduled and not yet stopped, so a new question can cut them off. */
+const live = new Set<{ stop: (when?: number) => void }>()
+
+function track(node: AudioScheduledSourceNode) {
+  live.add(node)
+  node.onended = () => live.delete(node)
+}
+
+function playSine(audio: AudioContext, p: Pitch, start: number, durationSec: number, level = AUDIO_GAIN) {
   const osc = audio.createOscillator()
   const gain = audio.createGain()
   osc.type = 'sine'
   osc.frequency.value = freq(p)
-  gain.gain.setValueAtTime(AUDIO_GAIN, audio.currentTime)
-  gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + durationSec)
+  gain.gain.setValueAtTime(level, start)
+  gain.gain.exponentialRampToValueAtTime(0.001, start + durationSec)
   osc.connect(gain).connect(audio.destination)
-  osc.start()
-  osc.stop(audio.currentTime + durationSec)
+  osc.start(start)
+  osc.stop(start + durationSec)
+  track(osc)
 }
 
-function playSample(audio: AudioContext, buffer: AudioBuffer, rate: number) {
-  const now = audio.currentTime
-  const end = now + PIANO_HOLD_SEC + PIANO_RELEASE_SEC
+function playSample(
+  audio: AudioContext, buffer: AudioBuffer, rate: number, start: number, hold = PIANO_HOLD_SEC, level = PIANO_GAIN,
+) {
+  const end = start + hold + PIANO_RELEASE_SEC
   const src = audio.createBufferSource()
   const gain = audio.createGain()
   src.buffer = buffer
   src.playbackRate.value = rate
-  gain.gain.setValueAtTime(PIANO_GAIN, now)
-  gain.gain.setValueAtTime(PIANO_GAIN, now + PIANO_HOLD_SEC)
+  gain.gain.setValueAtTime(level, start)
+  gain.gain.setValueAtTime(level, start + hold)
   gain.gain.exponentialRampToValueAtTime(0.001, end)
   src.connect(gain).connect(audio.destination)
-  src.start(now)
+  src.start(start)
   src.stop(end)
+  track(src)
+}
+
+/** One voice on the piano, or on the sine fallback for a sample not loaded (yet). */
+function voice(audio: AudioContext, p: Pitch, start: number, hold: number | undefined, share: number) {
+  const { sample, rate } = nearestSample(midi(p), samples)
+  const buffer = buffers.get(sample.midi)
+  if (buffer) playSample(audio, buffer, rate, start, hold, PIANO_GAIN * share)
+  else playSine(audio, p, start, hold ?? AUDIO_DURATION_SEC, AUDIO_GAIN * share)
+}
+
+function ready(): AudioContext {
+  const audio = context()
+  if (audio.state === 'suspended') void audio.resume()
+  void preloadPiano()
+  return audio
 }
 
 /**
  * Plays a note on the sampled piano, or as a sine tone while the samples are
  * still loading (or could not load).
  */
-export function playPitch(p: Pitch, durationSec = AUDIO_DURATION_SEC): void {
+export function playPitch(p: Pitch): void {
   try {
-    const audio = context()
-    if (audio.state === 'suspended') void audio.resume()
-    void preloadPiano()
-    const { sample, rate } = nearestSample(midi(p), samples)
-    const buffer = buffers.get(sample.midi)
-    if (buffer) playSample(audio, buffer, rate)
-    else playSine(audio, p, durationSec)
+    const audio = ready()
+    voice(audio, p, audio.currentTime, undefined, 1)
   } catch { /* no audio available — silent no-op */ }
+}
+
+/**
+ * Schedules notes and chords on the audio clock, so a cadence or a phrase
+ * keeps its rhythm whatever the main thread is doing. A chord's voices share
+ * the level of one note, so a chord is not louder than the melody after it.
+ */
+export function playSequence(events: readonly SoundEvent[]): void {
+  try {
+    const audio = ready()
+    const now = audio.currentTime
+    for (const e of events) {
+      const share = 1 / Math.sqrt(Math.max(1, e.pitches.length))
+      for (const p of e.pitches) voice(audio, p, now + e.at, e.hold, share)
+    }
+  } catch { /* no audio available — silent no-op */ }
+}
+
+/** Silences everything playing or scheduled: a replay or the next question starts clean. */
+export function stopSounds(): void {
+  for (const node of live) {
+    try { node.stop() } catch { /* already stopped */ }
+  }
+  live.clear()
 }

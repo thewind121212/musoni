@@ -64,4 +64,12 @@ describe('PianoKey', () => {
     render(key({ showLabel: false, mark, disabled: true }))
     expect(screen.getByRole('button')).toHaveTextContent(/^C$/)
   })
+
+  it('dots the home note and names it after the note for screen readers', () => {
+    const { rerender } = render(key())
+    expect(screen.queryByTestId('home-dot')).toBeNull()
+    rerender(key({ homeLabel: 'home note' }))
+    expect(screen.getByTestId('home-dot')).toBeInTheDocument()
+    expect(screen.getByRole('button')).toHaveAccessibleName('C, home notea')
+  })
 })

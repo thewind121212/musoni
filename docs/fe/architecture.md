@@ -9,16 +9,17 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 
 | Module | Store | Holds |
 |---|---|---|
-| `app` (global) | `app/store.ts` | app-wide state: user settings (level, length, naming, sound, language, activity-panel mode); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so home can offer the way back |
+| `app` (global) | `app/store.ts` | app-wide state: user settings (each drill's level and length, naming, keys, sound, language, activity-panel mode); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so home can offer the way back |
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
-| *(Phase 2)* `drills/complete-measure` | its own store | its session state |
+| `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
+| *(later)* `drills/complete-measure` | its own store | its session state |
 
 Modules never import each other's stores; sharing goes through `app` or props.
 
 ## Routing vs drill phases
 
 React Router covers **app-level** navigation only: `/` (home) and one route per
-drill (`/train/note-id`). Account, library and settings pages join that table
+drill (`/train/note-id`, `/train/hear-play`). Account, library and settings pages join that table
 later.
 
 Inside a drill route the flow is **not** routed. Each drill is a self-contained
@@ -30,11 +31,20 @@ SPA with phases held in its own store:
 Training never changes the URL: no route change when a session starts, ends, or
 is retried. Back still steps through the drill rather than out of it: a running
 or finished session holds **one history entry** (same URL, state marked by
-`app/drillStep`) above setup's. `NoteIdDrill` keeps that entry in step with the
-phase and reads a step back off it: back during a session opens the pause sheet
-(and the entry comes back, so back again stays put), back from the result returns
-to setup, and only back from setup leaves the drill. `useBackLink` knows about
-the entry, so the result screen's Home link steps back past setup in one go.
+`app/drillStep`) above setup's. `app/useDrillRoute` keeps that entry in step
+with the phase and reads a step back off it: back during a session opens the
+pause sheet (and the entry comes back, so back again stays put), back from the
+result returns to setup, and only back from setup leaves the drill. It also
+applies home's route state (`autostart`, `setup`, `resume`) before the phase is
+first read. `useBackLink` knows about the entry, so the result screen's Home
+link steps back past setup in one go.
+
+Every drill route uses the same two app hooks, given its own store:
+`useDrillRoute(controls)` in the drill page (a module-level `controls` object
+built on the store's `getState()`), and `useRunGuards(store.getState)` in the
+run phase, which pauses when the page is hidden or the route is left
+(publishing `pausedSession` for home) and locks overscroll while the run
+screen is open.
 
 ## Core components (`core/`)
 
@@ -60,7 +70,11 @@ Shared, module-agnostic, reuse-first building blocks:
   top (keyed on the question, so only the note is replaced and fades in).
   The tests also pin that a new question keeps the stave's SVG node.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
-  diatonic indexing, labeling) used by both the note-id generator and Staff.
+  diatonic indexing, labeling, `pitchFromMidi`) used by the generators and
+  Staff; `pianoKeys.ts` builds the 12-key answer pad (`buildOptions`,
+  `NoteOption`); `keyboard.ts` maps the computer keyboard onto it; `keys.ts`
+  holds major keys, their spelling, the I-IV-V-I cadence and the walk home to
+  the tonic (Nghe & Đàn).
 - `core/music/pitch.nearestOctave` places an answer key (a name with no octave)
   at the octave nearest the printed note, so a wrong pick can be drawn on the
   staff.
@@ -70,6 +84,8 @@ Shared, module-agnostic, reuse-first building blocks:
   `formatElapsed` (time played: "12 giây", "2 phút 5 giây") and `formatClock`
   (time left: "9:40").
 - `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
+  `playSequence` schedules notes and chords on the audio clock (a cadence, a
+  walk home) and `stopSounds` cuts off everything playing or scheduled;
   `piano.ts` holds the pure nearest-sample math.
 - `core/engine/` — reserved for a shared drill lifecycle
   (`generate → render → answer → feedback → next`) if a second drill needs
@@ -82,7 +98,11 @@ Shared, module-agnostic, reuse-first building blocks:
 
 Core components are pure (props in, events out): no store imports, no
 persistence, no drill knowledge. A drill-local component needed by a second
-module is promoted to core, not copied.
+module is promoted to core, not copied. Nghe & Đàn promoted the answer pad
+(`PianoKey`, `AnswerPad`, `KeyHint`), the run header, pause sheet, staff,
+missed-notes and result summaries (`ResultSummary` now takes the level's name
+as a prop), the duration picker and `MissLine` out of `drills/note-id`, so both
+drills draw the same screens.
 
 ## i18n
 
@@ -110,11 +130,11 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 
 | Level | What it is | Examples |
 |---|---|---|
-| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine` |
+| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine`, `MiniKeyboard` |
 | molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PausedNotice`, `PianoKey`, `DurationPicker`, `SessionStats` |
-| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet) |
+| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `ListenStage` (hear-play) |
 | template | layout shell with no content of its own | `PageTransition` |
-| page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `SetupPhase`, `RunPhase`, `ResultPhase` |
+| page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `HearPlayDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase` |
 
 Rules:
 
@@ -177,15 +197,17 @@ tunable is inlined. Pure helpers that depend only on these constants
 
 ```
 web/src/
-├── app/                    # global module: app store (settings), useT
+├── app/                    # global module: app store (settings), useT, drill route hooks
 │   ├── components/         #   molecules / organisms / templates used by app pages
 │   └── pages/HomeScreen/
 ├── core/
 │   ├── components/         # shared library: atoms / molecules / organisms (Staff)
-│   └── music/ scoring / audio / i18n / engine (placeholder)
-├── drills/note-id/         # drill module: store (phases), generator (piano pad), keyboard
-│   ├── components/         #   atoms / molecules / organisms only this drill uses
+│   └── music/ (pitch, piano keys, keyboard, keys) scoring / audio / i18n / engine (placeholder)
+├── drills/note-id/         # drill module: store (phases), generator
 │   └── pages/              #   NoteIdDrill (phase switch), SetupPhase, RunPhase, ResultPhase
+├── drills/hear-play/       # drill module: store, generator (key, note, sounds)
+│   ├── components/         #   organisms only this drill uses (ListenStage)
+│   └── pages/              #   HearPlayDrill, SetupPhase, RunPhase, ResultPhase
 ├── progress/               # progressStore (localStorage door, cloud plug)
 ├── config/                 # tunable constants (levels, durations, feedback, tick, audio)
 ├── test/                   # test helpers

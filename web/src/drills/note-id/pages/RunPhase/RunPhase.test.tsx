@@ -21,7 +21,7 @@ const { playPitch, preloadPiano } = await import('@/core/audio/playPitch')
 
 const settings = {
   level: 1 as const, durationSec: 60, accidentals: true, naming: 'letters' as const,
-  sound: true, keyLabels: true, padStyle: 'piano' as const, lang: 'vi' as const, activityExpanded: false,
+  sound: true, keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120, lang: 'vi' as const, activityExpanded: false,
 }
 
 const renderRun = () =>

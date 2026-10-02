@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { MusicNoteIcon, MusicNotesIcon, TimerIcon, TrophyIcon, WaveformIcon } from '@phosphor-icons/react'
+import { EarIcon, MusicNoteIcon, MusicNotesIcon, TimerIcon, TrophyIcon, WaveformIcon } from '@phosphor-icons/react'
 import { ActivityPanel, PracticeCard } from '@/app/components/organisms'
 import { ComingSoonCard, LanguageToggle, PausedNotice } from '@/app/components/molecules'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
-import { loadNoteIdDrill, prefetchWhenIdle } from '@/app/routes'
+import { loadHearPlayDrill, loadNoteIdDrill, prefetchWhenIdle } from '@/app/routes'
 import {
   getActiveDayCount, getBest, getDailyMinutes, getLongestStreak, getStreak, localDayKey,
 } from '@/progress/progressStore'
@@ -20,13 +20,16 @@ export function HomeScreen() {
   // block and slid it in again.
   const [playIntro] = useState(() => !useAppStore.getState().homeIntroPlayed)
   useEffect(() => markHomeIntroPlayed(), [markHomeIntroPlayed])
-  // Warm the drill's code while the reader looks at home, so Practice opens at once.
-  useEffect(() => prefetchWhenIdle(loadNoteIdDrill), [])
+  // Warm the drills' code while the reader looks at home, so Practice opens at once.
+  useEffect(() => {
+    prefetchWhenIdle(loadNoteIdDrill)
+    prefetchWhenIdle(loadHearPlayDrill)
+  }, [])
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
   const best = getBest('note-id', level)
-  const durationLabel = formatDuration(settings.durationSec, t)
+  const earBest = getBest('hear-play', settings.earLevel)
   const minutesByDay = getDailyMinutes()
 
   const enter = (delay: number) => ({
@@ -83,11 +86,34 @@ export function HomeScreen() {
               },
               {
                 icon: <TimerIcon size={12} weight="bold" />,
-                label: t('stat.length'), value: durationLabel,
+                label: t('stat.length'), value: formatDuration(settings.durationSec, t),
               },
               {
                 icon: <TrophyIcon size={12} weight="fill" />,
                 label: t('stat.best'), value: best ? String(best.practiceScore) : t('stat.none'),
+              },
+            ]}
+          />
+
+          <PracticeCard
+            to="/train/hear-play"
+            icon={<EarIcon size={24} weight="fill" />}
+            title={t('home.hearPlay')}
+            description={t('home.hearPlay.what')}
+            actionLabel={t('home.practiceNow')}
+            setupLabel={t('home.changeSetup')}
+            stats={[
+              {
+                icon: <MusicNoteIcon size={12} weight="fill" />,
+                label: t('stat.level'), value: t(`ear.level.${settings.earLevel}` as 'ear.level.1'),
+              },
+              {
+                icon: <TimerIcon size={12} weight="bold" />,
+                label: t('stat.length'), value: formatDuration(settings.earDurationSec, t),
+              },
+              {
+                icon: <TrophyIcon size={12} weight="fill" />,
+                label: t('stat.best'), value: earBest ? String(earBest.practiceScore) : t('stat.none'),
               },
             ]}
           />

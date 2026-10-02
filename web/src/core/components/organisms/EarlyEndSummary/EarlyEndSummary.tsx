@@ -1,6 +1,6 @@
 import { StopIcon } from '@phosphor-icons/react'
 import { GoalRing } from '@/core/components/atoms'
-import { SessionStats } from '@/drills/note-id/components/molecules'
+import { SessionStats } from '@/core/components/molecules'
 import type { Translate } from '@/core/i18n/translate'
 import type { SessionResult } from '@/progress/progressStore'
 

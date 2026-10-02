@@ -9,10 +9,9 @@ import { useBackLink } from '@/app/useBackLink'
 import { useDrillStore } from '@/drills/note-id/store'
 import { getBest } from '@/progress/progressStore'
 import { Button, FieldLegend, Switch } from '@/core/components/atoms'
-import { OptionCards, SegmentedControl, SettingRow } from '@/core/components/molecules'
+import { DurationPicker, OptionCards, SegmentedControl, SettingRow } from '@/core/components/molecules'
 import { formatDuration } from '@/core/i18n/formatDuration'
 import { ClefGlyph } from '@/core/components/organisms'
-import { DurationPicker } from '@/drills/note-id/components/molecules'
 
 const LEVELS = [1, 2, 3, 4] as const
 

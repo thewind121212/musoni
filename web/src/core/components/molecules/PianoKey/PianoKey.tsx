@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { CheckIcon, XIcon } from '@phosphor-icons/react'
-import { KeyHint } from '@/drills/note-id/components/atoms'
+import { KeyHint } from '@/core/components/atoms'
 
 /** What a key says after an answer: the right note, the reader's miss, or nothing. */
 export type KeyMark = 'none' | 'correct' | 'wrong'
@@ -19,6 +19,11 @@ interface Props {
   /** A key of a drawn piano, or a free-standing box. */
   shape?: 'piano' | 'box'
   mark: KeyMark
+  /**
+   * Marks the key as the key's home note (the tonic) with a dot, a landmark
+   * for hearing every other note against. The text is for screen readers.
+   */
+  homeLabel?: string
   disabled: boolean
   onPress: () => void
   /** Size and position, set by the pad. */
@@ -50,7 +55,7 @@ const SHAPE = {
 
 /** One answer key. A marked key carries an icon as well as its colour. */
 export function PianoKey({
-  label, showLabel = true, keyHint, row, shape = 'piano', mark, disabled, onPress, className, style,
+  label, showLabel = true, keyHint, row, shape = 'piano', mark, homeLabel, disabled, onPress, className, style,
 }: Props) {
   const labelShown = showLabel || mark !== 'none'
   const box = shape === 'box'
@@ -72,6 +77,15 @@ export function PianoKey({
       {mark === 'correct' && <CheckIcon size={14} weight="bold" className={iconClass} />}
       {mark === 'wrong' && <XIcon size={14} weight="bold" className={iconClass} />}
       {labelShown && <span>{label}</span>}
+      {/* After the name in reading order ("Do, home note"), drawn above it. */}
+      {homeLabel && (
+        <span
+          data-testid="home-dot"
+          className={'order-first size-1.5 rounded-full ' + (row === 'accidental' || mark !== 'none' ? 'bg-current' : 'bg-accent')}
+        >
+          <span className="sr-only">, {homeLabel}</span>
+        </span>
+      )}
       {!disabled && <KeyHint hint={keyHint} corner={box} />}
     </button>
   )

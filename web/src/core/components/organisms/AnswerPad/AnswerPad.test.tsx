@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AnswerPad } from './AnswerPad'
-import { buildOptions } from '@/drills/note-id/generator'
+import { buildOptions } from '@/core/music/pianoKeys'
 
 const naturalsOnly = buildOptions('letters', false, '#')
 const withSharps = buildOptions('letters', true, '#')
@@ -89,5 +89,11 @@ describe('AnswerPad', () => {
     // Gap after E: F# skips a column, so it starts at 8, not 6.
     expect(columnOf('D#')).toContain('grid-column-start: 4')
     expect(columnOf('F#')).toContain('grid-column-start: 8')
+  })
+
+  it('dots only the home key it is given', () => {
+    render(<AnswerPad options={withSharps} feedback={null} onAnswer={() => {}} home={{ index: 4, label: 'home' }} />)
+    expect(screen.getAllByTestId('home-dot')).toHaveLength(1)
+    expect(screen.getByTestId('home-dot').closest('button')).toHaveTextContent(withSharps[4].label)
   })
 })

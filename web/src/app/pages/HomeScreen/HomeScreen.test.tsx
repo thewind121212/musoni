@@ -16,7 +16,16 @@ describe('HomeScreen', () => {
     resetStores()
     renderHome()
     expect(screen.getByRole('heading', { name: 'musoni' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Luyện ngay/ })).toHaveAttribute('href', '/train/note-id')
+    expect(screen.getAllByRole('link', { name: /Luyện ngay/ }).map(a => a.getAttribute('href')))
+      .toEqual(['/train/note-id', '/train/hear-play'])
+  })
+
+  it("keeps each drill's best to its own card", () => {
+    recordSession(session({ practiceScore: 41, level: 1 }))
+    recordSession(session({ drill: 'hear-play', practiceScore: 17, level: 1 }))
+    renderHome()
+    expect(screen.getByText('41')).toBeInTheDocument()
+    expect(screen.getByText('17')).toBeInTheDocument()
   })
 
   it('shows saved practice: today against the goal, the streak and the best score at the chosen level', () => {

@@ -8,7 +8,7 @@ import { useDrillStore } from '@/drills/note-id/store'
 import { getBest, getDailyMinutes, getRecentAverage, localDayKey } from '@/progress/progressStore'
 import { Button } from '@/core/components/atoms'
 import { ScoreCompare } from '@/core/components/molecules'
-import { EarlyEndSummary, MissedNotes, ResultSummary } from '@/drills/note-id/components/organisms'
+import { EarlyEndSummary, MissedNotes, ResultSummary } from '@/core/components/organisms'
 import { formatElapsed } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
 
@@ -51,7 +51,10 @@ export function ResultPhase() {
             t={t}
           />
         ) : (
-          <ResultSummary result={result} isBest={isBest} average={average} t={t} />
+          <ResultSummary
+            result={result}
+            levelName={t(`level.${result.level}` as 'level.1')}
+            isBest={isBest} average={average} t={t} />
         )}
 
         {/* Nothing to set a first session against, so the bar waits for a second. */}

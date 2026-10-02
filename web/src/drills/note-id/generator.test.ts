@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { generateQuestion, buildOptions } from './generator'
+import { generateQuestion } from './generator'
+import { buildOptions } from '@/core/music/pianoKeys'
 import { diatonicIndex, parsePitch, isExcluded } from '../../core/music/pitch'
 import { LEVELS } from '../../config/constants'
 
