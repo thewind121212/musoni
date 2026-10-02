@@ -1,0 +1,1 @@
+export { AnswerPad } from './AnswerPad'

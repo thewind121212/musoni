@@ -1,13 +1,13 @@
 import { Suspense, lazy } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'motion/react'
-import { HomeScreen } from './app/HomeScreen'
-import { PageTransition } from './app/PageTransition'
+import { HomeScreen } from '@/app/pages/HomeScreen'
+import { PageTransition } from '@/app/components/templates'
 
 // VexFlow is the heaviest dependency in the app and only the drill needs it,
 // so the drill route is split out and the home screen paints without it.
 const NoteIdDrill = lazy(() =>
-  import('./drills/note-id/NoteIdDrill').then(m => ({ default: m.NoteIdDrill })),
+  import('@/drills/note-id/pages/NoteIdDrill').then(m => ({ default: m.NoteIdDrill })),
 )
 
 /**
