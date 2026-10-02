@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { Renderer, Stave } from 'vexflow'
+import { Renderer, Stave } from 'vexflow/bravura'
 import { render } from '@testing-library/react'
 import { ClefGlyph, LEDGER_ROOM, Staff } from './Staff'
 

@@ -29,6 +29,17 @@
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: none; }
   }
+  /* Loading screen: fades in after its delay, keys press down one by one. */
+  --animate-fade-in: fade-in 200ms ease-out both;
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  --animate-key-press: key-press 1.4s ease-in-out infinite;
+  @keyframes key-press {
+    0%, 40%, 100% { transform: none; background-color: var(--raised); }
+    15% { transform: scaleY(0.92); background-color: var(--accent); }
+  }
 }
 
 /* The app is a white-paper surface by default: musicians read notation on white,

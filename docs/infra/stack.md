@@ -6,7 +6,7 @@
 |---|---|---|---|
 | Platform | Web app | Fastest to build/iterate, works on phones, best notation libs are JS, no app-store fees; wrappable as mobile later | Mobile-first, both-at-once |
 | FE framework | Vite + React + TypeScript | Client-side interactive trainer — SSR buys nothing; user knows React | Next.js (second backend once Go arrives) |
-| Notation | VexFlow | Low-level = right for *generated* drill snippets (one note, one measure) | OSMD (great for full MusicXML scores — add later if "read real pieces" feature comes; it's built on VexFlow, no conflict) |
+| Notation | VexFlow (imported as `vexflow/bravura`: only the Bravura music font and the Academico text font ship, not all five fonts) | Low-level = right for *generated* drill snippets (one note, one measure) | OSMD (great for full MusicXML scores — add later if "read real pieces" feature comes; it's built on VexFlow, no conflict) |
 | BE language | Go, stdlib `net/http` | User knows Go; no framework needed for a health endpoint | — |
 | FE state | Zustand, one store per module (`app` global + one per drill) | Tiny API, no boilerplate; per-module stores keep drills independent (see `docs/fe/architecture.md`) | Redux (boilerplate), Context-only (rerender sprawl) |
 | FE routing | React Router, **app level only** (`/`, `/train/note-id`) | Drills are self-contained SPAs: phases live in the drill store, so training never pushes history and Back always means "leave the drill" | A route per screen (settings/results as URLs), which turned mid-session navigation into a browser-history problem |

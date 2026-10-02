@@ -5,6 +5,7 @@ import { ActivityPanel, PracticeCard } from '@/app/components/organisms'
 import { ComingSoonCard, LanguageToggle, PausedNotice } from '@/app/components/molecules'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
+import { loadNoteIdDrill, prefetchWhenIdle } from '@/app/routes'
 import {
   getActiveDayCount, getBest, getDailyMinutes, getLongestStreak, getStreak, localDayKey,
 } from '@/progress/progressStore'
@@ -19,6 +20,8 @@ export function HomeScreen() {
   // block and slid it in again.
   const [playIntro] = useState(() => !useAppStore.getState().homeIntroPlayed)
   useEffect(() => markHomeIntroPlayed(), [markHomeIntroPlayed])
+  // Warm the drill's code while the reader looks at home, so Practice opens at once.
+  useEffect(() => prefetchWhenIdle(loadNoteIdDrill), [])
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()

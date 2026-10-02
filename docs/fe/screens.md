@@ -38,6 +38,15 @@ interface: no clutter around the staff.
 
 ## App routes
 
+### Loading a drill
+
+Each drill's code (VexFlow and its music font, about 425 kB gzipped) loads on its
+own route chunk. Home starts fetching it when the browser goes idle, so a tap on
+Practice usually opens the drill at once. When it is not cached yet (a cold first
+visit, or a direct link), a loading screen shows a small keyboard whose keys
+press one after another and "Đang mở bài luyện…". It stays invisible for the
+first 150 ms, so a quick load never flashes it.
+
 ### Home (`/`)
 
 - Title, one-line purpose, and the language switch in the header corner.

@@ -21,7 +21,7 @@ answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
-losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 307 web tests (Vitest) + 1 Go test
+losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 309 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -136,6 +136,11 @@ a real browser.
       (it overflowed before). An "Answer keys" setting (Piano default / Ô) keeps the old
       box layout as a choice. 307 web tests green —
       `docs/fe/drill-note-identification.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
+- [x] **Faster drill opening**: VexFlow is imported as `vexflow/bravura`, which drops
+      three unused music fonts (drill chunk 726 → 425 kB gzipped); home prefetches the
+      drill chunk when idle; a loading screen (keys pressing in turn, "Đang mở bài
+      luyện…") covers a cold load. 309 web tests green — `docs/fe/screens.md`,
+      `docs/infra/stack.md`
 
 ## In Progress
 
@@ -153,7 +158,6 @@ a real browser.
 - Phase 2 hygiene:
   - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
     setup or delete it.
-  - Drill chunk is ~1.2 MB raw (VexFlow + fonts). Worth a look before launch.
   Closed: the stale `result.yourBest` copy (replaced by the comparison bar); the local-day-key regression test pins its timezone per case (UTC+7 and
   UTC−7), so it fails on any runner if bucketing regresses to UTC; real `<title>`,
   description and favicon; project README and a real `web/README.md`; CI and a
