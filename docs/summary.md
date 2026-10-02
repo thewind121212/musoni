@@ -20,7 +20,7 @@ desktop layout, never the reverse (details: `fe/screens.md`).
 
 | Phase | Scope | Monetization |
 |---|---|---|
-| **1 (now)** | Note Identification drill, web only, no login, localStorage progress, day-by-day tracker | Free |
+| **1 (now)** | Note Identification drill, web only, no login, localStorage progress, activity calendar; Vietnamese-first UI (English second) | Free |
 | **2** | Complete-the-Measure drill (design done: `fe/drill-complete-measure.md`), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats |
 | **3** | Ear training, more theory drills | Premium |
 
@@ -51,17 +51,18 @@ Solid lines = Phase 1 (live). Dotted lines = Phase 2 (planned).
 ```mermaid
 graph TB
   subgraph "FE container"
-    HOME["Home route /<br/>drill list + week chart"]
+    HOME["Home route /<br/>drill list + activity calendar"]
     DRILLROUTE["Drill route /train/note-id<br/>self-contained SPA"]
     SETUP["Setup phase<br/>level, length, settings"]
     RUN["Run phase<br/>the sprint"]
     RESULT["Result phase<br/>score + best"]
 
-    APPSTORE["App Store (Zustand)<br/>settings, level"]
+    APPSTORE["App Store (Zustand)<br/>settings, level, language"]
+    I18N["i18n<br/>(typed translator, core; vi default, en)"]
     DRILLSTORE["Drill Store (Zustand)<br/>note-id session lifecycle:<br/>start → answer → next → finish"]
     GEN["Question Generator<br/>(note-id)"]
     REND["Staff<br/>(VexFlow, core/components)"]
-    SCORE["Scoring<br/>(difficulty-weighted, core)"]
+    SCORE["Scoring<br/>(pace × difficulty × accuracy × endurance, core)"]
     STORE["Progress Store<br/>(localStorage, cloud-plug)"]
     AUDIO["Audio Feedback<br/>(Web Audio, core, optional)"]
 
@@ -80,6 +81,7 @@ graph TB
     DRILLSTORE --> GEN
     DRILLSTORE --> SCORE
     DRILLSTORE --> STORE
+    APPSTORE -->|language| I18N
   end
 ```
 

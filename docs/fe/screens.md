@@ -16,12 +16,22 @@ adds the desktop one, never the reverse) while the *target* is both:
 - One-hand portrait is the default phone posture; nothing depends on hover.
 - Desktop widens the container, enlarges the staff, timer and answer keys, and
   moves multi-group layouts into columns rather than one long scroll.
-- Keyboard shortcuts (piano layout: `A`-`J` white keys, `W E T Y U` black keys) are surfaced on `md:` and up,
+- Keyboard shortcuts (piano layout: `A`-`J` white keys, `W E T Y U` black keys)
+  are surfaced on `md:` and up,
   where a physical keyboard is likely, and hidden on phones where they are noise.
 - Check every screen at ~375px first, then at a desktop width. Both must look
   deliberate.
 
 Breakpoint: `md` (768px) is the single hinge between the two layouts.
+
+## Language
+
+Vietnamese is the default UI language, English the alternative (see
+`architecture.md`, i18n). The switch is a small cycle button in the home header
+corner: a translate icon plus the current code (`VI` / `EN`), cycling to the
+next language on tap. Its accessible label and tooltip name the target language
+written in that language, so it stays findable to someone who cannot read the
+current one. The document `lang` attribute follows the setting.
 
 Two app routes, and inside the drill route three phases. The sheet music is the
 interface: no clutter around the staff.
@@ -30,13 +40,29 @@ interface: no clutter around the staff.
 
 ### Home (`/`)
 
-- Title and one-line purpose.
-- **Last 7 days** chart: daily practice score, today highlighted, plus the week
-  total and how many days were active.
-- Training list: the note-id card, whose level / length / best sit in one
-  three-column `StatStrip` (equal columns, labels and values wrap, so it fits a
-  320px phone), and a disabled
-  placeholder card for the Phase 2 rhythm drill. The card's call to action is
+- Title, one-line purpose, and the language switch in the header corner.
+- **Activity panel**, leading with where the user stands now:
+  - **Today** in minutes practised, or "Not yet" with a nudge that one session
+    keeps the streak going.
+  - A **streak pill** (flame + days). An unpractised today does not break the
+    streak until the day is over, so it counts back from yesterday and shows
+    what is still there to keep. The pill is filled once today is practised.
+  - **Short mode (default)**: this week as a row of seven squares, today ringed,
+    weekday under each.
+  - **Full mode**: a 20-week contribution calendar (one square per day, weeks
+    left to right, weekdays top to bottom, month labels, Less/More legend),
+    plus **longest streak** and **total active days**.
+  - Shades are **absolute minutes** (0 / ≤2 / ≤5 / ≤10 / more), not quantiles
+    of the user's own history, so a shade means the same thing forever.
+  - The calendar is anchored on the current week, so today is always in the
+    last column (`app/components/organisms/ActivityCalendar/activityWeeks.ts`, tested over 14 start days).
+  - The mode is a persisted setting (`activityExpanded`), so the panel opens the
+    way it was left. Switching is one box that resizes while the two views
+    cross-fade, behind `prefers-reduced-motion`.
+- Training list: the note-id card with a line saying what the drill asks, its
+  Level / Length / Best in one three-column `StatStrip` (equal columns, labels
+  and values wrap, so it fits a 320px phone), then a disabled placeholder card
+  for the Phase 2 rhythm drill. The card's call to action is
   "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), a filled amber
   pill (`--cta`, not the blue accent) so it reads as a button at first glance.
   On phones it is a compact pill at the right of the title row, leaving the
@@ -56,31 +82,42 @@ it up again.
 One route, three phases held in the drill store. No URL change while training.
 
 **Setup phase** carries everything that used to be a separate settings screen.
-Every choice is a card with a visual, not a text pill: the clef options render
-real VexFlow clefs, note-naming shows the names themselves, accidentals show the
-natural, sharp and flat signs, and session length and sound use Phosphor icons.
-Groups stagger in on entry.
+Each group has a marked header: a small bordered icon, the name, and a line
+saying what the setting controls. Choices are cards with a visual, not text
+pills: the clef options render real VexFlow clefs, note-naming shows the names
+themselves, accidentals show the natural, sharp and flat signs, and sound uses
+Phosphor icons. Session length is the exception: a wrapping **pill row**, since
+time has no picture worth showing and five choices do not fit the two-column
+card grid. Groups stagger in on entry.
 
 | Control | Options |
 |---|---|
-| Level | Treble / Treble+ / Bass / Both (L1-L4), with a one-line description |
-| Session length | 30s / 1 min / 2 min / 5 min |
-| Note names | C D E (letters) / Do Re Mi (solfege) |
+| Clef and range | Treble / Treble+ / Bass / Both (L1-L4), with a one-line description |
+| Session length | 30s / 1 min / 2 min / 5 min / Other; Other reveals a 1-30 minute stepper |
+| Note names | Do Re Mi (solfège, default) / C D E (letters) |
 | Sharps and flats | Naturals only / Include # and b |
 | Sound | Play the note / Silent |
 
-It also shows the personal best for the chosen level **and** length, then a
-full-width Start button.
+It also shows the personal best for the chosen level (across all lengths), then
+a full-width Start button.
 
-**Run phase** is the drill itself: Quit, a large tabular countdown that turns red
-for the last ten seconds centred in a three-column header, a green check pill
-with the right-answer count and a red cross pill with the wrong-answer count, a
-thin time bar with the streak (3+) on a fixed-height line under it,
-the staff on a raised surface, and the answer keys in the bottom thumb zone laid
-out in full-width rows of at most four.
-Feedback fills the correct key green with a check and a wrong pick red with a
-cross, then auto-advances.
+**Run phase** is the drill itself. The header is three columns
+(`1fr auto 1fr`, so long counts never push into the timer): a quit icon (X), a
+large tabular countdown centred that turns red for the last ten seconds, and a
+green check pill with the right-answer count beside a red cross pill with the
+wrong-answer count (each with screen-reader text). Under the thin time bar sits
+the streak (3+) on a fixed-height line, so the staff does not jump when it
+appears. Then the staff on a raised surface, and the answer pad in the bottom
+thumb zone.
 
-**Result phase**: practice score with the difficulty multiplier, a four-tile grid
-(correct, accuracy, average answer, best streak), a personal-best badge or the
-score to beat, then Again / Change setup / Home.
+The answer pad is a **fixed piano**: seven white keys along the bottom and, with
+accidentals on, five black keys above the real gaps between them, in the same
+positions on every question (see `drill-note-identification.md`). Feedback
+fills the correct key green with a check and a wrong pick red with a cross; the
+staff turns the printed note green and, on a miss, draws the picked note beside
+it in red. A correct answer advances after 260 ms, a miss after 1.1 s.
+
+**Result phase**: practice score with **difficulty** and **endurance**
+multiplier chips, a four-tile grid (correct, accuracy, average answer, best
+streak), a personal-best badge or the score to beat, then Again / Change setup /
+Home.

@@ -15,6 +15,7 @@
 | Motion | `motion` (motion/react) | Answer feedback and phase transitions only, all behind `prefers-reduced-motion` | CSS-only (no exit animations), GSAP (overkill here) |
 | Icons | `@phosphor-icons/react` | One icon family; replaced the emoji in the UI | Emoji, hand-rolled SVG paths |
 | Persistence (Phase 1) | localStorage via `progressStore` module | No login yet; versioned JSON doc is the cloud plug | — |
+| i18n | Hand-rolled typed translator in `core/i18n/` (Vietnamese default, English second) | Two languages and ~180 keys need no library; typing `vi` against the English key set makes a missing translation a build error; plurals come free from `Intl.PluralRules` | i18next / react-intl (dependency and runtime weight for a lookup table) |
 | Audio | Web Audio API + sampled piano in `web/public/audio/piano/` | 16 Salamander Grand Piano V3 notes (Yamaha C5, CC BY 3.0, Alexander Holm; attribution in `LICENSE.md` next to the files), one per minor third and pitch-shifted between, ~260 kB total, fetched when a sprint opens; sine tone is the fallback | Kawai upright set (FreePats "Upright Piano KW", the requested sound): not reachable from the build environment yet, drop-in swap of the files + `PIANO_SAMPLES`; Tone.js / smplr (a dependency for one sampler) |
 | Diagrams | Mermaid in markdown | Text-based → maintainable by doc-sync; renders on GitHub | Drawing tools (not auto-maintainable) |
 
@@ -59,4 +60,8 @@ A lint warning fails CI, so keep oxlint at zero warnings.
 
 ## Deployment
 
-Not decided yet — Phase 1 runs locally. Capture the decision here when made.
+The frontend is connected to **Vercel** through its GitHub integration (project
+`musoni`, root directory `web/`, no `vercel.json`, so Vite defaults apply). Every
+PR branch gets a preview deployment, which the Vercel bot links on the PR. The
+production domain and the Go server's hosting are not decided or documented yet;
+capture them here when made.

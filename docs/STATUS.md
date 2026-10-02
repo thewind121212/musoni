@@ -15,7 +15,14 @@ Phase 1: train note-identification speed on the staff. Later: rhythm drills, ear
 
 ## State
 
-Phase 1 is complete on `main` and has since been redesigned: the note-id drill runs as a self-contained SPA (setup / run / result phases) at `/train/note-id`, styled with Tailwind v4 over semantic light and dark tokens, with a Go `/health` stub behind it. 43 web tests (Vitest) + 1 Go test green, `npm run build` clean. Not yet spot-checked in a real browser.
+Phase 1 is complete on `main` and has grown well past the first cut: the note-id
+drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
+answered on a fixed 12-key piano pad, scored as a pace with difficulty and
+endurance multipliers, with any session length allowed. Home leads with today,
+a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
+English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 230 web tests (Vitest) + 1 Go test
+green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
+a real browser.
 
 ## Done
 
@@ -32,28 +39,44 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] `web/` scaffolded (Vite + React + TS); `server/` scaffolded (Go, `net/http`, `/health` on `:8080`)
 - [x] Drill 1 (Note Identification) implemented: question generator, weighted scoring, Zustand `app` + `drills/note-id` stores, VexFlow `Staff` component, Web Audio pitch playback
 - [x] `progressStore` (localStorage, versioned doc, cloud-sync plug) implemented and covered by tests
-- [x] 37 web tests (Vitest) + 1 Go test green; `npm run build` clean
-- [x] UI redesign: Tailwind v4 + semantic light/dark tokens, Geist type, Phosphor icons,
+- [x] UI redesign: Tailwind v4 + semantic tokens, Geist type, Phosphor icons,
       Motion feedback; the hand-rolled `index.css` classes are gone
 - [x] Drill restructured as a self-contained SPA: React Router is app-level only
       (`/`, `/train/note-id`), phases (setup / run / result) live in the drill store
-- [x] Session length setting (30s / 1 min / 2 min / 5 min); personal bests keyed on
-      level **and** length
-- [x] Drill route lazy-loaded: home ships 77 kB gzip instead of 815 kB
-- [x] 43 web tests green after the redesign
+- [x] Drill route lazy-loaded (VexFlow ships only with the drill chunk)
 - [x] Setup screen rebuilt as visual option cards: real VexFlow clef badges per level,
-      note names shown as themselves, natural/sharp/flat signs, Phosphor icons
+      note names shown as themselves, natural/sharp/flat signs, Phosphor icons;
+      each group has a marked header saying what it controls
 - [x] Motion added where it was missing: route slide, drill phase cross-fade, card press
-- [x] Answer options locked to 8 with accidentals on; answer pad lays rows out
-      full-width so 7 naturals still fill the block
 - [x] Fixed blank clef badges: notation boxes now sized from real stave geometry
       (VexFlow reserves space above the stave), covered by `Staff.test.ts`
 - [x] Hybrid layout: desktop is a first-class target, not a narrow phone column.
-      Home goes two-column, setup lays options in a grid, the drill widens with a
-      larger staff and timer, and keyboard hints show on `md:` and up
+      Theme locked to white paper; dark palette kept as opt-in `data-theme="dark"`
+- [x] Quit is an icon; drill header center-aligned
+- [x] **Fixed 12-key piano answer pad**: 7 naturals along the bottom, 5 black keys
+      above the real gaps (hidden in naturals-only mode), spelled to match the
+      printed note. Replaces the old 8 sampled options
+- [x] **Vietnamese-first i18n**: typed translator in `core/i18n/` (no dependency),
+      `vi` default + `en`, compact cycle switch in the home header, `<html lang>`
+      follows the setting; solfège (Do Re Mi) is now the default naming
+- [x] Home leads with where the user stands: today's minutes, streak pill, and
+      labelled Level / Length / Best on the drill card (now one `StatStrip`)
+- [x] **Pace-based scoring + any session length**: score = correct per minute ×
+      10 × difficulty × accuracy; lengths 30s / 1 / 2 / 5 min plus an Other stepper
+      (1-30 min). Bests keyed on **level only**, across lengths
+- [x] Session lengths grounded in note-naming pedagogy (One-Minute Club, 2 min ×2/day,
+      30s as a streak-keeper)
+- [x] **Endurance multiplier**: +0.3 per doubling of length from a 1-minute baseline
+      (floor 0.6); shown with the difficulty multiplier as chips on the result screen
+- [x] Generator never repeats a note back to back; correct answers flash for 260 ms,
+      misses hold 1.1 s; the staff colours the note and draws a wrong pick beside it
+- [x] **Activity calendar**: minutes per day (not score), short week view by default,
+      expandable to a 20-week heatmap with longest streak and active days; mode is
+      persisted; fixed today missing from its own calendar and the clipped today ring
 - [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
       sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
-      `W E T Y U` = black keys. Kawai samples requested; swap pending network access
+      `W E T Y U` = black keys; held-key repeats are ignored. Kawai samples requested;
+      swap pending network access
 - [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
       (one three-column `StatStrip`), and the drill header counts wrong answers next to
       right ones (green check / red cross pills)
@@ -78,21 +101,30 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] CI: GitHub Actions runs web typecheck, oxlint (zero warnings), Vitest and Go vet/test
       on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
 - [x] Lint clean: the run timer no longer calls `Date.now()` during render
+- [x] Docs caught up with everything above (2026-10-02)
 
 ## In Progress
 
-- Human browser spot-check: visual staff rendering across levels, audio pitch playback, full play-through at 375px viewport (one letters/naturals L1 session, one solfège/accidentals L2 session) — not runnable headlessly, remains for a human pass
+- Human browser spot-check: visual staff rendering across levels, the piano pad
+  in both spellings, the wrong-note overlay on the staff, audio pitch playback,
+  the activity panel expand/collapse, both languages, full play-through at 375px
+  viewport — not runnable headlessly, remains for a human pass
 
 ## Next
 
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
-- Phase 2 hygiene from the Phase 1 review: all closed (2026-10-02). The local-day-key
-  regression test now pins its timezone per case (UTC+7 and UTC−7), so it fails on any
-  runner if bucketing regresses to UTC; real `<title>`, description and favicon; project
-  README and a real `web/README.md`. The WeekStrip item is moot: WeekStrip was replaced by
-  the activity panel, which charts practice minutes by design.
-  Closed during the redesign: best-score now keyed on level and length, VexFlow lazy-loaded,
-  tick interval and audio gain moved into `config/`.
+- Phase 2 hygiene:
+  - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
+    setup or delete it.
+  - Result copy still says "your best at this level **and length**"
+    (`result.yourBest`, English only); bests are level-only now.
+  - Drill chunk is ~1.2 MB raw (VexFlow + fonts). Worth a look before launch.
+  Closed: the local-day-key regression test pins its timezone per case (UTC+7 and
+  UTC−7), so it fails on any runner if bucketing regresses to UTC; real `<title>`,
+  description and favicon; project README and a real `web/README.md`; CI and a
+  zero-warning lint; WeekStrip removed (the activity panel charts minutes, not
+  score); best-score keying settled (level only, since score is a pace); VexFlow
+  lazy-loaded; tick interval and audio gain moved into `config/`.
 
 ## Parked (Phase 2+)
 

@@ -19,55 +19,91 @@ full rationale.
 ## Question generation
 
 - Pick a random note within the current difficulty's range (clef + staff position).
-- If the accidentals setting is ON and level allows: note may carry # or ♭.
-- **Answer options: exactly 8 generated choices per question with accidentals on,
-  exactly one correct.** Naturals-only mode offers the 7 natural names, because
-  seven is how many there are; the answer pad lays that out as a filled 4 + 3
-  block so a shorter row never reads as a missing key.
-  - Naturals-only mode: the 7 natural names (C–B / Do–Si).
-  - Accidentals mode: a mix of naturals, sharps, and flats *near the target note*,
-    deliberately including confusable neighbors and enharmonic pairs
-    (e.g., target F# → options E, F, **F#**, Gb, G, G#, A, Bb).
-    Only the option matching what is printed counts as correct.
+- If the accidentals setting is ON and level allows: the note carries # or ♭
+  with probability `ACCIDENTAL_CHANCE` (0.4).
+- **Never the same note twice in a row**: the generator takes the previous pitch
+  and redraws on a repeat (same letter, accidental and octave). A back-to-back
+  repeat reads as a glitch and gets answered from memory rather than from
+  reading.
+
+## Answer pad: a fixed 12-key piano
+
+The answer options are not sampled per question. They are a piano, and the keys
+never move:
+
+- **Naturals** (always): the seven white keys along the bottom, C D E F G A B
+  (or Do Re Mi Fa Sol La Si).
+- **Accidentals** (only when the setting is ON): the five black keys above them,
+  sitting over the real gaps between white keys (two, a space where E meets F,
+  then three). In naturals-only mode the black row disappears entirely.
+- The black keys are **spelled to match the printed note**: a question printed
+  with a flat is answered on a row of flats (Db Eb Gb Ab Bb); a sharp or natural
+  question shows sharps (C# D# F# G# A#). The correct answer is therefore always
+  present in exactly one spelling, and only that spelling counts.
+- Guessing odds are 1 in 12 with accidentals (1 in 7 without); the difficulty
+  weighting already accounts for that.
+
+Because the layout is fixed, the pad becomes a shape to learn, like the
+instrument, instead of a list to re-read every question.
 
 ## Rendering
 
 VexFlow draws a single note on a staff (clef per level), large and centered.
+On feedback the staff itself answers too: the printed note turns green, and on
+a miss the note the reader picked is drawn beside it in red, at the octave
+nearest the printed note (`core/music/pitch.nearestOctave`), so the mistake
+shows as a distance on the staff rather than only as a red key.
 
 ## Answering
 
-- Big tappable buttons (mobile-first) + keyboard shortcuts on desktop.
+- Big tappable keys (mobile-first) + keyboard shortcuts on desktop.
 - Keyboard shortcuts follow a piano ("musical typing", as in DAWs), matched on
   the physical key (`KeyboardEvent.code`) so Caps Lock and IME input still work:
   - home row `A S D F G H J` = white keys C D E F G A B
   - row above `W E T Y U` = black keys C#/Db, D#/Eb, F#/Gb, G#/Ab, A#/Bb
     (`R` sits over the E-F gap and does nothing, like the piano)
-  - chords with Ctrl / Cmd / Alt are left to the browser.
-- Instant feedback on the staff: a correct answer turns the note green; a miss
-  draws the printed note green (the right answer, in place) and the key the
-  reader pressed as a red note beside it, at the octave nearest the printed one.
-  The answer pad mirrors it (green check / red cross); auto-advance.
+  - chords with Ctrl / Cmd / Alt are left to the browser, and auto-repeat
+    keydowns from a held key are ignored so it cannot answer the next note.
+  Shortcuts resolve by matching the key each option advertises (`keyboard.ts`),
+  not by parsing a digit.
+- Instant feedback: the correct key fills green with a check, a wrong pick red
+  with a cross, and the staff mirrors it (see Rendering), then auto-advance. A
+  correct answer flashes for **260 ms** and moves on; a miss holds for **1.1 s**,
+  long enough to look at the staff (`FEEDBACK_CORRECT_MS` / `FEEDBACK_WRONG_MS`
+  in `config/`).
 - Optional sound: the actual pitch plays on answer on a sampled piano
   (Salamander Grand, see `docs/infra/stack.md`), lazy-loaded when the sprint
   opens, with a sine tone as the fallback until the samples arrive.
 
 ## Session format
 
-A timed sprint of the chosen **session length** (30s, 1 min, 2 min, or 5 min;
-1 min is the default). Tracks correct, wrong, accuracy, average response time,
-and best streak.
+A timed sprint of the chosen **session length**. Offered lengths are 30s, 1 min,
+2 min and 5 min (1 min is the default), plus **Other** (*Khác*): a custom stepper
+from 1 to 30 minutes. Tracks correct, wrong, accuracy, average response time, and best streak.
 
-Because practiceScore grows with how long you play, personal bests are keyed on
-level **and** session length: a 5-minute score never out-ranks a 30-second one.
+Why these lengths: one minute is an established convention for timed
+note-naming (the "One-Minute Club"), and two minutes twice a day is a commonly
+taught drill pattern. Thirty seconds is not from the literature; it exists so a
+day is never skipped for lack of time, because the research is consistent that
+frequency beats session length.
+
+Other opens on 10 minutes (`DEFAULT_CUSTOM_MINUTES`), or keeps an existing
+custom value; it must never open on a preset, or the stepper (shown only for a
+non-preset length) would stay hidden.
+
+Any length is safe because the score is a **pace**, not a total (see below), so
+personal bests are keyed on **level only**, across every length. Keying by length
+would fragment bests into a bucket per custom duration, where nearly every
+session is trivially a record.
 
 ## Settings (user-chosen, saved in localStorage)
 
 | Setting | Options | Effect |
 |---|---|---|
-| Note naming | **Letters** (C D E F G A B) / **Solfège** (Do Re Mi Fa Sol La Si) | Buttons and answers display in the chosen system |
-| Accidentals | ON / OFF | OFF = naturals only ever appear, regardless of level |
+| Note naming | **Solfège** (Do Re Mi Fa Sol La Si, default) / **Letters** (C D E F G A B) | Keys and answers display in the chosen system. Solfège is the default because Vietnamese teaching leads with it |
+| Accidentals | ON / OFF | OFF = naturals only ever appear, and the black keys are hidden |
 | Sound | ON / OFF | Pitch playback on answer |
-| Session length | 30s / 1 min / 2 min / 5 min | How long the sprint runs |
+| Session length | 30s / 1 min / 2 min / 5 min / Other (1-30 min stepper) | How long the sprint runs |
 
 Levels control *where* notes live; settings control *how you answer* and *what
 note pool is allowed*.
@@ -76,25 +112,45 @@ note pool is allowed*.
 
 | Level | Range | Weight |
 |---|---|---|
-| L1 | Treble clef, notes on the staff only | ×1.0 |
-| L2 | Treble + ledger lines | ×1.3 |
-| L3 | Bass clef | ×1.5 |
-| L4 | Both clefs mixed | ×1.8 |
+| L1 | Treble clef, notes on the staff only (E4-F5) | ×1.0 |
+| L2 | Treble + ledger lines (A3-C6) | ×1.3 |
+| L3 | Bass clef (G2-A3) | ×1.5 |
+| L4 | Both clefs mixed (treble A3-C6, bass E2-E4) | ×1.8 |
 
 Accidentals ON multiplies the level weight by **×1.4** (e.g., L4 + accidentals = ×2.52).
 
-## Weighted scoring (comparable across all settings)
+## Weighted scoring (comparable across all settings and lengths)
 
 ```
-practiceScore = correct × 10 × difficultyWeight × accuracy
+pace          = correct / minutes
+endurance     = max(0.6, 1 + 0.3 × log2(minutes))
+practiceScore = round(pace × 10 × difficultyWeight × accuracy × endurance)
 ```
 
-- Multiplying by accuracy stops button-mashing (50 answers at 60% < 35 at 95%).
-- Harder settings earn more — attempting difficulty is rewarded.
-- Weights are tunable constants in one config file; adjust when real practice
-  data shows whether they feel fair.
-- Average response time stays a separate stat in Phase 1 (the 60s format already
-  rewards speed through answer count).
+- **Pace, not total**: correct answers per minute, so length alone cannot buy a
+  score and a 30-second sprint and a 10-minute session land on one scale.
+- **Accuracy** multiplies in, which stops button-mashing (50 answers at 60% < 35
+  at 95%).
+- **Difficulty weight**: harder settings earn more, so attempting difficulty is
+  rewarded.
+- **Endurance multiplier**: pure pace punishes concentration, because fatigue
+  drags the average down over a long session (a 30-second burst out-scored a
+  10-minute session, 420 vs 300). The multiplier grows **logarithmically, +0.3
+  per doubling** from a 1-minute baseline, floored at 0.6:
 
-Each session record snapshots its settings + level (see `data-model.md`), which
-enables both one honest overall trend chart and per-setting breakdown charts.
+  | Length | 30s | 1m | 2m | 5m | 10m | 30m |
+  |---|---|---|---|---|---|---|
+  | Endurance | 0.70 | 1.00 | 1.30 | 1.70 | 2.00 | 2.47 |
+
+  At the same pace 10 minutes is worth twice 1 minute, the burst no longer wins,
+  and 10 minutes at half pace ties 1 minute at full pace. Tests in
+  `core/scoring.test.ts` pin these properties.
+- The result screen shows the difficulty and endurance multipliers as chips, so
+  the reward is visible rather than buried in the arithmetic.
+- All weights are tunable constants in `config/constants.ts`
+  (`LEVELS`, `ACCIDENTALS_WEIGHT`, `ENDURANCE_PER_DOUBLING`, `MIN_ENDURANCE_BONUS`).
+- Average response time stays a separate stat; pace already rewards speed.
+
+Each session record snapshots its settings, level and length (see
+`data-model.md`), which enables both one honest overall trend chart and
+per-setting breakdown charts.

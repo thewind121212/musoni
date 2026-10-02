@@ -9,7 +9,7 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 
 | Module | Store | Holds |
 |---|---|---|
-| `app` (global) | `app/store.ts` | app-wide state: user settings, selected level |
+| `app` (global) | `app/store.ts` | app-wide state: user settings (level, length, naming, sound, language, activity-panel mode); keeps `<html lang>` in step with the language |
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer |
 | *(Phase 2)* `drills/complete-measure` | its own store | its session state |
 
@@ -40,7 +40,9 @@ Shared, module-agnostic, reuse-first building blocks:
   allowed to touch VexFlow. Staff repaints itself from the `--staff` token so
   notation stays legible in dark mode, and exports `ClefGlyph` (a clef on a
   short stave) so level choices can show real notation instead of an
-  icon-library stand-in.
+  icon-library stand-in. Staff also takes a feedback `tone` (the printed note
+  turns green once answered) and an optional `chosen` pitch, drawn beside the
+  answer in red on a miss.
 
   Two sizing rules live there, both learned from a bug that rendered the clef
   badges blank: VexFlow reserves blank space above a stave (lines land at
@@ -51,7 +53,12 @@ Shared, module-agnostic, reuse-first building blocks:
   guards both.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling) used by both the note-id generator and Staff.
-- `core/scoring.ts` — difficulty-weighted scoring, shared by any drill.
+- `core/music/pitch.nearestOctave` places an answer key (a name with no octave)
+  at the octave nearest the printed note, so a wrong pick can be drawn on the
+  staff.
+- `core/scoring.ts` — pace-based scoring with difficulty and endurance
+  multipliers, shared by any drill.
+- `core/i18n/` — the translator (see i18n below) and `formatDuration`.
 - `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
   `piano.ts` holds the pure nearest-sample math.
 - `core/engine/` — reserved for a shared drill lifecycle
@@ -66,6 +73,25 @@ Shared, module-agnostic, reuse-first building blocks:
 Core components are pure (props in, events out): no store imports, no
 persistence, no drill knowledge. A drill-local component needed by a second
 module is promoted to core, not copied.
+
+## i18n
+
+Vietnamese first (`DEFAULT_LANG = 'vi'`), English second. No i18n dependency:
+
+- `core/i18n/translations.ts` holds both dictionaries. **English is the source
+  of truth for the key set** and `vi` is typed against it, so adding a string
+  without translating it fails the build.
+- `core/i18n/translate.ts` is a pure lookup (`translate(lang, key, params)`):
+  `{name}` interpolation, plurals via `Intl.PluralRules` (write the base key
+  plus a `_one` variant; Vietnamese needs none), fallback to English, and a
+  development warning when a key resolves to nothing rather than silently
+  rendering the key.
+- `app/useT.ts` binds the translator to the chosen language. Core stays free of
+  app state; components call `useT()`.
+- `formatDuration` labels any session length: offered lengths use their own
+  phrasing, custom lengths render in minutes. Never build a key by
+  interpolating a value (`duration.${seconds}`): custom values have no key,
+  which is how `duration.480` once reached the UI.
 
 ## Component levels (atomic design)
 
@@ -127,24 +153,31 @@ other component touches it. No direct localStorage anywhere else.
 
 ## Config
 
-`config/` holds all tunable constants: level weights, session durations, level
-note-ranges. Nothing tunable is inlined.
+`config/constants.ts` holds all tunable constants: level weights and note
+ranges, accidentals weight and chance, endurance curve, offered session lengths
+and custom-stepper bounds, feedback timings, tick interval, audio gain. Nothing
+tunable is inlined. Pure helpers that depend only on these constants
+(`isPresetDuration`, `customOpeningSeconds`) live beside them and are tested in
+`config/duration.test.ts`.
+
+`config/presets.ts` (warm-up / daily / challenge workout presets) is currently
+**unused**: it was written alongside 126ae73 but nothing imports it.
 
 ## Directory layout
 
 ```
 web/src/
-├── app/                    # global module: app store (settings + level), useT
+├── app/                    # global module: app store (settings), useT
 │   ├── components/         #   molecules / organisms / templates used by app pages
 │   └── pages/HomeScreen/
 ├── core/
 │   ├── components/         # shared library: atoms / molecules / organisms (Staff)
 │   └── music/ scoring / audio / i18n / engine (placeholder)
-├── drills/note-id/         # drill module: store (phases), generator, keyboard
+├── drills/note-id/         # drill module: store (phases), generator (piano pad), keyboard
 │   ├── components/         #   atoms / molecules / organisms only this drill uses
 │   └── pages/              #   NoteIdDrill (phase switch), SetupPhase, RunPhase, ResultPhase
 ├── progress/               # progressStore (localStorage door, cloud plug)
-├── config/                 # tunable constants (levels, durations, tick, audio)
+├── config/                 # tunable constants (levels, durations, feedback, tick, audio)
 ├── test/                   # test helpers
 └── index.css               # Tailwind v4 entry + design tokens
 ```
@@ -157,9 +190,15 @@ web/src/
 Components use token utilities (`bg-raised`, `text-ink-soft`) rather than raw
 palette values, so light and dark are one definition.
 
-Motion lives in three places, each behind `prefers-reduced-motion`: route
-changes (`PageTransition`), drill phase changes (`NoteIdDrill`), and answer
-feedback plus note entry inside the run phase.
+The theme is **white paper by default and does not follow the OS**: musicians
+read notation on white, so the reading surface never flips under a session.
+The dark palette is kept but opt-in via an explicit `data-theme="dark"`
+attribute (nothing in the UI sets it yet).
+
+Motion lives in four places, each behind `prefers-reduced-motion`: route
+changes (`PageTransition`), drill phase changes (`NoteIdDrill`), answer
+feedback plus note entry inside the run phase, and the home activity panel's
+week/calendar resize and cross-fade.
 
 Layout is mobile-first with a single hinge at `md` (768px): base utilities
 describe the phone, `md:` utilities describe desktop. Both are first-class
