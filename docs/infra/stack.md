@@ -22,6 +22,7 @@
 
 ```
 musoni/
+├── README.md                  # what it is, how to run and check it
 ├── CLAUDE.md                  # project instructions: mandatory doc-sync, impl-plan, fe-design rules
 ├── .claude/skills/            # doc-sync, impl-plan, fe-design skills
 ├── tmp/                       # gitignored: per-implementation working folders
