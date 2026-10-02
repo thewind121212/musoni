@@ -58,7 +58,7 @@ describe('HomeScreen', () => {
   it('offers the way back into a session left paused', () => {
     useAppStore.setState({ pausedSession: { to: '/train/note-id', secondsLeft: 18, correct: 12, wrong: 2 } })
     renderHome()
-    expect(screen.getByRole('status')).toHaveTextContent('18 sec left · 12 correct, 2 wrong')
+    expect(screen.getByRole('status')).toHaveTextContent('0:18 left · 12 correct, 2 wrong')
     expect(screen.getByRole('link', { name: /Resume/ })).toHaveAttribute('href', '/train/note-id')
   })
 
