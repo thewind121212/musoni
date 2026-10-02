@@ -61,7 +61,6 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       counts, streak from 3, held-key repeat, Cmd/Ctrl chords, one answer per note,
       sound on/off), `playPitch` (sine fallback, sample rate and pitch shift, fetch-once,
       failed loads, no Web Audio) and `StatStrip` (shrinkable columns, no truncation).
-      Component tests mount with `src/test/render.tsx`, no Testing Library dependency.
       125 web tests green
 - [x] Atomic component structure (Phase 1 of the test plan): every component sits at one
       level (atoms / molecules / organisms / templates / pages) in its own folder, per module;
@@ -69,6 +68,10 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       `StatTile`, `IconStat`, `FieldLegend`; drill pieces `PianoKey`, `AnswerPad`, `RunHeader`,
       `QuestionStaff`, `ResultSummary`. `@/` import alias, Testing Library added. No visible
       change (screenshots match `main`), 125 tests green — `docs/fe/architecture.md`
+- [x] Component tests (test plan Phase 2): a `.test.tsx` beside every component and page,
+      Testing Library + jest-dom. Each renders with default props and tests only logic that
+      can break (no assertions on constants); deliberately breaking 13 pieces of logic
+      fails a test every time. `src/test/render.tsx` removed. 228 web tests green
 
 ## In Progress
 
@@ -76,9 +79,6 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 
 ## Next
 
-- Test plan Phase 2a: a `.test.tsx` beside every atom and molecule, written with Testing
-  Library; move `StatStrip`/`RunPhase` tests off `src/test/render.tsx` and delete it
-- Test plan Phase 2b: organism tests, then a Vitest coverage gate for components
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene (still open from the Phase 1 review): WeekStrip charts practice score only,
   not accuracy; make the UTC-vs-local day-key regression test timezone-independent (the fix
