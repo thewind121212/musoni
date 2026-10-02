@@ -73,8 +73,8 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       can break (no assertions on constants); deliberately breaking 13 pieces of logic
       fails a test every time. `src/test/render.tsx` removed. 228 web tests green
 - [x] Home fixes: coming back from a drill no longer blanks and re-slides every block (the
-      entrance plays once per visit), and the practice card's `>` arrow is now a
-      "Luyện tập" / "Practice" label. 229 web tests green
+      entrance plays once per visit), and the practice card's `>` arrow is now
+      "Luyện tập →" in ink (small text on the title row on phones, a pill on desktop). 229 web tests green
 
 ## In Progress
 

@@ -36,10 +36,12 @@ interface: no clutter around the staff.
 - Training list: the note-id card, whose level / length / best sit in one
   three-column `StatStrip` (equal columns, labels and values wrap, so it fits a
   320px phone), and a disabled
-  placeholder card for the Phase 2 rhythm drill. The card's call to action is a
-  "Luyện tập" / "Practice" label (it replaced a bare `>` arrow): beside the
-  title from `sm` up, on its own line under the title on phones so the title
-  and description keep their width.
+  placeholder card for the Phase 2 rhythm drill. The card's call to action is
+  "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), in neutral ink
+  rather than the accent so it does not compete with the blue icon tile. On
+  phones it is small text at the right of the title row, leaving the
+  description the full width below; from `sm` up it is an ink pill on the
+  right of the card.
 
 Route changes slide in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
