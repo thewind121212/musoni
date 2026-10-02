@@ -15,6 +15,7 @@
 | Motion | `motion` (motion/react) | Answer feedback and phase transitions only, all behind `prefers-reduced-motion` | CSS-only (no exit animations), GSAP (overkill here) |
 | Icons | `@phosphor-icons/react` | One icon family; replaced the emoji in the UI | Emoji, hand-rolled SVG paths |
 | Persistence (Phase 1) | localStorage via `progressStore` module | No login yet; versioned JSON doc is the cloud plug | — |
+| i18n | Hand-rolled typed translator in `core/i18n/` (Vietnamese default, English second) | Two languages and ~180 keys need no library; typing `vi` against the English key set makes a missing translation a build error; plurals come free from `Intl.PluralRules` | i18next / react-intl (dependency and runtime weight for a lookup table) |
 | Audio | Web Audio API | Cheap pitch playback, no library needed at first | Tone.js (adopt if audio needs grow) |
 | Diagrams | Mermaid in markdown | Text-based → maintainable by doc-sync; renders on GitHub | Drawing tools (not auto-maintainable) |
 
