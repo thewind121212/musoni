@@ -1,18 +1,22 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowClockwiseIcon, HouseIcon } from '@phosphor-icons/react'
+import { ArrowClockwiseIcon, HouseIcon, PlayIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { useDrillStore } from '@/drills/note-id/store'
-import { getBest, getRecentAverage } from '@/progress/progressStore'
+import { getBest, getDailyMinutes, getRecentAverage, localDayKey } from '@/progress/progressStore'
 import { Button } from '@/core/components/atoms'
 import { ScoreCompare } from '@/core/components/molecules'
-import { MissedNotes, ResultSummary } from '@/drills/note-id/components/organisms'
+import { EarlyEndSummary, MissedNotes, ResultSummary } from '@/drills/note-id/components/organisms'
+import { formatElapsed } from '@/core/i18n/formatDuration'
+import { DAILY_GOAL_MINUTES } from '@/config/constants'
 
 /**
  * Page: the last session from the drill store, set against this week's average
  * and the level's best from progress, the notes it missed, and what to do next.
+ * A session ended early has no score to compare, so it shows the time played
+ * and today's goal instead.
  */
 export function ResultPhase() {
   const settings = useAppStore(s => s.settings)
@@ -23,6 +27,7 @@ export function ResultPhase() {
   const backLink = useBackLink()
   if (!result) return null
 
+  const partial = result.partial === true
   const best = getBest('note-id', result.level)
   const isBest = best !== null && best.practiceScore === result.practiceScore
   const average = getRecentAverage('note-id', result.level, result.at)
@@ -37,10 +42,20 @@ export function ResultPhase() {
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col gap-5"
       >
-        <ResultSummary result={result} isBest={isBest} average={average} t={t} />
+        {partial ? (
+          <EarlyEndSummary
+            result={result}
+            played={formatElapsed(result.durationSec, t)}
+            todayMinutes={getDailyMinutes()[localDayKey(new Date())] ?? 0}
+            dailyGoal={DAILY_GOAL_MINUTES}
+            t={t}
+          />
+        ) : (
+          <ResultSummary result={result} isBest={isBest} average={average} t={t} />
+        )}
 
         {/* Nothing to set a first session against, so the bar waits for a second. */}
-        {(average !== null || !isBest) && (
+        {!partial && (average !== null || !isBest) && (
           <ScoreCompare
             score={result.practiceScore}
             average={average}
@@ -58,7 +73,9 @@ export function ResultPhase() {
 
         <div className="flex flex-col gap-2">
           <Button variant="cta" className="h-14 text-lg" onClick={again}>
-            <ArrowClockwiseIcon size={20} weight="bold" /> {t('result.again')}
+            {partial
+              ? <><PlayIcon size={20} weight="fill" /> {t('early.again')}</>
+              : <><ArrowClockwiseIcon size={20} weight="bold" /> {t('result.again')}</>}
           </Button>
           <div className="grid grid-cols-2 gap-2">
             <Button onClick={() => useDrillStore.getState().backToSetup()}>{t('result.changeSetup')}</Button>

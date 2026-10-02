@@ -20,7 +20,8 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 263 web tests (Vitest) + 1 Go test
+English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
+losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 293 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -112,6 +113,13 @@ a real browser.
       goal ring (5 min) and one-tap "Luyện ngay" that starts on the saved setup; result
       compares the score with the week average and best, and lists the notes to review.
       All start actions are amber. 263 web tests green — `docs/fe/screens.md`
+- [x] **Leaving mid-session** (approved mockups, 2026-10-02): ✕ / Esc pause with a sheet
+      that says what ending costs; switching apps pauses and welcomes the reader back;
+      back or swipe pauses and home shows a "Tập tiếp" bar; ending early records a
+      `partial` session (minutes count, no score, never a best) with its own result.
+      Fixes the bug where a session abandoned by back and reopened after its clock ran
+      out was saved as a full session and could set a best. 293 web tests green —
+      `docs/fe/screens.md`, `docs/fe/drill-note-identification.md`, `docs/fe/data-model.md`
 
 ## In Progress
 

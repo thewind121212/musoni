@@ -57,6 +57,11 @@ keyed by local day for the day-by-day tracker:
 | `lang` | `"vi"` | preference (`"vi"` / `"en"`) |
 | `activityExpanded` | `false` | preference: home activity panel shows the full calendar |
 
+A session may also carry `"partial": true`: it stopped before its clock ran out
+(the reader ended it). Its `durationSec` is the time actually played and its
+`practiceScore` is 0. Partial sessions count toward minutes, streaks and active
+days, and are skipped by bests and averages. The field is optional and additive.
+
 `getSettings()` merges the stored settings over these defaults, so fields added
 since a document was written (`durationSec`, `lang`, `activityExpanded`) fill in
 without a migration. That is why `version` is still `1`: every change so far has
@@ -87,7 +92,8 @@ session at 1am in UTC+7 lands on today.
 - `getSettings() / saveSettings(settings)`
 - `recordSession(sessionResult)` — appends under today's local date key
 - `getDay(date)` / `getRange(from, to)` — raw sessions for charts
-- `getBest(drill, level)` — best session at a level, any length
+- `getBest(drill, level)` — best session at a level, any length (partial sessions skipped)
+- `getRecentAverage(drill, level, excludeAt, days?, now?)` — mean score at a level over recent days (partial sessions skipped)
 - `getStreak(now?)` — consecutive practised days ending today (an unpractised
   today counts back from yesterday)
 - `getLongestStreak()` — longest run of consecutive practised days on record

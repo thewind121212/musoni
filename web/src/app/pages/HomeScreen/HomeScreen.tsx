@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { MusicNoteIcon, MusicNotesIcon, TimerIcon, TrophyIcon, WaveformIcon } from '@phosphor-icons/react'
 import { ActivityPanel, PracticeCard } from '@/app/components/organisms'
-import { ComingSoonCard, LanguageToggle } from '@/app/components/molecules'
+import { ComingSoonCard, LanguageToggle, PausedNotice } from '@/app/components/molecules'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import {
   getActiveDayCount, getBest, getDailyMinutes, getLongestStreak, getStreak, localDayKey,
 } from '@/progress/progressStore'
-import { formatDuration } from '@/core/i18n/formatDuration'
+import { formatDuration, formatElapsed } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
 
 /** Page: reads the app store and progress, and hands plain values to the components below. */
 export function HomeScreen() {
-  const { settings, updateSettings, markHomeIntroPlayed } = useAppStore()
+  const { settings, updateSettings, markHomeIntroPlayed, pausedSession } = useAppStore()
   // Read once at mount: the entrance plays on the first visit only. Returning
   // from a drill remounts this page, and replaying the stagger blanked every
   // block and slid it in again.
@@ -33,7 +33,8 @@ export function HomeScreen() {
   })
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 pt-10 pb-12 md:max-w-4xl md:px-8 md:pt-16">
+    // Room under the last card for the paused-session bar, which floats over the page.
+    <div className={'mx-auto w-full max-w-md px-4 pt-10 md:max-w-4xl md:px-8 md:pt-16 ' + (pausedSession ? 'pb-32' : 'pb-12')}>
       <motion.header {...enter(0)} className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">musoni</h1>
@@ -95,6 +96,19 @@ export function HomeScreen() {
           />
         </motion.div>
       </div>
+
+      {pausedSession && (
+        <PausedNotice
+          to={pausedSession.to}
+          title={t('home.paused')}
+          detail={t('home.paused.detail', {
+            left: formatElapsed(pausedSession.secondsLeft, t),
+            correct: pausedSession.correct,
+            wrong: pausedSession.wrong,
+          })}
+          actionLabel={t('home.paused.resume')}
+        />
+      )}
     </div>
   )
 }

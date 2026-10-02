@@ -79,4 +79,14 @@ describe('ResultPhase', () => {
     expect(screen.getByText('Notes to review')).toBeInTheDocument()
     expect(screen.getByText('you picked A')).toBeInTheDocument()
   })
+
+  it('shows a session ended early by its time played, with no score or best', () => {
+    recordSession(session({ practiceScore: 70 }))
+    finish({ partial: true, practiceScore: 0, durationSec: 125 })
+    renderResult()
+    expect(screen.getByRole('heading', { name: 'You practised 2 min 5 sec' })).toBeInTheDocument()
+    expect(screen.queryByText(/Best 70/)).toBeNull()
+    expect(screen.queryByText('Personal best')).toBeNull()
+    expect(screen.getByRole('button', { name: /New session/ })).toBeInTheDocument()
+  })
 })

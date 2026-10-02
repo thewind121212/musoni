@@ -1,5 +1,6 @@
 import { TrophyIcon } from '@phosphor-icons/react'
-import { Chip, StatTile } from '@/core/components/atoms'
+import { Chip } from '@/core/components/atoms'
+import { SessionStats } from '@/drills/note-id/components/molecules'
 import { enduranceBonus } from '@/core/scoring'
 import type { Translate } from '@/core/i18n/translate'
 import type { SessionResult } from '@/progress/progressStore'
@@ -47,14 +48,7 @@ export function ResultSummary({ result, isBest, average = null, t }: Props) {
         </div>
       </div>
 
-      {/* One row on every width: four short figures read as a single line of
-          facts, and keep the notes to review on a phone's first screen. */}
-      <div className="grid grid-cols-4 divide-x divide-line rounded-2xl border border-line bg-raised">
-        <StatTile compact value={String(result.correct)} label={t('result.correct')} />
-        <StatTile compact value={`${Math.round(result.accuracy * 100)}%`} label={t('result.accuracy')} />
-        <StatTile compact value={`${(result.avgMs / 1000).toFixed(1)}s`} label={t('result.avgAnswer')} />
-        <StatTile compact value={String(result.bestStreak)} label={t('result.bestStreak')} />
-      </div>
+      <SessionStats result={result} t={t} />
     </>
   )
 }

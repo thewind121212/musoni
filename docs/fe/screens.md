@@ -71,6 +71,11 @@ interface: no clutter around the staff.
   starts straight away on the setup the stats show. A quieter underlined
   "Đổi thiết lập" / "Change setup" link under it opens the setup phase instead.
   From `sm` up the button sits on the right with the link to its left.
+- **Paused-session bar**: when the reader left a session mid-way (back,
+  swipe), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn 18
+  giây · 12 đúng, 2 sai" with an amber "Tập tiếp" / "Resume" that goes back in
+  and resumes straight away (route state `resume`). "Luyện ngay" or "Đổi thiết
+  lập" instead ends the paused session as an early end (see below).
 
 Moving forward to a route slides it in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
@@ -145,6 +150,24 @@ it in red, and the line under the staff names it in words: "Đây là Sol, bạn
 chọn La" / "That was G, you picked A". A correct answer advances after 260 ms,
 a miss after 1.1 s.
 
+**Leaving mid-session never runs the clock down unseen.** The clock pauses and
+the session waits:
+
+| How the reader leaves | What happens |
+|---|---|
+| ✕ or Esc, before any answer | straight back to setup; nothing to keep |
+| ✕ or Esc, after answering | **pause sheet** (bottom sheet on a phone, dialog on desktop): "Đã tạm dừng", time left / right / wrong, a note that ending now is not scored but the time played still counts toward today's goal, amber "Tiếp tục tập" (focused, so Enter or Esc carries on) and a red-text "Kết thúc lượt" |
+| switches app or locks the phone (page hidden) | pauses; on return a **welcome-back card**: "Chào mừng quay lại", the seconds left, the same two actions |
+| back or swipe to home | pauses and home shows the paused-session bar; with no answers the session is simply dropped |
+
+While paused the run screen is `inert` under a scrim and answer keys are
+ignored; paused time is handed back on resume, so the per-note time stays
+honest.
+
+**Kết thúc lượt** ends the session as a *partial* one (`partial: true` in
+progress): its minutes count toward today's goal and the streak, but it has no
+score and never touches the best or the week average.
+
 **Result phase**: practice score with **difficulty** and **endurance**
 multiplier chips and a personal-best badge, plus a chip with the change against
 this week's average at the level ("+14 so với tuần này"). Then one row of four
@@ -159,3 +182,9 @@ way counts once, most repeated first, up to six. Misses live in the drill store
 for the session only and are not saved.
 
 Then **Again** (amber, since it starts practice) / Change setup / Home.
+
+A session **ended early** gets its own result: a grey "Kết thúc sớm" pill, "Bạn
+đã tập 12 giây" as the headline, a line saying it is not scored and does not
+touch the best but the time counts, a goal ring with today's minutes, the same
+four figures and notes to review, then amber "Tập lượt mới" / Change setup /
+Home. No score, no comparison bar.
