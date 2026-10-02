@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { XIcon } from '@phosphor-icons/react'
+import { CheckIcon, XIcon } from '@phosphor-icons/react'
 import { useDrillStore } from '../store'
 import { useT } from '../../../app/useT'
 import { AnswerGrid } from './AnswerGrid'
@@ -11,7 +11,7 @@ import { playPitch, preloadPiano } from '../../../core/audio/playPitch'
 import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '../../../config/constants'
 
 export function RunPhase() {
-  const { question, endsAt, correct, streak, feedback, settings } = useDrillStore()
+  const { question, endsAt, correct, wrong, streak, feedback, settings } = useDrillStore()
   const reduce = useReducedMotion()
   const t = useT()
   const [, forceRender] = useState(0)
@@ -79,7 +79,8 @@ export function RunPhase() {
 
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col px-4 pb-6 md:max-w-3xl md:px-8 md:pb-10">
-      <header className="flex items-center justify-between pt-5">
+      {/* Three equal columns so the timer stays centred however wide the counts get. */}
+      <header className="grid grid-cols-3 items-center pt-5">
         <button
           onClick={() => useDrillStore.getState().backToSetup()}
           aria-label={t('run.quit')}
@@ -90,12 +91,24 @@ export function RunPhase() {
         >
           <XIcon size={20} weight="bold" />
         </button>
-        <div className={'tnum text-3xl font-semibold md:text-5xl ' + (lastTen ? 'text-wrong' : 'text-ink')}>
+        <div className={'tnum text-center text-3xl font-semibold md:text-5xl ' + (lastTen ? 'text-wrong' : 'text-ink')}>
           {secondsLeft}
         </div>
-        <div className="tnum text-sm text-ink-soft md:text-base">
-          {t('run.correct', { count: correct })}
-          {streak > 2 && <span className="ml-2 text-accent">{t('run.streak', { count: streak })}</span>}
+        {/* Right and wrong side by side, each with its icon, so a miss is counted
+            where the reader can see it rather than only resetting the streak. */}
+        <div className="flex justify-end gap-1.5">
+          <span
+            aria-label={t('run.correct', { count: correct })}
+            className="tnum flex items-center gap-1 rounded-full bg-correct/12 px-2.5 py-1 text-sm font-semibold text-correct md:text-base"
+          >
+            <CheckIcon size={14} weight="bold" aria-hidden />{correct}
+          </span>
+          <span
+            aria-label={t('run.wrong', { count: wrong })}
+            className="tnum flex items-center gap-1 rounded-full bg-wrong/12 px-2.5 py-1 text-sm font-semibold text-wrong md:text-base"
+          >
+            <XIcon size={14} weight="bold" aria-hidden />{wrong}
+          </span>
         </div>
       </header>
 
@@ -104,6 +117,10 @@ export function RunPhase() {
           className={'h-full rounded-full ' + (lastTen ? 'bg-wrong' : 'bg-accent')}
           style={{ width: `${fraction * 100}%`, transition: `width ${TICK_MS}ms linear` }}
         />
+      </div>
+      {/* Fixed height, so the staff does not jump when a streak appears. */}
+      <div className="tnum mt-2 h-5 text-right text-sm text-accent md:text-base">
+        {streak > 2 && t('run.streak', { count: streak })}
       </div>
 
       <div className="flex flex-1 items-center justify-center py-6 md:py-10">

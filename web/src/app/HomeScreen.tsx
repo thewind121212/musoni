@@ -4,7 +4,7 @@ import {
   CaretRightIcon, LockSimpleIcon, MusicNoteIcon, MusicNotesIcon, TimerIcon,
   TrophyIcon, WaveformIcon,
 } from '@phosphor-icons/react'
-import { StatChip } from '../core/components/StatChip'
+import { StatStrip } from '../core/components/StatStrip'
 import { ActivityPanel } from './ActivityPanel'
 import { useAppStore } from './store'
 import { getBest } from '../progress/progressStore'
@@ -63,18 +63,22 @@ export function HomeScreen() {
               />
             </span>
 
-            <span className="mt-4 flex gap-2">
-              <StatChip
-                icon={<MusicNoteIcon size={14} weight="fill" />}
-                label={t('stat.level')} value={t(`level.${level}` as 'level.1')}
-              />
-              <StatChip
-                icon={<TimerIcon size={14} weight="bold" />}
-                label={t('stat.length')} value={durationLabel}
-              />
-              <StatChip
-                icon={<TrophyIcon size={14} weight="fill" />}
-                label={t('stat.best')} value={best ? String(best.practiceScore) : t('stat.none')}
+            <span className="mt-4 block">
+              <StatStrip
+                stats={[
+                  {
+                    icon: <MusicNoteIcon size={12} weight="fill" />,
+                    label: t('stat.level'), value: t(`level.${level}` as 'level.1'),
+                  },
+                  {
+                    icon: <TimerIcon size={12} weight="bold" />,
+                    label: t('stat.length'), value: durationLabel,
+                  },
+                  {
+                    icon: <TrophyIcon size={12} weight="fill" />,
+                    label: t('stat.best'), value: best ? String(best.practiceScore) : t('stat.none'),
+                  },
+                ]}
               />
             </span>
           </Link>

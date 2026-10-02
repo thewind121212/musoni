@@ -54,6 +54,9 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
       sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
       `W E T Y U` = black keys. Kawai samples requested; swap pending network access
+- [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
+      (one three-column `StatStrip`), and the drill header counts wrong answers next to
+      right ones (green check / red cross pills)
 
 ## In Progress
 
