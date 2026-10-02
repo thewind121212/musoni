@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Renderer, Stave, StaveNote, Accidental, Formatter, Voice } from 'vexflow'
+import { Renderer, Stave, StaveNote, Accidental, Formatter, Voice } from 'vexflow/bravura'
 import type { Pitch, Clef } from '@/core/music/types'
 
 /**

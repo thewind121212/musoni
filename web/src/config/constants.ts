@@ -110,6 +110,8 @@ export const MISSED_NOTE_STAFF_WIDTH = 120
 
 /** Drill clock resolution. */
 export const TICK_MS = 200
+/** A loading screen stays invisible this long, so a quick (cached) load never flashes it. */
+export const LOADING_SHOW_AFTER_MS = 150
 /** Pitch playback. */
 export const AUDIO_GAIN = 0.25
 export const AUDIO_DURATION_SEC = 0.4
