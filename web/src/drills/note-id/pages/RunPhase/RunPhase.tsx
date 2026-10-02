@@ -73,6 +73,15 @@ export function RunPhase() {
     return () => document.removeEventListener('visibilitychange', onVisibility)
   }, [])
 
+  // The sprint is one fixed screen: a stray drag must not bounce the page or
+  // pull it down to refresh. Browsers take this from <html> only, not <body>.
+  useEffect(() => {
+    const root = document.documentElement
+    const before = root.style.overscrollBehavior
+    root.style.overscrollBehavior = 'none'
+    return () => { root.style.overscrollBehavior = before }
+  }, [])
+
   // Start fetching the piano samples as the sprint opens, so the first answers
   // are already on the piano rather than the sine fallback.
   useEffect(() => {
@@ -144,10 +153,11 @@ export function RunPhase() {
 
   return (
     <>
-      {/* Inert while paused: the panel above is the only thing to act on. */}
+      {/* Inert while paused: the panel above is the only thing to act on.
+          touch-none: drags here never pan, pinch or double-tap zoom; taps still answer. */}
       <div
         inert={pausedAt !== null}
-        className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col px-4 pb-6 md:max-w-3xl md:px-8 md:pb-10"
+        className="mx-auto flex min-h-[100dvh] w-full touch-none max-w-md flex-col px-4 pb-6 md:max-w-3xl md:px-8 md:pb-10"
       >
         <RunHeader
           secondsLeft={secondsLeft}

@@ -78,8 +78,6 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  /* the drill is a fixed one-screen surface: never bounce-scroll mid-answer */
-  overscroll-behavior-y: none;
 }
 
 /* Tabular figures everywhere a number changes in place (timer, score, streak). */
