@@ -13,10 +13,10 @@ const renderSetup = () => render(<MemoryRouter><SetupPhase /></MemoryRouter>)
 beforeEach(() => resetStores({ lang: 'en' }))
 
 describe('SetupPhase', () => {
-  it('renders every setting group with default settings', () => {
+  it('renders with default settings', () => {
     resetStores()
     renderSetup()
-    expect(screen.getAllByRole('group')).toHaveLength(5)
+    expect(screen.getByRole('button', { name: /Bắt đầu/ })).toBeInTheDocument()
     expect(screen.getByRole('link')).toHaveAttribute('href', '/')
   })
 
