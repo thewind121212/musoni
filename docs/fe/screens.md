@@ -55,7 +55,7 @@ interface: no clutter around the staff.
   - Shades are **absolute minutes** (0 / ≤2 / ≤5 / ≤10 / more), not quantiles
     of the user's own history, so a shade means the same thing forever.
   - The calendar is anchored on the current week, so today is always in the
-    last column (`app/activityWeeks.ts`, tested over 14 start days).
+    last column (`app/components/organisms/ActivityCalendar/activityWeeks.ts`, tested over 14 start days).
   - The mode is a persisted setting (`activityExpanded`), so the panel opens the
     way it was left. Switching is one box that resizes while the two views
     cross-fade, behind `prefers-reduced-motion`.

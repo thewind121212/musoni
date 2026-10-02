@@ -20,7 +20,7 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch, and answers play on a sampled piano. Go `/health` stub behind it. 105 web tests (Vitest) + 1 Go test
+English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 125 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint 1 warning. Not yet spot-checked in
 a real browser.
 
@@ -80,7 +80,19 @@ a real browser.
 - [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
       (one three-column `StatStrip`), and the drill header counts wrong answers next to
       right ones (green check / red cross pills)
-- [x] 105 web tests (Vitest) + 1 Go test green; `tsc -b && vite build` clean
+- [x] Guard tests for the piano / keyboard / phone-fix work: `RunPhase` (right and wrong
+      counts, streak from 3, held-key repeat, Cmd/Ctrl chords, one answer per note,
+      sound on/off), `playPitch` (sine fallback, sample rate and pitch shift, fetch-once,
+      failed loads, no Web Audio) and `StatStrip` (shrinkable columns, no truncation).
+      Component tests mount with `src/test/render.tsx`, no Testing Library dependency.
+      125 web tests green
+- [x] Atomic component structure (Phase 1 of the test plan): every component sits at one
+      level (atoms / molecules / organisms / templates / pages) in its own folder, per module;
+      only pages read stores and progress. New shared atoms `CountPill`, `ProgressBar`, `Chip`,
+      `StatTile`, `IconStat`, `FieldLegend`; drill pieces `PianoKey`, `AnswerPad`, `RunHeader`,
+      `QuestionStaff`, `ResultSummary`. `@/` import alias, Testing Library added. No visible
+      change (screenshots match `main`), 125 tests green — `docs/fe/architecture.md`
+- [x] 125 web tests (Vitest) + 1 Go test green; `tsc -b && vite build` clean
 - [x] Docs caught up with everything above (2026-10-02)
 
 ## In Progress
@@ -92,6 +104,9 @@ a real browser.
 
 ## Next
 
+- Test plan Phase 2a: a `.test.tsx` beside every atom and molecule, written with Testing
+  Library; move `StatStrip`/`RunPhase` tests off `src/test/render.tsx` and delete it
+- Test plan Phase 2b: organism tests, then a Vitest coverage gate for components
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene:
   - Make the UTC-vs-local day-key regression test timezone-independent (the fix
@@ -101,7 +116,7 @@ a real browser.
     setup or delete it.
   - Result copy still says "your best at this level **and length**"
     (`result.yourBest`, English only); bests are level-only now.
-  - oxlint warning: `Date.now()` during render in `RunPhase.tsx:60`.
+  - oxlint warning: `Date.now()` during render in `drills/note-id/pages/RunPhase/RunPhase.tsx:58`.
   - Drill chunk is ~700 kB gzip (VexFlow + fonts); home is ~128 kB gzip.
     Worth a look before launch.
   - CI (GitHub Actions) is in review as PR #1; until it merges, checks run locally only.

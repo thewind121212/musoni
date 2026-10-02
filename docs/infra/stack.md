@@ -41,7 +41,9 @@ musoni/
 
 - `web/`: `cd web && npm install && npm run dev` — Vite dev server (default `http://localhost:5173`)
 - `server/`: `cd server && go run .` — serves `GET /health` on `:8080`
-- Tests: `cd web && npm test` (Vitest), `cd server && go test ./...`
+- Tests: `cd web && npm test` (Vitest + jsdom; `@testing-library/react` and
+  `@testing-library/user-event` for component tests), `cd server && go test ./...`
+- Imports: `@/` resolves to `web/src` (Vite `resolve.alias` + `paths` in `tsconfig.app.json`)
 - Build: `cd web && npm run build` (`tsc -b && vite build`, output in `web/dist/`)
 
 ## Deployment

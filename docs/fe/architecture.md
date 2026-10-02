@@ -35,14 +35,14 @@ drill", never "rewind mid-sprint".
 
 Shared, module-agnostic, reuse-first building blocks:
 
-- `core/components/` — UI primitives (Button, Panel, SegmentedControl,
-  OptionCards with marked group headers, StatStrip for a row of labelled figures) and
-  **Staff**, the only component allowed to touch VexFlow. Staff repaints itself
-  from the `--staff` token so notation stays legible in dark mode, and exports
-  `ClefGlyph` (a clef on a short stave) so level choices can show real notation
-  instead of an icon-library stand-in. Staff also takes a feedback `tone`
-  (the printed note turns green once answered) and an optional `chosen` pitch,
-  drawn beside the answer in red on a miss.
+- `core/components/` — the shared UI library, split by atomic level (see
+  **Component levels** below). Its one organism is **Staff**, the only component
+  allowed to touch VexFlow. Staff repaints itself from the `--staff` token so
+  notation stays legible in dark mode, and exports `ClefGlyph` (a clef on a
+  short stave) so level choices can show real notation instead of an
+  icon-library stand-in. Staff also takes a feedback `tone` (the printed note
+  turns green once answered) and an optional `chosen` pitch, drawn beside the
+  answer in red on a miss.
 
   Two sizing rules live there, both learned from a bug that rendered the clef
   badges blank: VexFlow reserves blank space above a stave (lines land at
@@ -93,10 +93,42 @@ Vietnamese first (`DEFAULT_LANG = 'vi'`), English second. No i18n dependency:
   interpolating a value (`duration.${seconds}`): custom values have no key,
   which is how `duration.480` once reached the UI.
 
+## Component levels (atomic design)
+
+Every component sits at one level, in its own folder, inside the module that
+owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
+
+| Level | What it is | Examples |
+|---|---|---|
+| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `KeyHint` |
+| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `LanguageToggle`, `ComingSoonCard`, `PianoKey`, `DurationPicker` |
+| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary` |
+| template | layout shell with no content of its own | `PageTransition` |
+| page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `SetupPhase`, `RunPhase`, `ResultPhase` |
+
+Rules:
+
+- **Only pages touch state.** Pages read the Zustand stores, `useT()` and
+  `progressStore` getters, and pass plain values and callbacks down. Atoms,
+  molecules, organisms and templates are pure in every module, not just in
+  `core`; text arrives as strings or as a `t: Translate` prop. Pure date
+  helpers such as `localDayKey` are fine to import; reads and writes are not.
+- **One folder per component**: `X/X.tsx`, `X/index.ts`, and `X/X.test.tsx`
+  next to it. A folder may group components that only make sense together
+  (`ActivityCalendar` holds the week row, the heatmap and their shared shade
+  scale).
+- **Barrels per level** (`atoms/index.ts`, ...). Import across folders through
+  the `@/` alias and the level barrel: `import { Button } from
+  '@/core/components/atoms'`. Inside one folder, import relatively.
+- `package.json` declares `"sideEffects": ["**/*.css"]` so the bundler can drop
+  barrel re-exports a chunk never uses. Without it, importing one atom on the
+  home screen pulled every drill-only atom into the home chunk.
+
 ## Persistence
 
-One door: `progress/progressStore` (see `data-model.md`). Stores call it;
-components never do. No direct localStorage anywhere else.
+One door: `progress/progressStore` (see `data-model.md`). Stores write through
+it, pages may read its getters (best score, practice minutes, streaks), and no
+other component touches it. No direct localStorage anywhere else.
 
 ## Config
 
@@ -114,17 +146,19 @@ tunable is inlined. Pure helpers that depend only on these constants
 
 ```
 web/src/
-├── app/            # global module: app store (settings), useT, HomeScreen,
-│                   #   ActivityPanel + ActivityGrid (+ activityWeeks), LanguageToggle
-├── core/           # components (Button, Panel, SegmentedControl, OptionCard,
-│                   #   StatStrip, Staff) / music / scoring / audio / i18n /
-│                   #   engine (placeholder)
-├── drills/note-id/ # drill module: store (phases), generator (piano pad), keyboard,
-│                   #   NoteIdDrill + phases/ (Setup, DurationPicker, Run,
-│                   #   AnswerGrid, Result)
-├── progress/       # progressStore (localStorage door, cloud plug)
-├── config/         # tunable constants (levels, durations, tick, audio)
-└── index.css       # Tailwind v4 entry + design tokens
+├── app/                    # global module: app store (settings), useT
+│   ├── components/         #   molecules / organisms / templates used by app pages
+│   └── pages/HomeScreen/
+├── core/
+│   ├── components/         # shared library: atoms / molecules / organisms (Staff)
+│   └── music/ scoring / audio / i18n / engine (placeholder)
+├── drills/note-id/         # drill module: store (phases), generator (piano pad), keyboard
+│   ├── components/         #   atoms / molecules / organisms only this drill uses
+│   └── pages/              #   NoteIdDrill (phase switch), SetupPhase, RunPhase, ResultPhase
+├── progress/               # progressStore (localStorage door, cloud plug)
+├── config/                 # tunable constants (levels, durations, feedback, tick, audio)
+├── test/                   # test helpers
+└── index.css               # Tailwind v4 entry + design tokens
 ```
 
 ## Styling
@@ -141,7 +175,7 @@ The dark palette is kept but opt-in via an explicit `data-theme="dark"`
 attribute (nothing in the UI sets it yet).
 
 Motion lives in four places, each behind `prefers-reduced-motion`: route
-changes (`app/PageTransition`), drill phase changes (`NoteIdDrill`), answer
+changes (`PageTransition`), drill phase changes (`NoteIdDrill`), answer
 feedback plus note entry inside the run phase, and the home activity panel's
 week/calendar resize and cross-fade.
 
