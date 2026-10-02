@@ -20,7 +20,7 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 230 web tests (Vitest) + 1 Go test
+English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 234 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -102,6 +102,9 @@ a real browser.
       on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
 - [x] Lint clean: the run timer no longer calls `Date.now()` during render
 - [x] Docs caught up with everything above (2026-10-02)
+- [x] Swipe-back fix: going back (phone edge-swipe, browser back, the in-app back links)
+      lands on home as it was, with no fade-out and no slide-in; back links step back through
+      history instead of pushing `/`. 234 web tests green
 
 ## In Progress
 

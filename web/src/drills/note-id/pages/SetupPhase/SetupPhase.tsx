@@ -6,6 +6,7 @@ import {
 } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
+import { useBackLink } from '@/app/useBackLink'
 import { useDrillStore } from '@/drills/note-id/store'
 import { getBest } from '@/progress/progressStore'
 import { Button } from '@/core/components/atoms'
@@ -21,6 +22,7 @@ export function SetupPhase() {
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
+  const backLink = useBackLink()
   const best = getBest('note-id', level)
 
   const levelOptions = LEVELS.map(l => ({
@@ -103,7 +105,7 @@ export function SetupPhase() {
   return (
     <div className="mx-auto w-full max-w-md px-4 pt-4 pb-8 md:max-w-3xl md:px-8 md:pt-8">
       <div className="flex items-center gap-1">
-        <Link to="/" aria-label={t('setup.back')}>
+        <Link to="/" onClick={backLink} aria-label={t('setup.back')}>
           <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
         </Link>
         <h1 className="text-lg font-semibold md:text-2xl">{t('home.noteReading')}</h1>

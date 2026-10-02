@@ -3,6 +3,7 @@ import { ArrowClockwiseIcon, HouseIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
+import { useBackLink } from '@/app/useBackLink'
 import { useDrillStore } from '@/drills/note-id/store'
 import { getBest } from '@/progress/progressStore'
 import { Button } from '@/core/components/atoms'
@@ -14,6 +15,7 @@ export function ResultPhase() {
   const result = useDrillStore(s => s.lastResult)
   const reduce = useReducedMotion()
   const t = useT()
+  const backLink = useBackLink()
   if (!result) return null
 
   const best = getBest('note-id', result.level)
@@ -42,7 +44,7 @@ export function ResultPhase() {
           </Button>
           <div className="grid grid-cols-2 gap-2">
             <Button onClick={() => useDrillStore.getState().backToSetup()}>{t('result.changeSetup')}</Button>
-            <Link to="/" className="contents">
+            <Link to="/" onClick={backLink} className="contents">
               <Button className="w-full"><HouseIcon size={18} weight="bold" /> {t('result.home')}</Button>
             </Link>
           </div>

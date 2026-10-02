@@ -70,12 +70,20 @@ interface: no clutter around the staff.
   row so a title that wraps on a 320px phone stays beside it; from `sm` up it
   is a larger pill on the right of the card, centred in the row.
 
-Route changes slide in from the right, and the drill's own phase changes
+Moving forward to a route slides it in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
 rather than as a swap. Home's blocks stagger in on the **first visit of a
 session only** (`homeIntroPlayed` in the app store, never saved): coming back
 from a drill shows home as it was instead of blanking every block and building
 it up again.
+
+Going **back** never animates. A phone's edge-swipe (and the browser's back and
+forward buttons) has already shown the previous page, so a back or forward
+navigation (`POP`) swaps routes with no exit fade and no slide-in: home is
+simply there, as it was. The in-app back links (the setup caret, the result
+screen's Home) step back through history too (`useBackLink`), so they look the
+same and do not stack a new entry that a later swipe-back would land on.
+Opened directly on a drill, with no in-app history, the back link goes to `/`.
 
 ### Note reading (`/train/note-id`)
 
