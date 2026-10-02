@@ -7,7 +7,7 @@ import { AnswerGrid } from './AnswerGrid'
 import { optionIndexFromKey } from '../keyboard'
 import { Staff } from '../../../core/components/Staff'
 import { nearestOctave } from '../../../core/music/pitch'
-import { playPitch } from '../../../core/audio/playPitch'
+import { playPitch, preloadPiano } from '../../../core/audio/playPitch'
 import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '../../../config/constants'
 
 export function RunPhase() {
@@ -15,6 +15,12 @@ export function RunPhase() {
   const reduce = useReducedMotion()
   const t = useT()
   const [, forceRender] = useState(0)
+
+  // Start fetching the piano samples as the sprint opens, so the first answers
+  // are already on the piano rather than the sine fallback.
+  useEffect(() => {
+    if (useDrillStore.getState().settings.sound) void preloadPiano()
+  }, [])
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -35,9 +41,12 @@ export function RunPhase() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // A held key auto-repeats; without this it would answer the next
+      // question too, the moment the feedback flash clears.
+      if (e.repeat) return
       const s = useDrillStore.getState()
       if (!s.question || s.feedback) return
-      const i = optionIndexFromKey(e.key, s.question.options)
+      const i = optionIndexFromKey(e, s.question.options)
       if (i === null) return
       s.answer(i)
       if (s.settings.sound) playPitch(s.question.pitch)

@@ -50,7 +50,7 @@ export function AnswerGrid({ options, feedback, onAnswer }: Props) {
       >
         {option.label}
         {!feedback && (
-          <span className="absolute top-1 left-1.5 hidden text-[10px] opacity-50 md:block">
+          <span className="absolute top-1 left-1.5 hidden font-mono text-[10px] uppercase opacity-50 md:block">
             {option.keyHint}
           </span>
         )}
