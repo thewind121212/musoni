@@ -72,6 +72,9 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
       Testing Library + jest-dom. Each renders with default props and tests only logic that
       can break (no assertions on constants); deliberately breaking 13 pieces of logic
       fails a test every time. `src/test/render.tsx` removed. 228 web tests green
+- [x] Home fixes: coming back from a drill no longer blanks and re-slides every block (the
+      entrance plays once per visit), and the practice card's `>` arrow is now
+      "Luyện tập →" as a filled amber button (new `--cta` token; compact on the title row on phones, larger on desktop). 229 web tests green
 
 ## In Progress
 

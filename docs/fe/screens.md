@@ -36,11 +36,20 @@ interface: no clutter around the staff.
 - Training list: the note-id card, whose level / length / best sit in one
   three-column `StatStrip` (equal columns, labels and values wrap, so it fits a
   320px phone), and a disabled
-  placeholder card for the Phase 2 rhythm drill.
+  placeholder card for the Phase 2 rhythm drill. The card's call to action is
+  "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), a filled amber
+  pill (`--cta`, not the blue accent) so it reads as a button at first glance.
+  On phones it is a compact pill at the right of the title row, leaving the
+  description the full width below, and the icon tile sits at the top of the
+  row so a title that wraps on a 320px phone stays beside it; from `sm` up it
+  is a larger pill on the right of the card, centred in the row.
 
 Route changes slide in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
-rather than as a swap.
+rather than as a swap. Home's blocks stagger in on the **first visit of a
+session only** (`homeIntroPlayed` in the app store, never saved): coming back
+from a drill shows home as it was instead of blanking every block and building
+it up again.
 
 ### Note reading (`/train/note-id`)
 
