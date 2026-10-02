@@ -196,7 +196,8 @@ The dark palette is kept but opt-in via an explicit `data-theme="dark"`
 attribute (nothing in the UI sets it yet).
 
 Motion lives in four places, each behind `prefers-reduced-motion`: route
-changes (`PageTransition`), drill phase changes (`NoteIdDrill`), answer
+changes (`PageTransition`, forward only: back and forward navigation swap
+routes instantly), drill phase changes (`NoteIdDrill`), answer
 feedback plus note entry inside the run phase, and the home activity panel's
 week/calendar resize and cross-fade.
 
