@@ -106,6 +106,7 @@ session is trivially a record.
 |---|---|---|
 | Note naming | **Solfège** (Do Re Mi Fa Sol La Si, default) / **Letters** (C D E F G A B) | Keys and answers display in the chosen system. Solfège is the default because Vietnamese teaching leads with it |
 | Accidentals | ON / OFF | OFF = naturals only ever appear, and the black keys are landmarks only |
+| Answer keys | **Piano** (default) / Boxes | Piano draws a keyboard (black keys over the white ones, always shown). Boxes is the older look: two rows of buttons, the black row hidden without accidentals |
 | Names on keys | ON (default) / OFF | Note names printed on the answer keys. OFF trains finding the note on a bare keyboard rather than matching a name; the right key and a wrong pick show their names once answered, and every key keeps its name for screen readers. Scoring is unchanged |
 | Sound | ON / OFF | Pitch playback on answer |
 | Session length | 30s / 1 min / 2 min / 5 min / Other (1-30 min stepper) | How long the sprint runs |

@@ -77,4 +77,11 @@ describe('SetupPhase', () => {
     await userEvent.click(toggle)
     expect(getSettings().keyLabels).toBe(true)
   })
+
+  it('starts on the piano and saves a switch to boxes', async () => {
+    renderSetup()
+    expect(screen.getByRole('radio', { name: 'Piano' })).toHaveAttribute('aria-checked', 'true')
+    await userEvent.click(screen.getByRole('radio', { name: 'Boxes' }))
+    expect(getSettings().padStyle).toBe('boxes')
+  })
 })

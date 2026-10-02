@@ -46,6 +46,11 @@ export function SetupPhase() {
     { value: 'solfege' as const, label: 'Do Re Mi' },
   ]
 
+  const padStyleSegments = [
+    { value: 'piano' as const, label: t('setup.padStyle.piano') },
+    { value: 'boxes' as const, label: t('setup.padStyle.boxes') },
+  ]
+
   const summary = [
     t(`level.${level}` as 'level.1'),
     formatDuration(settings.durationSec, t),
@@ -85,6 +90,15 @@ export function SetupPhase() {
             segments={namingSegments}
             value={settings.naming}
             onChange={naming => updateSettings({ naming })}
+          />
+        </SettingRow>
+        <SettingRow label={t('setup.padStyle')}>
+          <SegmentedControl
+            compact
+            label={t('setup.padStyle')}
+            segments={padStyleSegments}
+            value={settings.padStyle}
+            onChange={padStyle => updateSettings({ padStyle })}
           />
         </SettingRow>
         <SettingRow label={t('setup.keyLabels')} hint={t('setup.keyLabels.hint')}>

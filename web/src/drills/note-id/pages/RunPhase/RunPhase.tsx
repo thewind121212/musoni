@@ -200,6 +200,7 @@ export function RunPhase() {
           <AnswerPad
             options={question.options} feedback={feedback} onAnswer={answer}
             showLabels={settings.keyLabels}
+            layout={settings.padStyle}
           />
         </div>
       </div>

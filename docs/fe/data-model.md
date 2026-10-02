@@ -19,6 +19,7 @@ keyed by local day for the day-by-day tracker:
     "naming": "solfege",
     "sound": true,
     "keyLabels": true,
+    "padStyle": "piano",
     "lang": "vi",
     "activityExpanded": false
   },
@@ -55,6 +56,7 @@ keyed by local day for the day-by-day tracker:
 | `accidentals` | `false` | workout parameter |
 | `naming` | `"solfege"` | preference (Vietnamese teaching leads with solfège) |
 | `sound` | `true` | preference |
+| `padStyle` | `"piano"` | preference: answer keys as a drawn piano or as boxes (`"boxes"`, the older look). Added 2026-10-02 via the defaults merge |
 | `keyLabels` | `true` | preference: note names on the answer keys. Added 2026-10-02; older docs get it from the defaults merge, so no version bump |
 | `lang` | `"vi"` | preference (`"vi"` / `"en"`) |
 | `activityExpanded` | `false` | preference: home activity panel shows the full calendar |

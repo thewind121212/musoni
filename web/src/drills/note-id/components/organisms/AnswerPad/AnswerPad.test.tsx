@@ -76,4 +76,18 @@ describe('AnswerPad', () => {
     const shown = screen.getAllByRole('button').map(b => b.textContent).filter(Boolean)
     expect(shown).toEqual(['D', 'E'])
   })
+
+  it('in the box layout, hides the black keys without accidentals and sets them in the gaps with them', () => {
+    const { unmount } = render(<AnswerPad options={naturalsOnly} feedback={null} onAnswer={() => {}} layout="boxes" />)
+    expect(screen.getAllByRole('button')).toHaveLength(7)
+    expect(screen.queryByTestId('black-keys')).toBeNull()
+    unmount()
+    render(<AnswerPad options={withSharps} feedback={null} onAnswer={() => {}} layout="boxes" />)
+    const columnOf = (label: string) =>
+      [...screen.getByTestId('black-keys').children]
+        .find(k => labelOf(k) === label)!.getAttribute('style')
+    // Gap after E: F# skips a column, so it starts at 8, not 6.
+    expect(columnOf('D#')).toContain('grid-column-start: 4')
+    expect(columnOf('F#')).toContain('grid-column-start: 8')
+  })
 })
