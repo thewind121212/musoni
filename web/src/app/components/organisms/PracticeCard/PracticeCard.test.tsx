@@ -5,8 +5,8 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { PracticeCard } from './PracticeCard'
 
 function Drill() {
-  const state = useLocation().state as { autostart?: boolean } | null
-  return <div>{state?.autostart ? 'autostart' : 'setup'}</div>
+  const state = useLocation().state as { autostart?: boolean; setup?: boolean } | null
+  return <div>{state?.autostart ? 'autostart' : state?.setup ? 'setup' : 'plain'}</div>
 }
 
 const renderCard = () => render(

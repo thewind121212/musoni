@@ -42,5 +42,15 @@ describe('NoteIdDrill', () => {
     expect(useDrillStore.getState().level).toBe(3)
     expect(useDrillStore.getState().settings.durationSec).toBe(120)
   })
+
+  it('opens setup from the change-setup link even after a finished session', () => {
+    useDrillStore.setState({ phase: 'finished', lastResult: session() })
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { setup: true } }]}>
+        <NoteIdDrill />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('button', { name: /Start/ })).toBeInTheDocument()
+  })
 })
 

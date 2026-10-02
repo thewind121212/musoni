@@ -20,7 +20,7 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 262 web tests (Vitest) + 1 Go test
+English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 263 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -111,7 +111,7 @@ a real browser.
       switches, compact naming toggle) with a sticky amber Start bar; home has a daily
       goal ring (5 min) and one-tap "Luyện ngay" that starts on the saved setup; result
       compares the score with the week average and best, and lists the notes to review.
-      All start actions are amber. 262 web tests green — `docs/fe/screens.md`
+      All start actions are amber. 263 web tests green — `docs/fe/screens.md`
 
 ## In Progress
 

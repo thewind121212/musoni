@@ -114,8 +114,10 @@ amber **Start** button. It is `sticky`, not `fixed`, because the phase wrapper
 animates a transform.
 
 Opened with `autostart` (home's start button), the drill skips setup and starts
-before its first render, so setup never flashes; the flag is then dropped from
-history, so a refresh or coming back opens setup as usual.
+before its first render, so setup never flashes. Opened with `setup` (home's
+change-setup link), it goes to the setup phase even if the store still holds a
+finished or abandoned session. Either flag is then dropped from history, so a
+refresh does not apply it again.
 
 **Run phase** is the drill itself. The header is three columns
 (`1fr auto 1fr`, so long counts never push into the timer): a quit icon (X), a

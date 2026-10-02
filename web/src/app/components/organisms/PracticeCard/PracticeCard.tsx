@@ -55,8 +55,10 @@ export function PracticeCard({ to, icon, title, description, actionLabel, setupL
             {actionLabel}
           </Link>
         </motion.div>
+        {/* `setup` opens the setup phase even if a finished session is still held. */}
         <Link
           to={to}
+          state={{ setup: true }}
           className="self-center rounded-lg px-3 py-2 text-sm font-medium text-ink-soft underline
                      decoration-line underline-offset-4 transition-colors duration-150 hover:text-ink
                      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"

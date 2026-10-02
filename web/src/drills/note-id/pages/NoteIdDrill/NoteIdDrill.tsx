@@ -17,24 +17,32 @@ import { ResultPhase } from '../ResultPhase'
  *
  * Arriving with `autostart` in the route state (home's start button) opens
  * straight into a session on the saved setup, so practising what was done last
- * time is one tap rather than two.
+ * time is one tap rather than two. `setup` (home's change-setup link) opens the
+ * setup phase even when the store still holds a finished or abandoned session.
  */
 export function NoteIdDrill() {
   const location = useLocation()
   const navigate = useNavigate()
-  // Started before the first read of the phase, so setup never flashes on the
-  // way in. Lazy state runs once per mount (twice under StrictMode in dev,
-  // which only regenerates the first question).
-  const [autostarted] = useState(() => {
-    if (!(location.state as { autostart?: boolean } | null)?.autostart) return false
-    const { settings } = useAppStore.getState()
-    useDrillStore.getState().start(settings.level, settings)
-    return true
+  // Applied before the first read of the phase, so the wrong phase never
+  // flashes on the way in. Lazy state runs once per mount (twice under
+  // StrictMode in dev, which only regenerates the first question).
+  const [entry] = useState(() => {
+    const state = location.state as { autostart?: boolean; setup?: boolean } | null
+    if (state?.autostart) {
+      const { settings } = useAppStore.getState()
+      useDrillStore.getState().start(settings.level, settings)
+      return true
+    }
+    if (state?.setup) {
+      useDrillStore.getState().backToSetup()
+      return true
+    }
+    return false
   })
-  // Drop the flag, so a refresh or coming back here opens setup as usual.
+  // Drop the flag, so a refresh does not apply it again.
   useEffect(() => {
-    if (autostarted) navigate(location.pathname, { replace: true, state: null })
-  }, [autostarted, navigate, location.pathname])
+    if (entry) navigate(location.pathname, { replace: true, state: null })
+  }, [entry, navigate, location.pathname])
 
   const phase = useDrillStore(s => s.phase)
   const reduce = useReducedMotion()
