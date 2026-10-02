@@ -135,6 +135,14 @@ notation width, `QUESTION_STAFF_WIDTH`, scales the note up about 1.5x on a
 phone), a fixed-height line under it, and the answer pad in the bottom thumb
 zone.
 
+The run screen is **locked in place** on phones. While it is open, `<html>` has
+`overscroll-behavior: none` (set by `RunPhase`, removed when it unmounts), so a
+vertical drag neither bounces the page nor pulls it down to refresh. The surface
+itself has `touch-action: none`, so drags never pan, pinch or double-tap zoom,
+while taps on the keys still answer. Browsers read the overscroll setting for the
+page only from `<html>`, not `<body>`. Home, setup and result scroll as usual. The
+browser's edge-swipe back can't be blocked by a page; it pauses the session (below).
+
 The staff **holds still between questions**: the stave and clef are one layer
 drawn once per clef, and the notes a second layer on top. A new question only
 replaces the note layer, which fades in (`animate-note-in`); feedback recolours

@@ -94,6 +94,15 @@ describe('RunPhase header', () => {
   })
 })
 
+describe('RunPhase screen lock', () => {
+  it('stops the page bouncing or pulling to refresh while running, and lets go after', () => {
+    const { unmount } = renderRun()
+    expect(document.documentElement.style.overscrollBehavior).toBe('none')
+    unmount()
+    expect(document.documentElement.style.overscrollBehavior).toBe('')
+  })
+})
+
 describe('RunPhase input', () => {
   it('ignores auto-repeat, so a held key cannot answer the next note', () => {
     renderRun()
