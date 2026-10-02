@@ -9,6 +9,8 @@ interface Props {
   options: NoteOption[]
   feedback: { correctIndex: number; chosenIndex: number } | null
   onAnswer: (index: number) => void
+  /** Print note names on the keys. Off leaves a bare keyboard; answered keys still show theirs. */
+  showLabels?: boolean
 }
 
 /**
@@ -20,7 +22,7 @@ interface Props {
  * learn rather than a list to re-read, and the shape matches the instrument the
  * notation is being read for.
  */
-export function AnswerPad({ options, feedback, onAnswer }: Props) {
+export function AnswerPad({ options, feedback, onAnswer, showLabels = true }: Props) {
   const naturals = options.filter(o => o.row === 'natural')
   const accidentals = options.filter(o => o.row === 'accidental')
 
@@ -34,6 +36,7 @@ export function AnswerPad({ options, feedback, onAnswer }: Props) {
       <PianoKey
         key={option.label}
         label={option.label}
+        showLabel={showLabels}
         keyHint={option.keyHint}
         row={option.row}
         mark={mark}

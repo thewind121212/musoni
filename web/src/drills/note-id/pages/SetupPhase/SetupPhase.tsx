@@ -87,6 +87,13 @@ export function SetupPhase() {
             onChange={naming => updateSettings({ naming })}
           />
         </SettingRow>
+        <SettingRow label={t('setup.keyLabels')} hint={t('setup.keyLabels.hint')}>
+          <Switch
+            checked={settings.keyLabels}
+            label={t('setup.keyLabels')}
+            onChange={keyLabels => updateSettings({ keyLabels })}
+          />
+        </SettingRow>
         <SettingRow label={t('setup.sound')} hint={t('setup.sound.hint')}>
           <Switch
             checked={settings.sound}

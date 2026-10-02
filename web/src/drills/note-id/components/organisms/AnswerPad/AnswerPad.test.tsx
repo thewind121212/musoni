@@ -64,4 +64,14 @@ describe('AnswerPad', () => {
     expect(keyNamed('G')).toHaveClass('bg-correct')
     expect(document.querySelectorAll('.bg-wrong')).toHaveLength(0)
   })
+
+  it('with labels off, leaves unmarked keys bare and names only the marked ones', () => {
+    const correctIndex = withSharps.findIndex(o => o.label === 'D')
+    const chosenIndex = withSharps.findIndex(o => o.label === 'E')
+    render(
+      <AnswerPad options={withSharps} feedback={{ correctIndex, chosenIndex }} onAnswer={() => {}} showLabels={false} />,
+    )
+    const shown = screen.getAllByRole('button').map(b => b.textContent).filter(Boolean)
+    expect(shown).toEqual(['D', 'E'])
+  })
 })

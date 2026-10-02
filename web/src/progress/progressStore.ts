@@ -10,6 +10,8 @@ export interface Settings {
   /** Preferences: how the user likes to work. Presets never touch these. */
   naming: Naming
   sound: boolean
+  /** Note names printed on the answer keys. Off trains finding the note on a bare keyboard. */
+  keyLabels: boolean
   lang: Lang
   /** Whether the activity panel shows the full calendar or just this week. */
   activityExpanded: boolean
@@ -36,6 +38,7 @@ const DEFAULTS: Settings = {
   accidentals: false,
   naming: 'solfege',
   sound: true,
+  keyLabels: true,
   lang: DEFAULT_LANG,
   // Opens short: the week answers "am I current" in one glance, and the
   // calendar is there for anyone who wants the longer view.

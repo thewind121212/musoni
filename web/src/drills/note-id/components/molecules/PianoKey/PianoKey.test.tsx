@@ -54,4 +54,14 @@ describe('PianoKey', () => {
     rerender(key({ row: 'natural' }))
     expect(screen.getByRole('button')).toHaveClass('bg-raised')
   })
+
+  it('hides the note name when labels are off, but keeps it as the accessible name', () => {
+    render(key({ showLabel: false }))
+    expect(screen.getByRole('button', { name: 'C' })).toHaveTextContent(/^a$/)
+  })
+
+  it.each<KeyMark>(['correct', 'wrong'])('reveals a hidden name once the key is marked %s', mark => {
+    render(key({ showLabel: false, mark, disabled: true }))
+    expect(screen.getByRole('button')).toHaveTextContent(/^C$/)
+  })
 })

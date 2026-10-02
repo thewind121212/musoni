@@ -101,7 +101,7 @@ and fits one phone screen. Each group has a marked header (a small bordered
 icon and the name). What a session practises keeps large controls: the clef
 options are **row cards** (a real VexFlow clef on the left, name and range
 beside it) and session length a pill row. The preferences that need no picture
-share one list of rows: sharps and flats and sound are **switches**, note
+share one list of rows: sharps and flats, names on keys and sound are **switches**, note
 names a compact two-way segmented control. Groups stagger in on entry.
 
 | Control | Options |
@@ -110,6 +110,7 @@ names a compact two-way segmented control. Groups stagger in on entry.
 | Session length | 30s / 1 min / 2 min / 5 min / Other; Other reveals a 1-30 minute stepper |
 | Sharps and flats | switch (adds # and b) |
 | Note names | Do Re Mi (solfège, default) / C D E (letters) |
+| Names on keys | switch, on by default. Off leaves the answer keys bare so the reader finds the note on the keyboard; after an answer the marked keys show their names |
 | Sound | switch (hear each answer) |
 
 A **sticky bar** at the bottom holds the start action, so it is on screen however

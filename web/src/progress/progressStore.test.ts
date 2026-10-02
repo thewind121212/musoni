@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS = {
   accidentals: false,
   naming: 'solfege',
   sound: true,
+  keyLabels: true,
   lang: 'vi',
   activityExpanded: false,
 } as const

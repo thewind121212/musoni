@@ -197,7 +197,10 @@ export function RunPhase() {
         </div>
 
         <div className="md:mx-auto md:w-full md:max-w-2xl">
-          <AnswerPad options={question.options} feedback={feedback} onAnswer={answer} />
+          <AnswerPad
+            options={question.options} feedback={feedback} onAnswer={answer}
+            showLabels={settings.keyLabels}
+          />
         </div>
       </div>
       <PausePanel

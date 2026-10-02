@@ -21,7 +21,7 @@ answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
-losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 298 web tests (Vitest) + 1 Go test
+losing or miscounting the session. Components follow atomic-design levels. Go `/health` stub behind it. 304 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -128,6 +128,10 @@ a real browser.
       running (`overscroll-behavior: none` on `<html>` while the run phase is open; the old rule
       sat on `<body>`, where browsers ignore it; `touch-action: none` on the run surface).
       298 web tests green — `docs/fe/screens.md`
+- [x] **Names on keys** setting (setup switch, on by default): off leaves the answer
+      keys bare, so the reader trains finding the note on a keyboard; the marked keys
+      show their names after each answer. Stored as `keyLabels`. 304 web tests green —
+      `docs/fe/drill-note-identification.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
 
 ## In Progress
 
@@ -138,7 +142,10 @@ a real browser.
 
 ## Next
 
-- Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
+- Phase 2 planning: Drill 2 proposed as "Nghe & Đàn" (hear a cadence and a note, play it
+  back on the pad; trains relative pitch), with "read the shape" and Complete-the-Measure
+  as runners-up. Awaiting the go-ahead before a design doc.
+- Login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene:
   - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
     setup or delete it.
