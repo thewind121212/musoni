@@ -54,6 +54,21 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 - [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
       sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
       `W E T Y U` = black keys. Kawai samples requested; swap pending network access
+- [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
+      (one three-column `StatStrip`), and the drill header counts wrong answers next to
+      right ones (green check / red cross pills)
+- [x] Guard tests for the piano / keyboard / phone-fix work: `RunPhase` (right and wrong
+      counts, streak from 3, held-key repeat, Cmd/Ctrl chords, one answer per note,
+      sound on/off), `playPitch` (sine fallback, sample rate and pitch shift, fetch-once,
+      failed loads, no Web Audio) and `StatStrip` (shrinkable columns, no truncation).
+      Component tests mount with `src/test/render.tsx`, no Testing Library dependency.
+      125 web tests green
+- [x] Atomic component structure (Phase 1 of the test plan): every component sits at one
+      level (atoms / molecules / organisms / templates / pages) in its own folder, per module;
+      only pages read stores and progress. New shared atoms `CountPill`, `ProgressBar`, `Chip`,
+      `StatTile`, `IconStat`, `FieldLegend`; drill pieces `PianoKey`, `AnswerPad`, `RunHeader`,
+      `QuestionStaff`, `ResultSummary`. `@/` import alias, Testing Library added. No visible
+      change (screenshots match `main`), 125 tests green — `docs/fe/architecture.md`
 - [x] CI: GitHub Actions runs web typecheck, oxlint (zero warnings), Vitest and Go vet/test
       on every PR and push to `main` — `.github/workflows/ci.yml`, `docs/infra/stack.md`
 - [x] Lint clean: the run timer no longer calls `Date.now()` during render
@@ -64,6 +79,9 @@ Phase 1 is complete on `main` and has since been redesigned: the note-id drill r
 
 ## Next
 
+- Test plan Phase 2a: a `.test.tsx` beside every atom and molecule, written with Testing
+  Library; move `StatStrip`/`RunPhase` tests off `src/test/render.tsx` and delete it
+- Test plan Phase 2b: organism tests, then a Vitest coverage gate for components
 - Phase 2 planning: Complete-the-Measure drill, login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene (still open from the Phase 1 review): WeekStrip charts practice score only,
   not accuracy; make the UTC-vs-local day-key regression test timezone-independent (the fix

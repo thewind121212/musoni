@@ -10,6 +10,9 @@ const DICTIONARIES: Record<Lang, Record<string, string>> = { vi, en }
 
 export type TranslationParams = Record<string, string | number> & { count?: number }
 
+/** A translator bound to one language; what pure components take as `t`. */
+export type Translate = (key: TranslationKey, params?: TranslationParams) => string
+
 /**
  * Pure lookup: no store, no React, so it can be unit tested and used anywhere.
  * The `app` module binds it to the user's chosen language.
