@@ -41,6 +41,9 @@ export function RunPhase() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // A held key auto-repeats; without this it would answer the next
+      // question too, the moment the feedback flash clears.
+      if (e.repeat) return
       const s = useDrillStore.getState()
       if (!s.question || s.feedback) return
       const i = optionIndexFromKey(e, s.question.options)

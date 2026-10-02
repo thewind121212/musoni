@@ -98,7 +98,7 @@ export const AUDIO_DURATION_SEC = 0.4
 
 /**
  * Sampled piano. One recording every minor third, so no note is shifted more
- * than a semitone and a half from a real recording, which keeps the timbre
+ * than a semitone from a real recording, which keeps the timbre
  * honest while the whole set stays near 260 kB. Covers every note the levels
  * can print (E2 to C6, plus accidentals). Source and licence:
  * public/audio/piano/LICENSE.md.
