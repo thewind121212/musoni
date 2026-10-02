@@ -1,4 +1,5 @@
 import type { Clef } from '../core/music/types'
+import type { KeyName } from '../core/music/keys'
 
 export const POINTS_PER_CORRECT = 10
 export const ACCIDENTALS_WEIGHT = 1.4
@@ -149,3 +150,61 @@ export function customOpeningSeconds(currentSeconds: number): number {
   if (!isPresetDuration(currentSeconds)) return currentSeconds
   return DEFAULT_CUSTOM_MINUTES * 60
 }
+
+/*
+ * Nghe & Đàn (hear and play). Notes are semitones above the key's tonic.
+ *
+ * L1 is the home chord in C, three notes far apart. L2 is the lower half of
+ * the scale and already moves between keys: hearing a note by where it sits
+ * in a key, not by its pitch, is the whole skill, and a key that never moves
+ * drifts toward memorising pitches. L3 is the full scale in more keys; L4
+ * adds the five notes outside the scale. Black keys are answers from L2 on,
+ * since G and F major already need one.
+ */
+export const EAR_LEVELS: Record<1 | 2 | 3 | 4, {
+  weight: number
+  notes: readonly number[]
+  keys: readonly KeyName[]
+  blackKeys: boolean
+}> = {
+  1: { weight: 1.0, notes: [0, 4, 7], keys: ['C'], blackKeys: false },
+  2: { weight: 1.3, notes: [0, 2, 4, 5, 7], keys: ['C', 'G', 'F'], blackKeys: true },
+  3: { weight: 1.6, notes: [0, 2, 4, 5, 7, 9, 11], keys: ['C', 'G', 'F', 'D', 'Bb'], blackKeys: true },
+  4: {
+    weight: 2.0,
+    notes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    keys: ['C', 'G', 'F', 'D', 'Bb', 'A', 'Eb'],
+    blackKeys: true,
+  },
+}
+
+/**
+ * Questions per key before it changes. The cadence plays when a key starts
+ * (and on replay), not before every note: long enough in one key for the ear
+ * to settle, short enough that it never gets used to one.
+ */
+export const EAR_KEY_BLOCK = 6
+
+/** The cadence: chord spacing and length, then the pause before the note. */
+export const EAR_CADENCE_STEP_SEC = 0.55
+export const EAR_CADENCE_HOLD_SEC = 0.45
+export const EAR_AFTER_CADENCE_SEC = 0.45
+/** How long the note to find rings. */
+export const EAR_NOTE_HOLD_SEC = 1
+/** A small gap before a note with no cadence, so it never clips the last sound. */
+export const EAR_NOTE_LEAD_SEC = 0.15
+/** A right answer walks home to the tonic, one note per step. */
+export const EAR_WALK_STEP_SEC = 0.28
+/** On a miss: the reader's note, then the right one this long after. */
+export const EAR_MISS_GAP_SEC = 0.75
+
+/**
+ * Feedback holds. A right answer stays long enough to hear it walk home; a
+ * miss long enough to hear both notes and see them on the staff.
+ */
+export const EAR_FEEDBACK_CORRECT_MS = 1200
+export const EAR_FEEDBACK_WRONG_MS = 2400
+
+/** Hearing takes longer than reading, so a session opens on two minutes. */
+export const EAR_DEFAULT_DURATION_SECONDS = 120
+

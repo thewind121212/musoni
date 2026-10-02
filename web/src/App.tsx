@@ -4,11 +4,12 @@ import { AnimatePresence } from 'motion/react'
 import { HomeScreen } from '@/app/pages/HomeScreen'
 import { DrillLoading } from '@/app/pages/DrillLoading'
 import { PageTransition } from '@/app/components/templates'
-import { loadNoteIdDrill } from '@/app/routes'
+import { loadHearPlayDrill, loadNoteIdDrill } from '@/app/routes'
 
-// VexFlow is the heaviest dependency in the app and only the drill needs it,
-// so the drill route is split out and the home screen paints without it.
+// VexFlow is the heaviest dependency in the app and only the drills need it,
+// so each drill route is split out and the home screen paints without it.
 const NoteIdDrill = lazy(loadNoteIdDrill)
+const HearPlayDrill = lazy(loadHearPlayDrill)
 
 /**
  * App-level routes only. Each drill owns one route and runs its own phases
@@ -31,6 +32,16 @@ export default function App() {
             <PageTransition instant={instant}>
               <Suspense fallback={<DrillLoading />}>
                 <NoteIdDrill />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/train/hear-play"
+          element={
+            <PageTransition instant={instant}>
+              <Suspense fallback={<DrillLoading />}>
+                <HearPlayDrill />
               </Suspense>
             </PageTransition>
           }

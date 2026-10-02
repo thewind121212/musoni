@@ -68,7 +68,7 @@ shows as a distance on the staff rather than only as a red key.
     (`R` sits over the E-F gap and does nothing, like the piano)
   - chords with Ctrl / Cmd / Alt are left to the browser, and auto-repeat
     keydowns from a held key are ignored so it cannot answer the next note.
-  Shortcuts resolve by matching the key each option advertises (`keyboard.ts`),
+  Shortcuts resolve by matching the key each option advertises (`core/music/keyboard.ts`),
   not by parsing a digit.
 - Instant feedback: the correct key fills green with a check, a wrong pick red
   with a cross, and the staff mirrors it (see Rendering), then auto-advance. A
@@ -190,7 +190,8 @@ another. A session with no answers is not recorded.
 
 Before this, leaving by back and returning after the clock ran out let `tick`
 finish the abandoned session as a full one: full length, a real score, and a
-possible personal best. `RunPhase` now pauses on unmount (deferred one task, so
-StrictMode's development remount does not count as leaving) and publishes a
-`pausedSession` to the app store for home.
+possible personal best. The run phase now pauses on unmount (deferred one task,
+so StrictMode's development remount does not count as leaving) and publishes a
+`pausedSession` to the app store for home. That logic lives in
+`app/useRunGuards`, shared with Nghe & Đàn.
 

@@ -90,4 +90,10 @@ describe('AnswerPad', () => {
     expect(columnOf('D#')).toContain('grid-column-start: 4')
     expect(columnOf('F#')).toContain('grid-column-start: 8')
   })
+
+  it('dots only the home key it is given', () => {
+    render(<AnswerPad options={withSharps} feedback={null} onAnswer={() => {}} home={{ index: 4, label: 'home' }} />)
+    expect(screen.getAllByTestId('home-dot')).toHaveLength(1)
+    expect(screen.getByTestId('home-dot').closest('button')).toHaveTextContent(withSharps[4].label)
+  })
 })

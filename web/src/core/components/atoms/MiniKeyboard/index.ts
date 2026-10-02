@@ -1,0 +1,1 @@
+export { MiniKeyboard } from './MiniKeyboard'

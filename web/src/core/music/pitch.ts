@@ -49,3 +49,22 @@ export function nearestOctave(letter: Letter, accidental: Accidental, target: Pi
   }
   return best
 }
+
+const SHARP_NAMES: [Letter, Accidental][] = [
+  ['C', ''], ['C', '#'], ['D', ''], ['D', '#'], ['E', ''], ['F', ''],
+  ['F', '#'], ['G', ''], ['G', '#'], ['A', ''], ['A', '#'], ['B', ''],
+]
+const FLAT_NAMES: [Letter, Accidental][] = [
+  ['C', ''], ['D', 'b'], ['D', ''], ['E', 'b'], ['E', ''], ['F', ''],
+  ['G', 'b'], ['G', ''], ['A', 'b'], ['A', ''], ['B', 'b'], ['B', ''],
+]
+
+/**
+ * The note at a MIDI number, black keys spelled as sharps or as flats. It never
+ * writes E#, B#, Cb or Fb, which spells every major key correctly except the
+ * two that need them (F# and Gb).
+ */
+export function pitchFromMidi(m: number, spelling: Exclude<Accidental, ''>): Pitch {
+  const [letter, accidental] = (spelling === '#' ? SHARP_NAMES : FLAT_NAMES)[((m % 12) + 12) % 12]
+  return { letter, accidental, octave: Math.floor(m / 12) - 1 }
+}

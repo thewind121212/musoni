@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MissLine, ProgressBar } from '@/core/components/atoms'
-import { AnswerPad, PausePanel, RunHeader } from '@/core/components/organisms'
-import { QuestionStaff } from '@/drills/note-id/components/organisms'
+import { AnswerPad, PausePanel, QuestionStaff, RunHeader } from '@/core/components/organisms'
 import { playedMs, useDrillStore, type PauseReason } from '@/drills/note-id/store'
 import { useRunGuards } from '@/app/useRunGuards'
 import { optionIndexFromKey } from '@/core/music/keyboard'

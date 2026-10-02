@@ -11,6 +11,8 @@ interface Props {
   showLabels?: boolean
   /** A drawn piano keyboard (default), or two rows of free-standing boxes. */
   layout?: 'piano' | 'boxes'
+  /** The key's home note, dotted as a landmark, with its screen-reader text. */
+  home?: { index: number; label: string }
 }
 
 // Box layout: columns in a 14-wide grid, so each white box spans two and each
@@ -30,7 +32,7 @@ const BOX_BLACK_COLUMN = [2, 4, 8, 10, 12]
  * The box layout is the older look, kept as a setting: black keys as a row of
  * boxes above the white ones, hidden when accidentals are off.
  */
-export function AnswerPad({ options, feedback, onAnswer, showLabels = true, layout = 'piano' }: Props) {
+export function AnswerPad({ options, feedback, onAnswer, showLabels = true, layout = 'piano', home }: Props) {
   const naturals = options.filter(o => o.row === 'natural')
   const accidentals = options.filter(o => o.row === 'accidental')
 
@@ -52,6 +54,7 @@ export function AnswerPad({ options, feedback, onAnswer, showLabels = true, layo
         row={option.row}
         shape={layout === 'boxes' ? 'box' : 'piano'}
         mark={markOf(index)}
+        homeLabel={home?.index === index ? home.label : undefined}
         disabled={!!feedback}
         onPress={() => onAnswer(index)}
         className={className}

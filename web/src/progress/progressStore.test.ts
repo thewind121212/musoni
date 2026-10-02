@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
   accidentals: false,
   naming: 'solfege',
   sound: true,
-  keyLabels: true, padStyle: 'piano' as const,
+  keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120,
   lang: 'vi',
   activityExpanded: false,
 } as const

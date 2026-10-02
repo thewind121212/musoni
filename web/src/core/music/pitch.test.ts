@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { parsePitch, diatonicIndex, pitchFromDiatonic, midi, freq, label, isExcluded, nearestOctave } from './pitch'
+import {
+  parsePitch, diatonicIndex, pitchFromDiatonic, pitchFromMidi, midi, freq, label, isExcluded, nearestOctave,
+} from './pitch'
 
 describe('pitch', () => {
   it('parses "E4"', () => expect(parsePitch('E4')).toEqual({ letter: 'E', accidental: '', octave: 4 }))
@@ -53,3 +55,25 @@ describe('nearestOctave', () => {
     }
   })
 })
+
+describe('pitchFromMidi', () => {
+  it('round-trips every note of two octaves in either spelling', () => {
+    for (let m = 48; m < 72; m++) {
+      expect(midi(pitchFromMidi(m, '#'))).toBe(m)
+      expect(midi(pitchFromMidi(m, 'b'))).toBe(m)
+    }
+  })
+  it('spells black keys the way it is asked', () => {
+    expect(pitchFromMidi(61, '#')).toEqual({ letter: 'C', accidental: '#', octave: 4 })
+    expect(pitchFromMidi(61, 'b')).toEqual({ letter: 'D', accidental: 'b', octave: 4 })
+  })
+  it('never writes E#, B#, Cb or Fb', () => {
+    for (let m = 48; m < 72; m++) {
+      for (const spelling of ['#', 'b'] as const) {
+        const p = pitchFromMidi(m, spelling)
+        expect(isExcluded(p.letter, p.accidental)).toBe(false)
+      }
+    }
+  })
+})
+

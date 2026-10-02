@@ -1,5 +1,5 @@
 import type { Naming } from '../core/music/types'
-import { DEFAULT_DURATION_SECONDS } from '../config/constants'
+import { DEFAULT_DURATION_SECONDS, EAR_DEFAULT_DURATION_SECONDS } from '../config/constants'
 import { DEFAULT_LANG, type Lang } from '../core/i18n/translate'
 
 export type PadStyle = 'piano' | 'boxes'
@@ -16,12 +16,21 @@ export interface Settings {
   keyLabels: boolean
   /** Answer keys drawn as a piano keyboard, or as two rows of boxes. */
   padStyle: PadStyle
+  /** Nghe & Đàn's own workout: level and length. Naming, keys and labels are shared. */
+  earLevel: 1 | 2 | 3 | 4
+  earDurationSec: number
   lang: Lang
   /** Whether the activity panel shows the full calendar or just this week. */
   activityExpanded: boolean
 }
+export type DrillId = 'note-id' | 'hear-play'
+
 export interface SessionResult {
-  drill: 'note-id'; level: number; accidentals: boolean; naming: Naming; durationSec: number
+  /**
+   * Which drill. For `hear-play`, `level` is its own level and `accidentals`
+   * says whether black keys were answers.
+   */
+  drill: DrillId; level: number; accidentals: boolean; naming: Naming; durationSec: number
   correct: number; wrong: number; accuracy: number; avgMs: number
   bestStreak: number; weight: number; practiceScore: number; at: string
   /**
@@ -44,6 +53,8 @@ const DEFAULTS: Settings = {
   sound: true,
   keyLabels: true,
   padStyle: 'piano',
+  earLevel: 1,
+  earDurationSec: EAR_DEFAULT_DURATION_SECONDS,
   lang: DEFAULT_LANG,
   // Opens short: the week answers "am I current" in one glance, and the
   // calendar is there for anyone who wants the longer view.
@@ -104,7 +115,7 @@ export function getRange(from: string, to: string): Record<string, SessionResult
  * scale. Keying by length would also fragment bests into a bucket per custom
  * duration, where almost every session is trivially a "personal best".
  */
-export function getBest(drill: string, level: number): SessionResult | null {
+export function getBest(drill: DrillId, level: number): SessionResult | null {
   let best: SessionResult | null = null
   for (const v of Object.values(load().days)) {
     for (const s of v.sessions) {
@@ -121,7 +132,7 @@ export function getBest(drill: string, level: number): SessionResult | null {
  * Null when there is nothing to compare against.
  */
 export function getRecentAverage(
-  drill: string, level: number, excludeAt: string, days = 7, now: Date = new Date(),
+  drill: DrillId, level: number, excludeAt: string, days = 7, now: Date = new Date(),
 ): number | null {
   const from = new Date(now)
   from.setDate(from.getDate() - (days - 1))

@@ -1,12 +1,16 @@
 import { useAppStore } from '@/app/store'
 import { useDrillStore } from '@/drills/note-id/store'
+import { useEarStore } from '@/drills/hear-play/store'
 import { getSettings, localDayKey, type SessionResult, type Settings } from '@/progress/progressStore'
 
-/** Empties saved progress and puts both stores back to a fresh start, with optional settings. */
+/** Empties saved progress and puts the stores back to a fresh start, with optional settings. */
 export function resetStores(settings: Partial<Settings> = {}) {
   localStorage.clear()
   useAppStore.setState({ settings: { ...getSettings(), ...settings }, pausedSession: null })
   useDrillStore.setState({
+    phase: 'setup', question: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
+  })
+  useEarStore.setState({
     phase: 'setup', question: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
   })
 }
