@@ -167,3 +167,25 @@ The result also sets the score against `getRecentAverage` (progress store): the
 mean practice score at the same level over the last 7 local days, leaving out
 the session being shown.
 
+## Pausing and ending early
+
+The store holds `pausedAt` and `pauseReason` (`menu`: the reader asked, via ✕
+or Esc; `away`: the page was hidden or the route left). While paused, `tick`
+and `answer` do nothing. `resume` shifts `endsAt` and `askedAt` forward by the
+paused time, so the clock and the per-note time only ever count practice. A
+question that appears during a pause (the feedback timer still advances) starts
+its clock at the pause.
+
+A session that stops before its clock runs out is recorded as **partial**
+(`recordPartial`): `durationSec` is the time actually played (`playedMs`),
+`practiceScore` is 0 and `partial` is true. That happens on `endEarly` (the
+pause panel's end action), and on `start` or `backToSetup` while a session is
+still running, which is how a session left paused ends when the reader starts
+another. A session with no answers is not recorded.
+
+Before this, leaving by back and returning after the clock ran out let `tick`
+finish the abandoned session as a full one: full length, a real score, and a
+possible personal best. `RunPhase` now pauses on unmount (deferred one task, so
+StrictMode's development remount does not count as leaving) and publishes a
+`pausedSession` to the app store for home.
+

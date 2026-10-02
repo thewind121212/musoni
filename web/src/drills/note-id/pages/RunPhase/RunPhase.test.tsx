@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { translate } from '@/core/i18n/translate'
 
 // Audio and notation are covered by their own tests; here they only get in the
@@ -23,6 +24,9 @@ const settings = {
   sound: true, lang: 'vi' as const, activityExpanded: false,
 }
 
+const renderRun = () =>
+  render(<MemoryRouter initialEntries={['/train/note-id']}><RunPhase /></MemoryRouter>)
+
 /** RunPhase listens on window, so keys go there rather than to an element. */
 const pressKey = (init: KeyboardEventInit) => fireEvent.keyDown(window, init)
 
@@ -44,7 +48,9 @@ beforeEach(() => {
   vi.useFakeTimers()
   vi.mocked(playPitch).mockClear()
   vi.mocked(preloadPiano).mockClear()
-  useAppStore.setState({ settings })
+  localStorage.clear()
+  useAppStore.setState({ settings, pausedSession: null })
+  useDrillStore.setState({ phase: 'setup' })
   useDrillStore.getState().start(1, settings, Date.now())
 })
 afterEach(() => {
@@ -53,13 +59,13 @@ afterEach(() => {
 
 describe('RunPhase header', () => {
   it('starts with zero right and zero wrong', () => {
-    render(<RunPhase />)
+    renderRun()
     expect(count('run-correct')).toBe('0')
     expect(count('run-wrong')).toBe('0')
   })
 
   it('counts a wrong answer in the red pill (regression: misses were never shown)', () => {
-    render(<RunPhase />)
+    renderRun()
     pressKey({ key: keys().wrong, code: `Key${keys().wrong.toUpperCase()}` })
     expect(count('run-wrong')).toBe('1')
     expect(count('run-correct')).toBe('0')
@@ -67,7 +73,7 @@ describe('RunPhase header', () => {
   })
 
   it('counts a right answer in the green pill', () => {
-    render(<RunPhase />)
+    renderRun()
     pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
     expect(count('run-correct')).toBe('1')
     expect(count('run-wrong')).toBe('0')
@@ -75,7 +81,7 @@ describe('RunPhase header', () => {
   })
 
   it('shows the streak only from three in a row', () => {
-    render(<RunPhase />)
+    renderRun()
     const answerRight = () => {
       pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
       act(() => { vi.advanceTimersByTime(2000) }) // feedback clears, next note
@@ -90,7 +96,7 @@ describe('RunPhase header', () => {
 
 describe('RunPhase input', () => {
   it('ignores auto-repeat, so a held key cannot answer the next note', () => {
-    render(<RunPhase />)
+    renderRun()
     const { right } = keys()
     pressKey({ key: right, code: `Key${right.toUpperCase()}`, repeat: true })
     expect(useDrillStore.getState().feedback).toBeNull()
@@ -98,7 +104,7 @@ describe('RunPhase input', () => {
   })
 
   it('leaves browser shortcuts alone (Cmd/Ctrl + key)', () => {
-    render(<RunPhase />)
+    renderRun()
     const { right } = keys()
     pressKey({ key: right, code: `Key${right.toUpperCase()}`, metaKey: true })
     pressKey({ key: right, code: `Key${right.toUpperCase()}`, ctrlKey: true })
@@ -106,7 +112,7 @@ describe('RunPhase input', () => {
   })
 
   it('takes one answer per note, ignoring keys pressed during feedback', () => {
-    render(<RunPhase />)
+    renderRun()
     const { right, wrong } = keys()
     pressKey({ key: right, code: `Key${right.toUpperCase()}` })
     pressKey({ key: wrong, code: `Key${wrong.toUpperCase()}` })
@@ -115,7 +121,7 @@ describe('RunPhase input', () => {
   })
 
   it('plays the printed note on answer and preloads the piano on mount', () => {
-    render(<RunPhase />)
+    renderRun()
     expect(preloadPiano).toHaveBeenCalledTimes(1)
     const printed = useDrillStore.getState().question!.pitch
     pressKey({ key: keys().wrong, code: `Key${keys().wrong.toUpperCase()}` })
@@ -123,7 +129,7 @@ describe('RunPhase input', () => {
   })
 
   it('answers from a tap on the pad as well as from the keyboard', () => {
-    render(<RunPhase />)
+    renderRun()
     const q = useDrillStore.getState().question!
     const printed = q.pitch
     const wrong = q.options.find((_, i) => i !== q.correctIndex)!
@@ -132,17 +138,93 @@ describe('RunPhase input', () => {
     expect(playPitch).toHaveBeenCalledWith(printed)
   })
 
-  it('quits back to setup', () => {
-    render(<RunPhase />)
+  it('quits straight back to setup when nothing was answered', () => {
+    renderRun()
     fireEvent.click(screen.getByRole('button', { name: translate('vi', 'run.quit') }))
     expect(useDrillStore.getState().phase).toBe('setup')
   })
 
   it('stays silent with sound off', () => {
     useDrillStore.getState().start(1, { ...settings, sound: false }, Date.now())
-    render(<RunPhase />)
+    renderRun()
     expect(preloadPiano).not.toHaveBeenCalled()
     pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
     expect(playPitch).not.toHaveBeenCalled()
+  })
+})
+
+describe('RunPhase leaving mid-session', () => {
+  const quitButton = () => screen.getByRole('button', { name: translate('vi', 'run.quit') })
+  const answerOnce = () => {
+    pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
+    act(() => { vi.advanceTimersByTime(2000) })
+  }
+  const timer = () => screen.getByRole('banner').children[1].textContent
+
+  it('pauses on ✕ once something was answered, and the clock stands still', () => {
+    renderRun()
+    answerOnce()
+    fireEvent.click(quitButton())
+    expect(screen.getByRole('dialog', { name: translate('vi', 'pause.title') })).toBeInTheDocument()
+    const frozen = timer()
+    act(() => { vi.advanceTimersByTime(5000) })
+    expect(timer()).toBe(frozen)
+  })
+
+  it('ignores answer keys while paused', () => {
+    renderRun()
+    answerOnce()
+    fireEvent.click(quitButton())
+    pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
+    expect(useDrillStore.getState().correct).toBe(1)
+  })
+
+  it('toggles the pause with Esc', () => {
+    renderRun()
+    answerOnce()
+    pressKey({ key: 'Escape' })
+    expect(useDrillStore.getState().pausedAt).not.toBeNull()
+    pressKey({ key: 'Escape' })
+    expect(useDrillStore.getState().pausedAt).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('resumes from the sheet, or ends early with the session marked partial', () => {
+    renderRun()
+    answerOnce()
+    fireEvent.click(quitButton())
+    fireEvent.click(screen.getByRole('button', { name: translate('vi', 'pause.resume') }))
+    expect(useDrillStore.getState().pausedAt).toBeNull()
+    fireEvent.click(quitButton())
+    fireEvent.click(screen.getByRole('button', { name: translate('vi', 'pause.end') }))
+    expect(useDrillStore.getState().phase).toBe('finished')
+    expect(useDrillStore.getState().lastResult?.partial).toBe(true)
+  })
+
+  it('pauses and welcomes the reader back when the page is hidden', () => {
+    renderRun()
+    const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(true)
+    act(() => { document.dispatchEvent(new Event('visibilitychange')) })
+    hidden.mockRestore()
+    expect(screen.getByRole('dialog', { name: translate('vi', 'away.title') })).toBeInTheDocument()
+  })
+
+  it('leaving the route pauses the session and tells home (regression: the clock ran out unseen and saved a full session)', () => {
+    const { unmount } = renderRun()
+    answerOnce()
+    unmount()
+    act(() => { vi.advanceTimersByTime(120_000) })
+    const s = useDrillStore.getState()
+    expect(s.phase).toBe('running')
+    expect(s.pauseReason).toBe('away')
+    expect(useAppStore.getState().pausedSession).toMatchObject({ to: '/train/note-id', correct: 1, wrong: 0 })
+  })
+
+  it('leaving the route before any answer simply drops the session', () => {
+    const { unmount } = renderRun()
+    unmount()
+    act(() => { vi.advanceTimersByTime(0) })
+    expect(useDrillStore.getState().phase).toBe('setup')
+    expect(useAppStore.getState().pausedSession).toBeNull()
   })
 })

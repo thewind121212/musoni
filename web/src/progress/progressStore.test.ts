@@ -196,3 +196,14 @@ describe('getRecentAverage', () => {
     expect(getRecentAverage('note-id', 1, at(0), 7, now)).toBeNull()
   })
 })
+
+describe('partial sessions', () => {
+  it('count toward daily minutes but never toward bests or averages', () => {
+    const now = new Date('2026-08-28T12:00:00')
+    recordSession(session({ at: now.toISOString(), practiceScore: 40 }))
+    recordSession(session({ at: now.toISOString(), practiceScore: 0, durationSec: 120, partial: true }))
+    expect(getBest('note-id', 1)!.practiceScore).toBe(40)
+    expect(getRecentAverage('note-id', 1, 'none', 7, now)).toBe(40)
+    expect(getDailyMinutes()[localDayKey(now)]).toBe(3)
+  })
+})

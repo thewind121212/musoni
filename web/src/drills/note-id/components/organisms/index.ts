@@ -1,5 +1,7 @@
 export * from './AnswerPad'
+export * from './EarlyEndSummary'
 export * from './MissedNotes'
+export * from './PausePanel'
 export * from './QuestionStaff'
 export * from './ResultSummary'
 export * from './RunHeader'

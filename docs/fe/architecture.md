@@ -9,8 +9,8 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 
 | Module | Store | Holds |
 |---|---|---|
-| `app` (global) | `app/store.ts` | app-wide state: user settings (level, length, naming, sound, language, activity-panel mode); keeps `<html lang>` in step with the language |
-| `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer |
+| `app` (global) | `app/store.ts` | app-wide state: user settings (level, length, naming, sound, language, activity-panel mode); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so home can offer the way back |
+| `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | *(Phase 2)* `drills/complete-measure` | its own store | its session state |
 
 Modules never import each other's stores; sharing goes through `app` or props.
@@ -61,7 +61,8 @@ Shared, module-agnostic, reuse-first building blocks:
   staff.
 - `core/scoring.ts` — pace-based scoring with difficulty and endurance
   multipliers, shared by any drill.
-- `core/i18n/` — the translator (see i18n below) and `formatDuration`.
+- `core/i18n/` — the translator (see i18n below), `formatDuration` and
+  `formatElapsed` (time played: "12 giây", "2 phút 5 giây").
 - `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
   `piano.ts` holds the pure nearest-sample math.
 - `core/engine/` — reserved for a shared drill lifecycle
@@ -104,8 +105,8 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 | Level | What it is | Examples |
 |---|---|---|
 | atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine` |
-| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PianoKey`, `DurationPicker` |
-| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `MissedNotes` |
+| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PausedNotice`, `PianoKey`, `DurationPicker`, `SessionStats` |
+| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` |
 | template | layout shell with no content of its own | `PageTransition` |
 | page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `SetupPhase`, `RunPhase`, `ResultPhase` |
 

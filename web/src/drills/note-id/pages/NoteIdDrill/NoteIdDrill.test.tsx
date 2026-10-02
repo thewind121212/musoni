@@ -52,5 +52,18 @@ describe('NoteIdDrill', () => {
     )
     expect(screen.getByRole('button', { name: /Start/ })).toBeInTheDocument()
   })
-})
 
+  it('carries on a paused session from home\'s notice, and clears the notice', () => {
+    useDrillStore.getState().start(1, useAppStore.getState().settings, 1_000)
+    useDrillStore.getState().pause('away', 2_000)
+    useAppStore.setState({ pausedSession: { to: '/train/note-id', secondsLeft: 59, correct: 1, wrong: 0 } })
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { resume: true } }]}>
+        <NoteIdDrill />
+      </MemoryRouter>,
+    )
+    expect(useDrillStore.getState().pausedAt).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(useAppStore.getState().pausedSession).toBeNull()
+  })
+})

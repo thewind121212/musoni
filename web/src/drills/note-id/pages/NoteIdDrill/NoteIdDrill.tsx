@@ -19,6 +19,8 @@ import { ResultPhase } from '../ResultPhase'
  * straight into a session on the saved setup, so practising what was done last
  * time is one tap rather than two. `setup` (home's change-setup link) opens the
  * setup phase even when the store still holds a finished or abandoned session.
+ * `resume` (home's paused-session notice) carries on a session the reader left
+ * mid-way, which waited paused.
  */
 export function NoteIdDrill() {
   const location = useLocation()
@@ -27,7 +29,7 @@ export function NoteIdDrill() {
   // flashes on the way in. Lazy state runs once per mount (twice under
   // StrictMode in dev, which only regenerates the first question).
   const [entry] = useState(() => {
-    const state = location.state as { autostart?: boolean; setup?: boolean } | null
+    const state = location.state as { autostart?: boolean; setup?: boolean; resume?: boolean } | null
     if (state?.autostart) {
       const { settings } = useAppStore.getState()
       useDrillStore.getState().start(settings.level, settings)
@@ -37,12 +39,20 @@ export function NoteIdDrill() {
       useDrillStore.getState().backToSetup()
       return true
     }
+    if (state?.resume) {
+      useDrillStore.getState().resume()
+      return true
+    }
     return false
   })
   // Drop the flag, so a refresh does not apply it again.
   useEffect(() => {
     if (entry) navigate(location.pathname, { replace: true, state: null })
   }, [entry, navigate, location.pathname])
+
+  // Back in the drill, home has nothing paused to offer: the session is here,
+  // or was just replaced. Leaving mid-session again publishes it afresh.
+  useEffect(() => useAppStore.getState().setPausedSession(null), [])
 
   const phase = useDrillStore(s => s.phase)
   const reduce = useReducedMotion()

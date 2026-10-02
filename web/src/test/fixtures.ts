@@ -5,8 +5,10 @@ import { getSettings, localDayKey, type SessionResult, type Settings } from '@/p
 /** Empties saved progress and puts both stores back to a fresh start, with optional settings. */
 export function resetStores(settings: Partial<Settings> = {}) {
   localStorage.clear()
-  useAppStore.setState({ settings: { ...getSettings(), ...settings } })
-  useDrillStore.setState({ phase: 'setup', question: null, feedback: null, lastResult: null, misses: [] })
+  useAppStore.setState({ settings: { ...getSettings(), ...settings }, pausedSession: null })
+  useDrillStore.setState({
+    phase: 'setup', question: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
+  })
 }
 
 /** A finished note-id session, played today unless `at` says otherwise. */

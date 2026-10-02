@@ -54,4 +54,16 @@ describe('HomeScreen', () => {
     expect(screen.getByRole('button', { name: /Show less/ })).toHaveAttribute('aria-expanded', 'true')
     expect(getSettings().activityExpanded).toBe(true)
   })
+
+  it('offers the way back into a session left paused', () => {
+    useAppStore.setState({ pausedSession: { to: '/train/note-id', secondsLeft: 18, correct: 12, wrong: 2 } })
+    renderHome()
+    expect(screen.getByRole('status')).toHaveTextContent('18 sec left · 12 correct, 2 wrong')
+    expect(screen.getByRole('link', { name: /Resume/ })).toHaveAttribute('href', '/train/note-id')
+  })
+
+  it('shows no paused notice without a paused session', () => {
+    renderHome()
+    expect(screen.queryByRole('status')).toBeNull()
+  })
 })

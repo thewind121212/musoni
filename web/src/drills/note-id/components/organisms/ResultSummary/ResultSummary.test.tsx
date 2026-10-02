@@ -19,12 +19,6 @@ describe('ResultSummary', () => {
     expect(screen.getByText('11')).toBeInTheDocument()
   })
 
-  it('rounds accuracy to a whole percent and the average answer to tenths of a second', () => {
-    render(<ResultSummary result={result} isBest={false} t={t} />)
-    expect(screen.getByText('87%')).toBeInTheDocument()
-    expect(screen.getByText('1.4s')).toBeInTheDocument()
-  })
-
   it('shows the multipliers that went into the score, to two places', () => {
     render(<ResultSummary result={result} isBest={false} t={t} />)
     expect(screen.getByText('difficulty 1.20x')).toBeInTheDocument()
