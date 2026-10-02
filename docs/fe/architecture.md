@@ -51,7 +51,8 @@ Shared, module-agnostic, reuse-first building blocks:
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling) used by both the note-id generator and Staff.
 - `core/scoring.ts` — difficulty-weighted scoring, shared by any drill.
-- `core/audio/` — pitch playback (Web Audio).
+- `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
+  `piano.ts` holds the pure nearest-sample math.
 - `core/engine/` — reserved for a shared drill lifecycle
   (`generate → render → answer → feedback → next`) if a second drill needs
   one. **As built for Phase 1 it is an empty placeholder**: the note-id
