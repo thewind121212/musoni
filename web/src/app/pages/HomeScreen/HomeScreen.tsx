@@ -9,6 +9,7 @@ import {
   getActiveDayCount, getBest, getDailyMinutes, getLongestStreak, getStreak, localDayKey,
 } from '@/progress/progressStore'
 import { formatDuration } from '@/core/i18n/formatDuration'
+import { DAILY_GOAL_MINUTES } from '@/config/constants'
 
 /** Page: reads the app store and progress, and hands plain values to the components below. */
 export function HomeScreen() {
@@ -50,6 +51,7 @@ export function HomeScreen() {
           <ActivityPanel
             minutesByDay={minutesByDay}
             todayMinutes={minutesByDay[localDayKey(new Date())] ?? 0}
+            dailyGoal={DAILY_GOAL_MINUTES}
             streak={getStreak()}
             longestStreak={getLongestStreak()}
             activeDays={getActiveDayCount()}
@@ -68,7 +70,8 @@ export function HomeScreen() {
             icon={<MusicNotesIcon size={24} weight="fill" />}
             title={t('home.noteReading')}
             description={t('home.noteReading.what')}
-            actionLabel={t('home.practice')}
+            actionLabel={t('home.practiceNow')}
+            setupLabel={t('home.changeSetup')}
             stats={[
               {
                 icon: <MusicNoteIcon size={12} weight="fill" />,

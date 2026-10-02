@@ -1,4 +1,5 @@
 export * from './AnswerPad'
+export * from './MissedNotes'
 export * from './QuestionStaff'
 export * from './ResultSummary'
 export * from './RunHeader'

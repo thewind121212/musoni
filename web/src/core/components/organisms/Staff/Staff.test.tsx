@@ -90,3 +90,28 @@ describe('ClefGlyph renders', () => {
     expect(container.querySelector('svg')).not.toBeNull()
   })
 })
+
+describe('a new question only replaces the note', () => {
+  it('keeps the stave and clef drawn while the note layer changes', () => {
+    const { getByTestId, rerender } = render(
+      <Staff clef="treble" pitch={{ letter: 'C', accidental: '', octave: 5 }} />,
+    )
+    const lines = getByTestId('staff-lines').querySelector('svg')
+    const notes = getByTestId('staff-notes')
+
+    rerender(<Staff clef="treble" pitch={{ letter: 'E', accidental: '', octave: 4 }} />)
+
+    expect(getByTestId('staff-lines').querySelector('svg')).toBe(lines)
+    expect(getByTestId('staff-notes')).not.toBe(notes)
+  })
+
+  it('recolours feedback on the same note without replaying its entrance', () => {
+    const pitch = { letter: 'C' as const, accidental: '' as const, octave: 5 }
+    const { getByTestId, rerender } = render(<Staff clef="treble" pitch={pitch} />)
+    const notes = getByTestId('staff-notes')
+
+    rerender(<Staff clef="treble" pitch={pitch} tone="correct" />)
+
+    expect(getByTestId('staff-notes')).toBe(notes)
+  })
+})

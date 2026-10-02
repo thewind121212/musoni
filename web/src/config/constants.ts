@@ -82,6 +82,13 @@ export const DEFAULT_CUSTOM_MINUTES = 10
 
 export const DEFAULT_DURATION_SECONDS = 60
 
+/**
+ * Minutes a day the home ring fills toward. Small on purpose: the research the
+ * lengths above lean on says frequency beats session length, so the goal asks
+ * for a habit (two or three short sessions), not a long sit.
+ */
+export const DAILY_GOAL_MINUTES = 5
+
 /** Level descriptions shown in setup. */
 export const LEVEL_INFO: Record<1 | 2 | 3 | 4, { name: string; detail: string }> = {
   1: { name: 'Treble', detail: 'On the staff only' },
@@ -89,6 +96,17 @@ export const LEVEL_INFO: Record<1 | 2 | 3 | 4, { name: string; detail: string }>
   3: { name: 'Bass', detail: 'Bass clef range' },
   4: { name: 'Both', detail: 'Treble and bass mixed' },
 }
+
+/**
+ * Notation units across the drill's staff. Narrower than the Staff default
+ * draws the same note larger once it is scaled to the screen width, while
+ * leaving room for a wrong pick beside the answer.
+ */
+export const QUESTION_STAFF_WIDTH = 220
+
+/** Result screen: how many distinct missed notes to show, and their staff width. */
+export const MISSED_NOTES_SHOWN = 6
+export const MISSED_NOTE_STAFF_WIDTH = 120
 
 /** Drill clock resolution. */
 export const TICK_MS = 200

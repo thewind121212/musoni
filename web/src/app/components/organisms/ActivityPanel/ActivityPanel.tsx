@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { CaretDownIcon, FireIcon, TrophyIcon, CalendarCheckIcon } from '@phosphor-icons/react'
-import { IconStat, Panel } from '@/core/components/atoms'
+import { GoalRing, IconStat, Panel } from '@/core/components/atoms'
 import type { Lang, Translate } from '@/core/i18n/translate'
 import { ActivityGrid, ActivityWeek } from '../ActivityCalendar'
 
@@ -8,6 +8,8 @@ interface Props {
   /** Practice minutes keyed by local day (`YYYY-MM-DD`). */
   minutesByDay: Record<string, number>
   todayMinutes: number
+  /** Minutes a day the reader aims for; today's ring fills toward it. */
+  dailyGoal: number
   /** Current run of practised days; the pill hides at 0. */
   streak: number
   longestStreak: number
@@ -20,47 +22,43 @@ interface Props {
 }
 
 /**
- * Where the reader stands: today first, then the streak, then either this week
- * or the full calendar of every practised day.
+ * Where the reader stands: today against the daily goal, then the streak,
+ * then either this week or the full calendar of every practised day.
  */
 export function ActivityPanel({
-  minutesByDay, todayMinutes, streak, longestStreak, activeDays, expanded, onToggle, lang, t,
+  minutesByDay, todayMinutes, dailyGoal, streak, longestStreak, activeDays, expanded, onToggle, lang, t,
 }: Props) {
   const reduce = useReducedMotion()
   const practisedToday = todayMinutes > 0
 
   return (
     <Panel>
-      <div className="flex items-start justify-between gap-3">
-        <div>
+      <div className="flex items-center gap-4">
+        <GoalRing value={todayMinutes} goal={dailyGoal} unit={t('goal.unit')} />
+        <div className="min-w-0 flex-1">
           <div className="text-[10px] font-semibold tracking-wide text-ink-faint uppercase">
             {t('week.today')}
           </div>
-          {practisedToday ? (
-            <div className="tnum text-3xl leading-tight font-semibold">
-              {t('week.minutes', { count: todayMinutes })}
+          <div className="text-lg leading-snug font-semibold text-ink">
+            {!practisedToday
+              ? t('week.notYet')
+              : todayMinutes >= dailyGoal
+                ? t('goal.reached')
+                : t('goal.toGo', { count: dailyGoal - todayMinutes })}
+          </div>
+          {!practisedToday && <div className="text-xs text-ink-faint">{t('week.keepGoing')}</div>}
+          {streak > 0 && (
+            <div
+              className={
+                'mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 ' +
+                (practisedToday ? 'bg-accent text-accent-ink' : 'border border-line text-ink-soft')
+              }
+            >
+              <FireIcon size={14} weight="fill" />
+              <span className="tnum text-sm font-semibold">{t('week.days', { count: streak })}</span>
             </div>
-          ) : (
-            <>
-              <div className="text-xl leading-tight font-semibold text-ink-soft">
-                {t('week.notYet')}
-              </div>
-              <div className="text-xs text-ink-faint">{t('week.keepGoing')}</div>
-            </>
           )}
         </div>
-
-        {streak > 0 && (
-          <div
-            className={
-              'flex items-center gap-1.5 rounded-full px-3 py-1.5 ' +
-              (practisedToday ? 'bg-accent text-accent-ink' : 'border border-line text-ink-soft')
-            }
-          >
-            <FireIcon size={15} weight="fill" />
-            <span className="tnum text-sm font-semibold">{t('week.days', { count: streak })}</span>
-          </div>
-        )}
       </div>
 
       {/*

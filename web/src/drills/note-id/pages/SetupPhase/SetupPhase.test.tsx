@@ -22,7 +22,7 @@ describe('SetupPhase', () => {
 
   it('saves a changed setting through the app store', async () => {
     renderSetup()
-    await userEvent.click(screen.getByRole('radio', { name: /Letters/ }))
+    await userEvent.click(screen.getByRole('radio', { name: 'C D E' }))
     expect(useAppStore.getState().settings.naming).toBe('letters')
     expect(getSettings().naming).toBe('letters')
   })
@@ -52,4 +52,21 @@ describe('SetupPhase', () => {
     expect(drill.settings.durationSec).toBe(120)
     expect(drill.settings.accidentals).toBe(true)
   })
+
+  it('flips sharps and sound from their switches', async () => {
+    renderSetup()
+    const before = useAppStore.getState().settings
+    await userEvent.click(screen.getByRole('switch', { name: 'Sharps and flats' }))
+    await userEvent.click(screen.getByRole('switch', { name: 'Sound' }))
+    const after = useAppStore.getState().settings
+    expect(after.accidentals).toBe(!before.accidentals)
+    expect(after.sound).toBe(!before.sound)
+  })
+
+  it('sums up the session next to Start', () => {
+    useAppStore.getState().updateSettings({ level: 3, durationSec: 120, accidentals: true })
+    renderSetup()
+    expect(screen.getByText('Bass \u00B7 2 min \u00B7 \u266F \u266D')).toBeInTheDocument()
+  })
 })
+

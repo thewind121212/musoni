@@ -30,4 +30,17 @@ describe('NoteIdDrill', () => {
     renderDrill()
     expect(screen.getByRole('button', { name: /Again/ })).toBeInTheDocument()
   })
+
+  it('opens straight into a session on the saved setup when asked to autostart', () => {
+    useAppStore.getState().updateSettings({ level: 3, durationSec: 120 })
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { autostart: true } }]}>
+        <NoteIdDrill />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('button', { name: 'Quit this session' })).toBeInTheDocument()
+    expect(useDrillStore.getState().level).toBe(3)
+    expect(useDrillStore.getState().settings.durationSec).toBe(120)
+  })
 })
+

@@ -29,7 +29,7 @@ describe('ResultPhase', () => {
     finish({ practiceScore: 50 })
     renderResult()
     expect(screen.getByText('Personal best')).toBeInTheDocument()
-    expect(screen.queryByText(/Your best/)).toBeNull()
+    expect(screen.queryByText(/to go/)).toBeNull()
   })
 
   it('points to the standing best when this session fell short of it', () => {
@@ -37,7 +37,7 @@ describe('ResultPhase', () => {
     finish({ practiceScore: 50 })
     renderResult()
     expect(screen.queryByText('Personal best')).toBeNull()
-    expect(screen.getByText(/Your best .* 70/)).toBeInTheDocument()
+    expect(screen.getByText(/Best 70 · 20 to go/)).toBeInTheDocument()
   })
 
   it('compares against bests at the same level only', () => {
@@ -60,5 +60,23 @@ describe('ResultPhase', () => {
     renderResult()
     await userEvent.click(screen.getByRole('button', { name: 'Change setup' }))
     expect(useDrillStore.getState().phase).toBe('setup')
+  })
+
+  it("sets the score against this week's average", () => {
+    recordSession(session({ practiceScore: 40, at: new Date(Date.now() - 3600_000).toISOString() }))
+    finish({ practiceScore: 50 })
+    renderResult()
+    expect(screen.getByText('Week average 40')).toBeInTheDocument()
+    expect(screen.getByText('+10 on this week')).toBeInTheDocument()
+  })
+
+  it('lists the notes this session missed', () => {
+    finish()
+    useDrillStore.setState({
+      misses: [{ clef: 'treble', pitch: { letter: 'G', accidental: '', octave: 4 }, answer: 'G', chosen: 'A' }],
+    })
+    renderResult()
+    expect(screen.getByText('Notes to review')).toBeInTheDocument()
+    expect(screen.getByText('you picked A')).toBeInTheDocument()
   })
 })

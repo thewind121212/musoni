@@ -5,7 +5,7 @@ import { ActivityPanel } from './ActivityPanel'
 import { t } from '@/test/i18n'
 
 const base = {
-  minutesByDay: {}, todayMinutes: 0, streak: 0, longestStreak: 0, activeDays: 0,
+  minutesByDay: {}, todayMinutes: 0, dailyGoal: 5, streak: 0, longestStreak: 0, activeDays: 0,
   expanded: false, onToggle: () => {}, lang: 'en' as const, t,
 }
 
@@ -16,10 +16,12 @@ describe('ActivityPanel', () => {
     expect(screen.queryByText(/^\d+ days?$/)).toBeNull()
   })
 
-  it("leads with today's minutes once the reader has practised", () => {
-    render(<ActivityPanel {...base} todayMinutes={7} />)
-    expect(screen.getByText('7 min')).toBeInTheDocument()
+  it('says how far today is from the daily goal, then that it is reached', () => {
+    const { rerender } = render(<ActivityPanel {...base} todayMinutes={2} />)
+    expect(screen.getByText("3 min to today's goal")).toBeInTheDocument()
     expect(screen.queryByText('Not yet')).toBeNull()
+    rerender(<ActivityPanel {...base} todayMinutes={7} />)
+    expect(screen.getByText("Today's goal reached")).toBeInTheDocument()
   })
 
   it('shows the streak pill only while a streak is running', () => {

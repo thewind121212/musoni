@@ -33,4 +33,13 @@ describe('SegmentedControl', () => {
     rerender(<SegmentedControl label="L" segments={segments} value={30} onChange={() => {}} columns={2} />)
     expect(screen.getByRole('radiogroup').style.gridTemplateColumns).toBe('repeat(2, minmax(0, 1fr))')
   })
+
+  it('compact: keeps the group named without a visible heading, and still reports taps', async () => {
+    const onChange = vi.fn()
+    render(<SegmentedControl compact label="Length" segments={segments} value={60} onChange={onChange} />)
+    expect(screen.getByRole('radiogroup', { name: 'Length' })).toBeInTheDocument()
+    expect(screen.queryByText('Length')).toBeNull()
+    await userEvent.click(screen.getByRole('radio', { name: '30s' }))
+    expect(onChange).toHaveBeenCalledWith(30)
+  })
 })

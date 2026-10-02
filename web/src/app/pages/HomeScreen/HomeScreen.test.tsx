@@ -16,18 +16,18 @@ describe('HomeScreen', () => {
     resetStores()
     renderHome()
     expect(screen.getByRole('heading', { name: 'musoni' })).toBeInTheDocument()
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/train/note-id')
+    expect(screen.getByRole('link', { name: /Luyện ngay/ })).toHaveAttribute('href', '/train/note-id')
   })
 
-  it('shows saved practice: minutes today, the streak and the best score at the chosen level', () => {
+  it('shows saved practice: today against the goal, the streak and the best score at the chosen level', () => {
     recordSession(session({ durationSec: 300, practiceScore: 41, level: 2 }))
     recordSession(session({ practiceScore: 55, level: 3 }))
     useAppStore.getState().updateSettings({ level: 2 })
     renderHome()
-    expect(screen.getByText('6 min')).toBeInTheDocument()
+    expect(screen.getByText("Today's goal reached")).toBeInTheDocument()
     expect(screen.getByText('1 day')).toBeInTheDocument()
-    expect(screen.getByRole('link')).toHaveTextContent('41')
-    expect(screen.getByRole('link')).not.toHaveTextContent('55')
+    expect(screen.getByText('41')).toBeInTheDocument()
+    expect(screen.queryByText('55')).toBeNull()
   })
 
   it('switches language through the app store and keeps it', async () => {

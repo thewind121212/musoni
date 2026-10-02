@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useAppStore } from '@/app/store'
 import { useDrillStore } from '@/drills/note-id/store'
 import { SetupPhase } from '../SetupPhase'
 import { RunPhase } from '../RunPhase'
@@ -11,8 +14,28 @@ import { ResultPhase } from '../ResultPhase'
  *
  * Phases cross-fade so the jump from setup into a running sprint reads as one
  * continuous surface rather than a hard swap.
+ *
+ * Arriving with `autostart` in the route state (home's start button) opens
+ * straight into a session on the saved setup, so practising what was done last
+ * time is one tap rather than two.
  */
 export function NoteIdDrill() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  // Started before the first read of the phase, so setup never flashes on the
+  // way in. Lazy state runs once per mount (twice under StrictMode in dev,
+  // which only regenerates the first question).
+  const [autostarted] = useState(() => {
+    if (!(location.state as { autostart?: boolean } | null)?.autostart) return false
+    const { settings } = useAppStore.getState()
+    useDrillStore.getState().start(settings.level, settings)
+    return true
+  })
+  // Drop the flag, so a refresh or coming back here opens setup as usual.
+  useEffect(() => {
+    if (autostarted) navigate(location.pathname, { replace: true, state: null })
+  }, [autostarted, navigate, location.pathname])
+
   const phase = useDrillStore(s => s.phase)
   const reduce = useReducedMotion()
 

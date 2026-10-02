@@ -20,7 +20,7 @@ drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. Home leads with today,
 a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
-English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 234 web tests (Vitest) + 1 Go test
+English switch, and answers play on a sampled piano. Components follow atomic-design levels. Go `/health` stub behind it. 262 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -105,6 +105,13 @@ a real browser.
 - [x] Swipe-back fix: going back (phone edge-swipe, browser back, the in-app back links)
       lands on home as it was, with no fade-out and no slide-in; back links step back through
       history instead of pushing `/`. 234 web tests green
+- [x] **UI/UX refresh** (from the approved mockups, 2026-10-02): the staff holds still
+      between answers and only the note fades in (two-layer `Staff`); a bigger staff with
+      no card and the miss named under it; setup fits one phone screen (row clef cards,
+      switches, compact naming toggle) with a sticky amber Start bar; home has a daily
+      goal ring (5 min) and one-tap "Luyện ngay" that starts on the saved setup; result
+      compares the score with the week average and best, and lists the notes to review.
+      All start actions are amber. 262 web tests green — `docs/fe/screens.md`
 
 ## In Progress
 
@@ -119,10 +126,8 @@ a real browser.
 - Phase 2 hygiene:
   - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
     setup or delete it.
-  - Result copy still says "your best at this level **and length**"
-    (`result.yourBest`, English only); bests are level-only now.
   - Drill chunk is ~1.2 MB raw (VexFlow + fonts). Worth a look before launch.
-  Closed: the local-day-key regression test pins its timezone per case (UTC+7 and
+  Closed: the stale `result.yourBest` copy (replaced by the comparison bar); the local-day-key regression test pins its timezone per case (UTC+7 and
   UTC−7), so it fails on any runner if bucketing regresses to UTC; real `<title>`,
   description and favicon; project README and a real `web/README.md`; CI and a
   zero-warning lint; WeekStrip removed (the activity panel charts minutes, not

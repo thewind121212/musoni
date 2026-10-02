@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ProgressBar } from '@/core/components/atoms'
 import { AnswerPad, QuestionStaff, RunHeader } from '@/drills/note-id/components/organisms'
+import { MissLine } from '@/drills/note-id/components/atoms'
 import { useDrillStore } from '@/drills/note-id/store'
 import { optionIndexFromKey } from '@/drills/note-id/keyboard'
 import { useT } from '@/app/useT'
@@ -96,13 +97,24 @@ export function RunPhase() {
         {streak > 2 && t('run.streak', { count: streak })}
       </div>
 
-      <div className="flex flex-1 items-center justify-center py-6 md:py-10">
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 md:py-8">
         <QuestionStaff
           clef={question.clef}
           pitch={question.pitch}
           tone={feedback ? (feedback.correct ? 'correct' : 'wrong') : 'neutral'}
           chosen={wrongChoice}
         />
+        {/* Fixed height, so the staff does not jump when a miss is named. */}
+        <div className="flex h-10 items-center">
+          {feedback && !feedback.correct && (
+            <MissLine
+              text={t('run.missed', {
+                answer: question.options[feedback.correctIndex].label,
+                chosen: question.options[feedback.chosenIndex].label,
+              })}
+            />
+          )}
+        </div>
       </div>
 
       <div className="md:mx-auto md:w-full md:max-w-2xl">

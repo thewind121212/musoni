@@ -42,9 +42,12 @@ interface: no clutter around the staff.
 
 - Title, one-line purpose, and the language switch in the header corner.
 - **Activity panel**, leading with where the user stands now:
-  - **Today** in minutes practised, or "Not yet" with a nudge that one session
-    keeps the streak going.
-  - A **streak pill** (flame + days). An unpractised today does not break the
+  - **Today** as a **goal ring** (`GoalRing`): minutes practised against a
+    daily goal of `DAILY_GOAL_MINUTES` (5, in `config/`), with a line beside it
+    saying how many minutes are left ("Còn 3 phút để đạt mục tiêu"), that the
+    goal is reached, or "Not yet" with a nudge that one session keeps the streak
+    going. The ring turns green once the goal is met.
+  - A **streak pill** (flame + days) under that line. An unpractised today does not break the
     streak until the day is over, so it counts back from yesterday and shows
     what is still there to keep. The pill is filled once today is practised.
   - **Short mode (default)**: this week as a row of seven squares, today ringed,
@@ -62,13 +65,12 @@ interface: no clutter around the staff.
 - Training list: the note-id card with a line saying what the drill asks, its
   Level / Length / Best in one three-column `StatStrip` (equal columns, labels
   and values wrap, so it fits a 320px phone), then a disabled placeholder card
-  for the Phase 2 rhythm drill. The card's call to action is
-  "Luyện tập →" / "Practice →" (it replaced a bare `>` arrow), a filled amber
-  pill (`--cta`, not the blue accent) so it reads as a button at first glance.
-  On phones it is a compact pill at the right of the title row, leaving the
-  description the full width below, and the icon tile sits at the top of the
-  row so a title that wraps on a 320px phone stays beside it; from `sm` up it
-  is a larger pill on the right of the card, centred in the row.
+  for the Phase 2 rhythm drill. The card is **one tap to practise**: a
+  full-width amber "Luyện ngay" / "Practice now" button (`--cta`, never the blue
+  accent) opens the drill with `autostart` in the route state, so a session
+  starts straight away on the setup the stats show. A quieter underlined
+  "Đổi thiết lập" / "Change setup" link under it opens the setup phase instead.
+  From `sm` up the button sits on the right with the link to its left.
 
 Moving forward to a route slides it in from the right, and the drill's own phase changes
 cross-fade, so entering a drill and starting a session both read as motion
@@ -89,25 +91,31 @@ Opened directly on a drill, with no in-app history, the back link goes to `/`.
 
 One route, three phases held in the drill store. No URL change while training.
 
-**Setup phase** carries everything that used to be a separate settings screen.
-Each group has a marked header: a small bordered icon, the name, and a line
-saying what the setting controls. Choices are cards with a visual, not text
-pills: the clef options render real VexFlow clefs, note-naming shows the names
-themselves, accidentals show the natural, sharp and flat signs, and sound uses
-Phosphor icons. Session length is the exception: a wrapping **pill row**, since
-time has no picture worth showing and five choices do not fit the two-column
-card grid. Groups stagger in on entry.
+**Setup phase** carries everything that used to be a separate settings screen,
+and fits one phone screen. Each group has a marked header (a small bordered
+icon and the name). What a session practises keeps large controls: the clef
+options are **row cards** (a real VexFlow clef on the left, name and range
+beside it) and session length a pill row. The preferences that need no picture
+share one list of rows: sharps and flats and sound are **switches**, note
+names a compact two-way segmented control. Groups stagger in on entry.
 
 | Control | Options |
 |---|---|
 | Clef and range | Treble / Treble+ / Bass / Both (L1-L4), with a one-line description |
 | Session length | 30s / 1 min / 2 min / 5 min / Other; Other reveals a 1-30 minute stepper |
+| Sharps and flats | switch (adds # and b) |
 | Note names | Do Re Mi (solfège, default) / C D E (letters) |
-| Sharps and flats | Naturals only / Include # and b |
-| Sound | Play the note / Silent |
+| Sound | switch (hear each answer) |
 
-It also shows the personal best for the chosen level (across all lengths), then
-a full-width Start button.
+A **sticky bar** at the bottom holds the start action, so it is on screen however
+far the settings run: a one-line summary of the session ("Khóa Sol · 30 giây ·
+♯ ♭"), the personal best for the chosen level (across all lengths), and an
+amber **Start** button. It is `sticky`, not `fixed`, because the phase wrapper
+animates a transform.
+
+Opened with `autostart` (home's start button), the drill skips setup and starts
+before its first render, so setup never flashes; the flag is then dropped from
+history, so a refresh or coming back opens setup as usual.
 
 **Run phase** is the drill itself. The header is three columns
 (`1fr auto 1fr`, so long counts never push into the timer): a quit icon (X), a
@@ -115,17 +123,37 @@ large tabular countdown centred that turns red for the last ten seconds, and a
 green check pill with the right-answer count beside a red cross pill with the
 wrong-answer count (each with screen-reader text). Under the thin time bar sits
 the streak (3+) on a fixed-height line, so the staff does not jump when it
-appears. Then the staff on a raised surface, and the answer pad in the bottom
-thumb zone.
+appears. Then the staff, large and straight on the page (no card; a narrower
+notation width, `QUESTION_STAFF_WIDTH`, scales the note up about 1.5x on a
+phone), a fixed-height line under it, and the answer pad in the bottom thumb
+zone.
+
+The staff **holds still between questions**: the stave and clef are one layer
+drawn once per clef, and the notes a second layer on top. A new question only
+replaces the note layer, which fades in (`animate-note-in`); feedback recolours
+the same note in place without replaying it. Before, the whole staff faded out
+and back in on every answer.
 
 The answer pad is a **fixed piano**: seven white keys along the bottom and, with
 accidentals on, five black keys above the real gaps between them, in the same
 positions on every question (see `drill-note-identification.md`). Feedback
 fills the correct key green with a check and a wrong pick red with a cross; the
 staff turns the printed note green and, on a miss, draws the picked note beside
-it in red. A correct answer advances after 260 ms, a miss after 1.1 s.
+it in red, and the line under the staff names it in words: "Đây là Sol, bạn
+chọn La" / "That was G, you picked A". A correct answer advances after 260 ms,
+a miss after 1.1 s.
 
 **Result phase**: practice score with **difficulty** and **endurance**
-multiplier chips, a four-tile grid (correct, accuracy, average answer, best
-streak), a personal-best badge or the score to beat, then Again / Change setup /
-Home.
+multiplier chips and a personal-best badge, plus a chip with the change against
+this week's average at the level ("+14 so với tuần này"). Then one row of four
+figures (correct, accuracy, time per note, best streak) and a **comparison bar**
+(`ScoreCompare`): the score as a fill, the week average as a tick, the best as
+the end of the track, captioned "Trung bình tuần 172 · Kỷ lục 219 · còn 33". A
+first session at a level, with nothing to compare, skips the bar.
+
+**Notes to review** lists the session's misses, each on a small staff with the
+answer and what was picked ("bạn chọn La ×2"); the same note read the same wrong
+way counts once, most repeated first, up to six. Misses live in the drill store
+for the session only and are not saved.
+
+Then **Again** (amber, since it starts practice) / Change setup / Home.

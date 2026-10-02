@@ -31,7 +31,7 @@ export function DurationPicker({ durationSec, onChange, t }: Props) {
   }
 
   const pill = (selected: boolean) =>
-    'min-h-11 flex-1 basis-16 rounded-full px-2 text-sm font-medium ' +
+    'min-h-11 flex-1 basis-14 rounded-full px-1.5 text-sm font-medium whitespace-nowrap ' +
     'transition-[background-color,border-color,color] duration-150 active:scale-[0.97] ' +
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ' +
     (selected ? 'bg-accent text-accent-ink' : 'border border-line bg-raised text-ink-soft hover:text-ink')
@@ -41,10 +41,9 @@ export function DurationPicker({ durationSec, onChange, t }: Props) {
       <FieldLegend
         icon={<TimerIcon size={15} weight="bold" />}
         label={t('setup.length')}
-        description={t('setup.length.what')}
       />
 
-      <div role="radiogroup" aria-label={t('setup.length')} className="flex flex-wrap gap-2">
+      <div role="radiogroup" aria-label={t('setup.length')} className="flex flex-wrap gap-1.5">
         {DURATIONS.map(d => (
           <button
             key={d.seconds}
