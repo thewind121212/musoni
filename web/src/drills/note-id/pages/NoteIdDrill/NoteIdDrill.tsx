@@ -14,7 +14,6 @@ const controls: DrillRouteControls = {
   },
   backToSetup: () => useDrillStore.getState().backToSetup(),
   resume: () => useDrillStore.getState().resume(),
-  pause: () => useDrillStore.getState().pause('menu'),
 }
 
 /**

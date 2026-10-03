@@ -14,7 +14,6 @@ const controls: DrillRouteControls = {
   },
   backToSetup: () => useEarStore.getState().backToSetup(),
   resume: () => useEarStore.getState().resume(),
-  pause: () => useEarStore.getState().pause('menu'),
 }
 
 /**

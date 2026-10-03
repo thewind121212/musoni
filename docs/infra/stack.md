@@ -41,7 +41,7 @@ musoni/
 
 ## Setup
 
-- `web/`: `cd web && npm install && npm run dev` — Vite dev server (default `http://localhost:5173`)
+- `web/`: `cd web && npm install && npm run dev` — Vite dev server (default `http://localhost:5173`; `host: true` in `vite.config.ts` also serves it on the LAN — use the `Network:` URL Vite prints to test from a phone/other machine; `npm run preview` likewise)
 - `server/`: `cd server && go run .` — serves `GET /health` on `:8080`
 - Tests: `cd web && npm test` (Vitest + jsdom; `@testing-library/react`,
   `@testing-library/user-event` and `@testing-library/jest-dom` for component tests;

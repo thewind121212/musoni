@@ -81,7 +81,13 @@
   color-scheme: dark;
 }
 
-html { -webkit-text-size-adjust: 100%; }
+/* A stable gutter: pages of different heights (home, a drill) don't add and
+   drop the scrollbar, which shifted every page sideways on desktop. */
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
+
+/* Page transitions slide a page in from the side; clip, not hidden, so the
+   offset can't make the page scroll sideways yet sticky bars still stick. */
+#root { overflow-x: clip; }
 
 body {
   margin: 0;

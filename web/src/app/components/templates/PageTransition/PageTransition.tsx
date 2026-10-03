@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useLayoutEffect, type ReactNode } from 'react'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
 
 const variants: Variants = {
@@ -18,9 +18,15 @@ interface Props {
 }
 
 /** Slides a route in from the right on entry, so tapping into a drill reads as
- *  moving forward rather than as a page swap. */
+ *  moving forward rather than as a page swap, and opens it at the top. */
 export function PageTransition({ instant = false, children }: Props) {
   const reduce = useReducedMotion()
+  // Moving forward opens the new page at its top, not at the scroll the last
+  // page was left at. Back and forward leave scrolling to the browser.
+  useLayoutEffect(() => {
+    if (!instant) window.scrollTo(0, 0)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <motion.div
       custom={instant}

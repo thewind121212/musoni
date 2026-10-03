@@ -47,6 +47,18 @@ visit, or a direct link), a loading screen shows a small keyboard whose keys
 press one after another and "Đang mở bài luyện…". It stays invisible for the
 first 150 ms, so a quick load never flashes it.
 
+Once the code is in, the drill route renders it directly (`app/routes`
+`splitPage`) rather than through `React.lazy`: lazy suspends for a tick even on
+cached code, and React then holds the Suspense fallback for ~300 ms, so every
+open showed a blank page and the drill snapped in after the slide. Now the drill
+slides in itself.
+
+Moving forward to a page opens it at the top (`PageTransition` scrolls on
+arrival; back and forward leave scroll to the browser). The slide-in's sideways
+offset is clipped (`#root { overflow-x: clip }`), so it never makes the page
+scroll sideways, and `<html>` keeps a stable scrollbar gutter, so pages of
+different heights don't shift sideways as the scrollbar comes and goes.
+
 ### Home (`/`)
 
 - Title, one-line purpose, and the language switch in the header corner.
@@ -83,7 +95,7 @@ first 150 ms, so a quick load never flashes it.
   "Đổi thiết lập" / "Change setup" link under it opens the setup phase instead.
   From `sm` up the button sits on the right with the link to its left.
 - **Paused-session bar**: when the reader left a session mid-way without ending
-  it (back and swipe now pause in place, so this is rarer), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn
+  it (back or swipe from a session started with Practice, or any other way out), a dark bar floats at the bottom: "Lượt tập đang tạm dừng · Còn
   9:40 · 12 đúng, 2 sai" with an amber "Tập tiếp" / "Resume" that goes back in
   and resumes straight away (route state `resume`). "Luyện ngay" or "Đổi thiết
   lập" instead ends the paused session as an early end (see below).
@@ -154,9 +166,8 @@ vertical drag neither bounces the page nor pulls it down to refresh. The surface
 itself has `touch-action: none`, so drags never pan, pinch or double-tap zoom,
 while taps on the keys still answer. Browsers read the overscroll setting for the
 page only from `<html>`, not `<body>`. Home, setup and result scroll as usual. The
-browser's edge-swipe back can't be blocked by a page, but it no longer leaves the
-drill: the session sits on a history entry of its own, so swiping back opens the
-pause sheet (below).
+browser's edge-swipe back can't be blocked by a page; it goes back to where the
+reader came from (below).
 
 The staff **holds still between questions**: the stave and clef are one layer
 drawn once per clef, and the notes a second layer on top. A new question only
@@ -183,11 +194,12 @@ the session waits:
 
 | How the reader leaves | What happens |
 |---|---|
-| ✕ or Esc, before any answer | straight back to setup; nothing to keep |
+| ✕ or Esc, before any answer | nothing to keep: straight back to where the session started (home for "Luyện ngay", setup for Start) |
 | ✕ or Esc, after answering | **pause sheet**: "Đã tạm dừng", time left / right / wrong, a note that ending now is not scored but the time played still counts toward today's goal, amber "Tiếp tục tập" and a red-text "Kết thúc lượt" |
 | switches app or locks the phone (page hidden) | pauses; on return the same sheet greets them: "Chào mừng quay lại", the time left large, the same two actions |
-| back or edge-swipe during the session | **pause sheet**, as for ✕; the reader stays in the drill. Back again keeps them there; "Kết thúc lượt" ends it |
-| back from the result | setup; back from setup goes home |
+| back or edge-swipe during a session started from home ("Luyện ngay", or "Tập tiếp" on the paused bar) | **home**; the session pauses and home shows the paused-session bar (with no answers it is dropped) |
+| back or edge-swipe during a session started from setup's Start | **setup**; the session ends, its played time still counts toward today's goal |
+| back from the result | where the session started: home, or setup (and back from setup goes home) |
 | leaves the drill another way (home link from a deep link, closing the tab mid-way) | pauses and home shows the paused-session bar; with no answers the session is simply dropped |
 
 Both are one bottom sheet (`PausePanel`, built on `vaul`) on every width,
