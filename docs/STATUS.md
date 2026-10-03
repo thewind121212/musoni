@@ -167,6 +167,13 @@ a real browser.
       setup; result and ✕-before-any-answer back out the same way. Back no longer gets stuck re-opening the pause
       sheet. Matrix test `app/useDrillRoute.test.tsx` — `docs/fe/screens.md`,
       `docs/fe/architecture.md`, `docs/fe/drill-hear-play.md`
+- [x] **Nghe & Đàn listening aids and violet colour**: setup's "Nghe" group with "Nghe
+      giọng trước mỗi nốt" and "Giữ một giọng (Do)" (off by default; one key disabled at
+      L1); aided sessions saved with `aids: true` never set a best and say so on the
+      result; "Đổi giọng" now shows only on a real key change (`keyChanged`); drill 2's
+      action colour is violet (`[data-drill="hear-play"]`, AA contrast 5.2 light / 7.3
+      dark) — `docs/fe/drill-hear-play.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`,
+      `docs/fe/architecture.md`, spec + plan in `docs/superpowers/`
 - [x] Home → drill no longer flashes a blank page and snaps: loaded drill code renders
       without suspending (`app/routes` `splitPage`), the slide-in can't overflow sideways
       (`#root` `overflow-x: clip`), a stable scrollbar gutter stops the sideways shift, and

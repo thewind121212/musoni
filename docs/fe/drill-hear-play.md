@@ -67,6 +67,26 @@ the last sound, not by hearing it in the key).
 Echo phrases (2–3 notes played back in order, the old "L5") are the planned
 next step, after this drill has been tried.
 
+## Listening aids
+
+Two switches in setup's **Nghe** group, both off by default (`earCadenceEach`,
+`earOneKey` in settings):
+
+- **Nghe giọng trước mỗi nốt** (key before every note): the cadence plays before
+  every question, not only when a key block starts. For a reader who keeps
+  losing where home is; replay covers the occasional slip.
+- **Giữ một giọng (Do)** (stay in one key): L2–L4 stay in C instead of moving
+  every `EAR_KEY_BLOCK` questions, to learn the steps in one key first. Off by
+  default because a key that never moves drifts toward memorising pitches. At
+  L1 (already C only) the switch is disabled and says so.
+
+A question carries two flags: `newKey`, a key block starts (the cadence plays;
+in one key it is a refresher every 6 questions), and `keyChanged`, the key
+really moved (the **Đổi giọng** badge). Before, L1 showed "Đổi giọng" every 6
+questions without changing key.
+
+Setup's summary line adds "Mỗi câu nghe giọng" / "Một giọng" when an aid is on.
+
 ## Session, score, pause
 
 Same as note reading (see `drill-note-identification.md`):
@@ -85,7 +105,18 @@ Same as note reading (see `drill-note-identification.md`):
 - The result screen is drill 1's: score with difficulty and endurance chips,
   week-average bar, and the missed notes on small staves with what was played.
 
+- A session played with an aid on (`earCadenceEach`, or `earOneKey` above L1)
+  is saved with `aids: true`: it counts toward minutes, the streak and averages,
+  but never sets a best (the aids make the drill easier, and the answer clock
+  starts when the note sounds, so the extra cadence costs nothing). Its result
+  says "Có trợ giúp nghe — không tính kỷ lục", shows no personal-best badge, and
+  draws no best bar when there is no aid-free best yet.
+
 Sound is always on in this drill; the note-id Sound switch does not apply.
+
+Drill 2's action colour is **violet** instead of the app's amber (Start,
+Practice on its home card, Again, the pause sheet's Continue, the paused bar
+when the paused session is this drill's); see `architecture.md` Styling.
 
 ## Code
 
