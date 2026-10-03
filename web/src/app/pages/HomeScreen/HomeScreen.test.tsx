@@ -75,4 +75,13 @@ describe('HomeScreen', () => {
     renderHome()
     expect(screen.queryByRole('status')).toBeNull()
   })
+
+  it("scopes drill 2's colour on its card and on its paused bar, not drill 1's", () => {
+    useAppStore.setState({ pausedSession: { to: '/train/hear-play', secondsLeft: 60, correct: 1, wrong: 0 } })
+    renderHome()
+    const [noteId, hearPlay] = screen.getAllByRole('link', { name: /Practice now/ })
+    expect(hearPlay.closest('[data-drill]')).toHaveAttribute('data-drill', 'hear-play')
+    expect(noteId.closest('[data-drill]')).toBeNull()
+    expect(screen.getByRole('link', { name: /Resume/ }).closest('[data-drill]')).toHaveAttribute('data-drill', 'hear-play')
+  })
 })

@@ -44,4 +44,11 @@ describe('HearPlayDrill', () => {
     expect(router.state.location.pathname).toBe('/train/hear-play')
     expect(useEarStore.getState().phase).toBe('setup')
   })
+
+  it('sets its colour scope on <html> while open, and removes it after', () => {
+    const { unmount } = render(<MemoryRouter><HearPlayDrill /></MemoryRouter>)
+    expect(document.documentElement.dataset.drill).toBe('hear-play')
+    unmount()
+    expect(document.documentElement.dataset.drill).toBeUndefined()
+  })
 })

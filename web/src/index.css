@@ -81,6 +81,21 @@
   color-scheme: dark;
 }
 
+/* Nghe & Đàn's action colour: violet instead of the app's amber. The scope is
+   <html> while the drill is open (its pause sheet portals to <body>), and its
+   card and paused bar on home. It sets the Tailwind theme variables: @theme
+   resolves --color-cta from --cta once, at :root, so overriding --cta lower
+   down would change nothing. */
+[data-drill="hear-play"] {
+  --color-cta: oklch(0.55 0.2 300);
+  --color-cta-ink: oklch(0.99 0 0);
+}
+[data-theme="dark"][data-drill="hear-play"],
+[data-theme="dark"] [data-drill="hear-play"] {
+  --color-cta: oklch(0.72 0.15 300);
+  --color-cta-ink: oklch(0.17 0.012 258);
+}
+
 /* A stable gutter: pages of different heights (home, a drill) don't add and
    drop the scrollbar, which shifted every page sideways on desktop. */
 html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
