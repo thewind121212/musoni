@@ -246,7 +246,7 @@ and rules: `drill-hear-play.md`.
 
 **Setup**: a one-line explanation under the title ("Một chuỗi hợp âm ngắn báo
 giọng, rồi một nốt vang lên…"), then **Nốt và giọng**, four row cards, each with
-a small keyboard lighting the level's notes (`MiniKeyboard`): Hợp âm chủ / Năm
+a small keyboard with a violet dot on each of the level's notes (`MiniKeyboard`): Hợp âm chủ / Năm
 nốt / Cả gam / Nửa cung. Then the same length picker (its own value, 2 min by
 default), **Nghe** (two switches: "Nghe giọng trước mỗi nốt", "Giữ một giọng
 (Do)", the second greyed at Hợp âm chủ with "Cấp này đã ở giọng Do") and

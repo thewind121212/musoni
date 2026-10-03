@@ -59,7 +59,10 @@ keys spell their black keys as flats (Sib, Mib) and the rest as sharps
 (`keySpelling`). Notes sit between the tonic and the octave above it, with
 C/D/E♭/F tonics at octave 4 and G/A/B♭ at octave 3, so nothing climbs past E5.
 
-Setup shows each level as a small keyboard with its notes lit (`MiniKeyboard`).
+Setup shows each level as a small keyboard with a dot on each note it uses
+(`MiniKeyboard`): the keys keep their quiet colours and the dots take the
+drill's action colour (violet). Filling the lit keys instead merged them into
+one block ("Nửa cung" became a solid slab).
 
 Within a key the same note never comes twice in a row (answered from memory of
 the last sound, not by hearing it in the key).

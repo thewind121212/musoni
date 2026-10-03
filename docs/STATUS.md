@@ -167,6 +167,9 @@ a real browser.
       setup; result and ✕-before-any-answer back out the same way. Back no longer gets stuck re-opening the pause
       sheet. Matrix test `app/useDrillRoute.test.tsx` — `docs/fe/screens.md`,
       `docs/fe/architecture.md`, `docs/fe/drill-hear-play.md`
+- [x] Nghe & Đàn level pictures: plain keyboard with a violet dot per note the level
+      uses, instead of solid blue lit keys that merged into a block (`MiniKeyboard`) —
+      `docs/fe/drill-hear-play.md`, `docs/fe/screens.md`
 - [x] **Nghe & Đàn listening aids and violet colour**: setup's "Nghe" group with "Nghe
       giọng trước mỗi nốt" and "Giữ một giọng (Do)" (off by default; one key disabled at
       L1); aided sessions saved with `aids: true` never set a best and say so on the
