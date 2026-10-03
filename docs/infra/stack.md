@@ -63,6 +63,15 @@ A lint warning fails CI, so keep oxlint at zero warnings.
 
 The frontend is connected to **Vercel** through its GitHub integration (project
 `musoni`, root directory `web/`, no `vercel.json`, so Vite defaults apply). Every
-PR branch gets a preview deployment, which the Vercel bot links on the PR. The
-production domain and the Go server's hosting are not decided or documented yet;
+PR branch gets a preview deployment, which the Vercel bot links on the PR.
+
+**Coolify (Docker)**: `web/Dockerfile` builds the app on `node:24-alpine` (`npm ci`,
+`npm run build`) and serves `dist/` from `nginx:alpine` with `web/nginx.conf`:
+`/assets/` (hashed files) cached a year as immutable, every other path falls back to
+`index.html` with `no-cache` so client-side routes like `/train/note-id` load on refresh,
+gzip on. `web/.dockerignore` keeps `node_modules`, `dist` and `.git` out of the context.
+In Coolify: build pack Dockerfile, base directory `/web`, port `80`. Build locally with
+`cd web && docker build -t musoni-web . && docker run -p 8080:80 musoni-web`.
+
+The production domain and the Go server's hosting are not decided or documented yet;
 capture them here when made.

@@ -167,6 +167,9 @@ a real browser.
       setup; result and ✕-before-any-answer back out the same way. Back no longer gets stuck re-opening the pause
       sheet. Matrix test `app/useDrillRoute.test.tsx` — `docs/fe/screens.md`,
       `docs/fe/architecture.md`, `docs/fe/drill-hear-play.md`
+- [x] Docker image for Coolify: `web/Dockerfile` (Node 24 build, nginx serve),
+      `web/nginx.conf` (SPA fallback, year-long cache for `/assets/`, gzip),
+      `web/.dockerignore` — `docs/infra/stack.md` Deployment
 - [x] **A session survives a page load**: a refresh or typed URL mid-session used to drop
       it (setup, nothing saved, paused bar gone). Now each drill keeps its running session
       through `progressStore` (`musoni-live-v1`, `app/liveSession`) and brings it back
