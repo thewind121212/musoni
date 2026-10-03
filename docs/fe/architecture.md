@@ -224,6 +224,15 @@ web/src/
 Components use token utilities (`bg-raised`, `text-ink-soft`) rather than raw
 palette values, so light and dark are one definition.
 
+**Per-drill action colour.** A drill may replace the amber action colour with
+one CSS rule on `[data-drill="<id>"]` (Nghe & Đàn: violet). The rule sets the
+Tailwind theme variables `--color-cta` / `--color-cta-ink`, never `--cta`:
+`@theme` resolves `--color-cta: var(--cta)` once at `:root`, so overriding
+`--cta` lower down changes nothing. The drill sets the attribute on `<html>`
+while its route is mounted (a layout effect), because the pause sheet portals to
+`<body>`; home wraps the drill's card and its paused bar in the same attribute.
+Selection blue, right green and wrong red stay shared.
+
 The theme is **white paper by default and does not follow the OS**: musicians
 read notation on white, so the reading surface never flips under a session.
 The dark palette is kept but opt-in via an explicit `data-theme="dark"`

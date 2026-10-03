@@ -84,13 +84,15 @@ export function RunPhase() {
 
   // Play each question as it arrives: with the cadence in a new key, on
   // opening the screen (coming back to a session) and after a pause, since by
-  // then the ear has lost the key. A pause or leaving silences it.
+  // then the ear has lost the key. A pause or leaving silences it. With the
+  // "key before every note" aid, the cadence plays before every question.
   const played = useRef<EarQuestion | null>(null)
   const paused = pausedAt !== null
   useEffect(() => {
     const s = useEarStore.getState()
     if (!question || paused || s.feedback) return
     const cadence = played.current === null || played.current === question || question.newKey
+      || s.settings.earCadenceEach
     played.current = question
     setSoundUntil(playQuestion(question, cadence))
     return stopSounds
@@ -165,7 +167,7 @@ export function RunPhase() {
         <div className="mt-2 flex h-6 items-center justify-between gap-2 text-sm md:text-base">
           <span className="flex items-center gap-2">
             <span className="font-medium text-ink-soft">{t('ear.key', { key: keyName })}</span>
-            {question.newKey && !feedback && (
+            {question.keyChanged && !feedback && (
               <span className="rounded-full bg-accent/12 px-2 py-0.5 text-xs font-semibold text-accent">
                 {t('ear.newKey')}
               </span>

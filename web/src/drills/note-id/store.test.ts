@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { playedMs, useDrillStore } from './store'
 import { getDay, localDayKey } from '../../progress/progressStore'
 
-const settings = { level: 1 as const, durationSec: 60, accidentals: false, naming: 'letters' as const, sound: false, keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120, lang: 'en' as const, activityExpanded: false }
+const settings = { level: 1 as const, durationSec: 60, accidentals: false, naming: 'letters' as const, sound: false, keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120, earCadenceEach: false, earOneKey: false, lang: 'en' as const, activityExpanded: false }
 const T0 = new Date('2026-08-28T10:00:00Z').getTime()
 const DAY0 = localDayKey(new Date(T0))
 

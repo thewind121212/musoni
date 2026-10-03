@@ -248,13 +248,18 @@ and rules: `drill-hear-play.md`.
 giọng, rồi một nốt vang lên…"), then **Nốt và giọng**, four row cards, each with
 a small keyboard lighting the level's notes (`MiniKeyboard`): Hợp âm chủ / Năm
 nốt / Cả gam / Nửa cung. Then the same length picker (its own value, 2 min by
-default) and **Phím trả lời**: note names, Piano / Ô and names on keys, shared
-with note reading. No sound switch: this drill is sound. The same sticky bar
-with summary, best at the level, and amber Start.
+default), **Nghe** (two switches: "Nghe giọng trước mỗi nốt", "Giữ một giọng
+(Do)", the second greyed at Hợp âm chủ with "Cấp này đã ở giọng Do") and
+**Phím trả lời**: note names, Piano / Ô and names on keys, shared with note
+reading. No sound switch: this drill is sound. The same sticky bar with summary
+(plus "Mỗi câu nghe giọng" / "Một giọng" when on), best at the level, and a
+**violet** Start: drill 2's action colour, also on its home card's Practice, the
+pause sheet and its paused bar.
 
 **Run**: the same header, time bar and pad. Under the bar, the key ("Giọng Fa
 trưởng", in the reader's naming) with a blue **Đổi giọng** badge while a new
-key's first note is being asked, and the streak on the right. The middle is the
+key's first note is being asked (only when the key really changed), and the
+streak on the right. The middle is the
 `ListenStage`: before the answer, a large ear in a soft blue circle that pulses
 while sound plays, and "Đàn lại nốt vừa nghe"; the treble staff is laid out
 underneath but hidden, so nothing jumps when it appears. Under it, a **Nghe
@@ -264,3 +269,6 @@ the verdict: a green "Đúng là Mi" or the red "Nốt đúng là Sib, bạn đ�
 key's home note on the pad carries a small blue dot (named "nốt chủ" for screen
 readers). Checked to fit without scrolling at 320×568, 375×812 and 1280×800.
 
+**Result**: drill 1's result screen. A session played with a listening aid adds
+one line under the score, "Có trợ giúp nghe — không tính kỷ lục", and claims no
+personal best.

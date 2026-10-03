@@ -19,6 +19,13 @@ export interface Settings {
   /** Nghe & Đàn's own workout: level and length. Naming, keys and labels are shared. */
   earLevel: 1 | 2 | 3 | 4
   earDurationSec: number
+  /**
+   * Nghe & Đàn listening aids. `earCadenceEach`: the key's cadence before every
+   * question, not only when the key changes. `earOneKey`: C at every level.
+   * Both make the drill easier, so a session with one on never sets a best.
+   */
+  earCadenceEach: boolean
+  earOneKey: boolean
   lang: Lang
   /** Whether the activity panel shows the full calendar or just this week. */
   activityExpanded: boolean
@@ -39,6 +46,12 @@ export interface SessionResult {
    * comparable pace: bests and averages skip it. Absent on full sessions.
    */
   partial?: true
+  /**
+   * Played with a Nghe & Đàn listening aid on. Counts toward daily minutes
+   * and the streak; bests and week averages skip it (the aids make the drill
+   * easier, so it would skew both). Absent otherwise.
+   */
+  aids?: true
 }
 interface Doc { version: 1; settings: Settings; days: Record<string, { sessions: SessionResult[] }> }
 
@@ -55,6 +68,8 @@ const DEFAULTS: Settings = {
   padStyle: 'piano',
   earLevel: 1,
   earDurationSec: EAR_DEFAULT_DURATION_SECONDS,
+  earCadenceEach: false,
+  earOneKey: false,
   lang: DEFAULT_LANG,
   // Opens short: the week answers "am I current" in one glance, and the
   // calendar is there for anyone who wants the longer view.
@@ -119,7 +134,7 @@ export function getBest(drill: DrillId, level: number): SessionResult | null {
   let best: SessionResult | null = null
   for (const v of Object.values(load().days)) {
     for (const s of v.sessions) {
-      if (s.drill === drill && s.level === level && !s.partial
+      if (s.drill === drill && s.level === level && !s.partial && !s.aids
         && (!best || s.practiceScore > best.practiceScore)) best = s
     }
   }
@@ -139,7 +154,7 @@ export function getRecentAverage(
   const scores: number[] = []
   for (const sessions of Object.values(getRange(localDayKey(from), localDayKey(now)))) {
     for (const s of sessions) {
-      if (s.drill === drill && s.level === level && !s.partial && s.at !== excludeAt) scores.push(s.practiceScore)
+      if (s.drill === drill && s.level === level && !s.partial && !s.aids && s.at !== excludeAt) scores.push(s.practiceScore)
     }
   }
   if (scores.length === 0) return null

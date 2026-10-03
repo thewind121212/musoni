@@ -31,6 +31,22 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers())
 
 describe('Hear & play RunPhase', () => {
+  it('plays the cadence before every note when asked', () => {
+    useEarStore.getState().start(2, { ...useAppStore.getState().settings, earCadenceEach: true }, Date.now())
+    renderRun()
+    press(q().options[q().correctIndex].keyHint)
+    vi.mocked(playSequence).mockClear()
+    act(() => { vi.advanceTimersByTime(2000) })
+    expect(q().newKey).toBe(false)
+    expect(lastPlayed()).toBe(5)
+  })
+
+  it('shows "New key" only when the key really changed', () => {
+    useEarStore.setState(s => ({ question: { ...s.question!, newKey: true, keyChanged: false } }))
+    renderRun()
+    expect(screen.queryByText('New key')).toBeNull()
+  })
+
   it('opens with the cadence, then the note, and keeps the staff hidden until answered', () => {
     renderRun()
     expect(lastPlayed()).toBe(5)

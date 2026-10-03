@@ -13,6 +13,29 @@ beforeEach(() => {
 })
 
 describe('hear-play store', () => {
+  it('keeps every question in C when the session stays in one key', () => {
+    store().start(3, { ...settings, earOneKey: true }, T0)
+    for (let i = 0; i < 20; i++) {
+      expect(store().question!.key).toBe('C')
+      store().nextQuestion(T0)
+    }
+  })
+
+  it('marks a session played with an aid, and only then', () => {
+    store().start(2, { ...settings, earCadenceEach: true }, T0)
+    store().tick(T0 + 120_000)
+    expect(store().lastResult!.aids).toBe(true)
+    store().start(2, settings, T0)
+    store().tick(T0 + 120_000)
+    expect(store().lastResult!.aids).toBeUndefined()
+  })
+
+  it('does not count one key as an aid at level 1, which is already in C', () => {
+    store().start(1, { ...settings, earOneKey: true }, T0)
+    store().tick(T0 + 120_000)
+    expect(store().lastResult!.aids).toBeUndefined()
+  })
+
   it('starts a session in its own length, on a new key', () => {
     store().start(2, settings, T0)
     expect(store().phase).toBe('running')

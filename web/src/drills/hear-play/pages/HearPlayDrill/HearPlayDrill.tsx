@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAppStore } from '@/app/store'
 import { useDrillRoute, type DrillRouteControls } from '@/app/useDrillRoute'
@@ -21,6 +22,12 @@ const controls: DrillRouteControls = {
  * (see `useDrillRoute` for home's route state and back inside the drill).
  */
 export function HearPlayDrill() {
+  // Drill 2's colour (index.css) on <html>, so the pause sheet, which portals
+  // to <body>, is violet too. Layout effect: Start never paints amber first.
+  useLayoutEffect(() => {
+    document.documentElement.dataset.drill = 'hear-play'
+    return () => { delete document.documentElement.dataset.drill }
+  }, [])
   const phase = useDrillRoute(controls)
   const reduce = useReducedMotion()
 

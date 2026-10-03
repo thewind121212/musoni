@@ -15,4 +15,12 @@ describe('Switch', () => {
     await userEvent.click(screen.getByRole('switch'))
     expect(onChange).toHaveBeenCalledWith(true)
   })
+
+  it('ignores presses when disabled', async () => {
+    const onChange = vi.fn()
+    render(<Switch checked={false} disabled label="Sound" onChange={onChange} />)
+    expect(screen.getByRole('switch')).toBeDisabled()
+    await userEvent.click(screen.getByRole('switch'))
+    expect(onChange).not.toHaveBeenCalled()
+  })
 })

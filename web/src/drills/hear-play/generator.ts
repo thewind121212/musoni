@@ -23,6 +23,8 @@ export interface EarQuestion {
   tonicIndex: number
   /** First question in its key: the cadence plays before the note. */
   newKey: boolean
+  /** First question, or a different key from the last one: the "new key" badge. */
+  keyChanged: boolean
 }
 
 function pick<T>(arr: readonly T[], rng: () => number): T { return arr[Math.floor(rng() * arr.length)] }
@@ -39,6 +41,9 @@ function indexOf(options: NoteOption[], p: Pitch) {
  * again. Within a key the same note never comes twice in a row: a repeat is
  * answered from memory of the last sound, not by hearing it in the key.
  *
+ * `keyChanged` says the key really moved (the badge); `newKey` says a block
+ * starts (the cadence), which in one key is a refresher.
+ *
  * @param previous the question just asked and how many questions its key has
  *   had so far (it included), or null at the start of a session.
  */
@@ -47,8 +52,12 @@ export function generateEarQuestion(
   naming: Naming,
   previous: (Pick<EarQuestion, 'key' | 'semitones'> & { inKey: number }) | null,
   rng: () => number = Math.random,
+  opts: { oneKey?: boolean } = {},
 ): EarQuestion {
-  const { keys, notes, blackKeys } = EAR_LEVELS[level]
+  const { notes, blackKeys } = EAR_LEVELS[level]
+  // The "stay in one key" aid: C at every level. Off by default, since a key
+  // that never moves drifts toward memorising pitches.
+  const keys: readonly KeyName[] = opts.oneKey ? ['C'] : EAR_LEVELS[level].keys
   const newKey = !previous || previous.inKey >= EAR_KEY_BLOCK || !keys.includes(previous.key)
   let key = previous?.key ?? pick(keys, rng)
   if (newKey && previous) {
@@ -69,6 +78,7 @@ export function generateEarQuestion(
     correctIndex: indexOf(options, pitch),
     tonicIndex: indexOf(options, tonicOf(key)),
     newKey,
+    keyChanged: !previous || previous.key !== key,
   }
 }
 

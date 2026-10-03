@@ -64,6 +64,11 @@ export function playedMs(s: Pick<EarState, 'endsAt' | 'pausedAt' | 'settings'>, 
   return s.settings.earDurationSec * 1000 - left
 }
 
+/** A listening aid is on. One key changes nothing at level 1, which is C only. */
+export function aidsOn(s: Pick<Settings, 'earCadenceEach' | 'earOneKey'>, level: EarLevel) {
+  return s.earCadenceEach || (s.earOneKey && level > 1)
+}
+
 function result(s: EarState, durationSec: number, score: number, now: number, partial: boolean): SessionResult {
   const total = s.correct + s.wrong
   return {
@@ -77,6 +82,7 @@ function result(s: EarState, durationSec: number, score: number, now: number, pa
     practiceScore: score,
     at: new Date(now).toISOString(),
     ...(partial ? { partial: true as const } : {}),
+    ...(aidsOn(s.settings, s.level) ? { aids: true as const } : {}),
   }
 }
 
@@ -103,7 +109,7 @@ export const useEarStore = create<EarState>((set, get) => ({
     recordPartial(get(), now)
     set({
       phase: 'running', level, settings,
-      question: generateEarQuestion(level, settings.naming, null), inKey: 1,
+      question: generateEarQuestion(level, settings.naming, null, Math.random, { oneKey: settings.earOneKey }), inKey: 1,
       endsAt: now + settings.earDurationSec * 1000, askedAt: now,
       correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
       feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
@@ -141,7 +147,7 @@ export const useEarStore = create<EarState>((set, get) => ({
     if (s.phase !== 'running' || !s.question) return
     const question = generateEarQuestion(s.level, s.settings.naming, {
       key: s.question.key, semitones: s.question.semitones, inKey: s.inKey,
-    })
+    }, Math.random, { oneKey: s.settings.earOneKey })
     // The page sets the real start once it schedules the note; until then
     // (or while paused) the clock starts here.
     set({ feedback: null, question, inKey: question.newKey ? 1 : s.inKey + 1, askedAt: s.pausedAt ?? now })

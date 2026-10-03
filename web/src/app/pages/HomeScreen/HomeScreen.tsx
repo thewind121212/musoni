@@ -95,28 +95,30 @@ export function HomeScreen() {
             ]}
           />
 
-          <PracticeCard
-            to="/train/hear-play"
-            icon={<EarIcon size={24} weight="fill" />}
-            title={t('home.hearPlay')}
-            description={t('home.hearPlay.what')}
-            actionLabel={t('home.practiceNow')}
-            setupLabel={t('home.changeSetup')}
-            stats={[
-              {
-                icon: <MusicNoteIcon size={12} weight="fill" />,
-                label: t('stat.level'), value: t(`ear.level.${settings.earLevel}` as 'ear.level.1'),
-              },
-              {
-                icon: <TimerIcon size={12} weight="bold" />,
-                label: t('stat.length'), value: formatDuration(settings.earDurationSec, t),
-              },
-              {
-                icon: <TrophyIcon size={12} weight="fill" />,
-                label: t('stat.best'), value: earBest ? String(earBest.practiceScore) : t('stat.none'),
-              },
-            ]}
-          />
+          <div data-drill="hear-play">
+            <PracticeCard
+              to="/train/hear-play"
+              icon={<EarIcon size={24} weight="fill" />}
+              title={t('home.hearPlay')}
+              description={t('home.hearPlay.what')}
+              actionLabel={t('home.practiceNow')}
+              setupLabel={t('home.changeSetup')}
+              stats={[
+                {
+                  icon: <MusicNoteIcon size={12} weight="fill" />,
+                  label: t('stat.level'), value: t(`ear.level.${settings.earLevel}` as 'ear.level.1'),
+                },
+                {
+                  icon: <TimerIcon size={12} weight="bold" />,
+                  label: t('stat.length'), value: formatDuration(settings.earDurationSec, t),
+                },
+                {
+                  icon: <TrophyIcon size={12} weight="fill" />,
+                  label: t('stat.best'), value: earBest ? String(earBest.practiceScore) : t('stat.none'),
+                },
+              ]}
+            />
+          </div>
 
           <ComingSoonCard
             icon={<WaveformIcon size={24} />}
@@ -127,16 +129,18 @@ export function HomeScreen() {
       </div>
 
       {pausedSession && (
-        <PausedNotice
-          to={pausedSession.to}
-          title={t('home.paused')}
-          detail={t('home.paused.detail', {
-            left: formatClock(pausedSession.secondsLeft),
-            correct: pausedSession.correct,
-            wrong: pausedSession.wrong,
-          })}
-          actionLabel={t('home.paused.resume')}
-        />
+        <div data-drill={pausedSession.to.split('/').pop()} className="contents">
+          <PausedNotice
+            to={pausedSession.to}
+            title={t('home.paused')}
+            detail={t('home.paused.detail', {
+              left: formatClock(pausedSession.secondsLeft),
+              correct: pausedSession.correct,
+              wrong: pausedSession.wrong,
+            })}
+            actionLabel={t('home.paused.resume')}
+          />
+        </div>
       )}
     </div>
   )

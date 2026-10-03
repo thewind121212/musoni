@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
   naming: 'solfege',
   sound: true,
   keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120,
+  earCadenceEach: false, earOneKey: false,
   lang: 'vi',
   activityExpanded: false,
 } as const
@@ -68,6 +69,22 @@ describe('progressStore', () => {
     recordSession(session({ practiceScore: 200, level: 2 }))
     expect(getBest('note-id', 1)!.practiceScore).toBe(90)
     expect(getBest('note-id', 3)).toBeNull()
+  })
+  it('getBest skips sessions played with listening aids', () => {
+    recordSession(session({ drill: 'hear-play', practiceScore: 40 }))
+    recordSession(session({ drill: 'hear-play', practiceScore: 90, aids: true }))
+    expect(getBest('hear-play', 1)!.practiceScore).toBe(40)
+  })
+  it('counts aided sessions toward daily minutes', () => {
+    recordSession(session({ drill: 'hear-play', durationSec: 120, aids: true }))
+    expect(getDailyMinutes()[localDayKey(new Date('2026-08-28T10:00:00Z'))]).toBe(2)
+  })
+  it('loads progress saved before the listening aids with both off', () => {
+    const old: Record<string, unknown> = { ...DEFAULT_SETTINGS }
+    delete old.earCadenceEach
+    delete old.earOneKey
+    localStorage.setItem('musoni-progress-v1', JSON.stringify({ version: 1, settings: old, days: {} }))
+    expect(getSettings()).toMatchObject({ earCadenceEach: false, earOneKey: false })
   })
   it('recovers from corrupted localStorage', () => {
     localStorage.setItem('musoni-progress-v1', '{not json')
@@ -195,6 +212,15 @@ describe('getRecentAverage', () => {
   it('is null with nothing else to compare against', () => {
     recordSession(session({ at: at(0) }))
     expect(getRecentAverage('note-id', 1, at(0), 7, now)).toBeNull()
+  })
+})
+
+describe('aided sessions', () => {
+  it('are left out of the week average, so turning an aid off is not measured against easier sessions', () => {
+    const now = new Date('2026-08-28T12:00:00')
+    recordSession(session({ drill: 'hear-play', at: now.toISOString(), practiceScore: 40 }))
+    recordSession(session({ drill: 'hear-play', at: now.toISOString(), practiceScore: 90, aids: true }))
+    expect(getRecentAverage('hear-play', 1, 'none', 7, now)).toBe(40)
   })
 })
 
