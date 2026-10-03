@@ -4,11 +4,11 @@ import { label, midi } from '@/core/music/pitch'
 import { EAR_KEY_BLOCK, EAR_LEVELS } from '@/config/constants'
 
 /** Plays through `count` questions at a level, each fed the one before. */
-function run(level: EarLevel, count: number) {
+function run(level: EarLevel, count: number, opts: { oneKey?: boolean } = {}) {
   const out: EarQuestion[] = []
   let prev: Parameters<typeof generateEarQuestion>[2] = null
   for (let i = 0; i < count; i++) {
-    const q = generateEarQuestion(level, 'letters', prev)
+    const q = generateEarQuestion(level, 'letters', prev, Math.random, opts)
     out.push(q)
     prev = { key: q.key, semitones: q.semitones, inKey: q.newKey ? 1 : prev!.inKey + 1 }
   }
@@ -38,6 +38,22 @@ describe('generateEarQuestion', () => {
     expect(qs.map(q => q.newKey)).toEqual(qs.map((_, i) => i % EAR_KEY_BLOCK === 0))
     for (let i = EAR_KEY_BLOCK; i < qs.length; i += EAR_KEY_BLOCK) expect(qs[i].key).not.toBe(qs[i - 1].key)
     for (let i = 1; i < qs.length; i++) if (!qs[i].newKey) expect(qs[i].key).toBe(qs[i - 1].key)
+  })
+
+  it('stays in C at every level with oneKey, still refreshing the cadence each block', () => {
+    for (const level of [2, 3, 4] as const) {
+      const qs = run(level, EAR_KEY_BLOCK * 3, { oneKey: true })
+      expect(qs.every(q => q.key === 'C')).toBe(true)
+      expect(qs.map(q => q.newKey)).toEqual(qs.map((_, i) => i % EAR_KEY_BLOCK === 0))
+      expect(qs.map(q => q.keyChanged)).toEqual(qs.map((_, i) => i === 0))
+    }
+  })
+
+  it('flags keyChanged only on the first question and real key changes', () => {
+    const qs = run(2, EAR_KEY_BLOCK * 4)
+    qs.forEach((q, i) => expect(q.keyChanged).toBe(i === 0 || q.key !== qs[i - 1].key))
+    const l1 = run(1, EAR_KEY_BLOCK * 3)
+    expect(l1.map(q => q.keyChanged)).toEqual(l1.map((_, i) => i === 0))
   })
 
   it('never asks the same note twice in a row within a key', () => {
