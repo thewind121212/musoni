@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-02
+> Last updated: 2026-10-03
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -162,6 +162,17 @@ a real browser.
       `stopSounds`). Fits 320×568, 375×812, 1280×800. 362 web tests green —
       `docs/fe/drill-hear-play.md`, `docs/fe/architecture.md`, `docs/fe/screens.md`,
       `docs/fe/data-model.md`, `docs/summary.md`
+- [x] Back navigation follows where the session started (`app/useDrillRoute`): from
+      home's Practice/Resume, back → home with the paused bar; from setup's Start, back →
+      setup; result and ✕-before-any-answer back out the same way. Back no longer gets stuck re-opening the pause
+      sheet. Matrix test `app/useDrillRoute.test.tsx` — `docs/fe/screens.md`,
+      `docs/fe/architecture.md`, `docs/fe/drill-hear-play.md`
+- [x] Home → drill no longer flashes a blank page and snaps: loaded drill code renders
+      without suspending (`app/routes` `splitPage`), the slide-in can't overflow sideways
+      (`#root` `overflow-x: clip`), a stable scrollbar gutter stops the sideways shift, and
+      forward navigation opens at the top — `docs/fe/screens.md`, `docs/fe/architecture.md`
+- [x] Dev/preview server exposed on the LAN (`server.host`/`preview.host: true` in
+      `web/vite.config.ts`) for testing on phones/other machines — `docs/infra/stack.md`, `README.md`
 
 ## In Progress
 

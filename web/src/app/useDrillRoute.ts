@@ -19,8 +19,6 @@ export interface DrillRouteControls {
   backToSetup: () => void
   /** Carry on a session left paused (home's paused-session bar). */
   resume: () => void
-  /** Pause the running session because the reader asked (their back). */
-  pause: () => void
 }
 
 /**
@@ -30,10 +28,13 @@ export interface DrillRouteControls {
  * the first read of the phase (which it returns), so the wrong phase never flashes on the way
  * in, then drops it so a refresh does not apply it again.
  *
- * Keeps one history entry for a running or finished session above setup's
- * (see `drillStep`) and reads a step back off it as the reader's back: back
- * during a session pauses it, back from the result returns to setup, and
- * only back from setup leaves the drill.
+ * Back goes where the reader came from. A session started from setup gets
+ * one history entry of its own above setup's (see `drillStep`), and a step
+ * back off it returns to setup (a session with answers is kept as played
+ * time, as `backToSetup` does). A session started from home (`autostart`,
+ * `resume`) sits on the drill's own entry, so back leaves for home, where
+ * `useRunGuards` has paused it and home offers it back; ending it with
+ * nothing to keep (✕ before any answer) goes home too.
  */
 export function useDrillRoute(controls: DrillRouteControls): DrillPhase {
   const location = useLocation()
@@ -60,16 +61,23 @@ export function useDrillRoute(controls: DrillRouteControls): DrillPhase {
   useEffect(() => useAppStore.getState().setPausedSession(null), [])
 
   const onStep = isDrillStep(location.state)
-  const wasOnStep = useRef(onStep)
+  const was = useRef({ onStep, phase })
   useEffect(() => {
-    const steppedBack = wasOnStep.current && !onStep
-    wasOnStep.current = onStep
-    if (steppedBack && phase === 'running') controls.pause()
-    if (steppedBack && phase === 'finished') return controls.backToSetup()
-    if (phase !== 'setup' && !onStep) {
+    const before = was.current
+    was.current = { onStep, phase }
+    if (before.onStep && !onStep) {
+      if (phase === 'setup') return
+      controls.backToSetup()
+      // Already back where the session began; don't read this as ending one from home.
+      was.current = { onStep, phase: 'setup' }
+    } else if (before.phase === 'setup' && phase !== 'setup' && !onStep) {
       const step: DrillStepState = { drillStep: true, baseIsFirst: location.key === 'default' }
       navigate(location.pathname, { state: step })
     } else if (phase === 'setup' && onStep) {
+      navigate(-1)
+    } else if (before.phase === 'running' && phase === 'setup') {
+      // A session from home ended with nothing to keep (✕ before any answer):
+      // back to home, where it was started, not to a setup the reader skipped.
       navigate(-1)
     }
   }, [phase, onStep, navigate, location.pathname, location.key, controls])

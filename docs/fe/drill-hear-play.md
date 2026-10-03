@@ -79,7 +79,7 @@ Same as note reading (see `drill-note-identification.md`):
   answer during the cadence counts as instant (a guess, which accuracy prices).
 - Bests and week averages are per drill and level (`getBest('hear-play', level)`).
 - ✕ / Esc pause, leaving the app or the route pauses, back during a session
-  opens the pause sheet, ending early records a `partial` session: all shared
+  goes home or to setup (wherever it was started), ending early records a `partial` session: all shared
   with drill 1 through `useRunGuards`, `useDrillRoute` and the core
   `PausePanel`. Pausing also silences the sound.
 - The result screen is drill 1's: score with difficulty and endurance chips,

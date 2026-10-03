@@ -33,7 +33,7 @@ describe('HearPlayDrill', () => {
     expect(useEarStore.getState().endsAt! - Date.now()).toBeGreaterThan(290_000)
   })
 
-  it('pauses on back during a session instead of leaving', async () => {
+  it('goes back to setup from a session started on setup', async () => {
     const router = createMemoryRouter(
       [{ path: '/', element: <p>home</p> }, { path: '/train/hear-play', element: <HearPlayDrill /> }],
       { initialEntries: ['/', '/train/hear-play'], initialIndex: 1 },
@@ -42,6 +42,6 @@ describe('HearPlayDrill', () => {
     await userEvent.click(screen.getByRole('button', { name: /Start/ }))
     await act(() => router.navigate(-1))
     expect(router.state.location.pathname).toBe('/train/hear-play')
-    expect(useEarStore.getState().pauseReason).toBe('menu')
+    expect(useEarStore.getState().phase).toBe('setup')
   })
 })

@@ -11,7 +11,7 @@ come later.
 ## Run it
 
 ```sh
-cd web && npm install && npm run dev     # http://localhost:5173
+cd web && npm install && npm run dev     # http://localhost:5173 (+ LAN "Network:" URL for other devices)
 cd server && go run .                    # GET /health on :8080
 ```
 

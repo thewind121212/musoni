@@ -80,16 +80,29 @@ describe('NoteIdDrill', () => {
     }
     const back = (router: ReturnType<typeof createMemoryRouter>) => act(() => router.navigate(-1))
 
-    it('pauses a running session instead of leaving for home', async () => {
+    it('goes from a session started on setup back to setup, keeping its played time', async () => {
       const router = renderFromHome()
       await userEvent.click(screen.getByRole('button', { name: /Start/ }))
+      act(() => useDrillStore.setState({ correct: 2 }))
       await back(router)
       expect(router.state.location.pathname).toBe('/train/note-id')
-      expect(useDrillStore.getState().phase).toBe('running')
-      expect(useDrillStore.getState().pauseReason).toBe('menu')
-      // Back again still holds the reader in the paused session.
+      expect(useDrillStore.getState().phase).toBe('setup')
       await back(router)
-      expect(router.state.location.pathname).toBe('/train/note-id')
+      expect(router.state.location.pathname).toBe('/')
+    })
+
+    it("leaves a session started from home's Practice for home, which offers it back", async () => {
+      const router = createMemoryRouter(
+        [{ path: '/', element: <p>home</p> }, { path: '/train/note-id', element: <NoteIdDrill /> }],
+        { initialEntries: ['/', { pathname: '/train/note-id', state: { autostart: true } }], initialIndex: 1 },
+      )
+      render(<RouterProvider router={router} />)
+      act(() => useDrillStore.setState({ correct: 1 }))
+      await back(router)
+      await act(() => new Promise(r => setTimeout(r, 0)))
+      expect(router.state.location.pathname).toBe('/')
+      expect(useDrillStore.getState().pauseReason).toBe('away')
+      expect(useAppStore.getState().pausedSession).toMatchObject({ to: '/train/note-id', correct: 1 })
     })
 
     it('goes from the result back to setup, then home', async () => {

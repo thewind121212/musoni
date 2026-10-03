@@ -29,12 +29,14 @@ SPA with phases held in its own store:
 `finished` (result), plus `backToSetup()`.
 
 Training never changes the URL: no route change when a session starts, ends, or
-is retried. Back still steps through the drill rather than out of it: a running
-or finished session holds **one history entry** (same URL, state marked by
-`app/drillStep`) above setup's. `app/useDrillRoute` keeps that entry in step
-with the phase and reads a step back off it: back during a session opens the
-pause sheet (and the entry comes back, so back again stays put), back from the
-result returns to setup, and only back from setup leaves the drill. It also
+is retried. Back goes where the reader came from. A session started from setup's
+Start holds **one history entry** (same URL, state marked by `app/drillStep`)
+above setup's; `app/useDrillRoute` pushes it on that setup → session step and
+reads a step back off it as "back to setup" (`backToSetup`: played time still
+counts). A session started from home (`autostart`, `resume`) gets no entry, so
+back leaves the drill for home, and `useRunGuards` pauses it and publishes the
+paused-session bar; ending one with nothing to keep (✕ before any answer) also
+steps back home. It also
 applies home's route state (`autostart`, `setup`, `resume`) before the phase is
 first read. `useBackLink` knows about the entry, so the result screen's Home
 link steps back past setup in one go.
@@ -229,7 +231,7 @@ attribute (nothing in the UI sets it yet).
 
 Motion lives in four places, each behind `prefers-reduced-motion`: route
 changes (`PageTransition`, forward only: back and forward navigation swap
-routes instantly), drill phase changes (`NoteIdDrill`), answer
+routes instantly; forward also opens the page at the top), drill phase changes (`NoteIdDrill`), answer
 feedback plus note entry inside the run phase, and the home activity panel's
 week/calendar resize and cross-fade.
 
