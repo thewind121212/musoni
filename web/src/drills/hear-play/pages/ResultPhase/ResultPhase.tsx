@@ -29,9 +29,12 @@ export function ResultPhase() {
   const level = result.level as 1 | 2 | 3 | 4
   const partial = result.partial === true
   const best = getBest('hear-play', level)
-  const isBest = best !== null && best.practiceScore === result.practiceScore
+  // An aided session never sets a best (see progressStore `aids`), so it is
+  // measured only against plain bests, and draws no bar when there is none.
+  const aided = result.aids === true
+  const isBest = !aided && best !== null && best.practiceScore === result.practiceScore
   const average = getRecentAverage('hear-play', level, result.at)
-  const bestScore = best?.practiceScore ?? result.practiceScore
+  const bestScore = best?.practiceScore ?? (aided ? null : result.practiceScore)
   const again = () => useEarStore.getState().start(level, settings)
 
   return (
@@ -60,7 +63,9 @@ export function ResultPhase() {
           />
         )}
 
-        {!partial && (average !== null || !isBest) && (
+        {aided && <p className="text-center text-sm text-ink-soft">{t('result.ear.aids')}</p>}
+
+        {!partial && bestScore !== null && (average !== null || !isBest) && (
           <ScoreCompare
             score={result.practiceScore}
             average={average}

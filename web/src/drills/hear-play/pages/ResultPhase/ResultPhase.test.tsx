@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { resetStores, session } from '@/test/fixtures'
+import { recordSession } from '@/progress/progressStore'
 
 vi.mock('@/core/components/organisms/Staff', () => ({ Staff: () => <div data-testid="staff" /> }))
 const { ResultPhase } = await import('./ResultPhase')
@@ -32,5 +33,25 @@ describe('Hear & play ResultPhase', () => {
     await userEvent.click(screen.getByRole('button', { name: /Again/ }))
     expect(useEarStore.getState().phase).toBe('running')
     expect(useEarStore.getState().level).toBe(4)
+  })
+
+  it('says an aided session does not count toward the best, and claims no best', () => {
+    recordSession(session({ drill: 'hear-play', level: 1, practiceScore: 25 }))
+    useEarStore.setState({ phase: 'finished', lastResult: session({ drill: 'hear-play', practiceScore: 25, aids: true }) })
+    renderResult()
+    expect(screen.getByText("Listening aids on — doesn't count toward your best")).toBeInTheDocument()
+    expect(screen.queryByText('Personal best')).toBeNull()
+  })
+
+  it('draws no best bar from an aided score when there is no plain best yet', () => {
+    useEarStore.setState({ phase: 'finished', lastResult: session({ drill: 'hear-play', practiceScore: 25, aids: true }) })
+    renderResult()
+    expect(screen.queryByText('Best 25')).toBeNull()
+  })
+
+  it('shows no aids line for a plain session', () => {
+    useEarStore.setState({ phase: 'finished', lastResult: session({ drill: 'hear-play', practiceScore: 25 }) })
+    renderResult()
+    expect(screen.queryByText(/Listening aids on/)).toBeNull()
   })
 })
