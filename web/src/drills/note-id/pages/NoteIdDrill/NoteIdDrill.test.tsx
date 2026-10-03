@@ -9,6 +9,7 @@ vi.mock('@/core/audio/playPitch', () => ({ playPitch: vi.fn(), preloadPiano: vi.
 const { NoteIdDrill } = await import('./NoteIdDrill')
 const { useDrillStore } = await import('@/drills/note-id/store')
 const { useAppStore } = await import('@/app/store')
+const { restoreLiveSession } = await import('@/app/liveSession')
 
 const renderDrill = () => render(<MemoryRouter><NoteIdDrill /></MemoryRouter>)
 
@@ -133,5 +134,28 @@ describe('NoteIdDrill', () => {
       await back(router)
       expect(router.state.location.pathname).toBe('/')
     })
+  })
+
+  it('opens a session cut off by a page load paused, greeting the reader back, and keeps it on the way home', async () => {
+    useDrillStore.getState().start(1, useAppStore.getState().settings)
+    useDrillStore.getState().answer(useDrillStore.getState().question!.correctIndex)
+    useDrillStore.getState().pause('away')
+    // The page load: the store starts over, storage still holds the session.
+    const saved = localStorage.getItem('musoni-live-v1')
+    useDrillStore.setState({ phase: 'setup', question: null, correct: 0, pausedAt: null, pauseReason: null })
+    localStorage.setItem('musoni-live-v1', saved!)
+    restoreLiveSession(useDrillStore, 'note-id')
+
+    const router = createMemoryRouter(
+      [{ path: '/', element: <p>home</p> }, { path: '/train/note-id', element: <NoteIdDrill /> }],
+      { initialEntries: ['/', '/train/note-id'], initialIndex: 1 },
+    )
+    render(<RouterProvider router={router} />)
+    expect(await screen.findByText('Welcome back')).toBeInTheDocument()
+    expect(useDrillStore.getState().correct).toBe(1)
+
+    await act(() => router.navigate(-1))
+    await act(() => new Promise(r => setTimeout(r, 0)))
+    expect(useAppStore.getState().pausedSession).toMatchObject({ to: '/train/note-id', correct: 1 })
   })
 })

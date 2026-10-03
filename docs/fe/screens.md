@@ -201,6 +201,7 @@ the session waits:
 | back or edge-swipe during a session started from setup's Start | **setup**; the session ends, its played time still counts toward today's goal |
 | back from the result | where the session started: home, or setup (and back from setup goes home) |
 | leaves the drill another way (home link from a deep link, closing the tab mid-way) | pauses and home shows the paused-session bar; with no answers the session is simply dropped |
+| a page load mid-session (refresh, typing the drill's URL or `/`, a crash) | the session comes back paused: on the drill route the "Chào mừng quay lại" sheet with time left and answers so far; on home the paused-session bar. Older than 30 min (`LIVE_SESSION_MAX_AGE_MS`), it is kept as ended early (its minutes count) and the drill starts fresh. Before, a page load dropped it: setup, nothing saved |
 
 Both are one bottom sheet (`PausePanel`, built on `vaul`) on every width,
 centred and at most `max-w-md` on desktop. It slides up and back down, drags

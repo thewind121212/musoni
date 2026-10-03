@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { playedMs, useDrillStore } from './store'
 import { getDay, localDayKey } from '../../progress/progressStore'
+import { restoreLiveSession } from '@/app/liveSession'
+import { LIVE_SESSION_MAX_AGE_MS } from '@/config/constants'
 
 const settings = { level: 1 as const, durationSec: 60, accidentals: false, naming: 'letters' as const, sound: false, keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120, earCadenceEach: false, earOneKey: false, lang: 'en' as const, activityExpanded: false }
 const T0 = new Date('2026-08-28T10:00:00Z').getTime()
@@ -190,3 +192,37 @@ describe('pausing and leaving mid-session', () => {
   })
 })
 
+/** A page load: the store starts over empty, and whatever storage held is brought back. */
+function reload(store: { setState: (s: object) => void }, drill: 'note-id' | 'hear-play', now: number) {
+  const saved = localStorage.getItem('musoni-live-v1')
+  store.setState({ phase: 'setup', question: null, feedback: null, correct: 0, wrong: 0, pausedAt: null, pauseReason: null })
+  if (saved) localStorage.setItem('musoni-live-v1', saved)
+  restoreLiveSession(store as never, drill, now)
+}
+
+describe('note-id session across a page load', () => {
+  const T = new Date('2026-08-28T10:00:00Z').getTime()
+
+  it('comes back paused, with its answers and clock, after a refresh', () => {
+    useDrillStore.getState().start(1, settings, T)
+    useDrillStore.getState().answer(useDrillStore.getState().question!.correctIndex, T + 1_000)
+    useDrillStore.getState().nextQuestion(T + 1_300)
+    useDrillStore.getState().pause('away', T + 5_000)
+    reload(useDrillStore, 'note-id', T + 20_000)
+    expect(useDrillStore.getState()).toMatchObject({
+      phase: 'running', correct: 1, pausedAt: T + 5_000, pauseReason: 'away', endsAt: T + 60_000,
+    })
+    expect(useDrillStore.getState().question).not.toBeNull()
+  })
+
+  it('is kept as ended early when it comes back too late, so its minutes still count', () => {
+    useDrillStore.getState().start(1, settings, T)
+    useDrillStore.getState().answer(useDrillStore.getState().question!.correctIndex, T + 1_000)
+    useDrillStore.getState().pause('away', T + 30_000)
+    reload(useDrillStore, 'note-id', T + 30_000 + LIVE_SESSION_MAX_AGE_MS + 1)
+    expect(useDrillStore.getState().phase).toBe('setup')
+    const day = getDay(localDayKey(new Date(T)))
+    expect(day).toHaveLength(1)
+    expect(day[0]).toMatchObject({ partial: true, durationSec: 30, correct: 1 })
+  })
+})

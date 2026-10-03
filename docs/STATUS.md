@@ -167,6 +167,12 @@ a real browser.
       setup; result and ✕-before-any-answer back out the same way. Back no longer gets stuck re-opening the pause
       sheet. Matrix test `app/useDrillRoute.test.tsx` — `docs/fe/screens.md`,
       `docs/fe/architecture.md`, `docs/fe/drill-hear-play.md`
+- [x] **A session survives a page load**: a refresh or typed URL mid-session used to drop
+      it (setup, nothing saved, paused bar gone). Now each drill keeps its running session
+      through `progressStore` (`musoni-live-v1`, `app/liveSession`) and brings it back
+      paused with the welcome-back sheet; home shows the paused bar; after 30 min it is
+      kept as ended early. Tests at store, helper, app-store and route level —
+      `docs/fe/data-model.md`, `docs/fe/screens.md`, `docs/fe/architecture.md`
 - [x] Nghe & Đàn level pictures: plain keyboard with a violet dot per note the level
       uses, instead of solid blue lit keys that merged into a block (`MiniKeyboard`) —
       `docs/fe/drill-hear-play.md`, `docs/fe/screens.md`

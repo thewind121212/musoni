@@ -3,6 +3,7 @@ import { generateQuestion, type Question } from './generator'
 import type { Clef, Pitch } from '../../core/music/types'
 import { difficultyWeight, practiceScore, accuracy } from '../../core/scoring'
 import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
+import { keepLiveSession } from '../../app/liveSession'
 
 /**
  * The note-id drill is a self-contained SPA: one route, three phases.
@@ -192,3 +193,6 @@ export const useDrillStore = create<DrillState>((set, get) => ({
     }
   },
 }))
+
+// A running session survives a page load (refresh, a typed URL): see app/liveSession.
+keepLiveSession(useDrillStore, 'note-id', '/train/note-id')

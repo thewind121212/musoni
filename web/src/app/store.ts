@@ -1,12 +1,19 @@
 import { create } from 'zustand'
-import { type Settings, getSettings, saveSettings } from '../progress/progressStore'
+import { type LiveSummary, type Settings, getLiveSessions, getSettings, saveSettings } from '../progress/progressStore'
+import { LIVE_SESSION_MAX_AGE_MS } from '../config/constants'
 
-export interface PausedSession {
-  /** Route to return to. */
-  to: string
-  secondsLeft: number
-  correct: number
-  wrong: number
+export type PausedSession = LiveSummary
+
+/**
+ * The session a page load cut off, for home's paused bar: the most recent one
+ * still fresh enough to resume. (Its drill brings the session itself back when
+ * its code loads; see app/liveSession.)
+ */
+export function livePausedSession(now = Date.now()): PausedSession | null {
+  const fresh = getLiveSessions()
+    .filter(l => now - l.savedAt <= LIVE_SESSION_MAX_AGE_MS)
+    .sort((a, b) => b.savedAt - a.savedAt)
+  return fresh[0]?.summary ?? null
 }
 
 interface AppState {
@@ -20,7 +27,8 @@ interface AppState {
   /**
    * A drill session the reader left mid-way (back, swipe), held paused in its
    * drill's store. Drills publish it here, since home may not read a drill
-   * store; home offers to go back to it. Session-only, never saved.
+   * store; home offers to go back to it. On load it comes from the session a
+   * page load cut off (`livePausedSession`).
    */
   pausedSession: PausedSession | null
   setPausedSession: (p: PausedSession | null) => void
@@ -35,7 +43,7 @@ if (typeof document !== 'undefined') document.documentElement.lang = initialSett
 export const useAppStore = create<AppState>((set, get) => ({
   settings: initialSettings,
   homeIntroPlayed: false,
-  pausedSession: null,
+  pausedSession: livePausedSession(),
   setPausedSession: pausedSession => set({ pausedSession }),
   updateSettings: p => {
     const settings = { ...get().settings, ...p }

@@ -48,6 +48,16 @@ run phase, which pauses when the page is hidden or the route is left
 (publishing `pausedSession` for home) and locks overscroll while the run
 screen is open.
 
+A running session also survives a **page load** (refresh, a typed URL, a
+crash). Each drill store calls `keepLiveSession(store, drill, route)`
+(`app/liveSession`) once after it is created: it saves the session through
+`progressStore` on every change while it runs, clears it when it ends, and on
+load brings it back paused (`pauseReason: 'away'`, so the run screen greets the
+reader back), moving past a question already answered. Older than
+`LIVE_SESSION_MAX_AGE_MS` (30 min) it is ended as at the moment it stopped and
+forgotten. The app store starts `pausedSession` from the freshest saved session
+(`livePausedSession`), so home shows the paused bar after a reload too.
+
 ## Core components (`core/`)
 
 Shared, module-agnostic, reuse-first building blocks:

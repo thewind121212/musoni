@@ -91,6 +91,23 @@ been additive.
 Day keys are the viewer's **local** calendar day (`localDayKey`), not UTC, so a
 session at 1am in UTC+7 lands on today.
 
+## Live session (`musoni-live-v1`)
+
+A second, separate key holds the session **being played**, per drill, so a page
+load (refresh, a typed URL, a crash) does not lose it:
+
+```json
+{ "note-id": { "drill": "note-id", "savedAt": 1790000000000,
+               "state": { "phase": "running", "correct": 3, "pausedAt": 1790000000000, "…": "…" },
+               "summary": { "to": "/train/note-id", "secondsLeft": 40, "correct": 3, "wrong": 1 } } }
+```
+
+`state` is the drill store's data (JSON, no functions), which only that drill
+reads back; `summary` is what home's paused bar shows. It is written on every
+change while a session runs and removed when the session finishes, ends early
+or returns to setup (`app/liveSession`). It is device-local working state, not
+progress: it never syncs and is not part of the versioned document above.
+
 ## Why this shape is the cloud plug
 
 - Single versioned document → Phase 2 sync = `POST` it to the Go API and merge
@@ -121,3 +138,5 @@ session at 1am in UTC+7 lands on today.
 - `getActiveDayCount()` — number of days with at least one session
 - `getDailyMinutes()` — minutes practised per local day
 - `localDayKey(date)` — the local `YYYY-MM-DD` key used everywhere
+- `saveLiveSession(drill, state, summary, now?)` / `getLiveSession(drill)` /
+  `getLiveSessions()` / `clearLiveSession(drill)` — the live session above

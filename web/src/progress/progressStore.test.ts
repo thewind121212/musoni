@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS = {
   lang: 'vi',
   activityExpanded: false,
 } as const
-import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount, getRecentAverage } from './progressStore'
+import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount, getRecentAverage, saveLiveSession, getLiveSession, getLiveSessions, clearLiveSession } from './progressStore'
 
 const session = (over = {}) => ({
   drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
@@ -232,5 +232,32 @@ describe('partial sessions', () => {
     expect(getBest('note-id', 1)!.practiceScore).toBe(40)
     expect(getRecentAverage('note-id', 1, 'none', 7, now)).toBe(40)
     expect(getDailyMinutes()[localDayKey(now)]).toBe(3)
+  })
+})
+
+describe('live sessions', () => {
+  const summary = { to: '/train/note-id', secondsLeft: 40, correct: 3, wrong: 1 }
+
+  it('keeps a session being played, per drill, with when it was saved', () => {
+    saveLiveSession('note-id', { phase: 'running', correct: 3 }, summary, 1_000)
+    expect(getLiveSession('note-id')).toEqual({ drill: 'note-id', savedAt: 1_000, state: { phase: 'running', correct: 3 }, summary })
+    expect(getLiveSession('hear-play')).toBeNull()
+  })
+
+  it('lists every drill\'s live session, and forgets one when cleared', () => {
+    saveLiveSession('note-id', { phase: 'running' }, summary, 1_000)
+    saveLiveSession('hear-play', { phase: 'running' }, { ...summary, to: '/train/hear-play' }, 2_000)
+    expect(getLiveSessions().map(l => l.drill).sort()).toEqual(['hear-play', 'note-id'])
+    clearLiveSession('note-id')
+    expect(getLiveSession('note-id')).toBeNull()
+    expect(getLiveSessions()).toHaveLength(1)
+  })
+
+  it('stores no functions, and survives corrupted storage', () => {
+    saveLiveSession('note-id', { phase: 'running', start: () => {} }, summary, 1_000)
+    expect(getLiveSession('note-id')!.state).toEqual({ phase: 'running' })
+    localStorage.setItem('musoni-live-v1', '{oops')
+    expect(getLiveSession('note-id')).toBeNull()
+    expect(getLiveSessions()).toEqual([])
   })
 })

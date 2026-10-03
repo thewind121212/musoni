@@ -108,6 +108,55 @@ function save(doc: Doc): void { localStorage.setItem(KEY, JSON.stringify(doc)) }
 export function getSettings(): Settings { return { ...DEFAULTS, ...load().settings } }
 export function saveSettings(s: Settings): void { const d = load(); d.settings = s; save(d) }
 
+/** What home needs to offer a session back: where it is and how it stood. */
+export interface LiveSummary {
+  /** Route to return to. */
+  to: string
+  secondsLeft: number
+  correct: number
+  wrong: number
+}
+
+/**
+ * A session still being played, kept under its own key so a page load
+ * (refresh, a typed URL, a crash) can bring it back. `state` is the drill
+ * store's data, which only the drill reads; `summary` is what home shows.
+ */
+export interface LiveSession<S = Record<string, unknown>> {
+  drill: DrillId
+  savedAt: number
+  state: S
+  summary: LiveSummary
+}
+
+const LIVE_KEY = 'musoni-live-v1'
+
+function loadLive(): Partial<Record<DrillId, LiveSession>> {
+  try {
+    const parsed: unknown = JSON.parse(localStorage.getItem(LIVE_KEY) ?? '{}')
+    return typeof parsed === 'object' && parsed !== null ? parsed as Partial<Record<DrillId, LiveSession>> : {}
+  } catch { return {} /* corrupted: nothing to bring back */ }
+}
+
+/** Saves the drill's session as it stands now. Functions in `state` are dropped (JSON). */
+export function saveLiveSession(drill: DrillId, state: object, summary: LiveSummary, now = Date.now()): void {
+  const all = loadLive()
+  all[drill] = { drill, savedAt: now, state: JSON.parse(JSON.stringify(state)), summary }
+  localStorage.setItem(LIVE_KEY, JSON.stringify(all))
+}
+export function getLiveSession<S = Record<string, unknown>>(drill: DrillId): LiveSession<S> | null {
+  return (loadLive()[drill] as LiveSession<S> | undefined) ?? null
+}
+export function getLiveSessions(): LiveSession[] {
+  return Object.values(loadLive()).filter((l): l is LiveSession => l !== undefined)
+}
+export function clearLiveSession(drill: DrillId): void {
+  const all = loadLive()
+  if (!(drill in all)) return
+  delete all[drill]
+  localStorage.setItem(LIVE_KEY, JSON.stringify(all))
+}
+
 export function recordSession(r: SessionResult): void {
   const d = load()
   const day = localDayKey(new Date(r.at))

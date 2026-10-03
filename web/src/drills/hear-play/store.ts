@@ -4,6 +4,7 @@ import type { Clef, Pitch } from '../../core/music/types'
 import { accuracy, practiceScore } from '../../core/scoring'
 import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
 import { EAR_LEVELS } from '../../config/constants'
+import { keepLiveSession } from '../../app/liveSession'
 
 /**
  * Nghe & Đàn: one route, three phases, like the note-id drill. `setup` picks
@@ -189,3 +190,6 @@ export const useEarStore = create<EarState>((set, get) => ({
     else set({ phase: 'setup', ...cleared })
   },
 }))
+
+// A running session survives a page load (refresh, a typed URL): see app/liveSession.
+keepLiveSession(useEarStore, 'hear-play', '/train/hear-play')

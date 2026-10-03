@@ -90,6 +90,14 @@ export const DEFAULT_DURATION_SECONDS = 60
  */
 export const DAILY_GOAL_MINUTES = 5
 
+/**
+ * How long a session left unfinished by a page load (refresh, typed URL, a
+ * crash) can still be resumed. Older, it is recorded as ended early (its
+ * minutes count) and the drill starts fresh: a 2-minute sprint resumed hours
+ * later is a different practice.
+ */
+export const LIVE_SESSION_MAX_AGE_MS = 30 * 60 * 1000
+
 /** Level descriptions shown in setup. */
 export const LEVEL_INFO: Record<1 | 2 | 3 | 4, { name: string; detail: string }> = {
   1: { name: 'Treble', detail: 'On the staff only' },

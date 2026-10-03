@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { playedMs, useEarStore } from './store'
 import { getDay, getSettings, localDayKey } from '@/progress/progressStore'
+import { restoreLiveSession } from '@/app/liveSession'
 
 const settings = { ...getSettings(), naming: 'letters' as const, earDurationSec: 120 }
 const T0 = new Date('2026-08-28T10:00:00Z').getTime()
@@ -102,5 +103,26 @@ describe('hear-play store', () => {
     store().endEarly(T0 + 30_000)
     expect(store().phase).toBe('finished')
     expect(getDay(DAY0)[0]).toMatchObject({ drill: 'hear-play', partial: true, practiceScore: 0, durationSec: 30 })
+  })
+})
+
+/** A page load: the store starts over empty, and whatever storage held is brought back. */
+function reload(store: { setState: (s: object) => void }, drill: 'note-id' | 'hear-play', now: number) {
+  const saved = localStorage.getItem('musoni-live-v1')
+  store.setState({ phase: 'setup', question: null, feedback: null, correct: 0, wrong: 0, pausedAt: null, pauseReason: null })
+  if (saved) localStorage.setItem('musoni-live-v1', saved)
+  restoreLiveSession(store as never, drill, now)
+}
+
+describe('hear-play session across a page load', () => {
+  it('comes back paused with its key and answers after a refresh', () => {
+    store().start(2, settings, T0)
+    const key = store().question!.key
+    store().answer(store().question!.correctIndex, T0 + 1_000)
+    store().pause('away', T0 + 4_000)
+    reload(useEarStore, 'hear-play', T0 + 10_000)
+    expect(store()).toMatchObject({ phase: 'running', correct: 1, pausedAt: T0 + 4_000, feedback: null })
+    // The answered question was counted, so the next one is asked, in the same key.
+    expect(store().question!.key).toBe(key)
   })
 })
