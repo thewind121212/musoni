@@ -42,4 +42,32 @@ describe('Hear & play SetupPhase', () => {
     expect(useEarStore.getState().level).toBe(2)
     expect(useEarStore.getState().settings.earDurationSec).toBe(60)
   })
+
+  it('saves the listening aids, and greys out one key at level 1', async () => {
+    renderSetup()
+    await userEvent.click(screen.getByRole('switch', { name: 'Key before every note' }))
+    expect(getSettings().earCadenceEach).toBe(true)
+    expect(screen.getByRole('switch', { name: 'Stay in one key (C)' })).toBeDisabled()
+    expect(screen.getByText('This level is already in C')).toBeInTheDocument()
+  })
+
+  it('lets one key be switched on from level 2', async () => {
+    useAppStore.getState().updateSettings({ earLevel: 2 })
+    renderSetup()
+    await userEvent.click(screen.getByRole('switch', { name: 'Stay in one key (C)' }))
+    expect(getSettings().earOneKey).toBe(true)
+  })
+
+  it('shows a stored one-key setting as off at level 1', () => {
+    useAppStore.getState().updateSettings({ earLevel: 1, earOneKey: true })
+    renderSetup()
+    expect(screen.getByRole('switch', { name: 'Stay in one key (C)' })).toHaveAttribute('aria-checked', 'false')
+    expect(screen.queryByText(/One key/)).toBeNull()
+  })
+
+  it('tags the summary with the aids in use', () => {
+    useAppStore.getState().updateSettings({ earLevel: 3, earOneKey: true, earCadenceEach: true })
+    renderSetup()
+    expect(screen.getByText(/Key every note · One key/)).toBeInTheDocument()
+  })
 })

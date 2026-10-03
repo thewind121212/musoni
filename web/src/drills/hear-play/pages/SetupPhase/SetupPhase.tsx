@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Link } from 'react-router-dom'
-import { CaretLeftIcon, EarIcon, PianoKeysIcon, PlayIcon, TrophyIcon } from '@phosphor-icons/react'
+import { CaretLeftIcon, EarIcon, PianoKeysIcon, PlayIcon, SpeakerHighIcon, TrophyIcon } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
@@ -39,9 +39,13 @@ export function SetupPhase() {
     { value: 'boxes' as const, label: t('setup.padStyle.boxes') },
   ]
 
+  // One key changes nothing at level 1 (C only), so its switch is off and greyed there.
+  const oneKey = settings.earOneKey && level !== 1
   const summary = [
     t(`ear.level.${level}` as 'ear.level.1'),
     formatDuration(settings.earDurationSec, t),
+    ...(settings.earCadenceEach ? [t('setup.ear.tag.cadenceEach')] : []),
+    ...(oneKey ? [t('setup.ear.tag.oneKey')] : []),
   ].join(' · ')
 
   const groups = [
@@ -58,6 +62,29 @@ export function SetupPhase() {
       onChange={earDurationSec => updateSettings({ earDurationSec })}
       t={t}
     />,
+    <fieldset key="listen" className="border-0 p-0">
+      <FieldLegend icon={<SpeakerHighIcon size={15} weight="fill" />} label={t('setup.ear.listen')} />
+      <div className="divide-y divide-line rounded-2xl border border-line bg-raised">
+        <SettingRow label={t('setup.ear.cadenceEach')} hint={t('setup.ear.cadenceEach.hint')}>
+          <Switch
+            checked={settings.earCadenceEach}
+            label={t('setup.ear.cadenceEach')}
+            onChange={earCadenceEach => updateSettings({ earCadenceEach })}
+          />
+        </SettingRow>
+        <SettingRow
+          label={t('setup.ear.oneKey')}
+          hint={t(level === 1 ? 'setup.ear.oneKey.l1' : 'setup.ear.oneKey.hint')}
+        >
+          <Switch
+            checked={oneKey}
+            disabled={level === 1}
+            label={t('setup.ear.oneKey')}
+            onChange={earOneKey => updateSettings({ earOneKey })}
+          />
+        </SettingRow>
+      </div>
+    </fieldset>,
     <fieldset key="prefs" className="border-0 p-0">
       <FieldLegend icon={<PianoKeysIcon size={15} weight="fill" />} label={t('setup.ear.answer')} />
       <div className="divide-y divide-line rounded-2xl border border-line bg-raised">
