@@ -47,8 +47,9 @@ export interface SessionResult {
    */
   partial?: true
   /**
-   * Played with a Nghe & Đàn listening aid on. Counts toward daily minutes,
-   * the streak and averages, but `getBest` skips it. Absent otherwise.
+   * Played with a Nghe & Đàn listening aid on. Counts toward daily minutes
+   * and the streak; bests and week averages skip it (the aids make the drill
+   * easier, so it would skew both). Absent otherwise.
    */
   aids?: true
 }
@@ -153,7 +154,7 @@ export function getRecentAverage(
   const scores: number[] = []
   for (const sessions of Object.values(getRange(localDayKey(from), localDayKey(now)))) {
     for (const s of sessions) {
-      if (s.drill === drill && s.level === level && !s.partial && s.at !== excludeAt) scores.push(s.practiceScore)
+      if (s.drill === drill && s.level === level && !s.partial && !s.aids && s.at !== excludeAt) scores.push(s.practiceScore)
     }
   }
   if (scores.length === 0) return null

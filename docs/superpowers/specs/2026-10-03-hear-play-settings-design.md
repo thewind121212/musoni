@@ -60,8 +60,10 @@ extra cadence costs nothing on the score). A session played with either aid on:
 - is saved with `aids: true` on its `SessionResult` (absent otherwise, like `partial`).
   "An aid on" is `earCadenceEach || (earOneKey && level > 1)`: at L1 one key changes
   nothing, so it is not an aid there (and its switch is disabled);
-- counts toward today's minutes, the streak, the activity calendar and week averages
-  exactly as now;
+- counts toward today's minutes, the streak and the activity calendar exactly as now,
+  but is left out of week averages (`getRecentAverage` skips it, as it skips `partial`;
+  changed after final review: mixing easier sessions in made every plain session read
+  as below average after a week with aids);
 - is skipped by `getBest` (as `partial` sessions are), so it never sets or shows as a
   best;
 - shows one line on the result screen, under the score: "Có trợ giúp nghe — không tính

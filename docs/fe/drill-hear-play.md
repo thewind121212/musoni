@@ -106,9 +106,11 @@ Same as note reading (see `drill-note-identification.md`):
   week-average bar, and the missed notes on small staves with what was played.
 
 - A session played with an aid on (`earCadenceEach`, or `earOneKey` above L1)
-  is saved with `aids: true`: it counts toward minutes, the streak and averages,
-  but never sets a best (the aids make the drill easier, and the answer clock
-  starts when the note sounds, so the extra cadence costs nothing). Its result
+  is saved with `aids: true`: it counts toward minutes and the streak, but
+  never sets a best and is left out of the week average (the aids make the
+  drill easier, and the answer clock starts when the note sounds, so the extra
+  cadence costs nothing; mixing them in would make every plain session read as
+  below average after a week with aids). Its result
   says "Có trợ giúp nghe — không tính kỷ lục", shows no personal-best badge, and
   draws no best bar when there is no aid-free best yet.
 

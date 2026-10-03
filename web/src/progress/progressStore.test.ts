@@ -215,6 +215,15 @@ describe('getRecentAverage', () => {
   })
 })
 
+describe('aided sessions', () => {
+  it('are left out of the week average, so turning an aid off is not measured against easier sessions', () => {
+    const now = new Date('2026-08-28T12:00:00')
+    recordSession(session({ drill: 'hear-play', at: now.toISOString(), practiceScore: 40 }))
+    recordSession(session({ drill: 'hear-play', at: now.toISOString(), practiceScore: 90, aids: true }))
+    expect(getRecentAverage('hear-play', 1, 'none', 7, now)).toBe(40)
+  })
+})
+
 describe('partial sessions', () => {
   it('count toward daily minutes but never toward bests or averages', () => {
     const now = new Date('2026-08-28T12:00:00')
