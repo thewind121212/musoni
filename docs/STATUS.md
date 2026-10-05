@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 570 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 661 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -265,7 +265,13 @@ a real browser.
       2 / 4 accidentals, then minor keys with harmonic-minor V and vii°). "Nghe" switch
       (on) plays the chord after answering, the reader's chord first on a miss. Core
       `AnswerPad` gained an optional `selected` key. Screenshots: project files
-      `screenshots/drill-chords/` — `docs/fe/drill-chords.md`, `docs/fe/architecture.md`
+      `screenshots/drill-chords/` — `docs/fe/drill-chords.md`, `docs/fe/architecture.md`.
+      Functional review (2026-10-05): every question of every level checked against
+      independent theory tables, flows run in a real browser (two taps, keys, reload,
+      pause, back, key signatures with raised leading tones); no behaviour bugs found.
+      Tests added for time running out with a root picked, a preset without a mode,
+      taps and keys during feedback, unasked quality digits, and sound stopping on
+      pause and on leaving the run screen. 661 web tests green
 
 ## Theory chapters
 
