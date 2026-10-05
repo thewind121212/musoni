@@ -18,12 +18,12 @@ const rhythmSession = (o = {}) => session({ drill: 'rhythm', level: 2, avgMs: 34
 
 beforeEach(() => {
   resetStores({ lang: 'en' })
-  useRhythmStore.setState({ phase: 'finished', misses: [], settings: withDrill('rhythm', { level: 2, tempo: 80 }) })
+  useRhythmStore.setState({ phase: 'finished', misses: [], offsetCount: 0, settings: withDrill('rhythm', { level: 2, tempo: 80 }) })
 })
 
 describe('Rhythm ResultPhase', () => {
   it('shows the score, the level and the average offset', () => {
-    useRhythmStore.setState({ lastResult: rhythmSession() })
+    useRhythmStore.setState({ lastResult: rhythmSession(), offsetCount: 12 })
     renderResult()
     expect(screen.getByText('Eighths and rests session')).toBeInTheDocument()
     expect(screen.getByText('21')).toBeInTheDocument()
@@ -36,6 +36,13 @@ describe('Rhythm ResultPhase', () => {
     renderResult()
     expect(screen.getByText('Ended early')).toBeInTheDocument()
     expect(screen.getByText('–')).toBeInTheDocument()
+  })
+
+  it('shows a dash, not 0 ms, when measures were played but no tap landed on a note', () => {
+    useRhythmStore.setState({ lastResult: rhythmSession({ correct: 0, wrong: 3, avgMs: 0, partial: true }), offsetCount: 0 })
+    renderResult()
+    expect(screen.getByText('–')).toBeInTheDocument()
+    expect(screen.queryByText('0 ms')).toBeNull()
   })
 
   it('lists the measures missed, each on its staff', () => {

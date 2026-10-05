@@ -25,6 +25,7 @@ export function ResultPhase() {
   const result = useRhythmStore(s => s.lastResult)
   const misses = useRhythmStore(s => s.misses)
   const settings = useRhythmStore(s => s.settings)
+  const paired = useRhythmStore(s => s.offsetCount)
   const reduce = useReducedMotion()
   const t = useT()
   const backLink = useBackLink()
@@ -35,8 +36,9 @@ export function ResultPhase() {
   const isBest = best !== null && best.practiceScore === result.practiceScore
   const average = getRecentAverage(rhythm.id, result.level, result.at)
   const bestScore = best?.practiceScore ?? result.practiceScore
-  // This drill's third figure: how far the taps landed from the notes, on average.
-  const third = { value: result.correct + result.wrong > 0 ? `${result.avgMs} ms` : '–', label: t(S['result.offset']) }
+  // This drill's third figure: how far the taps landed from the notes, on
+  // average; a dash when no tap landed on a note (not "0 ms", which reads as perfect).
+  const third = { value: paired > 0 ? `${result.avgMs} ms` : '–', label: t(S['result.offset']) }
   const tempo = rhythm.of(settings).tempo
   const missed = misses.map(m => ({ ...m, tickMs: pulseOf(m.measure.meter, tempo).tickMs }))
   // Again plays the same session: a lesson's preset stays on, the saved setup stays as it was.
