@@ -12,8 +12,10 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `app` (global) | `app/store.ts` | app-wide state: user settings (each drill's own workout under `settings.drills[id]`, naming, keys, sound, language, activity-panel mode, the first-open answer `startPoint`); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so the tabs can offer the way back |
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
+| `drills/intervals` | `drills/intervals/store.ts` (`useIntervalsStore`) | Quãng session: the two notes on screen and their interval, the cell answered, misses, score, streak, timer, pause state (see `drill-intervals.md`) |
 | `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
 | `drills/key-sig` | `drills/key-sig/store.ts` (`useKeySigStore`) | Hóa biểu session: the signature on screen (sharps or flats, mode, clef, its pad), score, streak, timer, pause state, misses (see `drill-key-sig.md`) |
+| `drills/chords` | `drills/chords/store.ts` (`useChordStore`) | Hợp âm session: the chord on screen, a root or quality picked and waiting for the other, score, streak, timer, pause state (see `drill-chords.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | `drills/rhythm` | `drills/rhythm/store.ts` (`useRhythmStore`) | Tiết tấu session: the measure on screen, whether a take is being played (`takeAt`), its judgement, score, streak, tap offsets, measures missed, timer, pause state (see `drill-rhythm.md`) |
 
@@ -171,7 +173,9 @@ Shared, module-agnostic, reuse-first building blocks:
   (brace, notes from middle C up on top unless `@t`/`@b` says otherwise) or
   bare lines (`none`). It crops its viewBox to the drawn ink, puts labels under
   the notes as HTML (so they wrap the reader's naming and font), draws chosen
-  notes blue and takes the same `tone`/`chosen` feedback as Staff. Its input
+  notes blue and takes the same `tone`/`chosen` feedback as Staff. An optional `room`
+  pins the box to the staff lines plus that room instead of the ink, so a question
+  staff of several notes (Quãng) keeps one size between questions. Its input
   is the parsed notation from `core/music/notation`; with no events it draws
   the clef and key signature alone (Hóa biểu's question). `clef="percussion"` draws
   the neutral clef (Tiết tấu; notes written `B4` sit on the middle line).
@@ -229,6 +233,10 @@ drills draw the same screens. Ôn tập promoted the lesson's check components
 `LessonBlocks`, `StepView`) and the lesson format out of `theory`; the tabs
 promoted `LanguageToggle` and added `DrillCard`.
 
+`AnswerPad` takes an optional `selected` key (`PianoKey` mark `selected`:
+filled blue, `aria-pressed`) for an answer in two taps, where the first must
+show before the second completes it (Hợp âm: the root, then the quality).
+
 ## i18n
 
 Vietnamese first (`DEFAULT_LANG = 'vi'`), English second. No i18n dependency:
@@ -261,9 +269,9 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 |---|---|---|
 | atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine`, `MiniKeyboard` (1-4 octaves, dot or fill marks, names under keys), `RichText`, `TipBox`; theory: `StepBar`, `LessonDot` |
 | molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `PianoKey`, `DurationPicker`, `SessionStats`, `PlayButton`, `ChoiceList`, `CheckVerdict`; app: `PausedNotice`, `MoreDrills`, `StartOption`; theory: `LessonRow`, `PracticeOffer`, `SourceLine` |
-| organism | a self-contained section of a screen | `Staff`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `DrillCard`, `LessonBlocks`, `StepView`; app: `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `TabBar`, `TodayCard`; hear-play: `ListenStage`; review: `MissedChecks`; theory: `LessonEnd`, `ChapterCard`, `NextLessonCard` |
+| organism | a self-contained section of a screen | `Staff`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `DrillCard`, `LessonBlocks`, `StepView`; app: `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `TabBar`, `TodayCard`; hear-play: `ListenStage`; review: `MissedChecks`; intervals: `IntervalGrid`, `IntervalStaff`, `MissedIntervals`; theory: `LessonEnd`, `ChapterCard`, `NextLessonCard` |
 | template | layout shell with no content of its own | `PageTransition`, `LessonFrame` (theory) |
-| page | one screen or drill phase; the **only** level that reads stores | app: `PracticeTab` (Luyện), `FirstOpen`, `TabChrome`, `DrillRoute`, `DrillLoading`; `NoteIdDrill`, `HearPlayDrill`, `ReviewDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase`; theory: `LearnTab` (Học), `ChapterList`, `LessonPlayer`, `TheoryAbout` |
+| page | one screen or drill phase; the **only** level that reads stores | app: `PracticeTab` (Luyện), `FirstOpen`, `TabChrome`, `DrillRoute`, `DrillLoading`; `NoteIdDrill`, `HearPlayDrill`, `ReviewDrill`, `IntervalsDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase`; theory: `LearnTab` (Học), `ChapterList`, `LessonPlayer`, `TheoryAbout` |
 
 Rules:
 
@@ -346,6 +354,7 @@ web/src/
 │   ├── note-id/            #   Đọc nốt: generator; NoteIdDrill, SetupPhase, RunPhase, ResultPhase
 │   ├── hear-play/          #   Nghe & Đàn: generator (key, note, sounds); ListenStage
 │   ├── review/             #   Ôn tập: select (pool, weighting), MissedChecks
+│   ├── intervals/          #   Quãng: interval maths, grid, generator; IntervalGrid, IntervalStaff
 │   └── rhythm/             #   Tiết tấu: generator, judge, calibrate, metronome; TapPad, RhythmStaff
 ├── theory/                 # theory module: registry, outline, validate, store
 │   ├── components/         #   atoms / molecules / organisms / templates for lessons

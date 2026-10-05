@@ -72,4 +72,12 @@ describe('PianoKey', () => {
     expect(screen.getByTestId('home-dot')).toBeInTheDocument()
     expect(screen.getByRole('button')).toHaveAccessibleName('C, home notea')
   })
+
+  it('marks a pick waiting for a second tap as pressed, without naming a bare key', () => {
+    const { rerender } = render(key({ mark: 'selected', showLabel: false }))
+    expect(screen.getByRole('button', { name: 'C' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button')).not.toHaveTextContent('C')
+    rerender(key())
+    expect(screen.getByRole('button')).not.toHaveAttribute('aria-pressed')
+  })
 })

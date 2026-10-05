@@ -436,6 +436,24 @@ nửa cung", red with ✕ on a miss), and the 12-key pad spelled the key's way
 **Result**: the drills' summary, then "Giọng cần ôn": missed signatures on
 small staves with the key and the pick. Fits 320×568 and 1280×800 without
 scrolling.
+### Quãng (`/train/intervals`)
+
+Design and rules: `drill-intervals.md`. Mockup: project files
+`screenshots/theory-drills/3-intervals.png`. Same shell as note reading (setup /
+run / result in the drill's store, back behaviour, pause sheet, early end).
+**Setup**: back caret, "Quãng", one line on what it asks, **Gọi tên gì** (four
+row cards, each pictured by its grid labels: "2–8", "3T 5Đ", "♯ ♭", "4+ 5°"), the
+length pills, **Nốt và âm thanh** ("Nghe quãng sau mỗi câu", on by default, and
+the note-name toggle), the sticky bar with amber Bắt đầu. **Run**: the shared
+header, time bar and streak line; "Quãng gì?" ("Quãng mấy?" at level 1) over two
+notes on a treble or bass staff (side by side or stacked; the box is pinned so
+the staff never moves); a fixed two-line slot for the verdict ("Quãng 6 thứ (Mi
+→ Do)" in green, or the red line with the pick); at the bottom the answer grid,
+sizes 2-8 across and only the level's quality rows down (blank dashed cells for
+minor 4/5/8), each cell's computer key in its corner on desktop. Fits 320×568,
+375×812, 390×844 and 1280×800 without scrolling at level 4 (four rows).
+**Result**: the shared result, with "Quãng cần xem lại" tiles (the interval on a
+small staff, its label, the pick).
 
 ### Ôn tập (`/train/review`)
 

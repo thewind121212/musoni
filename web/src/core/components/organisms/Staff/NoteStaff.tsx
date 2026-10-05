@@ -50,6 +50,12 @@ export interface NoteStaffProps {
    * over the staff (Tiết tấu's timing dots). Pass a stable function.
    */
   onLayout?: (layout: NoteStaffLayout) => void
+  /**
+   * Pins the box to the staff lines plus this much room above and below
+   * (notation units) instead of cropping it to the ink, so a question staff
+   * keeps one size whatever its notes reach. Notes beyond it are cut off.
+   */
+  room?: number
 }
 
 /** The middle line of each clef, where a rest sits. */
@@ -89,7 +95,7 @@ interface Drawn {
  * below them, so a figure with no ledger lines carries no empty band.
  */
 export function NoteStaff({
-  clef, events, keySignature, time, labels, highlight = [], tone = 'neutral', chosen = null, width = 320, onLayout,
+  clef, events, keySignature, time, labels, highlight = [], tone = 'neutral', chosen = null, width = 320, onLayout, room,
 }: NoteStaffProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [drawn, setDrawn] = useState<Drawn>({ xs: [] })
@@ -216,9 +222,11 @@ export function NoteStaff({
     }
     for (const item of [...beams, ...ties, ...tupletMarks]) item.setContext(ctx).draw()
 
-    // Crop: the staff lines plus whatever the notes reach.
-    const ys: number[] = [staves[0].getYForLine(0) - MARGIN, staves[staves.length - 1].getYForLine(4) + MARGIN]
-    for (const { note } of sounding) {
+    // Crop: the staff lines plus whatever the notes reach, or plus `room` when pinned.
+    const pad = room ?? MARGIN
+    const ys: number[] = [staves[0].getYForLine(0) - pad, staves[staves.length - 1].getYForLine(4) + pad]
+    const inked = room === undefined ? sounding : []
+    for (const { note } of inked) {
       try {
         const box = note.getBoundingBox()
         ys.push(box.getY() - MARGIN / 2, box.getY() + box.getH() + MARGIN / 2)
@@ -252,7 +260,7 @@ export function NoteStaff({
     setDrawn(d => (d.xs.join() === xs.join() ? d : { xs }))
     onLayout?.({ xs, start: staves[0].getNoteStartX() / width, end: staves[0].getNoteEndX() / width })
   }, [clef, events, keySignature, time, labels, highlight.join(), tone, chosen?.letter, chosen?.accidental,
-      chosen?.octave, width])
+      chosen?.octave, width, room])
 
   const shown = labels?.some(l => l) ? labels : null
   return (

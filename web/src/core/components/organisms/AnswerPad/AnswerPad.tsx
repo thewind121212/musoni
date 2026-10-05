@@ -13,6 +13,8 @@ interface Props {
   layout?: 'piano' | 'boxes'
   /** The key's home note, dotted as a landmark, with its screen-reader text. */
   home?: { index: number; label: string }
+  /** A key picked before the answer is complete (a chord's root, waiting for its quality). */
+  selected?: number | null
 }
 
 // Box layout: columns in a 14-wide grid, so each white box spans two and each
@@ -32,13 +34,13 @@ const BOX_BLACK_COLUMN = [2, 4, 8, 10, 12]
  * The box layout is the older look, kept as a setting: black keys as a row of
  * boxes above the white ones, hidden when accidentals are off.
  */
-export function AnswerPad({ options, feedback, onAnswer, showLabels = true, layout = 'piano', home }: Props) {
+export function AnswerPad({ options, feedback, onAnswer, showLabels = true, layout = 'piano', home, selected = null }: Props) {
   const naturals = options.filter(o => o.row === 'natural')
   const accidentals = options.filter(o => o.row === 'accidental')
 
   const markOf = (index: number): KeyMark =>
     !feedback
-      ? 'none'
+      ? (index === selected ? 'selected' : 'none')
       : index === feedback.correctIndex
         ? 'correct'
         : index === feedback.chosenIndex ? 'wrong' : 'none'
