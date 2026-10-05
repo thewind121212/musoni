@@ -106,4 +106,3 @@ describe('AnswerPad', () => {
     expect(pressed()).toHaveLength(0)
   })
 })
-
