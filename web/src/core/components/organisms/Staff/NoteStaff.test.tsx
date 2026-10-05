@@ -31,6 +31,14 @@ describe('NoteStaff', () => {
     expect(screen.getByTestId('note-staff').querySelectorAll('path, rect').length).toBeGreaterThan(10)
   })
 
+  it('draws a key signature with no notes on either clef', () => {
+    for (const clef of ['treble', 'bass'] as const) {
+      const { unmount } = render(<NoteStaff clef={clef} events={[]} keySignature="C#" />)
+      expect(screen.getByTestId('note-staff').querySelector('svg')).toBeInTheDocument()
+      unmount()
+    }
+  })
+
   it('prints one label per note or rest, skipping bars and empty labels', () => {
     render(<NoteStaff clef="treble" events={notes('C4 | D4 E4')} labels={['Do', null, 'Mi']} />)
     expect(screen.getByText('Do')).toBeInTheDocument()
