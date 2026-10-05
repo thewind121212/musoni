@@ -222,3 +222,49 @@ export const EAR_FEEDBACK_WRONG_MS = 2400
 /** Hearing takes longer than reading, so a session opens on two minutes. */
 export const EAR_DEFAULT_DURATION_SECONDS = 120
 
+
+/*
+ * Theory lessons.
+ */
+
+/**
+ * The lesson shape the port guide asks for (docs/theory/port-guide.md),
+ * enforced on every chapter by the content test. A lesson is 3-5 minutes of
+ * one-idea steps; a review is checks only.
+ */
+export const THEORY_RULES = {
+  minSteps: 4, maxSteps: 7, minChecks: 2,
+  minReviewSteps: 5, maxReviewSteps: 8, minReviewChecks: 5,
+  minMinutes: 2, maxMinutes: 6,
+  minRecap: 3, maxRecap: 4,
+  /** Per explain step. */
+  maxTextBlocks: 2,
+  /** Per text or tip block, each language; words counted in Vietnamese. */
+  maxSentences: 3, maxWords: 55,
+  /** A staff label is a short tag (a line number, a Roman numeral), not prose. */
+  maxLabelLength: 6,
+  maxKeyOctaves: 4,
+} as const
+
+/**
+ * Lesson playback. Notes written without a duration (a row of pitches) are
+ * spaced evenly and ring a little past the next one, like a hand on a piano;
+ * written durations follow the tempo.
+ */
+export const THEORY_PLAY = { bpm: 90, stepSec: 0.55, holdSec: 1.1 } as const
+
+/**
+ * Time in a lesson counts toward the day like practice. A stretch with no tap
+ * counts at most this long, so a lesson left open on a desk does not fill the
+ * day's goal.
+ */
+export const THEORY_IDLE_CAP_MS = 3 * 60 * 1000
+/** A visit shorter than this (a lesson opened and closed) is not recorded. */
+export const THEORY_MIN_RECORD_SEC = 15
+
+/**
+ * Notation width of a lesson staff, in VexFlow units: a base plus room per
+ * note, clamped. One note at the minimum fills a phone at about 1.6x, like
+ * the drill's staff; a long row shrinks to fit.
+ */
+export const THEORY_STAFF_WIDTH = { base: 150, perNote: 46, grand: 24, min: 210, max: 560 } as const
