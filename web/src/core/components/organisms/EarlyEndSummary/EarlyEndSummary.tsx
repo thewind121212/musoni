@@ -11,6 +11,8 @@ interface Props {
   todayMinutes: number
   dailyGoal: number
   t: Translate
+  /** A drill's own third figure instead of time per answer (see `SessionStats`). */
+  third?: { value: string; label: string }
 }
 
 /**
@@ -18,7 +20,7 @@ interface Props {
  * time practised and where that leaves today's goal, then the same figures a
  * full session gets.
  */
-export function EarlyEndSummary({ result, played, todayMinutes, dailyGoal, t }: Props) {
+export function EarlyEndSummary({ result, played, todayMinutes, dailyGoal, t, third }: Props) {
   const toGo = Math.max(0, dailyGoal - todayMinutes)
   return (
     <>
@@ -40,7 +42,7 @@ export function EarlyEndSummary({ result, played, todayMinutes, dailyGoal, t }: 
         </div>
       </div>
 
-      <SessionStats result={result} t={t} />
+      <SessionStats result={result} t={t} third={third} />
     </>
   )
 }

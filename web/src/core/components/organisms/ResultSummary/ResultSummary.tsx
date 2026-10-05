@@ -14,10 +14,12 @@ interface Props {
   /** Recent average at this level, for the change chip; null hides it. */
   average?: number | null
   t: Translate
+  /** A drill's own third figure instead of time per answer (see `SessionStats`). */
+  third?: { value: string; label: string }
 }
 
 /** The finished session: its score and what went into it, then the four figures behind it. */
-export function ResultSummary({ result, levelName, isBest, average = null, t }: Props) {
+export function ResultSummary({ result, levelName, isBest, average = null, t, third }: Props) {
   const delta = average === null ? null : result.practiceScore - average
   return (
     <>
@@ -50,7 +52,7 @@ export function ResultSummary({ result, levelName, isBest, average = null, t }: 
         </div>
       </div>
 
-      <SessionStats result={result} t={t} />
+      <SessionStats result={result} t={t} third={third} />
     </>
   )
 }

@@ -17,4 +17,10 @@ describe('SessionStats', () => {
     expect(screen.getByText('87%')).toBeInTheDocument()
     expect(screen.getByText('1.4s')).toBeInTheDocument()
   })
+
+  it("shows a drill's own third figure in place of the answer time", () => {
+    render(<SessionStats result={result} t={t} third={{ value: '45 ms', label: 'Avg off' }} />)
+    expect(screen.getByText('45 ms')).toBeInTheDocument()
+    expect(screen.queryByText('1.4s')).toBeNull()
+  })
 })
