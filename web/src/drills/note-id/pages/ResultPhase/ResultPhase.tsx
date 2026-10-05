@@ -1,7 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowClockwiseIcon, HouseIcon, PlayIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
-import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { useDrillStore } from '@/drills/note-id/store'
@@ -19,7 +18,6 @@ import { DAILY_GOAL_MINUTES } from '@/config/constants'
  * and today's goal instead.
  */
 export function ResultPhase() {
-  const settings = useAppStore(s => s.settings)
   const result = useDrillStore(s => s.lastResult)
   const misses = useDrillStore(s => s.misses)
   const reduce = useReducedMotion()
@@ -32,7 +30,11 @@ export function ResultPhase() {
   const isBest = best !== null && best.practiceScore === result.practiceScore
   const average = getRecentAverage('note-id', result.level, result.at)
   const bestScore = best?.practiceScore ?? result.practiceScore
-  const again = () => useDrillStore.getState().start(result.level as 1 | 2 | 3 | 4, settings)
+  // Again plays the same session: a lesson's preset stays on, the saved setup stays as it was.
+  const again = () => {
+    const drill = useDrillStore.getState()
+    drill.start(result.level as 1 | 2 | 3 | 4, drill.settings)
+  }
 
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col justify-center gap-6 px-4 py-8 md:max-w-2xl md:px-8">

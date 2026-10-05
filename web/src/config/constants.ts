@@ -70,6 +70,12 @@ export const DURATIONS = [
   { seconds: 300, label: '5 min' },
 ] as const
 
+/**
+ * Lengths a lesson's practice link may start a drill with. Short on purpose:
+ * it follows a 3-5 minute lesson, to try what was just read, not to train.
+ */
+export const PRESET_SECONDS = [60, 120] as const
+
 /** Bounds for the custom length stepper, in minutes. */
 export const CUSTOM_MINUTES_MIN = 1
 export const CUSTOM_MINUTES_MAX = 30

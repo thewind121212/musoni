@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppStore } from './store'
 import { isDrillStep, type DrillStepState } from './drillStep'
+import type { DrillPreset } from './drillPreset'
 
 export type DrillPhase = 'setup' | 'running' | 'finished'
 
@@ -13,8 +14,11 @@ export type DrillPhase = 'setup' | 'running' | 'finished'
 export interface DrillRouteControls {
   /** The drill store's phase, as a hook (`() => useStore(s => s.phase)`). */
   usePhase: () => DrillPhase
-  /** Start a session on the saved setup (home's one-tap start). */
-  autostart: () => void
+  /**
+   * Start a session on the saved setup (home's one-tap start), or on a preset
+   * laid over it for this session only (a lesson's practice link).
+   */
+  autostart: (preset?: DrillPreset) => void
   /** Show setup, ending whatever the store still holds. */
   backToSetup: () => void
   /** Carry on a session left paused (home's paused-session bar). */
@@ -24,7 +28,8 @@ export interface DrillRouteControls {
 /**
  * The route side of a drill: one route, phases held in the drill's store.
  *
- * Applies the route state home sends (`autostart`, `setup`, `resume`) before
+ * Applies the route state home sends (`autostart`, `setup`, `resume`; a
+ * lesson sends `autostart` with a `preset`) before
  * the first read of the phase (which it returns), so the wrong phase never flashes on the way
  * in, then drops it so a refresh does not apply it again.
  *
@@ -42,8 +47,9 @@ export function useDrillRoute(controls: DrillRouteControls): DrillPhase {
   // Lazy state runs once per mount (twice under StrictMode in dev, which only
   // regenerates the first question).
   const [entry] = useState(() => {
-    const state = location.state as { autostart?: boolean; setup?: boolean; resume?: boolean } | null
-    if (state?.autostart) controls.autostart()
+    const state = location.state as
+      { autostart?: boolean; setup?: boolean; resume?: boolean; preset?: DrillPreset } | null
+    if (state?.autostart) controls.autostart(state.preset)
     else if (state?.setup) controls.backToSetup()
     else if (state?.resume) controls.resume()
     else return false

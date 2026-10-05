@@ -3,6 +3,7 @@ import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { resetStores, session } from '@/test/fixtures'
+import { getSettings } from '@/progress/progressStore'
 
 vi.mock('@/core/audio/playPitch', () => ({ playPitch: vi.fn(), preloadPiano: vi.fn(() => Promise.resolve()) }))
 
@@ -43,6 +44,33 @@ describe('NoteIdDrill', () => {
     expect(screen.getByRole('button', { name: 'Quit this session' })).toBeInTheDocument()
     expect(useDrillStore.getState().level).toBe(3)
     expect(useDrillStore.getState().settings.durationSec).toBe(120)
+  })
+
+  it("starts a lesson's preset for this session only, leaving the saved setup alone", () => {
+    useAppStore.getState().updateSettings({ level: 3, durationSec: 300, accidentals: false })
+    const preset = { drill: 'note-id', level: 2, durationSec: 60, accidentals: true }
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { autostart: true, preset } }]}>
+        <NoteIdDrill />
+      </MemoryRouter>,
+    )
+    const drill = useDrillStore.getState()
+    expect(drill.phase).toBe('running')
+    expect([drill.level, drill.settings.durationSec, drill.settings.accidentals]).toEqual([2, 60, true])
+    const saved = useAppStore.getState().settings
+    expect([saved.level, saved.durationSec, saved.accidentals]).toEqual([3, 300, false])
+    expect(getSettings().level).toBe(3)
+  })
+
+  it("ignores another drill's preset", () => {
+    useAppStore.getState().updateSettings({ level: 3 })
+    const preset = { drill: 'hear-play', level: 2, durationSec: 60 }
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { autostart: true, preset } }]}>
+        <NoteIdDrill />
+      </MemoryRouter>,
+    )
+    expect(useDrillStore.getState().level).toBe(3)
   })
 
   it('opens setup from the change-setup link even after a finished session', () => {

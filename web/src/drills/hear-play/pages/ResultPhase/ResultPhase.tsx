@@ -1,7 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowClockwiseIcon, HouseIcon, PlayIcon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
-import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { useEarStore } from '@/drills/hear-play/store'
@@ -18,7 +17,6 @@ import { DAILY_GOAL_MINUTES } from '@/config/constants'
  * instead), and what to do next. Same shape as the note-id result.
  */
 export function ResultPhase() {
-  const settings = useAppStore(s => s.settings)
   const result = useEarStore(s => s.lastResult)
   const misses = useEarStore(s => s.misses)
   const reduce = useReducedMotion()
@@ -35,7 +33,11 @@ export function ResultPhase() {
   const isBest = !aided && best !== null && best.practiceScore === result.practiceScore
   const average = getRecentAverage('hear-play', level, result.at)
   const bestScore = best?.practiceScore ?? (aided ? null : result.practiceScore)
-  const again = () => useEarStore.getState().start(level, settings)
+  // Again plays the same session: a lesson's preset stays on, the saved setup stays as it was.
+  const again = () => {
+    const ear = useEarStore.getState()
+    ear.start(level, ear.settings)
+  }
 
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col justify-center gap-6 px-4 py-8 md:max-w-2xl md:px-8">
