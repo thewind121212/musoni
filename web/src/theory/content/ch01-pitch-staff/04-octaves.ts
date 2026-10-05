@@ -43,7 +43,7 @@ export default {
         },
         { type: 'staff', clef: 'treble', notes: 'A3 B3 C4 D4', labels: 'pitches', highlight: [2] },
         { type: 'play', notes: 'A3 B3 C4 D4' },
-        { type: 'keys', notes: 'A3 B3 C4 D4', labels: 'pitches' },
+        { type: 'keys', notes: 'A3 B3 C4 D4' },
       ],
     },
     {

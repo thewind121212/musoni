@@ -267,4 +267,4 @@ export const THEORY_MIN_RECORD_SEC = 15
  * note, clamped. One note at the minimum fills a phone at about 1.6x, like
  * the drill's staff; a long row shrinks to fit.
  */
-export const THEORY_STAFF_WIDTH = { base: 150, perNote: 46, grand: 24, min: 210, max: 560 } as const
+export const THEORY_STAFF_WIDTH = { base: 120, perNote: 36, grand: 24, min: 210, max: 560 } as const

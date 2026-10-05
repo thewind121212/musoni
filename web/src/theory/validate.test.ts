@@ -93,6 +93,7 @@ describe('validateChapter', () => {
     expect(errorsAfter((_, l) => { explain(l)[1].highlight = [3] })[0]).toMatch(/highlight 3/)
     expect(errorsAfter((_, l) => { explain(l)[3].from = 'C5' })[0]).toMatch(/outside the keyboard/)
     expect(errorsAfter((_, l) => { explain(l)[3].notes = 'G4:q' })[0]).toMatch(/pitches only/)
+    expect(errorsAfter((_, l) => { Object.assign(explain(l)[3], { labels: 'pitches', octaves: 2 }) })[0]).toMatch(/one-octave keyboard/)
   })
 
   it('counts sentences at their ends only', () => {

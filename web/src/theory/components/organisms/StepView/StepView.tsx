@@ -71,7 +71,7 @@ function Check({ step, eyebrow, lang, naming, t, answer, onAnswer, onPlay, playi
   return (
     <div className="flex flex-1 flex-col gap-4">
       <p className="text-xs font-semibold tracking-wide text-ink-faint uppercase">{eyebrow}</p>
-      <h2 className="text-xl leading-snug font-semibold tracking-tight md:text-2xl">{text(step.prompt)}</h2>
+      <h1 className="text-xl leading-snug font-semibold tracking-tight md:text-2xl">{text(step.prompt)}</h1>
       {step.blocks && (
         <LessonBlocks
           blocks={step.blocks} lang={lang} naming={naming} t={t} onPlay={onPlay} playing={playing}

@@ -23,7 +23,8 @@ export function PlayButton({ children, onPlay, playing = false }: Props) {
       {playing
         ? <SpeakerHighIcon size={16} weight="fill" aria-hidden className="text-accent" />
         : <PlayIcon size={14} weight="fill" aria-hidden />}
-      {children}
+      {/* One flex item, so the gap does not split "Nghe" from a note name. */}
+      <span>{children}</span>
     </button>
   )
 }

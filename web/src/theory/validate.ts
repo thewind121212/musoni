@@ -168,6 +168,8 @@ function validateBlock(block: Block, err: (m: string) => void) {
       if (!(Number.isInteger(octaves) && octaves >= 1 && octaves <= R.maxKeyOctaves)) err(`octaves ${octaves} outside 1-${R.maxKeyOctaves}`)
       if (midis.some(m => m < from || m >= from + octaves * 12)) err('a filled key is outside the keyboard drawn')
       if (block.labels !== undefined && block.labels !== 'names' && block.labels !== 'pitches') err(`labels "${String(block.labels)}"`)
+      // A name with its octave is wider than a key once the keyboard spans two octaves.
+      if (block.labels === 'pitches' && octaves > 1) err('pitch labels need a one-octave keyboard; use names, or label the staff')
       if (block.caption) localized(block.caption, err, 'caption')
       return
     }
