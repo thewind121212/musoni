@@ -26,7 +26,7 @@ desktop layout, never the reverse (details: `fe/screens.md`).
 | Phase | Scope | Monetization |
 |---|---|---|
 | **1 (now)** | Note Identification drill, web only, no login, localStorage progress, activity calendar; Vietnamese-first UI (English second) | Free |
-| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), theory lessons (framework and chapter 1 built, `theory/framework.md`; chapters 2-9 being ported), "read the shape" drill, Complete-the-Measure (design done: `fe/drill-complete-measure.md`, to be reshaped into tap-the-rhythm), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
+| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), theory lessons (framework and chapter 1 built, `theory/framework.md`; chapters 2-9 being ported), "read the shape" drill, Tiết tấu rhythm drill (built, `fe/drill-rhythm.md`; replaces Complete-the-Measure), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
 | **3** | More ear training (echo phrases, chords), more theory drills | Premium |
 
 ## Level 1 — Context: who uses it, what it does
@@ -63,7 +63,7 @@ graph TB
     THEORYSTORE["Theory Store (Zustand)<br/>lesson place, answers, reading time"]
     CONTENT["Lesson content (GFDL)<br/>theory/content/chNN-*, found by import.meta.glob,<br/>checked by the content validator"]
     NOTESTAFF["NoteStaff<br/>(VexFlow, core/components: any clef, grand staff, rhythms)"]
-    DRILLROUTE["Drill routes /train/&lt;id&gt; (one per registry entry:<br/>note-id, hear-play, review)<br/>each a self-contained SPA"]
+    DRILLROUTE["Drill routes /train/&lt;id&gt; (one per registry entry:<br/>note-id, hear-play, review, rhythm)<br/>each a self-contained SPA"]
     ROUTEHOOKS["Route hooks (app)<br/>useDrillRoute, useRunGuards"]
     SETUP["Setup phase<br/>level, length, settings"]
     RUN["Run phase<br/>the sprint"]
@@ -72,7 +72,7 @@ graph TB
     APPSTORE["App Store (Zustand)<br/>settings, level, language"]
     I18N["i18n<br/>(typed translator, core; vi default, en)"]
     DRILLSTORE["Drill Stores (Zustand, one per drill)<br/>session lifecycle:<br/>start → answer → next → finish"]
-    GEN["Question Generators<br/>(note-id: a note to read;<br/>hear-play: a key + a note to hear;<br/>review: a weighted lesson check)"]
+    GEN["Question Generators<br/>(note-id: a note to read;<br/>hear-play: a key + a note to hear;<br/>review: a weighted lesson check;<br/>rhythm: a measure to tap)"]
     MUSIC["Music theory<br/>(core: pitch, piano keys, keys + cadence)"]
     REND["Staff<br/>(VexFlow, core/components)"]
     SCORE["Scoring<br/>(pace × difficulty × accuracy × endurance, core)"]

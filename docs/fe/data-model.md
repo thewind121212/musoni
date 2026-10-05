@@ -87,12 +87,16 @@ defaults, and `entry.of(settings)` reads saved values over them
 | `note-id` | `level` (1), `durationSec` (60, any value; offered 30/60/120/300, custom 60-1800), `accidentals` (false) |
 | `hear-play` | `level` (1), `durationSec` (120), `cadenceEach` (false, listening aid: the cadence before every question), `oneKey` (false, listening aid: C at every level) |
 | `review` | `level` (1, the only one), `durationSec` (120), `chapters` (null = every chapter with a finished lesson; else chapter ids) |
+| `rhythm` | `level` (1), `durationSec` (120), `tempo` (80, quarter-note bpm: 60/80/100/120), `click` (true, metronome through the measure), `latencyMs` (null = not calibrated; else ms taken off each tap) |
 
 `drill` is a registered drill's id (`DrillId`, a string: `"note-id"`,
 `"hear-play"`, `"review"`, ...). For a `hear-play` session,
 `level` is its own level (1-4, see `drill-hear-play.md`), `accidentals` says
 whether black keys were answers (L2 up), and `weight` is the level's weight.
 Bests and averages are keyed on drill and level.
+For a `rhythm` session, `avgMs` is the mean distance of paired taps from
+their notes in ms (not time per answer), `accidentals` is false, and a
+"correct" is a measure tapped right (`drill-rhythm.md`).
 
 A session may also carry `"partial": true`: it stopped before its clock ran out
 (the reader ended it). Its `durationSec` is the time actually played and its

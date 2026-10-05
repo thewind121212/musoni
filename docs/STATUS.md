@@ -253,6 +253,24 @@ a real browser.
       `docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`,
       `docs/theory/framework.md`, `docs/theory/port-guide.md`, `docs/summary.md`
 
+- [x] **Tiết tấu (rhythm) drill** (2026-10-05, `drills/rhythm`, group ear, opened by
+      lesson `durations-time/note-values`): one measure on a percussion staff with its
+      tempo, four count-in clicks (dots), tapped on a big pad, Space or any letter key;
+      taps judged on the Web Audio clock (`getOutputTimestamp`), aligned to the note
+      onsets in order, marked green / amber early-late / red missed, extra taps as red
+      crosses. Four levels (whole-half-quarter; eighths and rests; dots and ties across
+      beat 3; 6/8, triplets, sixteenths) with tolerances ±120/100/85/70 ms; measures
+      built from beat / half-bar figures so beams and beat 3 follow the book's
+      notation rules, every measure of every level checked by the tests. Setup: tempo
+      60-120 (preset may set it), metronome-through-the-measure switch, one-time
+      latency calibration (8 clicks, median, saved in the drill's settings). A pause
+      drops the measure in play; time up lets it finish. Result's third figure is the
+      mean tap offset (ms). Shared changes: `NoteStaff` percussion clef, `onLayout`,
+      beams by the time signature, tuplets before beams (triplets were mis-beamed);
+      `SessionStats` optional third figure. Replaces Complete-the-Measure.
+      Screenshots: project files `screenshots/drill-rhythm/` — `docs/fe/drill-rhythm.md`,
+      `docs/fe/architecture.md`, `docs/fe/data-model.md`, `docs/fe/screens.md`
+
 ## Theory chapters
 
 Port guide: `docs/theory/port-guide.md`; one PR per chapter.
@@ -269,6 +287,9 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   the activity panel expand/collapse, both languages, full play-through at 375px
   viewport, and listening to Nghe & Đàn (cadence, walk home, miss playback) on a
   phone — not runnable headlessly, remains for a human pass
+- Tiết tấu by hand on a real phone and a laptop: click sound and its timing, the
+  audio wake on iOS, latency calibration, whether the tolerances feel fair, the 6/8
+  tempo (♩. = tempo × 0.75), time running out mid-measure
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
 - Four drills on the new registry, built in parallel: key signatures, intervals,
@@ -281,8 +302,7 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   single-note drill has been tried; a human ear check of the cadence and the timings
   (`EAR_*` in `config/`).
 - Drill 3 candidate: "read the shape" (2-4 note groups on the staff, played in order);
-  chords as their own drill after it; Complete-the-Measure to be reshaped into
-  tap-the-rhythm.
+  chords as their own drill after it.
 - Login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene: nothing open.
   Closed: the dead `config/presets.ts` (deleted with the drill platform); the stale `result.yourBest` copy (replaced by the comparison bar); the local-day-key regression test pins its timezone per case (UTC+7 and
@@ -294,6 +314,6 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 
 ## Parked (Phase 2+)
 
-- Complete-the-Measure drill (design already written)
+- ~~Complete-the-Measure drill~~: superseded by Tiết tấu (`docs/fe/drill-rhythm.md`)
 - Login, subscriptions (Stripe), cloud sync of progress
 - More ear training (chords by ear, echo phrases)

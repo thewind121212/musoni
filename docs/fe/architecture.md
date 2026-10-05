@@ -14,7 +14,7 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
 | `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
-| *(later)* `drills/complete-measure` | its own store | its session state |
+| `drills/rhythm` | `drills/rhythm/store.ts` (`useRhythmStore`) | Tiết tấu session: the measure on screen, whether a take is being played (`takeAt`), its judgement, score, streak, tap offsets, measures missed, timer, pause state (see `drill-rhythm.md`) |
 
 Modules never import each other's stores; sharing goes through `app` or props.
 
@@ -171,7 +171,14 @@ Shared, module-agnostic, reuse-first building blocks:
   bare lines (`none`). It crops its viewBox to the drawn ink, puts labels under
   the notes as HTML (so they wrap the reader's naming and font), draws chosen
   notes blue and takes the same `tone`/`chosen` feedback as Staff. Its input
-  is the parsed notation from `core/music/notation`. `theme.ts` holds the
+  is the parsed notation from `core/music/notation`. `clef="percussion"` draws
+  the neutral clef (Tiết tấu; notes written `B4` sit on the middle line).
+  Beams follow the time signature's beat (6/8 eighths in threes, without a
+  time signature in quarters), tuplets are built before the voices and beams
+  so a triplet fills its beat and beams as one, and the crop keeps a tuplet's
+  number. `onLayout` reports where each note and rest landed (shares of the
+  width, plus where the notes' space starts and ends) for marks laid over the
+  staff. `theme.ts` holds the
   shared ink colour and the redraw-on-theme hook.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling, `pitchFromMidi`) used by the generators and
@@ -336,7 +343,8 @@ web/src/
 ├── drills/<id>/            # one folder per drill: drill.ts (registry entry), strings.ts, store, pages
 │   ├── note-id/            #   Đọc nốt: generator; NoteIdDrill, SetupPhase, RunPhase, ResultPhase
 │   ├── hear-play/          #   Nghe & Đàn: generator (key, note, sounds); ListenStage
-│   └── review/             #   Ôn tập: select (pool, weighting), MissedChecks
+│   ├── review/             #   Ôn tập: select (pool, weighting), MissedChecks
+│   └── rhythm/             #   Tiết tấu: generator, judge, calibrate, metronome; TapPad, RhythmStaff
 ├── theory/                 # theory module: registry, outline, validate, store
 │   ├── components/         #   atoms / molecules / organisms / templates for lessons
 │   ├── pages/              #   LearnTab (Học), ChapterList, LessonPlayer, TheoryAbout
