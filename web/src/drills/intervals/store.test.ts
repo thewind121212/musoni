@@ -58,6 +58,34 @@ describe('intervals store', () => {
     expect(store().correct).toBe(1)
   })
 
+  it('times each answer from when its question appears, not the verdict hold or a pause', () => {
+    store().start(at(2), T0)
+    store().answer(rightCell(), T0 + 1000)
+    // The verdict holds until T0 + 3000; the next question's clock starts there.
+    store().nextQuestion(T0 + 3000)
+    store().pause('menu', T0 + 3500)
+    store().resume(T0 + 13_500)
+    store().answer(rightCell(), T0 + 14_000)
+    expect(store().sumMs).toBe(1000 + 1000)
+  })
+
+  it('times a question that appeared during a pause from the resume', () => {
+    store().start(at(2), T0)
+    store().answer(rightCell(), T0 + 1000)
+    store().pause('away', T0 + 1500)
+    store().nextQuestion(T0 + 3000)
+    store().resume(T0 + 20_000)
+    store().answer(rightCell(), T0 + 21_000)
+    expect(store().sumMs).toBe(1000 + 1000)
+  })
+
+  it('takes no answer while paused', () => {
+    store().start(at(2), T0)
+    store().pause('menu', T0 + 500)
+    store().answer(rightCell(), T0 + 1000)
+    expect(store()).toMatchObject({ correct: 0, wrong: 0, feedback: null })
+  })
+
   it('ignores a blank cell, a row the level does not use, and a second answer', () => {
     store().start(at(2), T0)
     store().answer({ row: 'm', size: 5 }, T0)

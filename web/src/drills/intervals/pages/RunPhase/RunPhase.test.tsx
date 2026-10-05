@@ -95,6 +95,42 @@ describe('Intervals RunPhase', () => {
     expect(screen.queryByRole('status')).toBeNull()
   })
 
+  it('leaves at once on Esc before any answer, and pauses on Esc after one', async () => {
+    renderRun()
+    fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' })
+    expect(useIntervalsStore.getState().phase).toBe('setup')
+    act(() => start(2))
+    await userEvent.click(button(right()))
+    fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' })
+    expect(useIntervalsStore.getState()).toMatchObject({ phase: 'running', pauseReason: 'menu' })
+  })
+
+  it('takes no key while the verdict shows or the session is paused', async () => {
+    renderRun()
+    await userEvent.click(button(wrong()))
+    const press = (cell: Cell) => {
+      const hint = keyHint(cell)
+      fireEvent.keyDown(window, { key: hint, code: /\d/.test(hint) ? `Digit${hint}` : hint === ',' ? 'Comma' : `Key${hint.toUpperCase()}` })
+    }
+    press(right())
+    expect(useIntervalsStore.getState()).toMatchObject({ correct: 0, wrong: 1 })
+    act(() => { vi.advanceTimersByTime(INTERVAL_FEEDBACK_WRONG_MS + 50) })
+    act(() => useIntervalsStore.getState().pause('menu'))
+    press(right())
+    expect(useIntervalsStore.getState()).toMatchObject({ correct: 0, wrong: 1, feedback: null })
+  })
+
+  it('stops the sound and the pending next question when the screen goes', async () => {
+    const view = renderRun()
+    await userEvent.click(button(right()))
+    const asked = q()
+    vi.mocked(stopSounds).mockClear()
+    view.unmount()
+    expect(stopSounds).toHaveBeenCalled()
+    act(() => { vi.advanceTimersByTime(INTERVAL_FEEDBACK_WRONG_MS + 50) })
+    expect(q()).toBe(asked)
+  })
+
   it('silences the sound on pause', async () => {
     renderRun()
     await userEvent.click(button(right()))

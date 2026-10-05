@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import type { Pitch } from '@/core/music/types'
 import { diatonicIndex, isExcluded, midi, parsePitch } from '@/core/music/pitch'
 import { INTERVAL_LEVELS, INTERVAL_RANGE } from '@/config/constants'
 import {
@@ -49,6 +50,25 @@ describe('levelPool, every spelling of every level', () => {
       expect(count).toBeGreaterThan(20)
     })
   }
+
+  it('names every spelling as the textbook does: size from the letters, quality from the semitones', () => {
+    // An oracle independent of interval.ts: semitones of each quality, by size.
+    const BOOK: Record<number, Record<number, string>> = {
+      2: { 0: 'd2', 1: 'm2', 2: 'M2', 3: 'A2' }, 3: { 2: 'd3', 3: 'm3', 4: 'M3', 5: 'A3' },
+      4: { 4: 'd4', 5: 'P4', 6: 'A4' }, 5: { 6: 'd5', 7: 'P5', 8: 'A5' },
+      6: { 7: 'd6', 8: 'm6', 9: 'M6', 10: 'A6' }, 7: { 9: 'd7', 10: 'm7', 11: 'M7', 12: 'A7' },
+      8: { 11: 'd8', 12: 'P8', 13: 'A8' },
+    }
+    const KEY: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }
+    const semis = (n: Pitch) => n.octave * 12 + KEY[n.letter] + (n.accidental === '#' ? 1 : n.accidental === 'b' ? -1 : 0)
+    const steps = (n: Pitch) => n.octave * 7 + 'CDEFGAB'.indexOf(n.letter)
+    for (const level of LEVELS) {
+      for (const s of [...levelPool(level).values()].flat()) {
+        const size = steps(s.upper) - steps(s.lower) + 1
+        expect(intervalId(s.interval)).toBe(BOOK[size][semis(s.upper) - semis(s.lower)])
+      }
+    }
+  })
 
   it('level 1 asks every size from 2 to 8 on white keys', () => {
     expect([...levelPool(1).keys()].sort()).toEqual(['2', '3', '4', '5', '6', '7', '8'])
