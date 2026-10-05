@@ -295,3 +295,65 @@ export const REVIEW_FEEDBACK_CORRECT_MS = 1400
 export const REVIEW_DIFFICULTY = 1
 /** Ôn tập opens on two minutes: reading a reason takes longer than naming a note. */
 export const REVIEW_DEFAULT_DURATION_SECONDS = 120
+
+/*
+ * Hợp âm (chords): a triad on the staff, named by root and quality, or by its
+ * Roman numeral in the key shown. Design: docs/fe/drill-chords.md.
+ *
+ * Levels 1-4 name the chord: L1 the seven triads of C major (white keys),
+ * L2 every major and minor triad, L3 adds diminished and augmented, L4 adds
+ * first and second inversions (written as slash chords). `qualities` are the
+ * answer chips a level uses; the others are shown disabled. Black keys answer
+ * from L2 on.
+ *
+ * Levels 5-7 are the Roman numeral mode, kept apart from 1-4 so bests and
+ * Luyện's level name stay per mode: the key (capital major, small minor, as
+ * `drills/chords/theory.parseKey` reads it) is named and its signature drawn,
+ * and the reader taps the numeral. L5 major keys up to 2 sharps or flats, L6
+ * up to 4, L7 adds the minor keys up to 4 (V and vii° from harmonic minor).
+ */
+export type ChordLevelNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type ChordQualityName = 'major' | 'minor' | 'dim' | 'aug'
+export const CHORD_LEVELS: Record<ChordLevelNumber, {
+  weight: number
+  mode: 'name' | 'roman'
+  /** Name mode: 'c-major' asks only the seven triads of C major; 'any' asks every spellable root. */
+  roots?: 'c-major' | 'any'
+  qualities?: readonly ChordQualityName[]
+  inversions?: boolean
+  blackKeys?: boolean
+  /** Roman mode: the keys asked. */
+  keys?: readonly string[]
+}> = {
+  1: { weight: 1.0, mode: 'name', roots: 'c-major', qualities: ['major', 'minor', 'dim'], inversions: false, blackKeys: false },
+  2: { weight: 1.3, mode: 'name', roots: 'any', qualities: ['major', 'minor'], inversions: false, blackKeys: true },
+  3: { weight: 1.6, mode: 'name', roots: 'any', qualities: ['major', 'minor', 'dim', 'aug'], inversions: false, blackKeys: true },
+  4: { weight: 2.0, mode: 'name', roots: 'any', qualities: ['major', 'minor', 'dim', 'aug'], inversions: true, blackKeys: true },
+  5: { weight: 1.2, mode: 'roman', keys: ['C', 'G', 'D', 'F', 'Bb'] },
+  6: { weight: 1.5, mode: 'roman', keys: ['C', 'G', 'D', 'A', 'E', 'F', 'Bb', 'Eb', 'Ab'] },
+  7: {
+    weight: 1.8,
+    mode: 'roman',
+    keys: ['C', 'G', 'D', 'A', 'E', 'F', 'Bb', 'Eb', 'Ab', 'a', 'e', 'b', 'f#', 'c#', 'd', 'g', 'c', 'f'],
+  },
+}
+/** The first Roman numeral level: levels from here on are the "Bậc La Mã" mode. */
+export const CHORD_ROMAN_FROM = 5
+/** Roman numeral mode: questions in one key before it changes, so the reader can settle into it. */
+export const CHORD_ROMAN_KEY_BLOCK = 4
+/**
+ * Feedback holds. A right answer stays long enough to read its symbol and
+ * name ("Am/C · La thứ, thế đảo 1") and hear it; a miss long enough to hear
+ * the chord picked, then the right one.
+ */
+export const CHORD_FEEDBACK_CORRECT_MS = 1100
+export const CHORD_FEEDBACK_WRONG_MS = 2600
+/** The chord after an answer rings this long; on a miss the reader's chord plays first, the right one this long after. */
+export const CHORD_HOLD_SEC = 1.1
+export const CHORD_MISS_GAP_SEC = 0.9
+/** Reading a chord and tapping twice takes longer than naming a note, so a session opens on two minutes. */
+export const CHORD_DEFAULT_DURATION_SECONDS = 120
+/** Notation width of the question staff (clef, up to four sharps or flats, the chord), in VexFlow units. */
+export const CHORD_STAFF_WIDTH = 200
+/** Notation width of a missed chord's small staff on the result screen. */
+export const CHORD_MISSED_STAFF_WIDTH = 150
