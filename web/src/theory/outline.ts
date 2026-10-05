@@ -52,3 +52,11 @@ export function reviewOf(chapter: Chapter): Lesson | null {
 export function lessonNumber(ref: Pick<LessonRef, 'chapter' | 'lesson' | 'index'>): string {
   return ref.lesson.kind === 'review' ? String(ref.chapter.number) : `${ref.chapter.number}.${ref.index + 1}`
 }
+
+/** Route state a lesson opened from the chapter list carries: the list is one step back. */
+export const FROM_LIST = { from: 'theory' } as const
+
+/** Whether a lesson's route state says the chapter list is one step back. */
+export function fromList(state: unknown): boolean {
+  return typeof state === 'object' && state !== null && (state as { from?: string }).from === FROM_LIST.from
+}

@@ -87,7 +87,7 @@ describe('validateChapter', () => {
   })
 
   it('holds text blocks to three sentences, labels to the notes, and keys to the keyboard', () => {
-    const explain = (l: Lesson) => (l.steps[0] as { blocks: Record<string, unknown>[] }).blocks
+    const explain = (l: Lesson) => (l.steps[0] as unknown as { blocks: Record<string, unknown>[] }).blocks
     expect(errorsAfter((_, l) => { explain(l)[0].text = L('Một. Hai. Ba. Bốn.', 'One.') })[0]).toMatch(/4 sentences/)
     expect(errorsAfter((_, l) => { explain(l)[1].labels = ['1', '2'] })[0]).toMatch(/2 labels for 1 notes/)
     expect(errorsAfter((_, l) => { explain(l)[1].highlight = [3] })[0]).toMatch(/highlight 3/)

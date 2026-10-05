@@ -1,6 +1,7 @@
 import { useAppStore } from '@/app/store'
 import { useDrillStore } from '@/drills/note-id/store'
 import { useEarStore } from '@/drills/hear-play/store'
+import { useTheoryStore } from '@/theory/store'
 import { getSettings, localDayKey, type SessionResult, type Settings } from '@/progress/progressStore'
 
 /** Empties saved progress and puts the stores back to a fresh start, with optional settings. */
@@ -13,6 +14,7 @@ export function resetStores(settings: Partial<Settings> = {}) {
   useEarStore.setState({
     phase: 'setup', question: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
   })
+  useTheoryStore.setState({ lesson: null, steps: 0, step: 0, answers: {}, activeAt: null, pendingMs: 0, openChapter: null })
 }
 
 /** A finished note-id session, played today unless `at` says otherwise. */
