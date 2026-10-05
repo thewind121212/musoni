@@ -13,6 +13,7 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
 | `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
+| `drills/chords` | `drills/chords/store.ts` (`useChordStore`) | Hợp âm session: the chord on screen, a root or quality picked and waiting for the other, score, streak, timer, pause state (see `drill-chords.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | *(later)* `drills/complete-measure` | its own store | its session state |
 
@@ -219,6 +220,10 @@ drills draw the same screens. Ôn tập promoted the lesson's check components
 (`RichText`, `TipBox`, `PlayButton`, `CheckVerdict`, `ChoiceList`,
 `LessonBlocks`, `StepView`) and the lesson format out of `theory`; the tabs
 promoted `LanguageToggle` and added `DrillCard`.
+
+`AnswerPad` takes an optional `selected` key (`PianoKey` mark `selected`:
+filled blue, `aria-pressed`) for an answer in two taps, where the first must
+show before the second completes it (Hợp âm: the root, then the quality).
 
 ## i18n
 

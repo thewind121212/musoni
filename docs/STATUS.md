@@ -253,6 +253,20 @@ a real browser.
       `docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`,
       `docs/theory/framework.md`, `docs/theory/port-guide.md`, `docs/summary.md`
 
+- [x] **Drill: Hợp âm (chords)** (2026-10-05, `/train/chords`, group Đọc, opened by
+      `triads/triads-intro`): a triad in close position on the staff, answered in two
+      taps (root on the piano pad spelled to the chord, then Trưởng / Thứ / Giảm / Tăng;
+      chips a level does not ask are dashed), then shown as "Am/C · La thứ, thế đảo 1".
+      L1 the seven triads of C major, L2 every major and minor triad, L3 adds diminished
+      and augmented, L4 inversions as slash chords; triads spelled by letter with never a
+      double accidental, never drawn above the staff, never repeated back to back
+      (generator tested over every chord of every level). **Bậc La Mã** mode as levels
+      5-7 (separate bests): key named and signature drawn, tap the numeral (major up to
+      2 / 4 accidentals, then minor keys with harmonic-minor V and vii°). "Nghe" switch
+      (on) plays the chord after answering, the reader's chord first on a miss. Core
+      `AnswerPad` gained an optional `selected` key. Screenshots: project files
+      `screenshots/drill-chords/` — `docs/fe/drill-chords.md`, `docs/fe/architecture.md`
+
 ## Theory chapters
 
 Port guide: `docs/theory/port-guide.md`; one PR per chapter.
@@ -272,8 +286,10 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
 - Four drills on the new registry, built in parallel: key signatures, intervals,
-  chords, rhythm (each declares the lesson that opens it with `unlockedBy`). Until
-  one does, Luyện's "more drills" line stays hidden (every listed drill is open)
+  chords (done, above), rhythm (each declares the lesson that opens it with
+  `unlockedBy`). Hợp âm waits for chapter 8's `triads/triads-intro`, so Luyện's
+  "more drills" line now shows until that lesson is ported; a human ear check of
+  the chord timings (`CHORD_*` in `config/`)
 
 ## Next
 
