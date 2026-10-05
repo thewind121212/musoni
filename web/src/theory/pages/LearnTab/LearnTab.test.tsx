@@ -26,7 +26,10 @@ describe('LearnTab', () => {
     renderTab()
     expect(screen.getByText('Next lesson')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Learn · 4 min' })).toHaveAttribute('href', '/theory/pitch-staff/staff-clefs')
-    expect(screen.getByRole('link', { name: 'Review' })).toHaveAttribute('href', '/train/review')
+    // The card's button starts a review; in Học it says Review, not Practice.
+    const starts = screen.getAllByRole('link', { name: 'Review' }).filter(a => a.getAttribute('href') === '/train/review')
+    expect(starts.length).toBeGreaterThan(0)
+    expect(screen.queryByRole('link', { name: 'Practice' })).toBeNull()
     expect(screen.getByText('Not tried')).toBeInTheDocument()
   })
 
@@ -35,6 +38,9 @@ describe('LearnTab', () => {
     recordSession(session({ drill: 'review', practiceScore: 23, durationSec: 120 }))
     renderTab()
     expect(screen.getByText('23')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Practice' })).toHaveAttribute('href', '/train/review')
+    // The card's button starts a review; in Học it says Review, not Practice.
+    const starts = screen.getAllByRole('link', { name: 'Review' }).filter(a => a.getAttribute('href') === '/train/review')
+    expect(starts.length).toBeGreaterThan(0)
+    expect(screen.queryByRole('link', { name: 'Practice' })).toBeNull()
   })
 })

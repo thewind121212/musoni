@@ -89,7 +89,7 @@ export function LearnTab() {
                     { icon: <TimerIcon size={12} weight="bold" />, label: t('stat.length'), value: formatDuration(reviewOwn.durationSec, t) },
                     { icon: <TrophyIcon size={12} weight="fill" />, label: t('stat.best'), value: reviewBest ? String(reviewBest.practiceScore) : t('stat.none') },
                   ] : undefined}
-                  action={reviewPlayed ? { label: t('practice.go'), to: review.route, state: { autostart: true } } : undefined}
+                  action={reviewPlayed ? { label: t('learn.review'), to: review.route, state: { autostart: true } } : undefined}
                 />
               </div>
             </motion.section>
