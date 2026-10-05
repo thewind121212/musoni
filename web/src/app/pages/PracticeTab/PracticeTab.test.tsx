@@ -66,7 +66,10 @@ describe('PracticeTab', () => {
     expect(within(card('Fake drill')).getByText('Just opened')).toBeInTheDocument()
     expect(getUnlocksSeen()).toContain('fake')
     await userEvent.click(screen.getByRole('button', { name: 'See all' }))
-    expect(screen.getAllByText('Opens later')).toHaveLength(1)
+    // Only the drill whose lesson is not done is still closed (real drills may be closed too).
+    const later = document.querySelector('[data-drill="later"]') as HTMLElement
+    expect(within(later).getByText('Opens later')).toBeInTheDocument()
+    expect(within(document.querySelector('[data-drill="fake"]') as HTMLElement).queryByText('Opens later')).toBeNull()
     first.unmount()
 
     renderTab()

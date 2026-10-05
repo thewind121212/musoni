@@ -56,7 +56,7 @@ describe('presetError', () => {
   })
 
   it('rejects unknown drills, levels, lengths and fields', () => {
-    expect(presetError({ drill: 'rhythm', level: 1, durationSec: 60 })).toMatch(/drill/)
+    expect(presetError({ drill: 'no-such-drill', level: 1, durationSec: 60 })).toMatch(/drill/)
     expect(presetError({ drill: 'note-id', level: 5, durationSec: 60 })).toMatch(/level/)
     expect(presetError({ drill: 'note-id', level: 1.5, durationSec: 60 })).toMatch(/level/)
     expect(presetError({ drill: 'note-id', level: 1, durationSec: 45 })).toMatch(/length/)
