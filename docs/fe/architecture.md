@@ -14,6 +14,8 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
 | `drills/intervals` | `drills/intervals/store.ts` (`useIntervalsStore`) | Quãng session: the two notes on screen and their interval, the cell answered, misses, score, streak, timer, pause state (see `drill-intervals.md`) |
 | `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
+| `drills/key-sig` | `drills/key-sig/store.ts` (`useKeySigStore`) | Hóa biểu session: the signature on screen (sharps or flats, mode, clef, its pad), score, streak, timer, pause state, misses (see `drill-key-sig.md`) |
+| `drills/chords` | `drills/chords/store.ts` (`useChordStore`) | Hợp âm session: the chord on screen, a root or quality picked and waiting for the other, score, streak, timer, pause state (see `drill-chords.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | *(later)* `drills/complete-measure` | its own store | its session state |
 
@@ -174,7 +176,8 @@ Shared, module-agnostic, reuse-first building blocks:
   notes blue and takes the same `tone`/`chosen` feedback as Staff. An optional `room`
   pins the box to the staff lines plus that room instead of the ink, so a question
   staff of several notes (Quãng) keeps one size between questions. Its input
-  is the parsed notation from `core/music/notation`. `theme.ts` holds the
+  is the parsed notation from `core/music/notation`; with no events it draws
+  the clef and key signature alone (Hóa biểu's question). `theme.ts` holds the
   shared ink colour and the redraw-on-theme hook.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling, `pitchFromMidi`) used by the generators and
@@ -222,6 +225,10 @@ drills draw the same screens. Ôn tập promoted the lesson's check components
 (`RichText`, `TipBox`, `PlayButton`, `CheckVerdict`, `ChoiceList`,
 `LessonBlocks`, `StepView`) and the lesson format out of `theory`; the tabs
 promoted `LanguageToggle` and added `DrillCard`.
+
+`AnswerPad` takes an optional `selected` key (`PianoKey` mark `selected`:
+filled blue, `aria-pressed`) for an answer in two taps, where the first must
+show before the second completes it (Hợp âm: the root, then the quality).
 
 ## i18n
 

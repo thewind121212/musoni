@@ -60,15 +60,15 @@ describe('PracticeTab', () => {
   })
 
   it('counts the drills still to open, shows them all on request, and marks one as just opened once', async () => {
+    // Real drills whose lesson is not written yet stay to open as well.
+    const waiting = listedDrills().filter(d => d.unlockedBy).length
     remove = addDrills(fakeDrill({ unlockedBy: 'pitch-staff/staff-clefs' }), fakeDrill({ id: 'later', unlockedBy: 'nowhere/yet' }))
     markLessonDone('pitch-staff/staff-clefs', { correct: 3, total: 3 })
     const first = renderTab()
     expect(within(card('Fake drill')).getByText('Just opened')).toBeInTheDocument()
     expect(getUnlocksSeen()).toContain('fake')
     await userEvent.click(screen.getByRole('button', { name: 'See all' }))
-    // "later", and any real drill whose lesson is not finished (or not written yet).
-    const locked = listedDrills().filter(d => d.unlockedBy && d.unlockedBy !== 'pitch-staff/staff-clefs')
-    expect(screen.getAllByText('Opens later')).toHaveLength(locked.length)
+    expect(screen.getAllByText('Opens later')).toHaveLength(waiting + 1)
     first.unmount()
 
     renderTab()

@@ -419,6 +419,23 @@ readers). Checked to fit without scrolling at 320×568, 375×812 and 1280×800.
 one line under the score, "Có trợ giúp nghe — không tính kỷ lục", and claims no
 personal best.
 
+### Hóa biểu (`/train/key-sig`)
+
+Design: `drill-key-sig.md`. Mockup: project files
+`screenshots/theory-drills/2-key-signatures.png`. Same shape as note reading
+(setup / run / result in its own store, back behaviour, pause sheet, early
+end). **Setup**: a one-line explanation, **Giọng** with four row cards, each
+a small staff with one of the level's signatures (Tới 2 dấu / Tới 4 dấu / 15
+giọng / Trưởng & thứ), the length pills, and **Phím trả lời** (note names,
+Piano / Ô, names on keys, sound); the amber Start bar. **Run**: the drills'
+header and time bar, the streak line, "Giọng **trưởng** nào?" (the mode word
+in blue; "thứ" at level 4), the staff with the clef and signature only, a
+fixed two-line slot for the verdict ("✓ La trưởng: 3 thăng, thăng cuối Sol# +
+nửa cung", red with ✕ on a miss), and the 12-key pad spelled the key's way
+(flats for flat keys; Dob, Fab, Mi#, Si# where the signature puts them).
+**Result**: the drills' summary, then "Giọng cần ôn": missed signatures on
+small staves with the key and the pick. Fits 320×568 and 1280×800 without
+scrolling.
 ### Quãng (`/train/intervals`)
 
 Design and rules: `drill-intervals.md`. Mockup: project files

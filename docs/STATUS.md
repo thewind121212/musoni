@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 656 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 804 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -253,6 +253,38 @@ a real browser.
       `docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`,
       `docs/theory/framework.md`, `docs/theory/port-guide.md`, `docs/summary.md`
 
+- [x] **Drill: Hóa biểu** (key signatures, `/train/key-sig`, 2026-10-05): a signature with
+      no notes on the staff, "Giọng trưởng nào?" (L4: major or relative minor at random),
+      answered by tapping the tonic on the 12-key pad spelled the key's way (flats for flat
+      keys; Dob, Fab, Mi#, Si# rename the white key the signature puts them on, so Cb, Gb,
+      F#, C# majors are answered under their own names). The verdict names the key and the
+      rule ("La trưởng: 3 thăng, thăng cuối Sol# + nửa cung", "giáng áp chót", "không dấu",
+      "một giáng"); the answer plays the home chord. Levels: up to 2 sharps/flats, up to 4,
+      all 15 in treble and bass, relative minors too (×1.0 / 1.3 / 1.6 / 2.0); never the same
+      signature twice running. Opens with `major-scales-keys/key-signatures` (chapter 3).
+      Names checked against the standard 15-key table; generator tested over every level.
+      Core `NoteStaff` now draws a staff with no notes (it threw). Screenshots: project files
+      `screenshots/drill-key-sig/`. 627 web tests green — `docs/fe/drill-key-sig.md`,
+      `docs/fe/architecture.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
+- [x] **Drill: Hợp âm (chords)** (2026-10-05, `/train/chords`, group Đọc, opened by
+      `triads/triads-intro`): a triad in close position on the staff, answered in two
+      taps (root on the piano pad spelled to the chord, then Trưởng / Thứ / Giảm / Tăng;
+      chips a level does not ask are dashed), then shown as "Am/C · La thứ, thế đảo 1".
+      L1 the seven triads of C major, L2 every major and minor triad, L3 adds diminished
+      and augmented, L4 inversions as slash chords; triads spelled by letter with never a
+      double accidental, never drawn above the staff, never repeated back to back
+      (generator tested over every chord of every level). **Bậc La Mã** mode as levels
+      5-7 (separate bests): key named and signature drawn, tap the numeral (major up to
+      2 / 4 accidentals, then minor keys with harmonic-minor V and vii°). "Nghe" switch
+      (on) plays the chord after answering, the reader's chord first on a miss. Core
+      `AnswerPad` gained an optional `selected` key. Screenshots: project files
+      `screenshots/drill-chords/` — `docs/fe/drill-chords.md`, `docs/fe/architecture.md`.
+      Functional review (2026-10-05): every question of every level checked against
+      independent theory tables, flows run in a real browser (two taps, keys, reload,
+      pause, back, key signatures with raised leading tones); no behaviour bugs found.
+      Tests added for time running out with a root picked, a preset without a mode,
+      taps and keys during feedback, unasked quality digits, and sound stopping on
+      pause and on leaving the run screen. 661 web tests green
 - [x] **Quãng (intervals) drill** (2026-10-05, `drills/intervals`, route `/train/intervals`):
       two notes on a treble or bass staff, side by side or stacked, lower first; one tap
       on a size × quality grid (2-8 across; thứ, trưởng / đúng, tăng, giảm down; minor
@@ -288,12 +320,13 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   phone — not runnable headlessly, remains for a human pass
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
-- Four drills on the new registry, built in parallel: key signatures, intervals
-  (built, see Done), chords, rhythm (each declares the lesson that opens it with
+- Four drills on the new registry, built in parallel: key signatures, chords and
+  intervals (done, above), rhythm (each declares the lesson that opens it with
   `unlockedBy`). A drill whose lesson is not written yet stays unopened on Luyện,
-  counted in its "more drills" line and reachable from "Xem tất cả"
-- Quãng: a human pass on a phone for the interval sound (melodic spacing, the dyad)
-  and the feedback holds (`INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`)
+  counted in its "more drills" line and reachable from "Xem tất cả" (Hóa biểu waits
+  on chapter 3, Quãng on chapter 2, Hợp âm on chapter 8)
+- A human pass on a phone over the new drills' sound and feedback timing
+  (`KEY_SIG_*`, `CHORD_*`, `INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`)
 
 ## Next
 
