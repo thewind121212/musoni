@@ -2,8 +2,12 @@ import type { CSSProperties } from 'react'
 import { CheckIcon, XIcon } from '@phosphor-icons/react'
 import { KeyHint } from '@/core/components/atoms'
 
-/** What a key says after an answer: the right note, the reader's miss, or nothing. */
-export type KeyMark = 'none' | 'correct' | 'wrong'
+/**
+ * What a key says: after an answer the right note or the reader's miss;
+ * before it, `selected` for a pick that waits for a second tap (a chord's
+ * root, then its quality).
+ */
+export type KeyMark = 'none' | 'correct' | 'wrong' | 'selected'
 
 interface Props {
   label: string
@@ -34,6 +38,7 @@ interface Props {
 function keyTone(mark: KeyMark, row: 'natural' | 'accidental') {
   if (mark === 'correct') return 'border-transparent bg-correct text-white'
   if (mark === 'wrong') return 'border-transparent bg-wrong text-white'
+  if (mark === 'selected') return 'border-transparent bg-accent text-accent-ink'
   return row === 'accidental'
     ? 'border-ink bg-ink text-surface hover:bg-ink-soft'
     : 'border-line bg-raised text-ink hover:border-ink-faint'
@@ -57,7 +62,8 @@ const SHAPE = {
 export function PianoKey({
   label, showLabel = true, keyHint, row, shape = 'piano', mark, homeLabel, disabled, onPress, className, style,
 }: Props) {
-  const labelShown = showLabel || mark !== 'none'
+  const labelShown = showLabel || (mark !== 'none' && mark !== 'selected')
+  const selected = mark === 'selected'
   const box = shape === 'box'
   const iconClass = box ? 'absolute top-1 right-1.5' : undefined
   return (
@@ -65,6 +71,7 @@ export function PianoKey({
       disabled={disabled}
       onClick={onPress}
       aria-label={labelShown ? undefined : label}
+      aria-pressed={selected || undefined}
       style={style}
       className={
         'flex items-center border font-medium ' +

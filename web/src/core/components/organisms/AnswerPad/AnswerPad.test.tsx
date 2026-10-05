@@ -96,4 +96,14 @@ describe('AnswerPad', () => {
     expect(screen.getAllByTestId('home-dot')).toHaveLength(1)
     expect(screen.getByTestId('home-dot').closest('button')).toHaveTextContent(withSharps[4].label)
   })
+
+  it('marks the selected key until the answer is in, then only the answer marks', () => {
+    const { rerender } = render(<AnswerPad options={withSharps} feedback={null} onAnswer={() => {}} selected={2} />)
+    const pressed = () => screen.getAllByRole('button').filter(b => b.getAttribute('aria-pressed') === 'true')
+    expect(pressed()).toHaveLength(1)
+    expect(labelOf(pressed()[0])).toBe(withSharps[2].label)
+    rerender(<AnswerPad options={withSharps} feedback={{ correctIndex: 0, chosenIndex: 2 }} onAnswer={() => {}} selected={2} />)
+    expect(pressed()).toHaveLength(0)
+  })
 })
+
