@@ -328,6 +328,8 @@ export const RHYTHM_COUNT_IN = 4
 export const RHYTHM_READ_MS = 700
 /** Clicks are scheduled this far ahead on the audio clock, so the first is never clipped. */
 export const RHYTHM_LEAD_SEC = 0.15
+/** How often a running measure (or calibration) reads the audio clock, in ms: lights the dots, closes the take. */
+export const RHYTHM_FRAME_MS = 16
 /** At L4, the share of measures in 6/8 (the rest are 4/4 with triplets or sixteenths). */
 export const RHYTHM_COMPOUND_SHARE = 0.4
 /**
@@ -353,6 +355,9 @@ export const RHYTHM_CLICK = { hz: 1100, accentHz: 1760, decaySec: 0.045, gain: 0
 export const RHYTHM_CALIBRATION = { clicks: 8, bpm: 100, minTaps: 5, maxSpreadMs: 60, minMs: -150, maxMs: 400 } as const
 /** Result screen: how many missed measures to show. */
 export const RHYTHM_MISSES_SHOWN = 4
-/** Notation units across the run screen's measure, and across a missed measure on the result. */
-export const RHYTHM_STAFF_WIDTH = 340
-export const RHYTHM_MISSED_STAFF_WIDTH = 300
+/**
+ * Notation units across a measure: a base for the clef and time signature
+ * plus room per note or rest, clamped. A sparse measure is drawn large on a
+ * phone; a busy one shrinks to fit.
+ */
+export const RHYTHM_STAFF_WIDTH = { base: 110, perEvent: 24, min: 230, max: 400 } as const
