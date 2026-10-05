@@ -324,6 +324,8 @@ export const KEY_SIG_FEEDBACK_WRONG_MS = 2600
 /** Notation units across the question staff (seven sharps fit with room), and across a result tile's. */
 export const KEY_SIG_STAFF_WIDTH = 170
 export const KEY_SIG_MISSED_STAFF_WIDTH = 130
+/** Notation units across a level's picture in setup: seven sharps fit, small enough to read in a card. */
+export const KEY_SIG_PICTURE_WIDTH = 116
 /** A reading drill: a session opens on one minute. */
 export const KEY_SIG_DEFAULT_DURATION_SECONDS = 60
 /** Answer sound: the home chord rings this long; on a miss the reader's note plays first, the chord this long after. */
