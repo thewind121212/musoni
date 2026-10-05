@@ -1,8 +1,8 @@
 import { notationError, parseNotation, parsePitchName, midiOf } from '@/core/music/notation'
 import { isExcluded } from '@/core/music/pitch'
 import { presetError } from '@/app/drillPreset'
-import { textError } from './text'
-import type { Block, Chapter, Lesson, Localized, Step } from './types'
+import { textError } from '@/core/lesson/text'
+import type { Block, Chapter, Lesson, Localized, Step } from '@/core/lesson/types'
 import { THEORY_RULES as R } from '@/config/constants'
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/

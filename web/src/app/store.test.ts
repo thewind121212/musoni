@@ -14,10 +14,12 @@ describe('app store', () => {
     expect(useAppStore.getState().settings.naming).toBe('solfege')
     expect(getSettings().naming).toBe('solfege')
   })
-  it('setLevel persists, so the chosen level survives a reload', () => {
-    useAppStore.getState().setLevel(3)
-    expect(useAppStore.getState().settings.level).toBe(3)
-    expect(getSettings().level).toBe(3)
+  it("updateDrill persists one drill's settings and leaves the others", () => {
+    useAppStore.getState().updateDrill('note-id', { level: 3 })
+    useAppStore.getState().updateDrill('note-id', { durationSec: 120 })
+    useAppStore.getState().updateDrill('hear-play', { level: 2 })
+    expect(useAppStore.getState().settings.drills['note-id']).toEqual({ level: 3, durationSec: 120 })
+    expect(getSettings().drills).toEqual({ 'note-id': { level: 3, durationSec: 120 }, 'hear-play': { level: 2 } })
   })
 })
 

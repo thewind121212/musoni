@@ -5,32 +5,11 @@ import { ActivityPanel } from './ActivityPanel'
 import { t } from '@/test/i18n'
 
 const base = {
-  minutesByDay: {}, todayMinutes: 0, dailyGoal: 5, streak: 0, longestStreak: 0, activeDays: 0,
+  minutesByDay: {}, longestStreak: 0, activeDays: 0,
   expanded: false, onToggle: () => {}, lang: 'en' as const, t,
 }
 
 describe('ActivityPanel', () => {
-  it('renders for a reader who has never practised', () => {
-    render(<ActivityPanel {...base} />)
-    expect(screen.getByText('Not yet')).toBeInTheDocument()
-    expect(screen.queryByText(/^\d+ days?$/)).toBeNull()
-  })
-
-  it('says how far today is from the daily goal, then that it is reached', () => {
-    const { rerender } = render(<ActivityPanel {...base} todayMinutes={2} />)
-    expect(screen.getByText("3 min to today's goal")).toBeInTheDocument()
-    expect(screen.queryByText('Not yet')).toBeNull()
-    rerender(<ActivityPanel {...base} todayMinutes={7} />)
-    expect(screen.getByText("Today's goal reached")).toBeInTheDocument()
-  })
-
-  it('shows the streak pill only while a streak is running', () => {
-    const { rerender } = render(<ActivityPanel {...base} streak={1} />)
-    expect(screen.getByText('1 day')).toBeInTheDocument()
-    rerender(<ActivityPanel {...base} streak={4} />)
-    expect(screen.getByText('4 days')).toBeInTheDocument()
-  })
-
   it('shows this week when collapsed and the calendar with totals when expanded', () => {
     const collapsed = render(<ActivityPanel {...base} />)
     expect(collapsed.container.querySelectorAll('[title]')).toHaveLength(7)

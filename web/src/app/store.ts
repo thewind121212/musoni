@@ -1,5 +1,7 @@
 import { create } from 'zustand'
-import { type LiveSummary, type Settings, getLiveSessions, getSettings, saveSettings } from '../progress/progressStore'
+import {
+  type DrillSettingValue, type LiveSummary, type Settings, getLiveSessions, getSettings, saveSettings,
+} from '../progress/progressStore'
 import { LIVE_SESSION_MAX_AGE_MS } from '../config/constants'
 
 export type PausedSession = LiveSummary
@@ -33,7 +35,8 @@ interface AppState {
   pausedSession: PausedSession | null
   setPausedSession: (p: PausedSession | null) => void
   updateSettings: (p: Partial<Settings>) => void
-  setLevel: (l: 1 | 2 | 3 | 4) => void
+  /** Changes one drill's own settings (`settings.drills[id]`): its level, length or options. */
+  updateDrill: (id: string, p: Record<string, DrillSettingValue>) => void
   markHomeIntroPlayed: () => void
 }
 
@@ -53,6 +56,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     document.documentElement.lang = settings.lang
     set({ settings })
   },
-  setLevel: level => get().updateSettings({ level }),
+  updateDrill: (id, p) => {
+    const { drills } = get().settings
+    get().updateSettings({ drills: { ...drills, [id]: { ...drills[id], ...p } } })
+  },
   markHomeIntroPlayed: () => set({ homeIntroPlayed: true }),
 }))

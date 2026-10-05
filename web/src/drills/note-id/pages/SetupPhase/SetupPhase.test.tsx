@@ -27,30 +27,30 @@ describe('SetupPhase', () => {
     expect(getSettings().naming).toBe('letters')
   })
 
-  it('changes level through setLevel', async () => {
+  it('changes level through the app store', async () => {
     renderSetup()
     await userEvent.click(screen.getByRole('radio', { name: /Bass/ }))
-    expect(useAppStore.getState().settings.level).toBe(3)
+    expect(useAppStore.getState().settings.drills['note-id'].level).toBe(3)
   })
 
   it('shows the best score for the chosen level only', () => {
     recordSession(session({ level: 1, practiceScore: 44 }))
     renderSetup()
     expect(screen.getByText('44')).toBeInTheDocument()
-    act(() => useAppStore.getState().setLevel(2))
+    act(() => useAppStore.getState().updateDrill('note-id', { level: 2 }))
     expect(screen.queryByText('44')).toBeNull()
     expect(screen.getByText('No score yet at this setup')).toBeInTheDocument()
   })
 
   it('starts the drill with the current level and settings', async () => {
-    useAppStore.getState().updateSettings({ level: 4, durationSec: 120, accidentals: true })
+    useAppStore.getState().updateDrill('note-id', { level: 4, durationSec: 120, accidentals: true })
     renderSetup()
     await userEvent.click(screen.getByRole('button', { name: /Start/ }))
     const drill = useDrillStore.getState()
     expect(drill.phase).toBe('running')
     expect(drill.level).toBe(4)
-    expect(drill.settings.durationSec).toBe(120)
-    expect(drill.settings.accidentals).toBe(true)
+    expect(drill.settings.drills['note-id'].durationSec).toBe(120)
+    expect(drill.settings.drills['note-id'].accidentals).toBe(true)
   })
 
   it('flips sharps and sound from their switches', async () => {
@@ -59,12 +59,12 @@ describe('SetupPhase', () => {
     await userEvent.click(screen.getByRole('switch', { name: 'Sharps and flats' }))
     await userEvent.click(screen.getByRole('switch', { name: 'Sound' }))
     const after = useAppStore.getState().settings
-    expect(after.accidentals).toBe(!before.accidentals)
+    expect(after.drills['note-id'].accidentals).toBe(!before.drills['note-id']?.accidentals)
     expect(after.sound).toBe(!before.sound)
   })
 
   it('sums up the session next to Start', () => {
-    useAppStore.getState().updateSettings({ level: 3, durationSec: 120, accidentals: true })
+    useAppStore.getState().updateDrill('note-id', { level: 3, durationSec: 120, accidentals: true })
     renderSetup()
     expect(screen.getByText('Bass \u00B7 2 min \u00B7 \u266F \u266D')).toBeInTheDocument()
   })

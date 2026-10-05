@@ -4,7 +4,7 @@ Every agent porting a chapter of Hutchinson's *Music Theory for the 21st-Century
 Classroom* into Musoni follows this guide. The main agent owns it; propose changes
 in your PR description rather than drifting from it. Vocabulary is in
 `docs/theory/glossary.md`. Approved mockups: project files
-`screenshots/theory-lessons/` (home card, chapter list, explain step, check step,
+`screenshots/theory-lessons/` (the old home card, chapter list, explain step, check step,
 end screen).
 
 Source: https://musictheory.pugetsound.edu/mt21c/MusicTheory.html
@@ -72,7 +72,8 @@ drill setting only; never add drill features in a chapter PR.
 Leaving out `practice` is fine when no drill fits: the end screen then makes
 "Bài tiếp" the main button and adds an "Ôn lại cả chương" link. Known gaps today:
 Đọc nốt has no C clef level, and nothing trains key-finding without a staff,
-rhythm, intervals or chords yet. Current drills: Đọc nốt (`note-id`: clef levels, sharps
+rhythm, intervals or chords yet (drills for them are being built; a preset may
+name any registered drill). Current drills: Đọc nốt (`note-id`: clef levels, sharps
 and flats) and Nghe & Đàn (`hear-play`: L1 Do Mi Sol in C, L2 Do–Sol in 3 keys,
 L3 full scale in 5 keys, L4 all 12 notes in 7 keys). Read their stores and docs
 (`docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`) for the
@@ -214,6 +215,8 @@ plain pitches only (no durations, rests or bars).
 ### Practice presets
 
 `practice` uses only settings the drills already have (`app/drillPreset.ts`):
+any registered drill's id (its `drills/<id>/drill.ts`), one of its levels, a
+length, and only the options its entry lists as `presetOptions`:
 
 ```ts
 practice: { drill: 'note-id', level: 2, durationSec: 60 }                     // Đọc nốt, level 1-4

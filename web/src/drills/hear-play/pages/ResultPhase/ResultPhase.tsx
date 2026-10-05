@@ -10,6 +10,7 @@ import { ScoreCompare } from '@/core/components/molecules'
 import { EarlyEndSummary, MissedNotes, ResultSummary } from '@/core/components/organisms'
 import { formatElapsed } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
+import { S, levelKey } from '@/drills/hear-play/strings'
 
 /**
  * Page: the last Nghe & Đàn session against this week's average and the
@@ -36,7 +37,7 @@ export function ResultPhase() {
   // Again plays the same session: a lesson's preset stays on, the saved setup stays as it was.
   const again = () => {
     const ear = useEarStore.getState()
-    ear.start(level, ear.settings)
+    ear.start(ear.settings)
   }
 
   return (
@@ -58,14 +59,14 @@ export function ResultPhase() {
         ) : (
           <ResultSummary
             result={result}
-            levelName={t(`ear.level.${level}` as 'ear.level.1')}
+            levelName={t(levelKey(level))}
             isBest={isBest}
             average={average}
             t={t}
           />
         )}
 
-        {aided && <p className="text-center text-sm text-ink-soft">{t('result.ear.aids')}</p>}
+        {aided && <p className="text-center text-sm text-ink-soft">{t(S['result.aids'])}</p>}
 
         {!partial && bestScore !== null && (average !== null || !isBest) && (
           <ScoreCompare

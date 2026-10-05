@@ -3,6 +3,8 @@ import { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { translate } from '@/core/i18n/translate'
+import { getSettings } from '@/progress/progressStore'
+import { withDrill } from '@/test/fixtures'
 
 // Audio and notation are covered by their own tests; here they only get in the
 // way (jsdom has no Web Audio and no canvas).
@@ -19,10 +21,9 @@ const { useDrillStore } = await import('@/drills/note-id/store')
 const { useAppStore } = await import('@/app/store')
 const { playPitch, preloadPiano } = await import('@/core/audio/playPitch')
 
-const settings = {
-  level: 1 as const, durationSec: 60, accidentals: true, naming: 'letters' as const,
-  sound: true, keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120, earCadenceEach: false, earOneKey: false, lang: 'vi' as const, activityExpanded: false,
-}
+const settings = withDrill('note-id', { level: 1, durationSec: 60, accidentals: true }, {
+  ...getSettings(), naming: 'letters' as const, sound: true, keyLabels: true, padStyle: 'piano' as const, lang: 'vi' as const,
+})
 
 const renderRun = () =>
   render(<MemoryRouter initialEntries={['/train/note-id']}><RunPhase /></MemoryRouter>)
@@ -51,7 +52,7 @@ beforeEach(() => {
   localStorage.clear()
   useAppStore.setState({ settings, pausedSession: null })
   useDrillStore.setState({ phase: 'setup' })
-  useDrillStore.getState().start(1, settings, Date.now())
+  useDrillStore.getState().start(settings, Date.now())
 })
 afterEach(() => {
   vi.useRealTimers()
@@ -154,7 +155,7 @@ describe('RunPhase input', () => {
   })
 
   it('stays silent with sound off', () => {
-    useDrillStore.getState().start(1, { ...settings, sound: false }, Date.now())
+    useDrillStore.getState().start({ ...settings, sound: false }, Date.now())
     renderRun()
     expect(preloadPiano).not.toHaveBeenCalled()
     pressKey({ key: keys().right, code: `Key${keys().right.toUpperCase()}` })
@@ -202,7 +203,7 @@ describe('RunPhase leaving mid-session', () => {
   })
 
   it('shows a long session\'s time left as a clock (regression: "9 phút 40 giây" overflowed the sheet)', () => {
-    useDrillStore.getState().start(1, { ...settings, durationSec: 600 }, Date.now())
+    useDrillStore.getState().start(withDrill('note-id', { durationSec: 600 }, settings), Date.now())
     renderRun()
     answerOnce()
     fireEvent.click(quitButton())
@@ -252,7 +253,7 @@ describe('RunPhase leaving mid-session', () => {
 describe('RunPhase key labels', () => {
   it("follows the session's names-on-keys setting", () => {
     const q = () => useDrillStore.getState().question!
-    act(() => useDrillStore.getState().start(1, { ...settings, keyLabels: false }, Date.now()))
+    act(() => useDrillStore.getState().start({ ...settings, keyLabels: false }, Date.now()))
     renderRun()
     const label = q().options[0].label
     expect(screen.getByRole('button', { name: label })).not.toHaveTextContent(label)

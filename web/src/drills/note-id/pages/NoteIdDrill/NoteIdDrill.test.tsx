@@ -23,7 +23,7 @@ describe('NoteIdDrill', () => {
   })
 
   it('shows the sprint while running', () => {
-    useDrillStore.getState().start(1, useAppStore.getState().settings)
+    useDrillStore.getState().start(useAppStore.getState().settings)
     renderDrill()
     expect(screen.getByRole('button', { name: 'Quit this session' })).toBeInTheDocument()
   })
@@ -35,7 +35,7 @@ describe('NoteIdDrill', () => {
   })
 
   it('opens straight into a session on the saved setup when asked to autostart', () => {
-    useAppStore.getState().updateSettings({ level: 3, durationSec: 120 })
+    useAppStore.getState().updateDrill('note-id', { level: 3, durationSec: 120 })
     render(
       <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { autostart: true } }]}>
         <NoteIdDrill />
@@ -43,11 +43,11 @@ describe('NoteIdDrill', () => {
     )
     expect(screen.getByRole('button', { name: 'Quit this session' })).toBeInTheDocument()
     expect(useDrillStore.getState().level).toBe(3)
-    expect(useDrillStore.getState().settings.durationSec).toBe(120)
+    expect(useDrillStore.getState().settings.drills['note-id'].durationSec).toBe(120)
   })
 
   it("starts a lesson's preset for this session only, leaving the saved setup alone", () => {
-    useAppStore.getState().updateSettings({ level: 3, durationSec: 300, accidentals: false })
+    useAppStore.getState().updateDrill('note-id', { level: 3, durationSec: 300, accidentals: false })
     const preset = { drill: 'note-id', level: 2, durationSec: 60, accidentals: true }
     render(
       <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { autostart: true, preset } }]}>
@@ -56,14 +56,14 @@ describe('NoteIdDrill', () => {
     )
     const drill = useDrillStore.getState()
     expect(drill.phase).toBe('running')
-    expect([drill.level, drill.settings.durationSec, drill.settings.accidentals]).toEqual([2, 60, true])
-    const saved = useAppStore.getState().settings
+    expect([drill.level, drill.settings.drills['note-id'].durationSec, drill.settings.drills['note-id'].accidentals]).toEqual([2, 60, true])
+    const saved = useAppStore.getState().settings.drills['note-id']
     expect([saved.level, saved.durationSec, saved.accidentals]).toEqual([3, 300, false])
-    expect(getSettings().level).toBe(3)
+    expect(getSettings().drills['note-id'].level).toBe(3)
   })
 
   it("ignores another drill's preset", () => {
-    useAppStore.getState().updateSettings({ level: 3 })
+    useAppStore.getState().updateDrill('note-id', { level: 3 })
     const preset = { drill: 'hear-play', level: 2, durationSec: 60 }
     render(
       <MemoryRouter initialEntries={[{ pathname: '/train/note-id', state: { autostart: true, preset } }]}>
@@ -84,7 +84,7 @@ describe('NoteIdDrill', () => {
   })
 
   it('carries on a paused session from home\'s notice, and clears the notice', () => {
-    useDrillStore.getState().start(1, useAppStore.getState().settings, 1_000)
+    useDrillStore.getState().start(useAppStore.getState().settings, 1_000)
     useDrillStore.getState().pause('away', 2_000)
     useAppStore.setState({ pausedSession: { to: '/train/note-id', secondsLeft: 59, correct: 1, wrong: 0 } })
     render(
@@ -165,7 +165,7 @@ describe('NoteIdDrill', () => {
   })
 
   it('opens a session cut off by a page load paused, greeting the reader back, and keeps it on the way home', async () => {
-    useDrillStore.getState().start(1, useAppStore.getState().settings)
+    useDrillStore.getState().start(useAppStore.getState().settings)
     useDrillStore.getState().answer(useDrillStore.getState().question!.correctIndex)
     useDrillStore.getState().pause('away')
     // The page load: the store starts over, storage still holds the session.

@@ -1,22 +1,22 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Navigate, NavigationType, useLocation, useNavigate, useNavigationType, useParams } from 'react-router-dom'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { EarIcon, MusicNotesIcon } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
-import { presetRoute, presetSummary } from '@/app/drillPreset'
-import { playPitch, playSequence, stopSounds } from '@/core/audio/playPitch'
-import { optionIndexFromKey } from '@/core/music/keyboard'
+import { presetSummary } from '@/app/drillPreset'
+import { findDrill } from '@/app/drills'
+import { playPitch, stopSounds } from '@/core/audio/playPitch'
 import { Button } from '@/core/components/atoms'
 import { CHAPTERS } from '@/theory/registry'
 import { useTheoryStore } from '@/theory/store'
 import { findLesson, fromList, lessonAfter, lessonNumber, reviewOf, lessonKey, type LessonRef } from '@/theory/outline'
-import { plainText } from '@/theory/text'
-import { loneStaffNote, padFor, playSounds } from '@/theory/blocks'
-import type { PlayBlock } from '@/theory/types'
-import { RichText } from '@/theory/components/atoms'
+import { plainText } from '@/core/lesson/text'
+import { answerFromKey, loneStaffNote } from '@/core/lesson/blocks'
+import { usePlayBlock } from '@/core/lesson/usePlayBlock'
+import { RichText } from '@/core/components/atoms'
 import { PracticeOffer, SourceLine } from '@/theory/components/molecules'
-import { LessonEnd, StepView } from '@/theory/components/organisms'
+import { LessonEnd } from '@/theory/components/organisms'
+import { StepView } from '@/core/components/organisms'
 import { LessonFrame } from '@/theory/components/templates'
 
 /**
@@ -71,18 +71,7 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
     else window.scrollTo(0, 0)
   }, [step])
 
-  const [playing, setPlaying] = useState<PlayBlock | null>(null)
-  const playTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  useEffect(() => () => clearTimeout(playTimer.current), [])
-  const play = useCallback((block: PlayBlock) => {
-    stopSounds()
-    const sounds = playSounds(block)
-    playSequence(sounds.map(s => ({ pitches: s.pitches, at: s.at, hold: s.hold })))
-    setPlaying(block)
-    clearTimeout(playTimer.current)
-    const end = Math.max(...sounds.map(s => s.at + s.hold))
-    playTimer.current = setTimeout(() => setPlaying(null), end * 1000)
-  }, [])
+  const { playing, play } = usePlayBlock()
 
   const answerStep = useCallback((choice: number, correct: boolean) => {
     const s = useTheoryStore.getState()
@@ -101,7 +90,7 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
   const close = useCallback(() => {
     useTheoryStore.getState().close()
     if (fromList(location.state)) navigate(-1)
-    else navigate('/theory', { replace: true })
+    else navigate('/learn', { replace: true })
   }, [location.state, navigate])
 
   // Desktop: Enter goes on, the piano keys answer a key check, 1-4 a choice.
@@ -114,15 +103,8 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
         return
       }
       if (current?.kind !== 'check' || answer) return
-      if (current.answer.type === 'key') {
-        const pad = padFor(current.answer, naming)
-        const i = optionIndexFromKey(e, pad.options)
-        if (i !== null) answerStep(i, i === pad.correctIndex)
-      } else {
-        const i = Number(e.key) - 1
-        const choices = current.answer.choices
-        if (Number.isInteger(i) && i >= 0 && i < choices.length) answerStep(i, choices[i].correct === true)
-      }
+      const picked = answerFromKey(current, e, naming)
+      if (picked) answerStep(picked.choice, picked.correct)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -188,6 +170,7 @@ function End({ lessonRef, title, number, onAllLessons }: {
   const after = lessonAfter(CHAPTERS, key)
   const chapterReview = reviewOf(chapter)
   const practice = lesson.practice
+  const drill = practice ? findDrill(practice.drill) : undefined
 
   // The next lesson replaces this one in history, so ✕ and back still lead to
   // where the reader came from rather than through every lesson read.
@@ -200,19 +183,19 @@ function End({ lessonRef, title, number, onAllLessons }: {
         to: '/theory', label: t('theory.allLessons'),
         onClick: (e: MouseEvent) => { e.preventDefault(); onAllLessons() },
       }
-  const also = !practice && chapterReview && !review && after?.lesson !== chapterReview
+  const also = !(practice && drill) && chapterReview && !review && after?.lesson !== chapterReview
     ? { to: `/theory/${lessonKey(chapter, chapterReview)}`, replace: true, state: location.state, label: t('theory.reviewChapter') }
     : undefined
 
-  const offer = practice && (
-    <div data-drill={practice.drill === 'hear-play' ? 'hear-play' : undefined}>
+  const offer = practice && drill && (
+    <div data-drill={drill.id}>
       <PracticeOffer
         heading={t('theory.practiceTitle')}
-        icon={practice.drill === 'hear-play' ? <EarIcon size={22} weight="fill" /> : <MusicNotesIcon size={22} weight="fill" />}
-        drill={t(practice.drill === 'hear-play' ? 'home.hearPlay' : 'home.noteReading')}
+        icon={<drill.icon size={22} weight="fill" />}
+        drill={t(drill.title)}
         summary={presetSummary(practice, t)}
         actionLabel={t('home.practiceNow')}
-        to={presetRoute(practice)}
+        to={drill.route}
         linkState={{ autostart: true, preset: practice }}
       />
     </div>

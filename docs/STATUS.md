@@ -9,19 +9,23 @@
 A web app for pure sheet-music reading training combined with music theory.
 Phase 1: train note-identification speed on the staff. Phase 2 has begun with a second
 drill, Nghe & Đàn (hear a note in a key, play it on the keys), and short theory lessons
-(adapted from an open textbook, GNU FDL) that end on the drill that trains them. Later: more drills, login, subscriptions.
+(adapted from an open textbook, GNU FDL) that end on the drill that trains them, an Ôn tập
+review of finished lessons, and two tabs (Luyện, Học). Later: more drills, login, subscriptions.
 
 ## Current Phase
 
-**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill and theory lessons (chapter 1 of 9)** (web only, no login, localStorage progress; pending human browser verification)
+**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill, theory lessons (chapter 1 of 9), the drill platform and Ôn tập** (web only, no login, localStorage progress; pending human browser verification)
 
 ## State
 
 Phase 1 is complete on `main` and has grown well past the first cut: the note-id
 drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
-endurance multipliers, with any session length allowed. Home leads with today,
-a streak and a 20-week activity calendar. The UI is Vietnamese-first with an
+endurance multipliers, with any session length allowed. The app has two tabs:
+**Luyện** (`/`: today's goal ring, streak and one picked drill with its reason, the
+drills the reader has opened, the activity calendar) and **Học** (`/learn`: the next
+lesson, the current chapter, Ôn tập); a first-open question sends a beginner to
+lesson 1 and a reader to a one-minute Đọc nốt. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
 losing or miscounting the session. A second drill, **Nghe & Đàn** (`/train/hear-play`),
 plays a cadence and one note and has the reader find it on the same piano pad, then
@@ -29,8 +33,11 @@ reveals it on the staff (relative pitch, four levels, the key moves from L2).
 **Theory lessons** (`/theory`) teach in 3-5 minute bilingual steps (read, see on the staff, hear,
 check on the piano pad) and end on a practice link that starts the matching drill with a
 preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is in; chapters
-2-9 are ported one PR each against `docs/theory/port-guide.md`.
-Components follow atomic-design levels. Go `/health` stub behind it. 506 web tests (Vitest) + 1 Go test
+2-9 are ported one PR each against `docs/theory/port-guide.md`. Every drill is one
+entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
+settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
+asks the checks of finished lessons, weighted toward the ones missed.
+Components follow atomic-design levels. Go `/health` stub behind it. 570 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -217,6 +224,35 @@ a real browser.
       `docs/theory/port-guide.md` §7, `docs/fe/architecture.md`, `docs/fe/screens.md`,
       `docs/fe/data-model.md`, `docs/summary.md`
 
+- [x] **Drill platform, tabs and Ôn tập** (2026-10-05): a glob-discovered **drill
+      registry** (`app/drill.ts` `defineDrill`, `app/drills.ts`): each drill declares id,
+      route, icon, group, order, levels, defaults, preset options, starter line, colour,
+      `unlockedBy` and `listed` in `drills/<id>/drill.ts` with its own strings
+      (`defineStrings`); routes, loading screen, prefetch, presets and the lesson
+      validator, live session, paused bar, colours and bests all read it ("How to add a
+      drill" in `docs/fe/architecture.md`). Settings are per drill
+      (`settings.drills[id]`, progress document **version 2**, tested v1 → v2 migration).
+      **Tabs**: Luyện `/` and Học `/learn` (bottom bar on phones, top on desktop, hidden in
+      drills and lessons; `/theory` routes kept), a **first-open** question
+      (`/welcome`: beginner → lesson 1.1, reader → one-minute Đọc nốt; saved as
+      `startPoint`, changeable from Học, skipped with any history). Luyện: **Hôm nay**
+      card (ring, streak, one pick from the pure tested `app/practicePlan.pickToday`, its
+      reason, amber Bắt đầu), "Bài luyện của bạn" with only unlocked drills (stats and
+      Luyện once played, "Chưa tập" / "Mới mở" before), a dashed line counting drills
+      still to open with Xem tất cả. Học: Học tiếp card, the current chapter, other
+      chapters link, Ôn tập card. **Ôn tập** (`drills/review`, not listed on Luyện):
+      timed session over finished lessons' checks with the reason, weighted by
+      per-check history in progressStore (unseen 3, +0.25/day, missed +6, no repeat of
+      the last 3), chapter choice in setup, one implicit level, result listing misses
+      linked to their lessons; reuses the lesson's step components (promoted to
+      `core/components`, `core/lesson`). Home, `PracticeCard`, `TheoryCard`,
+      `ComingSoonCard` and the dead `config/presets.ts` removed. Note-id and Nghe & Đàn
+      look the same (setup screenshots identical before/after). 570 web tests green.
+      Screenshots: project files `screenshots/drill-platform/` — `docs/fe/architecture.md`,
+      `docs/fe/data-model.md`, `docs/fe/screens.md`, `docs/fe/drill-review.md`,
+      `docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`,
+      `docs/theory/framework.md`, `docs/theory/port-guide.md`, `docs/summary.md`
+
 ## Theory chapters
 
 Port guide: `docs/theory/port-guide.md`; one PR per chapter.
@@ -235,6 +271,9 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   phone — not runnable headlessly, remains for a human pass
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
+- Four drills on the new registry, built in parallel: key signatures, intervals,
+  chords, rhythm (each declares the lesson that opens it with `unlockedBy`). Until
+  one does, Luyện's "more drills" line stays hidden (every listed drill is open)
 
 ## Next
 
@@ -245,10 +284,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   chords as their own drill after it; Complete-the-Measure to be reshaped into
   tap-the-rhythm.
 - Login + cloud progress sync, subscriptions (Stripe)
-- Phase 2 hygiene:
-  - `config/presets.ts` (warm-up / daily / challenge) is dead code: wire it into
-    setup or delete it.
-  Closed: the stale `result.yourBest` copy (replaced by the comparison bar); the local-day-key regression test pins its timezone per case (UTC+7 and
+- Phase 2 hygiene: nothing open.
+  Closed: the dead `config/presets.ts` (deleted with the drill platform); the stale `result.yourBest` copy (replaced by the comparison bar); the local-day-key regression test pins its timezone per case (UTC+7 and
   UTC−7), so it fails on any runner if bucketing regresses to UTC; real `<title>`,
   description and favicon; project README and a real `web/README.md`; CI and a
   zero-warning lint; WeekStrip removed (the activity panel charts minutes, not

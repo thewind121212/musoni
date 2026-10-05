@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { translate, LANGS } from './translate'
+import { defineStrings, translate, LANGS } from './translate'
 import { en, vi, type TranslationKey } from './translations'
 
 describe('translate', () => {
@@ -45,5 +45,15 @@ describe('translation coverage', () => {
     const untranslated = keys.filter(k => k !== 'lang.name' && vi[k] === en[k])
     // A few are legitimately identical across languages; catch wholesale copies.
     expect(untranslated.length).toBeLessThan(keys.length * 0.2)
+  })
+})
+
+describe('defineStrings', () => {
+  it("adds a drill's own strings under its namespace, plurals included", () => {
+    const keys = defineStrings('fake-drill', { title: 'Fake', count: '{count} fakes', count_one: '{count} fake' }, { title: 'Giả', count: '{count} cái', count_one: '{count} cái' })
+    expect(keys.title).toBe('drill.fake-drill.title')
+    expect(translate('vi', keys.title)).toBe('Giả')
+    expect(translate('en', keys.count, { count: 1 })).toBe('1 fake')
+    expect(translate('en', keys.count, { count: 2 })).toBe('2 fakes')
   })
 })

@@ -4,6 +4,11 @@ import type { Clef, Pitch } from '../../core/music/types'
 import { difficultyWeight, practiceScore, accuracy } from '../../core/scoring'
 import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
 import { keepLiveSession } from '../../app/liveSession'
+import noteId from './drill'
+import type { NoteIdLevel } from './strings'
+
+/** This drill's workout (level, length, accidentals) from the settings a session runs on. */
+const own = (s: Settings) => noteId.of(s)
 
 /**
  * The note-id drill is a self-contained SPA: one route, three phases.
@@ -25,7 +30,8 @@ export interface Miss {
 
 interface DrillState {
   phase: Phase
-  level: 1 | 2 | 3 | 4
+  level: NoteIdLevel
+  /** The settings this session runs on: the reader's, or a preset laid over them. */
   settings: Settings
   question: Question | null
   endsAt: number | null
@@ -46,7 +52,8 @@ interface DrillState {
   pausedAt: number | null
   /** `menu`: the reader asked (quit, Esc). `away`: the page was hidden or left. */
   pauseReason: PauseReason | null
-  start: (level: 1 | 2 | 3 | 4, settings: Settings, now?: number) => void
+  /** Starts a session on these settings (this drill's level and length are read from them). */
+  start: (settings: Settings, now?: number) => void
   answer: (index: number, now?: number) => void
   nextQuestion: (now?: number) => void
   tick: (now?: number) => void
@@ -67,7 +74,7 @@ export type PauseReason = 'menu' | 'away'
 export function playedMs(s: Pick<DrillState, 'endsAt' | 'pausedAt' | 'settings'>, now = Date.now()) {
   if (s.endsAt === null) return 0
   const left = Math.max(0, s.endsAt - (s.pausedAt ?? now))
-  return s.settings.durationSec * 1000 - left
+  return own(s.settings).durationSec * 1000 - left
 }
 
 /** Records an unfinished session with answers as partial; returns it, or null when there were none. */
@@ -76,12 +83,12 @@ function recordPartial(s: DrillState, now: number): SessionResult | null {
   const total = s.correct + s.wrong
   const result: SessionResult = {
     drill: 'note-id', level: s.level,
-    accidentals: s.settings.accidentals, naming: s.settings.naming,
+    accidentals: own(s.settings).accidentals, naming: s.settings.naming,
     durationSec: Math.max(1, Math.round(playedMs(s, now) / 1000)),
     correct: s.correct, wrong: s.wrong,
     accuracy: accuracy(s.correct, s.wrong),
     avgMs: Math.round(s.sumMs / total),
-    bestStreak: s.bestStreak, weight: difficultyWeight(s.level, s.settings.accidentals),
+    bestStreak: s.bestStreak, weight: difficultyWeight(s.level, own(s.settings).accidentals),
     practiceScore: 0,
     at: new Date(now).toISOString(),
     partial: true,
@@ -98,13 +105,15 @@ export const useDrillStore = create<DrillState>((set, get) => ({
   correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
   feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
 
-  start: (level, settings, now = Date.now()) => {
+  start: (settings, now = Date.now()) => {
     // Starting over ends a session left paused; its played time still counts.
     recordPartial(get(), now)
+    const { level: l, durationSec, accidentals } = own(settings)
+    const level = l as NoteIdLevel
     set({
       phase: 'running', level, settings,
-      question: generateQuestion(level, settings.accidentals, settings.naming),
-      endsAt: now + settings.durationSec * 1000, askedAt: now,
+      question: generateQuestion(level, accidentals, settings.naming),
+      endsAt: now + durationSec * 1000, askedAt: now,
       correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
       feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
     })
@@ -138,7 +147,7 @@ export const useDrillStore = create<DrillState>((set, get) => ({
       // resume shifts askedAt by the pause, so start its clock at the pause.
       feedback: null, askedAt: s.pausedAt ?? now,
       question: generateQuestion(
-        s.level, s.settings.accidentals, s.settings.naming, undefined, s.question?.pitch,
+        s.level, own(s.settings).accidentals, s.settings.naming, undefined, s.question?.pitch,
       ),
     })
   },
@@ -147,16 +156,17 @@ export const useDrillStore = create<DrillState>((set, get) => ({
     const s = get()
     if (s.phase !== 'running' || s.endsAt === null || s.pausedAt !== null || now < s.endsAt) return
     const total = s.correct + s.wrong
-    const weight = difficultyWeight(s.level, s.settings.accidentals)
+    const { accidentals, durationSec } = own(s.settings)
+    const weight = difficultyWeight(s.level, accidentals)
     const result: SessionResult = {
       drill: 'note-id', level: s.level,
-      accidentals: s.settings.accidentals, naming: s.settings.naming,
-      durationSec: s.settings.durationSec,
+      accidentals, naming: s.settings.naming,
+      durationSec,
       correct: s.correct, wrong: s.wrong,
       accuracy: accuracy(s.correct, s.wrong),
       avgMs: total === 0 ? 0 : Math.round(s.sumMs / total),
       bestStreak: s.bestStreak, weight,
-      practiceScore: practiceScore(s.correct, s.wrong, weight, s.settings.durationSec),
+      practiceScore: practiceScore(s.correct, s.wrong, weight, durationSec),
       at: new Date(now).toISOString(),
     }
     recordSession(result)
@@ -195,4 +205,4 @@ export const useDrillStore = create<DrillState>((set, get) => ({
 }))
 
 // A running session survives a page load (refresh, a typed URL): see app/liveSession.
-keepLiveSession(useDrillStore, 'note-id', '/train/note-id')
+keepLiveSession(useDrillStore, noteId.id, noteId.route)

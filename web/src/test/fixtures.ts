@@ -1,8 +1,11 @@
 import { useAppStore } from '@/app/store'
 import { useDrillStore } from '@/drills/note-id/store'
 import { useEarStore } from '@/drills/hear-play/store'
+import { useReviewStore } from '@/drills/review/store'
 import { useTheoryStore } from '@/theory/store'
-import { getSettings, localDayKey, type SessionResult, type Settings } from '@/progress/progressStore'
+import {
+  getSettings, localDayKey, type DrillSettingValue, type SessionResult, type Settings,
+} from '@/progress/progressStore'
 
 /** Empties saved progress and puts the stores back to a fresh start, with optional settings. */
 export function resetStores(settings: Partial<Settings> = {}) {
@@ -13,6 +16,9 @@ export function resetStores(settings: Partial<Settings> = {}) {
   })
   useEarStore.setState({
     phase: 'setup', question: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
+  })
+  useReviewStore.setState({
+    phase: 'setup', checkId: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
   })
   useTheoryStore.setState({ lesson: null, steps: 0, step: 0, answers: {}, activeAt: null, pendingMs: 0, openChapter: null })
 }
@@ -25,4 +31,9 @@ export function session(overrides: Partial<SessionResult> = {}): SessionResult {
     practiceScore: 30, at: `${localDayKey(new Date())}T09:00:00`,
     ...overrides,
   }
+}
+
+/** Settings with one drill's own settings changed (`settings.drills[id]`), over `base` (the saved ones by default). */
+export function withDrill(id: string, patch: Record<string, DrillSettingValue>, base: Settings = getSettings()): Settings {
+  return { ...base, drills: { ...base.drills, [id]: { ...base.drills[id], ...patch } } }
 }

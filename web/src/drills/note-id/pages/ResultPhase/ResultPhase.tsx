@@ -10,6 +10,7 @@ import { ScoreCompare } from '@/core/components/molecules'
 import { EarlyEndSummary, MissedNotes, ResultSummary } from '@/core/components/organisms'
 import { formatElapsed } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
+import { levelKey } from '@/drills/note-id/strings'
 
 /**
  * Page: the last session from the drill store, set against this week's average
@@ -33,7 +34,7 @@ export function ResultPhase() {
   // Again plays the same session: a lesson's preset stays on, the saved setup stays as it was.
   const again = () => {
     const drill = useDrillStore.getState()
-    drill.start(result.level as 1 | 2 | 3 | 4, drill.settings)
+    drill.start(drill.settings)
   }
 
   return (
@@ -55,7 +56,7 @@ export function ResultPhase() {
         ) : (
           <ResultSummary
             result={result}
-            levelName={t(`level.${result.level}` as 'level.1')}
+            levelName={t(levelKey(result.level))}
             isBest={isBest} average={average} t={t} />
         )}
 

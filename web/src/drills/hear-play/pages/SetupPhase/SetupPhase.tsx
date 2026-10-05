@@ -8,15 +8,18 @@ import { useEarStore } from '@/drills/hear-play/store'
 import { getBest } from '@/progress/progressStore'
 import { Button, FieldLegend, MiniKeyboard, Switch } from '@/core/components/atoms'
 import { DurationPicker, OptionCards, SegmentedControl, SettingRow } from '@/core/components/molecules'
-import { formatDuration } from '@/core/i18n/formatDuration'
 import { EAR_LEVELS } from '@/config/constants'
+import { sessionSummary } from '@/app/drillPreset'
+import hearPlay from '@/drills/hear-play/drill'
+import { S, levelDetailKey, levelKey } from '@/drills/hear-play/strings'
 
 const LEVELS = [1, 2, 3, 4] as const
 
 /** Page: Nghe & Đàn's settings, read from and written to the app store, and the start button. */
 export function SetupPhase() {
-  const { settings, updateSettings } = useAppStore()
-  const level = settings.earLevel
+  const { settings, updateSettings, updateDrill } = useAppStore()
+  const own = hearPlay.of(settings)
+  const level = own.level
   const reduce = useReducedMotion()
   const t = useT()
   const backLink = useBackLink()
@@ -25,8 +28,8 @@ export function SetupPhase() {
   // Each level's notes on a C keyboard: what the ear will be asked to find.
   const levelOptions = LEVELS.map(l => ({
     value: l,
-    label: t(`ear.level.${l}` as 'ear.level.1'),
-    hint: t(`ear.level.${l}.detail` as 'ear.level.1.detail'),
+    label: t(levelKey(l)),
+    hint: t(levelDetailKey(l)),
     visual: <MiniKeyboard lit={EAR_LEVELS[l].notes} />,
   }))
 
@@ -40,53 +43,52 @@ export function SetupPhase() {
   ]
 
   // One key changes nothing at level 1 (C only), so its switch is off and greyed there.
-  const oneKey = settings.earOneKey && level !== 1
+  const oneKey = own.oneKey && level !== 1
   const summary = [
-    t(`ear.level.${level}` as 'ear.level.1'),
-    formatDuration(settings.earDurationSec, t),
-    ...(settings.earCadenceEach ? [t('setup.ear.tag.cadenceEach')] : []),
-    ...(oneKey ? [t('setup.ear.tag.oneKey')] : []),
+    sessionSummary(hearPlay, own, t),
+    ...(own.cadenceEach ? [t(S['tag.cadenceEach'])] : []),
+    ...(oneKey ? [t(S['tag.oneKey'])] : []),
   ].join(' · ')
 
   const groups = [
     <OptionCards
       key="level"
       layout="row"
-      label={t('setup.ear.level')}
+      label={t(S['setup.level'])}
       icon={<EarIcon size={15} weight="fill" />}
-      options={levelOptions} value={level} onChange={earLevel => updateSettings({ earLevel })}
+      options={levelOptions} value={level} onChange={l => updateDrill(hearPlay.id, { level: l })}
     />,
     <DurationPicker
       key="length"
-      durationSec={settings.earDurationSec}
-      onChange={earDurationSec => updateSettings({ earDurationSec })}
+      durationSec={own.durationSec}
+      onChange={durationSec => updateDrill(hearPlay.id, { durationSec })}
       t={t}
     />,
     <fieldset key="listen" className="border-0 p-0">
-      <FieldLegend icon={<SpeakerHighIcon size={15} weight="fill" />} label={t('setup.ear.listen')} />
+      <FieldLegend icon={<SpeakerHighIcon size={15} weight="fill" />} label={t(S['setup.listen'])} />
       <div className="divide-y divide-line rounded-2xl border border-line bg-raised">
-        <SettingRow label={t('setup.ear.cadenceEach')} hint={t('setup.ear.cadenceEach.hint')}>
+        <SettingRow label={t(S['setup.cadenceEach'])} hint={t(S['setup.cadenceEach.hint'])}>
           <Switch
-            checked={settings.earCadenceEach}
-            label={t('setup.ear.cadenceEach')}
-            onChange={earCadenceEach => updateSettings({ earCadenceEach })}
+            checked={own.cadenceEach}
+            label={t(S['setup.cadenceEach'])}
+            onChange={cadenceEach => updateDrill(hearPlay.id, { cadenceEach })}
           />
         </SettingRow>
         <SettingRow
-          label={t('setup.ear.oneKey')}
-          hint={t(level === 1 ? 'setup.ear.oneKey.l1' : 'setup.ear.oneKey.hint')}
+          label={t(S['setup.oneKey'])}
+          hint={t(level === 1 ? S['setup.oneKey.l1'] : S['setup.oneKey.hint'])}
         >
           <Switch
             checked={oneKey}
             disabled={level === 1}
-            label={t('setup.ear.oneKey')}
-            onChange={earOneKey => updateSettings({ earOneKey })}
+            label={t(S['setup.oneKey'])}
+            onChange={oneKey => updateDrill(hearPlay.id, { oneKey })}
           />
         </SettingRow>
       </div>
     </fieldset>,
     <fieldset key="prefs" className="border-0 p-0">
-      <FieldLegend icon={<PianoKeysIcon size={15} weight="fill" />} label={t('setup.ear.answer')} />
+      <FieldLegend icon={<PianoKeysIcon size={15} weight="fill" />} label={t(S['setup.answer'])} />
       <div className="divide-y divide-line rounded-2xl border border-line bg-raised">
         <SettingRow label={t('setup.naming')}>
           <SegmentedControl
@@ -124,9 +126,9 @@ export function SetupPhase() {
           <Link to="/" onClick={backLink} aria-label={t('setup.back')}>
             <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
           </Link>
-          <h1 className="text-lg font-semibold md:text-2xl">{t('home.hearPlay')}</h1>
+          <h1 className="text-lg font-semibold md:text-2xl">{t(hearPlay.title)}</h1>
         </div>
-        <p className="mt-1 text-sm leading-snug text-ink-faint md:mt-2 md:text-base">{t('setup.ear.hint')}</p>
+        <p className="mt-1 text-sm leading-snug text-ink-faint md:mt-2 md:text-base">{t(S['setup.hint'])}</p>
 
         <div className="mt-5 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-7">
           {groups.map((group, i) => (
@@ -160,7 +162,7 @@ export function SetupPhase() {
           <Button
             variant="cta"
             className="h-14 w-full text-lg md:w-56"
-            onClick={() => useEarStore.getState().start(level, settings)}
+            onClick={() => useEarStore.getState().start(settings)}
           >
             <PlayIcon size={20} weight="fill" /> {t('setup.start')}
           </Button>

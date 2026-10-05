@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { act } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { resetStores } from '@/test/fixtures'
+import { resetStores, withDrill } from '@/test/fixtures'
 
 vi.mock('@/core/audio/playPitch', () => ({
   playPitch: vi.fn(), playSequence: vi.fn(), stopSounds: vi.fn(), preloadPiano: vi.fn(() => Promise.resolve()),
@@ -26,13 +26,13 @@ beforeEach(() => {
   vi.mocked(playSequence).mockClear()
   vi.mocked(stopSounds).mockClear()
   resetStores({ lang: 'en', naming: 'letters' })
-  useEarStore.getState().start(2, useAppStore.getState().settings, Date.now())
+  useEarStore.getState().start(withDrill('hear-play', { level: 2 }, useAppStore.getState().settings), Date.now())
 })
 afterEach(() => vi.useRealTimers())
 
 describe('Hear & play RunPhase', () => {
   it('plays the cadence before every note when asked', () => {
-    useEarStore.getState().start(2, { ...useAppStore.getState().settings, earCadenceEach: true }, Date.now())
+    useEarStore.getState().start(withDrill('hear-play', { level: 2, cadenceEach: true }, useAppStore.getState().settings), Date.now())
     renderRun()
     press(q().options[q().correctIndex].keyHint)
     vi.mocked(playSequence).mockClear()

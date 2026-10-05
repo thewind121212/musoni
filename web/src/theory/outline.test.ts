@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { doneInChapter, findLesson, lessonAfter, lessonNumber, nextLesson } from './outline'
-import type { Chapter, Lesson } from './types'
+import type { Chapter, Lesson } from '@/core/lesson/types'
 
 const lesson = (id: string, kind?: 'review'): Lesson => ({
   id, kind, title: { vi: id, en: id }, minutes: 3, sources: [], recap: [], steps: [],

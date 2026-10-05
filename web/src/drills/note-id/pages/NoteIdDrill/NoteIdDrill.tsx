@@ -13,7 +13,7 @@ const controls: DrillRouteControls = {
     const saved = useAppStore.getState().settings
     // A lesson's preset applies to this session only; the saved setup stays.
     const settings = preset?.drill === 'note-id' ? withPreset(saved, preset) : saved
-    useDrillStore.getState().start(settings.level, settings)
+    useDrillStore.getState().start(settings)
   },
   backToSetup: () => useDrillStore.getState().backToSetup(),
   resume: () => useDrillStore.getState().resume(),

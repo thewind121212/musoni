@@ -3,17 +3,26 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 // The shipped defaults: Vietnamese first, and solfege with it, because that is
 // how notes are taught in the target market.
 const DEFAULT_SETTINGS = {
-  level: 1,
-  durationSec: 60,
-  accidentals: false,
   naming: 'solfege',
   sound: true,
-  keyLabels: true, padStyle: 'piano' as const, earLevel: 1 as const, earDurationSec: 120,
-  earCadenceEach: false, earOneKey: false,
+  keyLabels: true, padStyle: 'piano' as const,
   lang: 'vi',
   activityExpanded: false,
+  drills: {},
+  startPoint: null,
 } as const
-import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount, getRecentAverage, saveLiveSession, getLiveSession, getLiveSessions, clearLiveSession, recordLessonTime, markLessonDone, getLessonsDone } from './progressStore'
+/** A reader's settings as version 1 stored them: every drill field flat. */
+const V1_SETTINGS = {
+  level: 3, durationSec: 300, accidentals: true, naming: 'letters', sound: false, keyLabels: true,
+  padStyle: 'boxes', earLevel: 2, earDurationSec: 60, earCadenceEach: true, earOneKey: false,
+  lang: 'en', activityExpanded: true,
+}
+import {
+  getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes,
+  getLongestStreak, getActiveDayCount, getRecentAverage, saveLiveSession, getLiveSession, getLiveSessions,
+  clearLiveSession, recordLessonTime, markLessonDone, getLessonsDone, migrate, hasHistory, getLastPlayed,
+  getUnlocksSeen, markUnlocksSeen, getReviewMarks, recordReviewAnswer,
+} from './progressStore'
 
 const session = (over = {}) => ({
   drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
@@ -26,9 +35,9 @@ beforeEach(() => localStorage.clear())
 describe('progressStore', () => {
   it('default settings', () =>
     expect(getSettings()).toEqual(DEFAULT_SETTINGS))
-  it('settings round-trip', () => {
-    saveSettings({ ...DEFAULT_SETTINGS, naming: 'solfege', accidentals: true, sound: false, durationSec: 120, lang: 'en' })
-    expect(getSettings().naming).toBe('solfege')
+  it('settings round-trip, drill settings included', () => {
+    saveSettings({ ...DEFAULT_SETTINGS, naming: 'letters', sound: false, lang: 'en', drills: { 'note-id': { level: 2 } } })
+    expect(getSettings()).toMatchObject({ naming: 'letters', drills: { 'note-id': { level: 2 } } })
   })
   it('records under the LOCAL date key derived from `at`', () => {
     recordSession(session())
@@ -78,13 +87,6 @@ describe('progressStore', () => {
   it('counts aided sessions toward daily minutes', () => {
     recordSession(session({ drill: 'hear-play', durationSec: 120, aids: true }))
     expect(getDailyMinutes()[localDayKey(new Date('2026-08-28T10:00:00Z'))]).toBe(2)
-  })
-  it('loads progress saved before the listening aids with both off', () => {
-    const old: Record<string, unknown> = { ...DEFAULT_SETTINGS }
-    delete old.earCadenceEach
-    delete old.earOneKey
-    localStorage.setItem('musoni-progress-v1', JSON.stringify({ version: 1, settings: old, days: {} }))
-    expect(getSettings()).toMatchObject({ earCadenceEach: false, earOneKey: false })
   })
   it('recovers from corrupted localStorage', () => {
     localStorage.setItem('musoni-progress-v1', '{not json')
@@ -295,7 +297,7 @@ describe('theory lessons', () => {
 
   it('reads a document saved before theory existed and keeps its history when lessons are added', () => {
     // An existing reader's document: version 1, sessions only, no theory fields.
-    const old = { version: 1, settings: DEFAULT_SETTINGS, days: { '2026-08-28': { sessions: [session()] } } }
+    const old = { version: 1, settings: V1_SETTINGS, days: { '2026-08-28': { sessions: [session()] } } }
     localStorage.setItem('musoni-progress-v1', JSON.stringify(old))
     expect(getLessonsDone()).toEqual({})
     expect(getDailyMinutes()).toEqual({ '2026-08-28': 1 })
@@ -303,9 +305,82 @@ describe('theory lessons', () => {
     recordLessonTime(lessonAt('2026-08-28T12:00:00Z'))
     markLessonDone('pitch-staff/octaves', { correct: 1, total: 2 })
     const saved = JSON.parse(localStorage.getItem('musoni-progress-v1')!)
-    expect(saved.version).toBe(1)
+    expect(saved.version).toBe(2)
     expect(saved.days['2026-08-28'].sessions).toHaveLength(1)
     expect(getDay('2026-08-28')).toHaveLength(1)
     expect(Object.keys(getLessonsDone())).toEqual(['pitch-staff/octaves'])
+  })
+})
+
+describe('settings migration (version 1 to 2)', () => {
+  it("moves each drill's flat fields under settings.drills, keeping the shared preferences", () => {
+    const doc = migrate({ version: 1, settings: V1_SETTINGS, days: {} })
+    expect(doc.version).toBe(2)
+    expect(doc.settings.drills).toEqual({
+      'note-id': { level: 3, durationSec: 300, accidentals: true },
+      'hear-play': { level: 2, durationSec: 60, cadenceEach: true, oneKey: false },
+    })
+    expect(doc.settings).toMatchObject({ naming: 'letters', sound: false, padStyle: 'boxes', lang: 'en', activityExpanded: true })
+    expect(doc.settings).not.toHaveProperty('level')
+    expect(doc.settings).not.toHaveProperty('earLevel')
+  })
+
+  it('leaves out fields an old document never had, so the drill defaults apply', () => {
+    // Written before Nghe & Đàn existed.
+    const doc = migrate({ version: 1, settings: { level: 2, naming: 'solfege' }, days: {} })
+    expect(doc.settings.drills).toEqual({ 'note-id': { level: 2 } })
+  })
+
+  it('reads an old document through getSettings, and writes it back as version 2 on the next save', () => {
+    localStorage.setItem('musoni-progress-v1', JSON.stringify({
+      version: 1, settings: V1_SETTINGS, days: { '2026-08-28': { sessions: [session()] } },
+    }))
+    expect(getSettings().drills['note-id']).toEqual({ level: 3, durationSec: 300, accidentals: true })
+    expect(getSettings().startPoint).toBeNull()
+    recordSession(session({ at: '2026-08-29T10:00:00Z' }))
+    const saved = JSON.parse(localStorage.getItem('musoni-progress-v1')!)
+    expect(saved.version).toBe(2)
+    expect(saved.settings.drills['hear-play'].cadenceEach).toBe(true)
+    expect(Object.keys(saved.days)).toHaveLength(2)
+  })
+
+  it('leaves a version 2 document as it is', () => {
+    const doc = { version: 2, settings: { ...DEFAULT_SETTINGS, drills: { x: { level: 1 } } }, days: {} }
+    expect(migrate(doc)).toBe(doc)
+  })
+})
+
+describe('what the tabs read', () => {
+  it('knows whether the reader has done anything', () => {
+    expect(hasHistory()).toBe(false)
+    markLessonDone('pitch-staff/pitch-names', { correct: 1, total: 1 })
+    expect(hasHistory()).toBe(true)
+    localStorage.clear()
+    recordSession(session({ partial: true }))
+    expect(hasHistory()).toBe(true)
+  })
+
+  it('gives each drill its latest session, partial ones included', () => {
+    recordSession(session({ at: '2026-08-28T10:00:00Z' }))
+    recordSession(session({ at: '2026-08-30T10:00:00Z', partial: true }))
+    recordSession(session({ at: '2026-08-29T10:00:00Z' }))
+    recordSession(session({ drill: 'hear-play', at: '2026-08-01T10:00:00Z' }))
+    expect(getLastPlayed()).toEqual({ 'note-id': '2026-08-30T10:00:00Z', 'hear-play': '2026-08-01T10:00:00Z' })
+  })
+
+  it('remembers drills shown open, once each', () => {
+    markUnlocksSeen(['key-sig'])
+    markUnlocksSeen(['key-sig', 'chords'])
+    expect(getUnlocksSeen()).toEqual(['key-sig', 'chords'])
+  })
+
+  it('keeps only the last answer to each review check', () => {
+    recordReviewAnswer('pitch-staff/octaves/3', false, new Date('2026-10-01T09:00:00Z'))
+    recordReviewAnswer('pitch-staff/octaves/3', true, new Date('2026-10-02T09:00:00Z'))
+    recordReviewAnswer('pitch-staff/octaves/4', false, new Date('2026-10-02T09:00:00Z'))
+    expect(getReviewMarks()).toEqual({
+      'pitch-staff/octaves/3': { at: '2026-10-02T09:00:00.000Z' },
+      'pitch-staff/octaves/4': { at: '2026-10-02T09:00:00.000Z', missed: true },
+    })
   })
 })

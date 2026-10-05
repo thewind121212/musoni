@@ -2,7 +2,7 @@ import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { resetStores, session } from '@/test/fixtures'
+import { resetStores, session, withDrill } from '@/test/fixtures'
 import { recordSession } from '@/progress/progressStore'
 
 vi.mock('@/core/components/organisms/Staff', () => ({ Staff: () => <div data-testid="staff" /> }))
@@ -28,7 +28,8 @@ describe('Hear & play ResultPhase', () => {
   })
 
   it('goes again at the same level', async () => {
-    useEarStore.setState({ phase: 'finished', lastResult: session({ drill: 'hear-play', level: 4 }) })
+    // A finished session holds the settings it ran on.
+    useEarStore.setState({ phase: 'finished', settings: withDrill('hear-play', { level: 4 }), lastResult: session({ drill: 'hear-play', level: 4 }) })
     renderResult()
     await userEvent.click(screen.getByRole('button', { name: /Again/ }))
     expect(useEarStore.getState().phase).toBe('running')

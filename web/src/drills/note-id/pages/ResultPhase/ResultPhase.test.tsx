@@ -6,7 +6,7 @@ import { ResultPhase } from './ResultPhase'
 import { useDrillStore } from '@/drills/note-id/store'
 import { useAppStore } from '@/app/store'
 import { recordSession } from '@/progress/progressStore'
-import { resetStores, session } from '@/test/fixtures'
+import { resetStores, session, withDrill } from '@/test/fixtures'
 
 const renderResult = () => render(<MemoryRouter><ResultPhase /></MemoryRouter>)
 
@@ -14,7 +14,8 @@ const renderResult = () => render(<MemoryRouter><ResultPhase /></MemoryRouter>)
 function finish(overrides: Parameters<typeof session>[0] = {}) {
   const result = session(overrides)
   recordSession(result)
-  useDrillStore.setState({ phase: 'finished', lastResult: result })
+  // A finished session holds the settings it ran on.
+  useDrillStore.setState({ phase: 'finished', settings: withDrill('note-id', { level: result.level }), lastResult: result })
   return result
 }
 
@@ -58,11 +59,11 @@ describe('ResultPhase', () => {
 
   it("plays again on the session's own settings, so a lesson's preset carries over", async () => {
     finish({ level: 2 })
-    useDrillStore.setState({ settings: { ...useAppStore.getState().settings, durationSec: 120, accidentals: true } })
+    useDrillStore.setState({ settings: withDrill('note-id', { level: 2, durationSec: 120, accidentals: true }, useAppStore.getState().settings) })
     renderResult()
     await userEvent.click(screen.getByRole('button', { name: /Again/ }))
     const drill = useDrillStore.getState()
-    expect([drill.level, drill.settings.durationSec, drill.settings.accidentals]).toEqual([2, 120, true])
+    expect([drill.level, drill.settings.drills['note-id'].durationSec, drill.settings.drills['note-id'].accidentals]).toEqual([2, 120, true])
   })
 
   it('goes back to setup', async () => {

@@ -8,6 +8,7 @@ import { useT } from '@/app/useT'
 import { formatClock, formatElapsed } from '@/core/i18n/formatDuration'
 import { nearestOctave } from '@/core/music/pitch'
 import { playPitch, preloadPiano } from '@/core/audio/playPitch'
+import noteId from '@/drills/note-id/drill'
 import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '@/config/constants'
 
 /** The ✕ button and Esc: pause to ask, or just leave when nothing was answered yet. */
@@ -86,7 +87,7 @@ export function RunPhase() {
   // While paused the clock reads as it stood at the pause.
   const msLeft = endsAt ? Math.max(0, endsAt - (pausedAt ?? now)) : 0
   const secondsLeft = Math.ceil(msLeft / 1000)
-  const fraction = endsAt ? msLeft / (settings.durationSec * 1000) : 0
+  const fraction = endsAt ? msLeft / (noteId.of(settings).durationSec * 1000) : 0
   const lastTen = secondsLeft <= 10
 
   // On a miss, the note the reader picked, placed at the octave nearest the

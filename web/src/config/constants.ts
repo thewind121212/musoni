@@ -268,3 +268,30 @@ export const THEORY_MIN_RECORD_SEC = 15
  * the drill's staff; a long row shrinks to fit.
  */
 export const THEORY_STAFF_WIDTH = { base: 120, perNote: 36, grand: 24, min: 210, max: 560 } as const
+
+/*
+ * Luyện's "Hôm nay" pick: a session that fills what is left of the daily
+ * goal. Two minutes while two or more are left, one otherwise; a drill's very
+ * first session is always the short one. Both are preset lengths.
+ */
+export const TODAY_SHORT_SECONDS = 60
+export const TODAY_LONG_SECONDS = 120
+/** The drill a reader who answers "I can read a little" on first open starts with (its starter session). */
+export const READER_START_DRILL = 'note-id'
+
+/*
+ * Ôn tập (theory review): checks from finished lessons, picked at random by
+ * weight. A check never answered weighs `unseen`; an answered one `base`,
+ * plus `perDay` for each day since it was last answered (up to `staleDays`),
+ * plus `missed` when that answer was wrong. So a missed check comes back
+ * soonest, then new ones and ones not seen for a while.
+ */
+export const REVIEW_WEIGHT = { unseen: 3, base: 1, perDay: 0.25, staleDays: 14, missed: 6 } as const
+/** The last few checks asked are not asked again straight away (fewer when the pool is small). */
+export const REVIEW_NO_REPEAT = 3
+/** A right answer moves on after this; a wrong one waits for "Tiếp" so the reason can be read. */
+export const REVIEW_FEEDBACK_CORRECT_MS = 1400
+/** Ôn tập's difficulty weight in the pace score: one implicit level, scored like Đọc nốt's first. */
+export const REVIEW_DIFFICULTY = 1
+/** Ôn tập opens on two minutes: reading a reason takes longer than naming a note. */
+export const REVIEW_DEFAULT_DURATION_SECONDS = 120

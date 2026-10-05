@@ -1,36 +1,39 @@
 import type { Naming } from '../core/music/types'
-import { DEFAULT_DURATION_SECONDS, EAR_DEFAULT_DURATION_SECONDS } from '../config/constants'
 import { DEFAULT_LANG, type Lang } from '../core/i18n/translate'
 
 export type PadStyle = 'piano' | 'boxes'
 
+/** A drill's id (`note-id`, `hear-play`, ...): the key of its registry entry, its route and its saved settings. */
+export type DrillId = string
+
+/** One saved drill setting: a level, a length, a switch, a choice, a list of chapters. */
+export type DrillSettingValue = boolean | number | string | string[] | null
+/** One drill's saved workout settings. Its defaults live in the drill's registry entry, not here. */
+export type StoredDrillSettings = Record<string, DrillSettingValue>
+
+/** The first-run answer: new to notation (start with lesson 1) or reads some (start with a short drill). */
+export type StartPoint = 'beginner' | 'reader'
+
 export interface Settings {
-  /** Workout parameters: what is being practised. Presets set these. */
-  level: 1 | 2 | 3 | 4
-  durationSec: number
-  accidentals: boolean
-  /** Preferences: how the user likes to work. Presets never touch these. */
+  /** Preferences: how the user likes to work, shared by every drill and lesson. Presets never touch these. */
   naming: Naming
   sound: boolean
   /** Note names printed on the answer keys. Off trains finding the note on a bare keyboard. */
   keyLabels: boolean
   /** Answer keys drawn as a piano keyboard, or as two rows of boxes. */
   padStyle: PadStyle
-  /** Nghe & Đàn's own workout: level and length. Naming, keys and labels are shared. */
-  earLevel: 1 | 2 | 3 | 4
-  earDurationSec: number
-  /**
-   * Nghe & Đàn listening aids. `earCadenceEach`: the key's cadence before every
-   * question, not only when the key changes. `earOneKey`: C at every level.
-   * Both make the drill easier, so a session with one on never sets a best.
-   */
-  earCadenceEach: boolean
-  earOneKey: boolean
   lang: Lang
   /** Whether the activity panel shows the full calendar or just this week. */
   activityExpanded: boolean
+  /**
+   * Each drill's own workout (level, length and its own options), by drill
+   * id. Only what the reader changed is stored; the drill's registry entry
+   * holds the defaults (`app/drills`). Presets lay over these for one session.
+   */
+  drills: Record<DrillId, StoredDrillSettings>
+  /** The first-run answer; null until asked (a reader with history is never asked). */
+  startPoint: StartPoint | null
 }
-export type DrillId = 'note-id' | 'hear-play'
 
 export interface SessionResult {
   /**
@@ -72,41 +75,83 @@ export interface LessonResult {
   total: number
 }
 
+/** When an Ôn tập check was last answered, and whether that answer was wrong. */
+export interface ReviewMark {
+  at: string
+  missed?: true
+}
+
 /**
  * A local day. `lessons` was added with the theory lessons; days written
  * before it have none, and days with only lesson time have no sessions.
  */
 interface Day { sessions: SessionResult[]; lessons?: LessonTime[] }
 /**
- * The progress document. `theory` was added with the theory lessons (additive,
- * so `version` stays 1): finished lessons by key.
+ * The progress document. Version 2 moved each drill's workout settings into
+ * `settings.drills` (see `migrate`). `theory`, `unlocksSeen` and `review` are
+ * optional: a document without them reads as none.
  */
 interface Doc {
-  version: 1
+  version: 2
   settings: Settings
   days: Record<string, Day>
+  /** Finished lessons by key. */
   theory?: { done: Record<string, LessonResult> }
+  /** Drills Luyện has shown as open, so a newly opened one is marked "Mới mở" on one visit only. */
+  unlocksSeen?: DrillId[]
+  /** Ôn tập: the last answer to each lesson check, by check id (`chapter/lesson/step`). */
+  review?: Record<string, ReviewMark>
 }
+/** A document as found in storage: any version, checked only for its two required parts. */
+type StoredDoc = { version?: number; settings: Record<string, unknown>; days: Record<string, Day> } & Record<string, unknown>
 
 const KEY = 'musoni-progress-v1'
 // Vietnamese market first, and Vietnamese music teaching leads with solfege,
 // so the drill speaks Do Re Mi out of the box rather than C D E.
 const DEFAULTS: Settings = {
-  level: 1,
-  durationSec: DEFAULT_DURATION_SECONDS,
-  accidentals: false,
   naming: 'solfege',
   sound: true,
   keyLabels: true,
   padStyle: 'piano',
-  earLevel: 1,
-  earDurationSec: EAR_DEFAULT_DURATION_SECONDS,
-  earCadenceEach: false,
-  earOneKey: false,
   lang: DEFAULT_LANG,
   // Opens short: the week answers "am I current" in one glance, and the
   // calendar is there for anyone who wants the longer view.
   activityExpanded: false,
+  drills: {},
+  startPoint: null,
+}
+
+/**
+ * Version 1 kept the two drills' workout settings as flat fields. Version 2
+ * keeps each drill's under `settings.drills[id]`, so a new drill adds no
+ * field here. Each old field moves to its drill under the drill's own name;
+ * a field the document never had stays out (the drill's default applies).
+ */
+const V1_FIELDS: Record<string, [DrillId, string]> = {
+  level: ['note-id', 'level'],
+  durationSec: ['note-id', 'durationSec'],
+  accidentals: ['note-id', 'accidentals'],
+  earLevel: ['hear-play', 'level'],
+  earDurationSec: ['hear-play', 'durationSec'],
+  earCadenceEach: ['hear-play', 'cadenceEach'],
+  earOneKey: ['hear-play', 'oneKey'],
+}
+
+/**
+ * Brings a stored document up to the current version. Pure: the result is
+ * written back with the next save. A document already at version 2 (or a
+ * newer one) is read as it is.
+ */
+export function migrate(doc: StoredDoc): Doc {
+  if (typeof doc.version === 'number' && doc.version >= 2) return doc as unknown as Doc
+  const settings: Record<string, unknown> = { ...doc.settings }
+  const drills: Record<DrillId, StoredDrillSettings> = {}
+  for (const [field, [drill, name]] of Object.entries(V1_FIELDS)) {
+    if (!(field in settings)) continue
+    ;(drills[drill] ??= {})[name] = settings[field] as DrillSettingValue
+    delete settings[field]
+  }
+  return { ...doc, version: 2, settings: { ...settings, drills } as unknown as Settings } as unknown as Doc
 }
 
 // Formats a Date as a LOCAL calendar-day key (YYYY-MM-DD), as opposed to
@@ -118,7 +163,7 @@ export function localDayKey(d: Date): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
-function isValidDoc(x: unknown): x is Doc {
+function isValidDoc(x: unknown): x is StoredDoc {
   if (typeof x !== 'object' || x === null) return false
   const o = x as Record<string, unknown>
   return typeof o.settings === 'object' && o.settings !== null
@@ -130,15 +175,18 @@ function load(): Doc {
   if (raw) {
     try {
       const parsed: unknown = JSON.parse(raw)
-      if (isValidDoc(parsed)) return parsed
+      if (isValidDoc(parsed)) return migrate(parsed)
       // valid JSON, wrong shape (e.g. 'null' or '{}') — fall through to defaults
     } catch { /* corrupted — fall through to defaults */ }
   }
-  return { version: 1, settings: { ...DEFAULTS }, days: {} }
+  return { version: 2, settings: { ...DEFAULTS }, days: {} }
 }
 function save(doc: Doc): void { localStorage.setItem(KEY, JSON.stringify(doc)) }
 
-export function getSettings(): Settings { return { ...DEFAULTS, ...load().settings } }
+export function getSettings(): Settings {
+  const stored = load().settings
+  return { ...DEFAULTS, ...stored, drills: { ...stored.drills } }
+}
 export function saveSettings(s: Settings): void { const d = load(); d.settings = s; save(d) }
 
 /** What home needs to offer a session back: where it is and how it stood. */
@@ -164,10 +212,10 @@ export interface LiveSession<S = Record<string, unknown>> {
 
 const LIVE_KEY = 'musoni-live-v1'
 
-function loadLive(): Partial<Record<DrillId, LiveSession>> {
+function loadLive(): Record<DrillId, LiveSession | undefined> {
   try {
     const parsed: unknown = JSON.parse(localStorage.getItem(LIVE_KEY) ?? '{}')
-    return typeof parsed === 'object' && parsed !== null ? parsed as Partial<Record<DrillId, LiveSession>> : {}
+    return typeof parsed === 'object' && parsed !== null ? parsed as Record<DrillId, LiveSession | undefined> : {}
   } catch { return {} /* corrupted: nothing to bring back */ }
 }
 
@@ -326,4 +374,44 @@ export function getLongestStreak(): number {
 /** Number of days with at least one session or some lesson time. */
 export function getActiveDayCount(): number {
   return Object.values(load().days).filter(practised).length
+}
+
+/** Whether the reader has done anything yet: a session, lesson time or a finished lesson. */
+export function hasHistory(): boolean {
+  const d = load()
+  return Object.values(d.days).some(practised) || Object.keys(d.theory?.done ?? {}).length > 0
+}
+
+/** When each drill was last played (its latest session, partial ones included), by drill id. */
+export function getLastPlayed(): Record<DrillId, string> {
+  const out: Record<DrillId, string> = {}
+  for (const day of Object.values(load().days)) {
+    for (const s of day.sessions ?? []) {
+      if (!out[s.drill] || Date.parse(s.at) > Date.parse(out[s.drill])) out[s.drill] = s.at
+    }
+  }
+  return out
+}
+
+/** Drills Luyện has already shown as open. */
+export function getUnlocksSeen(): DrillId[] { return load().unlocksSeen ?? [] }
+/** Remembers drills as shown open, so "Mới mở" marks each one on the visit it opened only. */
+export function markUnlocksSeen(drills: readonly DrillId[]): void {
+  const d = load()
+  const seen = d.unlocksSeen ?? []
+  if (drills.every(x => seen.includes(x))) return
+  d.unlocksSeen = [...new Set([...seen, ...drills])]
+  save(d)
+}
+
+/** Ôn tập: the last answer to every check answered so far, by check id. */
+export function getReviewMarks(): Record<string, ReviewMark> { return load().review ?? {} }
+/**
+ * Ôn tập: records an answer to a check. Only the latest answer is kept, so the
+ * history is one small entry per check the reader has met.
+ */
+export function recordReviewAnswer(check: string, correct: boolean, now: Date = new Date()): void {
+  const d = load()
+  ;(d.review ??= {})[check] = correct ? { at: now.toISOString() } : { at: now.toISOString(), missed: true }
+  save(d)
 }

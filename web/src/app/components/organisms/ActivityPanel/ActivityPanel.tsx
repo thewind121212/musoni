@@ -1,17 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { CaretDownIcon, FireIcon, TrophyIcon, CalendarCheckIcon } from '@phosphor-icons/react'
-import { GoalRing, IconStat, Panel } from '@/core/components/atoms'
+import { CaretDownIcon, TrophyIcon, CalendarCheckIcon } from '@phosphor-icons/react'
+import { IconStat, Panel } from '@/core/components/atoms'
 import type { Lang, Translate } from '@/core/i18n/translate'
 import { ActivityGrid, ActivityWeek } from '../ActivityCalendar'
 
 interface Props {
   /** Practice minutes keyed by local day (`YYYY-MM-DD`). */
   minutesByDay: Record<string, number>
-  todayMinutes: number
-  /** Minutes a day the reader aims for; today's ring fills toward it. */
-  dailyGoal: number
-  /** Current run of practised days; the pill hides at 0. */
-  streak: number
   longestStreak: number
   activeDays: number
   /** Full calendar instead of this week. */
@@ -22,45 +17,17 @@ interface Props {
 }
 
 /**
- * Where the reader stands: today against the daily goal, then the streak,
- * then either this week or the full calendar of every practised day.
+ * The reader's practice history: this week, or the full calendar of every
+ * practised day with the longest streak and the count of active days. Today
+ * against the goal and the current streak are Luyện's Hôm nay card.
  */
 export function ActivityPanel({
-  minutesByDay, todayMinutes, dailyGoal, streak, longestStreak, activeDays, expanded, onToggle, lang, t,
+  minutesByDay, longestStreak, activeDays, expanded, onToggle, lang, t,
 }: Props) {
   const reduce = useReducedMotion()
-  const practisedToday = todayMinutes > 0
 
   return (
     <Panel>
-      <div className="flex items-center gap-4">
-        <GoalRing value={todayMinutes} goal={dailyGoal} unit={t('goal.unit')} />
-        <div className="min-w-0 flex-1">
-          <div className="text-[10px] font-semibold tracking-wide text-ink-faint uppercase">
-            {t('week.today')}
-          </div>
-          <div className="text-lg leading-snug font-semibold text-ink">
-            {!practisedToday
-              ? t('week.notYet')
-              : todayMinutes >= dailyGoal
-                ? t('goal.reached')
-                : t('goal.toGo', { count: dailyGoal - todayMinutes })}
-          </div>
-          {!practisedToday && <div className="text-xs text-ink-faint">{t('week.keepGoing')}</div>}
-          {streak > 0 && (
-            <div
-              className={
-                'mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 ' +
-                (practisedToday ? 'bg-accent text-accent-ink' : 'border border-line text-ink-soft')
-              }
-            >
-              <FireIcon size={14} weight="fill" />
-              <span className="tnum text-sm font-semibold">{t('week.days', { count: streak })}</span>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/*
         One box that resizes, rather than one view collapsing to nothing before
         the next grows. `layout` animates the height while popLayout takes the
@@ -73,7 +40,7 @@ export function ActivityPanel({
       <motion.div
         layout={reduce ? false : 'size'}
         transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
-        className="mt-3.5 -mx-1.5 overflow-hidden px-1.5 py-1.5"
+        className="-mx-1.5 -mt-1.5 overflow-hidden px-1.5 py-1.5"
       >
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div

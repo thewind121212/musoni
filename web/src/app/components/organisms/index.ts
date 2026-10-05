@@ -1,4 +1,4 @@
 export * from './ActivityCalendar'
 export * from './ActivityPanel'
-export * from './PracticeCard'
-export * from './TheoryCard'
+export * from './TabBar'
+export * from './TodayCard'

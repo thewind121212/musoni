@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { sentenceCount, validateChapter } from './validate'
-import type { Chapter, CheckStep, Lesson } from './types'
+import type { Chapter, CheckStep, Lesson } from '@/core/lesson/types'
 
 const L = (vi: string, en = vi) => ({ vi, en })
 const URL = 'https://musictheory.pugetsound.edu/mt21c/Notation.html'

@@ -72,8 +72,8 @@ next step, after this drill has been tried.
 
 ## Listening aids
 
-Two switches in setup's **Nghe** group, both off by default (`earCadenceEach`,
-`earOneKey` in settings):
+Two switches in setup's **Nghe** group, both off by default (`cadenceEach`,
+`oneKey` in `settings.drills["hear-play"]`):
 
 - **Nghe giọng trước mỗi nốt** (key before every note): the cadence plays before
   every question, not only when a key block starts. For a reader who keeps
@@ -94,7 +94,7 @@ Setup's summary line adds "Mỗi câu nghe giọng" / "Một giọng" when an ai
 
 Same as note reading (see `drill-note-identification.md`):
 
-- A timed session of its own length (`earDurationSec`, default **2 min**: a
+- A timed session of its own length (`settings.drills["hear-play"].durationSec`, default **2 min**: a
   cadence takes about 2.5 s, so hearing takes longer than reading). Same length
   choices and Other stepper.
 - `practiceScore` = pace × 10 × level weight × accuracy × endurance. The answer
@@ -102,13 +102,13 @@ Same as note reading (see `drill-note-identification.md`):
   answer during the cadence counts as instant (a guess, which accuracy prices).
 - Bests and week averages are per drill and level (`getBest('hear-play', level)`).
 - ✕ / Esc pause, leaving the app or the route pauses, back during a session
-  goes home or to setup (wherever it was started), ending early records a `partial` session: all shared
+  goes to the tab or to setup (wherever it was started), ending early records a `partial` session: all shared
   with drill 1 through `useRunGuards`, `useDrillRoute` and the core
   `PausePanel`. Pausing also silences the sound.
 - The result screen is drill 1's: score with difficulty and endurance chips,
   week-average bar, and the missed notes on small staves with what was played.
 
-- A session played with an aid on (`earCadenceEach`, or `earOneKey` above L1)
+- A session played with an aid on (`cadenceEach`, or `oneKey` above L1)
   is saved with `aids: true`: it counts toward minutes and the streak, but
   never sets a best and is left out of the week average (the aids make the
   drill easier, and the answer clock starts when the note sounds, so the extra
@@ -120,8 +120,8 @@ Same as note reading (see `drill-note-identification.md`):
 Sound is always on in this drill; the note-id Sound switch does not apply.
 
 Drill 2's action colour is **violet** instead of the app's amber (Start,
-Practice on its home card, Again, the pause sheet's Continue, the paused bar
-when the paused session is this drill's); see `architecture.md` Styling.
+Luyện on its Luyện card, Again, the pause sheet's Continue, the paused bar
+when the paused session is this drill's); declared as `colour` in its registry entry, see `architecture.md` Styling.
 
 ## Code
 
@@ -131,6 +131,7 @@ when the paused session is this drill's); see `architecture.md` Styling.
 | MIDI to a spelled note | `core/music/pitch.pitchFromMidi` |
 | Scheduled notes and chords | `core/audio/playPitch.playSequence`, `stopSounds` |
 | Question, sounds | `drills/hear-play/generator.ts` (`generateEarQuestion`, `questionSound`, `answerSound`, `chosenPitch`) |
+| Registry entry (levels, defaults, colour), strings | `drills/hear-play/drill.ts`, `drills/hear-play/strings.ts` |
 | Session state | `drills/hear-play/store.ts` |
 | Listening stage | `drills/hear-play/components/organisms/ListenStage` |
 | Tunables | `config/constants.ts` `EAR_*` |
