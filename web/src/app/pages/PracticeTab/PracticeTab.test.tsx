@@ -60,7 +60,7 @@ describe('PracticeTab', () => {
   })
 
   it('counts the drills still to open, shows them all on request, and marks one as just opened once', async () => {
-    // Real drills waiting for a lesson not yet written stay unopened too.
+    // Real drills whose lesson is not written yet stay to open as well.
     const waiting = listedDrills().filter(d => d.unlockedBy).length
     remove = addDrills(fakeDrill({ unlockedBy: 'pitch-staff/staff-clefs' }), fakeDrill({ id: 'later', unlockedBy: 'nowhere/yet' }))
     markLessonDone('pitch-staff/staff-clefs', { correct: 3, total: 3 })

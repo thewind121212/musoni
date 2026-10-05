@@ -13,6 +13,7 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
 | `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
+| `drills/key-sig` | `drills/key-sig/store.ts` (`useKeySigStore`) | Hóa biểu session: the signature on screen (sharps or flats, mode, clef, its pad), score, streak, timer, pause state, misses (see `drill-key-sig.md`) |
 | `drills/chords` | `drills/chords/store.ts` (`useChordStore`) | Hợp âm session: the chord on screen, a root or quality picked and waiting for the other, score, streak, timer, pause state (see `drill-chords.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | *(later)* `drills/complete-measure` | its own store | its session state |
@@ -172,7 +173,8 @@ Shared, module-agnostic, reuse-first building blocks:
   bare lines (`none`). It crops its viewBox to the drawn ink, puts labels under
   the notes as HTML (so they wrap the reader's naming and font), draws chosen
   notes blue and takes the same `tone`/`chosen` feedback as Staff. Its input
-  is the parsed notation from `core/music/notation`. `theme.ts` holds the
+  is the parsed notation from `core/music/notation`; with no events it draws
+  the clef and key signature alone (Hóa biểu's question). `theme.ts` holds the
   shared ink colour and the redraw-on-theme hook.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling, `pitchFromMidi`) used by the generators and

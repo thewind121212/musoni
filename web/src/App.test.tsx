@@ -5,6 +5,7 @@ import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router-d
 import { resetStores, session } from '@/test/fixtures'
 import { fakeDrill } from '@/test/fakeDrill'
 import { addDrills, listedDrills } from '@/app/drills'
+import { t } from '@/test/i18n'
 import { useAppStore } from '@/app/store'
 import { useDrillStore } from '@/drills/note-id/store'
 import { getSettings, markLessonDone, recordSession } from '@/progress/progressStore'
@@ -127,12 +128,12 @@ describe('a drill added to the registry alone', () => {
 
   it('opens on Luyện with its lesson, marked as just opened, and its settings come from its defaults', async () => {
     returning()
-    // Real drills waiting for a lesson count too.
+    // Real drills whose lesson is not written yet are still to open too.
     const waiting = listedDrills().filter(d => d.unlockedBy).length
     remove = addDrills(fakeDrill({ unlockedBy: 'pitch-staff/staff-clefs' }))
     const first = at('/')
     expect(screen.queryByRole('link', { name: 'Fake drill' })).toBeNull()
-    expect(screen.getByText(new RegExp(`${waiting + 1} more drills? opens? as you learn`))).toBeInTheDocument()
+    expect(screen.getByText(t('practice.more', { count: waiting + 1 }), { exact: false })).toBeInTheDocument()
     first.unmount()
 
     markLessonDone('pitch-staff/staff-clefs', { correct: 3, total: 3 })
