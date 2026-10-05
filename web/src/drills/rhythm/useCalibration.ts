@@ -33,7 +33,8 @@ export function useCalibration(onSaved: (latencyMs: number) => void) {
     const first = audioNow() + RHYTHM_LEAD_SEC + gap
     const clicks = Array.from({ length: count }, (_, i) => first + i * gap)
     scheduleClicks(clicks.map((at, i) => ({ at, accent: i === 0 })))
-    const end = clicks[count - 1] + gap / 2
+    // Listen as long as a tap may still count for the last click.
+    const end = clicks[count - 1] + RHYTHM_CALIBRATION.maxMs / 1000
     const timer = setInterval(() => {
       const r = run.current
       if (!r) return

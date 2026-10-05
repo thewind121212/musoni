@@ -21,8 +21,17 @@ describe('latencyFrom', () => {
     expect(latencyFrom(clicks, wild)).toEqual({ ok: false, reason: 'uneven' })
   })
 
-  it('keeps the result within bounds', () => {
-    const early = clicks.map(c => c - 280)
-    expect(latencyFrom(clicks, early)).toEqual({ ok: true, latencyMs: RHYTHM_CALIBRATION.minMs })
+  it('reads a long delay as late, not as early for the next click', () => {
+    // 350 ms after each click is 250 ms before the next one.
+    const late = clicks.map(c => c + 350)
+    expect(latencyFrom(clicks, late)).toEqual({ ok: true, latencyMs: 350 })
+  })
+
+  it('counts only taps within the range a delay may take', () => {
+    const { minMs, maxMs } = RHYTHM_CALIBRATION
+    expect(latencyFrom(clicks, clicks.map(c => c + minMs - 20))).toEqual({ ok: false, reason: 'few' })
+    expect(latencyFrom(clicks, clicks.map(c => c + maxMs + 20))).toEqual({ ok: false, reason: 'few' })
+    expect(latencyFrom(clicks, clicks.map(c => c + minMs))).toEqual({ ok: true, latencyMs: minMs })
+    expect(latencyFrom(clicks, clicks.map(c => c + maxMs))).toEqual({ ok: true, latencyMs: maxMs })
   })
 })

@@ -19,18 +19,18 @@ const median = (xs: readonly number[]) => {
 
 /**
  * The latency from click times and tap times (ms, one clock). Each click
- * takes the nearest tap within half the gap between clicks; a click with
- * none is skipped.
+ * takes the nearest tap that lands from `minMs` before it to `maxMs` after
+ * it, the range a latency may take; a click with none is skipped. (Pairing
+ * by the nearest click alone would read a tap 350 ms late as 250 ms early
+ * for the next click.)
  */
 export function latencyFrom(clicks: readonly number[], taps: readonly number[], c = RHYTHM_CALIBRATION): Calibration {
-  if (clicks.length === 0) return { ok: false, reason: 'few' }
-  const gap = clicks.length > 1 ? clicks[1] - clicks[0] : Infinity
   const offsets: number[] = []
   for (const click of clicks) {
     let best: number | null = null
     for (const t of taps) {
       const d = t - click
-      if (Math.abs(d) < gap / 2 && (best === null || Math.abs(d) < Math.abs(best))) best = d
+      if (d >= c.minMs && d <= c.maxMs && (best === null || Math.abs(d) < Math.abs(best))) best = d
     }
     if (best !== null) offsets.push(best)
   }
@@ -38,5 +38,5 @@ export function latencyFrom(clicks: readonly number[], taps: readonly number[], 
   const mid = median(offsets)
   const spread = median(offsets.map(d => Math.abs(d - mid)))
   if (spread > c.maxSpreadMs) return { ok: false, reason: 'uneven' }
-  return { ok: true, latencyMs: Math.round(Math.min(c.maxMs, Math.max(c.minMs, mid))) }
+  return { ok: true, latencyMs: Math.round(mid) }
 }

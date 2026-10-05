@@ -347,10 +347,11 @@ export const RHYTHM_DEFAULT_DURATION_SECONDS = 120
 /** The metronome click: a short tone, higher on the downbeat. */
 export const RHYTHM_CLICK = { hz: 1100, accentHz: 1760, decaySec: 0.045, gain: 0.55 } as const
 /**
- * Latency calibration: tap along with `clicks` clicks at `bpm`. Each tap is
- * paired with the nearest click; the offset is the median of at least
- * `minTaps` pairs, refused when they spread more than `maxSpreadMs` (median
- * distance from the median), and kept within `minMs`..`maxMs`.
+ * Latency calibration: tap along with `clicks` clicks at `bpm`. A tap counts
+ * for a click when it lands from `minMs` before it to `maxMs` after it (a
+ * range narrower than the gap between clicks); the offset is the median of at
+ * least `minTaps` such pairs, refused when they spread more than
+ * `maxSpreadMs` (median distance from the median).
  */
 export const RHYTHM_CALIBRATION = { clicks: 8, bpm: 100, minTaps: 5, maxSpreadMs: 60, minMs: -150, maxMs: 400 } as const
 /** Result screen: how many missed measures to show. */
