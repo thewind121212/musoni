@@ -102,6 +102,12 @@ session is trivially a record.
 
 ## Settings (user-chosen, saved in localStorage)
 
+Level, length and accidentals are this drill's own workout, saved under
+`settings.drills["note-id"]` (`level`, `durationSec`, `accidentals`; defaults in
+`drills/note-id/drill.ts`, its registry entry). Naming, answer keys, names on
+keys and sound are shared preferences. A lesson preset may set `accidentals`
+(its entry's `presetOptions`).
+
 | Setting | Options | Effect |
 |---|---|---|
 | Note naming | **Solfège** (Do Re Mi Fa Sol La Si, default) / **Letters** (C D E F G A B) | Keys and answers display in the chosen system. Solfège is the default because Vietnamese teaching leads with it |
@@ -192,6 +198,6 @@ Before this, leaving by back and returning after the clock ran out let `tick`
 finish the abandoned session as a full one: full length, a real score, and a
 possible personal best. The run phase now pauses on unmount (deferred one task,
 so StrictMode's development remount does not count as leaving) and publishes a
-`pausedSession` to the app store for home. That logic lives in
+`pausedSession` to the app store for the tabs. That logic lives in
 `app/useRunGuards`, shared with Nghe & Đàn.
 

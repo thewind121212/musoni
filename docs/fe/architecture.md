@@ -9,9 +9,10 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 
 | Module | Store | Holds |
 |---|---|---|
-| `app` (global) | `app/store.ts` | app-wide state: user settings (each drill's level and length, naming, keys, sound, language, activity-panel mode); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so home can offer the way back |
+| `app` (global) | `app/store.ts` | app-wide state: user settings (each drill's own workout under `settings.drills[id]`, naming, keys, sound, language, activity-panel mode, the first-open answer `startPoint`); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so the tabs can offer the way back |
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
+| `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | *(later)* `drills/complete-measure` | its own store | its session state |
 
@@ -19,12 +20,23 @@ Modules never import each other's stores; sharing goes through `app` or props.
 
 ## Routing vs drill phases
 
-React Router covers **app-level** navigation only: `/` (home), one route per
-drill (`/train/note-id`, `/train/hear-play`) and the theory lessons (`/theory`,
-`/theory/:chapter/:lesson`, `/theory/about`). Every page but home is a lazy
-chunk (`app/routes.ts`). Account, library and settings pages join that table
+React Router covers **app-level** navigation only: the two tabs, **Luyện**
+(`/`, the default) and **Học** (`/learn`); the first-open question
+(`/welcome`); one route per registered drill (`/train/<id>`, made from the
+drill registry, below); and the theory lessons (`/theory`,
+`/theory/:chapter/:lesson`, `/theory/about`). Every page but Luyện and the
+first-open question is a lazy chunk (`app/routes.ts`; a drill's chunk comes
+from its registry entry's `page`). Account and settings pages join that table
 later. A lesson's steps are not routed either: the step lives in the theory
 store, like a drill's phase.
+
+**Tabs** (`app/useTabs.ts`, rules in `screens.md`): the tab bar (`TabBar`,
+drawn by the `TabChrome` page outside the route transition, with the paused
+bar) shows on `/` and `/learn` only. Switching tabs is instant (route state
+`FROM_TAB`). Học opened from Luyện's tab bar is pushed above it, so back and
+the Luyện tab both step back to it; Luyện tapped from a Học opened any other
+way replaces it. A brand-new reader (no `startPoint`, no history) is sent from
+either tab to `/welcome` first (`app/firstOpen.ts`).
 
 Inside a drill route the flow is **not** routed. Each drill is a self-contained
 SPA with phases held in its own store:
@@ -37,24 +49,25 @@ is retried. Back goes where the reader came from. A session started from setup's
 Start holds **one history entry** (same URL, state marked by `app/drillStep`)
 above setup's; `app/useDrillRoute` pushes it on that setup → session step and
 reads a step back off it as "back to setup" (`backToSetup`: played time still
-counts). A session started from home (`autostart`, `resume`) gets no entry, so
-back leaves the drill for home, and `useRunGuards` pauses it and publishes the
+counts). A session started from a tab or a lesson (`autostart`, `resume`) gets no entry, so
+back leaves the drill for where it came from, and `useRunGuards` pauses it and publishes the
 paused-session bar; ending one with nothing to keep (✕ before any answer) also
-steps back home. It also
-applies home's route state (`autostart`, `setup`, `resume`) before the phase is
+steps back to the tab it came from. It also
+applies the route state of the tabs and lessons (`autostart`, `setup`, `resume`) before the phase is
 first read. `autostart` may carry a **drill preset** (`app/drillPreset.ts`,
-`{ drill, level, durationSec, accidentals? }`): a theory lesson's "Luyện ngay"
-starts the drill with those settings for that one session (`withPreset` lays
+`{ drill, level, durationSec, ...options }`, options limited to the drill's
+`presetOptions`): a theory lesson's "Luyện ngay" and Luyện's Hôm nay card
+start the drill with those settings for that one session (`withPreset` lays
 them over the reader's settings in the drill store; nothing is saved, and the
 result screen's Again replays the session's settings). A drill ignores another
-drill's preset. `useBackLink` knows about the entry, so the result screen's Home
+drill's preset. `useBackLink` knows about the entry, so the result screen's Home (Học for Ôn tập)
 link steps back past setup in one go.
 
 Every drill route uses the same two app hooks, given its own store:
 `useDrillRoute(controls)` in the drill page (a module-level `controls` object
 built on the store's `getState()`), and `useRunGuards(store.getState)` in the
 run phase, which pauses when the page is hidden or the route is left
-(publishing `pausedSession` for home) and locks overscroll while the run
+(publishing `pausedSession` for the tabs) and locks overscroll while the run
 screen is open.
 
 A running session also survives a **page load** (refresh, a typed URL, a
@@ -65,7 +78,68 @@ load brings it back paused (`pauseReason: 'away'`, so the run screen greets the
 reader back), moving past a question already answered. Older than
 `LIVE_SESSION_MAX_AGE_MS` (30 min) it is ended as at the moment it stopped and
 forgotten. The app store starts `pausedSession` from the freshest saved session
-(`livePausedSession`), so home shows the paused bar after a reload too.
+(`livePausedSession`), so Luyện shows the paused bar after a reload too.
+
+## Drill registry
+
+Every drill is one folder, `drills/<id>/`, whose `drill.ts` default-exports
+`defineDrill({...})` (`app/drill.ts`). `app/drills.ts` finds them all with
+`import.meta.glob('../drills/*/drill.ts', { eager: true })`, so **adding a
+drill touches no shared file**. An entry declares:
+
+| Field | What it drives |
+|---|---|
+| `id` | the route `/train/<id>`, `settings.drills[id]`, sessions and bests (`SessionResult.drill`), live session key, `data-drill` |
+| `page` | the lazy page (`() => import('./pages/XDrill').then(m => m.XDrill)`) wrapped by `DrillRoute` (loading screen, colour scope) and prefetched from Luyện |
+| `icon`, `title`, `description`, `short?`, `starter?` | Luyện's card, a lesson's practice tag and offer, Hôm nay's title and its "Bắt đầu nhẹ: {starter}" line |
+| `group` (`read` / `ear`), `order` | the drill's place on Luyện |
+| `levels` (`{ name, detail? }[]`) | level names on the stat strip, setup summaries and preset summaries; preset and validator range checks. One level = no level stat |
+| `defaults` (`{ level, durationSec, ...options }`) | the workout a reader starts with; `entry.of(settings)` = saved values over these |
+| `presetOptions?` | which options a lesson preset or Hôm nay may set (others stay the reader's own) |
+| `tags?(s, t)` | extra words in one-line summaries ("♯ ♭") |
+| `colour?` | its own CTA colour, light and dark (CSS generated by `drillColourCss`) |
+| `unlockedBy?` | the lesson key (`<chapter id>/<lesson id>`) that opens it on Luyện; absent = open from the start |
+| `listed?` | `false` keeps it off Luyện, Hôm nay and the to-open count (Ôn tập) |
+
+Keep `drill.ts` light (strings, icon, config constants): it loads with the
+app. The registry's helpers: `allDrills()`, `listedDrills()`, `findDrill(id)`,
+`drillAtRoute(path)`, `drillColourCss()`, and `addDrills(...)` (tests add a
+fake drill with it, `src/test/fakeDrill.ts`). Unlocks and the Hôm nay pick are
+pure functions over the registry in `app/practicePlan.ts`.
+
+### How to add a drill
+
+1. `drills/<id>/strings.ts`: `export const S = defineStrings('<id>', en, vi)`
+   with at least `title`, `what` (one line for Luyện), `short`, `starter`
+   (what a first level-1 session asks, lower case, no full stop) and
+   `level.N` / `level.N.detail`. Shared words (Start, Length, Best...) stay in
+   `core/i18n`; never edit `translations.ts` for a drill.
+2. `drills/<id>/drill.ts`: `export type XOptions = { ... }` (a **type**, not an
+   interface) and `export default defineDrill<XOptions>({ id, page, icon,
+   title: S.title, description: S.what, short, starter, group, order, levels,
+   defaults, presetOptions?, tags?, colour?, unlockedBy? })`. Pick an `order`
+   that leaves gaps (10, 20...). Declare the unlock lesson as its key, e.g.
+   `unlockedBy: 'keys/key-signatures'`; a lesson not written yet simply keeps
+   the drill unopened (still playable from "Xem tất cả").
+3. `drills/<id>/store.ts`: one Zustand store with `phase`, `settings`
+   (the session's), `start(settings)`, `answer`, `nextQuestion`, `tick`,
+   `backToSetup`, `pause`, `resume`, `endEarly`, reading its own workout with
+   `entry.of(settings)`. Record sessions with `drill: entry.id`; call
+   `keepLiveSession(store, entry.id, entry.route)` after creating it.
+   Tunables go in `config/constants.ts` (new names, no edits to others').
+4. `drills/<id>/pages/`: `XDrill` (`useDrillRoute(controls)`; `autostart`
+   applies `withPreset(saved, preset)` when `preset?.drill === entry.id`),
+   `SetupPhase` (writes with `updateDrill(entry.id, patch)`, summary from
+   `sessionSummary(entry, own, t)`), `RunPhase` (`useRunGuards`, `RunHeader`,
+   `PausePanel`), `ResultPhase` (`getBest(entry.id, level)`). Reuse core
+   components; promote rather than copy.
+5. Tests beside each file, plus the store's logic. The registry wiring itself
+   (route, Luyện card, presets, defaults, unlock) is already covered with the
+   fake drill.
+6. Docs: `docs/fe/drill-<id>.md`, a row in the modules table above, and
+   `docs/STATUS.md`. Lessons link to it with `practice: { drill: '<id>',
+   level, durationSec, ...presetOptions }`; the content validator checks it
+   against the entry.
 
 ## Core components (`core/`)
 
@@ -113,6 +187,10 @@ Shared, module-agnostic, reuse-first building blocks:
 - `core/music/pitch.nearestOctave` places an answer key (a name with no octave)
   at the octave nearest the printed note, so a wrong pick can be drawn on the
   staff.
+- `core/lesson/` — the lesson format (`types.ts`), its text tokens
+  (`text.ts`), block helpers (`blocks.ts`: pad for a key check,
+  `answerFromKey` for the computer keyboard, play sounds) and `usePlayBlock`.
+  Shared by the theory lessons and Ôn tập.
 - `core/scoring.ts` — pace-based scoring with difficulty and endurance
   multipliers, shared by any drill.
 - `core/i18n/` — the translator (see i18n below), `formatDuration` and
@@ -137,7 +215,10 @@ module is promoted to core, not copied. Nghe & Đàn promoted the answer pad
 (`PianoKey`, `AnswerPad`, `KeyHint`), the run header, pause sheet, staff,
 missed-notes and result summaries (`ResultSummary` now takes the level's name
 as a prop), the duration picker and `MissLine` out of `drills/note-id`, so both
-drills draw the same screens.
+drills draw the same screens. Ôn tập promoted the lesson's check components
+(`RichText`, `TipBox`, `PlayButton`, `CheckVerdict`, `ChoiceList`,
+`LessonBlocks`, `StepView`) and the lesson format out of `theory`; the tabs
+promoted `LanguageToggle` and added `DrillCard`.
 
 ## i18n
 
@@ -151,6 +232,10 @@ Vietnamese first (`DEFAULT_LANG = 'vi'`), English second. No i18n dependency:
   plus a `_one` variant; Vietnamese needs none), fallback to English, and a
   development warning when a key resolves to nothing rather than silently
   rendering the key.
+- A drill ships its own strings from its folder: `defineStrings(id, en, vi)`
+  (Vietnamese typed against English) registers `drill.<id>.<name>` keys with
+  the translator and returns them (`S.title`), so a drill PR never edits
+  `translations.ts`. `Translate` takes core keys or drill keys (`AnyKey`).
 - `app/useT.ts` binds the translator to the chosen language. Core stays free of
   app state; components call `useT()`.
 - `formatDuration` labels any session length: offered lengths use their own
@@ -165,11 +250,11 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 
 | Level | What it is | Examples |
 |---|---|---|
-| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine`, `MiniKeyboard` (1-4 octaves, dot or fill marks, names under keys); theory: `StepBar`, `RichText`, `TipBox`, `LessonDot` |
-| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PausedNotice`, `PianoKey`, `DurationPicker`, `SessionStats`; theory: `PlayButton`, `ChoiceList`, `CheckVerdict`, `LessonRow`, `PracticeOffer`, `SourceLine` |
-| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `ListenStage` (hear-play), `TheoryCard` (home); theory: `LessonBlocks`, `StepView`, `LessonEnd`, `ChapterCard` |
+| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine`, `MiniKeyboard` (1-4 octaves, dot or fill marks, names under keys), `RichText`, `TipBox`; theory: `StepBar`, `LessonDot` |
+| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `PianoKey`, `DurationPicker`, `SessionStats`, `PlayButton`, `ChoiceList`, `CheckVerdict`; app: `PausedNotice`, `MoreDrills`, `StartOption`; theory: `LessonRow`, `PracticeOffer`, `SourceLine` |
+| organism | a self-contained section of a screen | `Staff`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `DrillCard`, `LessonBlocks`, `StepView`; app: `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `TabBar`, `TodayCard`; hear-play: `ListenStage`; review: `MissedChecks`; theory: `LessonEnd`, `ChapterCard`, `NextLessonCard` |
 | template | layout shell with no content of its own | `PageTransition`, `LessonFrame` (theory) |
-| page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `HearPlayDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase`; theory: `ChapterList`, `LessonPlayer`, `TheoryAbout` |
+| page | one screen or drill phase; the **only** level that reads stores | app: `PracticeTab` (Luyện), `FirstOpen`, `TabChrome`, `DrillRoute`, `DrillLoading`; `NoteIdDrill`, `HearPlayDrill`, `ReviewDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase`; theory: `LearnTab` (Học), `ChapterList`, `LessonPlayer`, `TheoryAbout` |
 
 Rules:
 
@@ -205,7 +290,9 @@ Every component has a `X.test.tsx` beside it, written with Testing Library
   constant's value. Copy is used to *find* elements, not as the thing under test.
 
 Pages are tested against the real stores, reset per test with
-`resetStores()`; sessions come from `session()` (`src/test/fixtures.ts`).
+`resetStores()`; sessions come from `session()` and per-drill settings from
+`withDrill()` (`src/test/fixtures.ts`). Registry wiring is tested with
+`fakeDrill()` (`src/test/fakeDrill.ts`) added through `addDrills`.
 Pure components get `t` from `src/test/i18n.ts` (English). Audio and VexFlow
 are mocked in page and organism tests, and covered by their own tests.
 There is no coverage-percentage gate: it rewards testing constants.
@@ -223,37 +310,40 @@ ranges, accidentals weight and chance, endurance curve, offered session lengths
 and custom-stepper bounds, feedback timings, tick interval, audio gain, and the
 theory rules (`THEORY_RULES`: steps, checks, sentences, recap counts the
 validator enforces; `THEORY_PLAY`, `THEORY_STAFF_WIDTH`, idle cap, minimum
-time recorded; `PRESET_SECONDS`). Nothing
+time recorded; `PRESET_SECONDS`), Luyện's Hôm nay lengths
+(`TODAY_SHORT_SECONDS`, `TODAY_LONG_SECONDS`) and first-open drill
+(`READER_START_DRILL`), and Ôn tập's weighting (`REVIEW_WEIGHT`,
+`REVIEW_NO_REPEAT`, feedback time, default length, difficulty). Nothing
 tunable is inlined. Pure helpers that depend only on these constants
 (`isPresetDuration`, `customOpeningSeconds`) live beside them and are tested in
 `config/duration.test.ts`.
-
-`config/presets.ts` (warm-up / daily / challenge workout presets) is currently
-**unused**: it was written alongside 126ae73 but nothing imports it.
 
 ## Directory layout
 
 ```
 web/src/
 ├── app/                    # global module: app store (settings), useT, drill route hooks
-│   ├── components/         #   molecules / organisms / templates used by app pages (TheoryCard)
-│   ├── drillPreset.ts      #   a drill session set up from a lesson
-│   └── pages/HomeScreen/
+│   ├── drill.ts, drills.ts #   drill entry type + defineDrill; the registry (glob of drills/*/drill.ts)
+│   ├── practicePlan.ts     #   unlocks, Luyện's cards, the Hôm nay pick (pure)
+│   ├── drillPreset.ts      #   a drill session set up from a lesson or Hôm nay
+│   ├── useTabs.ts, firstOpen.ts, routes.ts, useChapters.ts
+│   ├── components/         #   app molecules / organisms (TabBar, TodayCard, ActivityPanel, PausedNotice)
+│   └── pages/              #   PracticeTab (Luyện), FirstOpen, TabChrome, DrillRoute, DrillLoading
 ├── core/
-│   ├── components/         # shared library: atoms / molecules / organisms (Staff, NoteStaff)
+│   ├── components/         # shared library: atoms / molecules / organisms (Staff, NoteStaff, StepView, DrillCard)
+│   ├── lesson/             # the lesson format, text tokens, block helpers, usePlayBlock
 │   └── music/ (pitch, notation, piano keys, keyboard, keys) scoring / audio / i18n / engine (placeholder)
-├── drills/note-id/         # drill module: store (phases), generator
-│   └── pages/              #   NoteIdDrill (phase switch), SetupPhase, RunPhase, ResultPhase
-├── drills/hear-play/       # drill module: store, generator (key, note, sounds)
-│   ├── components/         #   organisms only this drill uses (ListenStage)
-│   └── pages/              #   HearPlayDrill, SetupPhase, RunPhase, ResultPhase
-├── theory/                 # theory module: types, text tokens, registry, outline, validate, blocks, store
+├── drills/<id>/            # one folder per drill: drill.ts (registry entry), strings.ts, store, pages
+│   ├── note-id/            #   Đọc nốt: generator; NoteIdDrill, SetupPhase, RunPhase, ResultPhase
+│   ├── hear-play/          #   Nghe & Đàn: generator (key, note, sounds); ListenStage
+│   └── review/             #   Ôn tập: select (pool, weighting), MissedChecks
+├── theory/                 # theory module: registry, outline, validate, store
 │   ├── components/         #   atoms / molecules / organisms / templates for lessons
-│   ├── pages/              #   ChapterList, LessonPlayer, TheoryAbout
+│   ├── pages/              #   LearnTab (Học), ChapterList, LessonPlayer, TheoryAbout
 │   └── content/            #   GFDL lesson data: LICENSE, NOTICE.md, chNN-<slug>/ (index.ts + one file per lesson)
 ├── progress/               # progressStore (localStorage door, cloud plug)
-├── config/                 # tunable constants (levels, durations, feedback, tick, audio)
-├── test/                   # test helpers
+├── config/                 # tunable constants (levels, durations, feedback, tick, audio, Hôm nay, Ôn tập)
+├── test/                   # test helpers (fixtures, fakeDrill, i18n)
 └── index.css               # Tailwind v4 entry + design tokens
 ```
 
@@ -265,13 +355,16 @@ web/src/
 Components use token utilities (`bg-raised`, `text-ink-soft`) rather than raw
 palette values, so light and dark are one definition.
 
-**Per-drill action colour.** A drill may replace the amber action colour with
-one CSS rule on `[data-drill="<id>"]` (Nghe & Đàn: violet). The rule sets the
-Tailwind theme variables `--color-cta` / `--color-cta-ink`, never `--cta`:
-`@theme` resolves `--color-cta: var(--cta)` once at `:root`, so overriding
-`--cta` lower down changes nothing. The drill sets the attribute on `<html>`
-while its route is mounted (a layout effect), because the pause sheet portals to
-`<body>`; home wraps the drill's card and its paused bar in the same attribute.
+**Per-drill action colour.** A drill may replace the amber action colour by
+declaring `colour` in its registry entry (Nghe & Đàn: violet). `App` renders
+`drillColourCss()`: one rule per such drill on `[data-drill="<id>"]` (and its
+dark variant) setting the Tailwind theme variables `--color-cta` /
+`--color-cta-ink`, never `--cta`: `@theme` resolves `--color-cta: var(--cta)`
+once at `:root`, so overriding `--cta` lower down changes nothing. `DrillRoute`
+sets the attribute on `<html>` while a drill's route is mounted (a layout
+effect), because the pause sheet portals to `<body>`; Luyện and Học wrap each
+drill's card, and `TabChrome` the paused bar, in the same attribute. Hôm nay's
+Bắt đầu stays amber.
 Selection blue, right green and wrong red stay shared.
 
 The theme is **white paper by default and does not follow the OS**: musicians
@@ -282,8 +375,8 @@ attribute (nothing in the UI sets it yet).
 Motion lives in five places, each behind `prefers-reduced-motion`: route
 changes (`PageTransition`, forward only: back and forward navigation swap
 routes instantly; forward also opens the page at the top), drill phase changes (`NoteIdDrill`), answer
-feedback plus note entry inside the run phase, the home activity panel's
-week/calendar resize and cross-fade, and the lesson player's step slide.
+feedback plus note entry inside the run phase, Luyện's activity panel
+week/calendar resize and cross-fade (tab switches are instant), and the lesson player's step slide.
 
 Layout is mobile-first with a single hinge at `md` (768px): base utilities
 describe the phone, `md:` utilities describe desktop. Both are first-class

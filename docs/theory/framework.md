@@ -11,24 +11,28 @@ Writing lessons: `port-guide.md` (section 7 is the content format) and
 ## Layout
 
 ```
-web/src/theory/
+web/src/core/lesson/          shared with drills/review (which asks lesson checks)
 ├── types.ts        content format: Chapter → Lesson → Step (explain | check) → Block
 ├── text.ts         lesson text: `{G4}` pitch tokens and `**bold**`; strict parser, plainText, pitchLabel
+├── blocks.ts       pure layout helpers: staff labels and width, keyboard range, key labels, play sounds, answer pad, answerFromKey
+└── usePlayBlock.ts a play block's sound and its playing state
+
+web/src/theory/
+├── types.ts        re-exports core/lesson/types, so content imports stay `@/theory/types`
 ├── registry.ts     import.meta.glob('./content/ch*/index.ts') → CHAPTERS, sorted by number
 ├── outline.ts      course order: lessonKey, findLesson, lessonAfter, nextLesson, doneInChapter, reviewOf, lessonNumber, FROM_LIST
 ├── validate.ts     validateChapter(folder, chapter): every rule a chapter must meet, as messages
-├── blocks.ts       pure layout helpers: staff labels and width, keyboard range, key labels, play sounds, answer pad
 ├── store.ts        useTheoryStore: the open lesson's step and answers, reading time, open chapter
 ├── content.test.ts runs validateChapter on every chapter the registry finds
-├── components/     atoms / molecules / organisms / templates (pure)
-├── pages/          ChapterList, LessonPlayer, TheoryAbout (the only readers of stores)
+├── components/     atoms / molecules / organisms / templates (pure; the step renderers are in core, below)
+├── pages/          LearnTab (Học), ChapterList, LessonPlayer, TheoryAbout (the only readers of stores)
 └── content/        LICENSE (GFDL 1.3), NOTICE.md, chNN-<slug>/index.ts + one file per lesson
 ```
 
 A chapter is a folder `chNN-<id>` whose `index.ts` default-exports a `Chapter`
 (`satisfies Chapter`), importing one file per lesson. Dropping the folder in is
-all it takes: the registry finds it, the content test checks it, the list, home
-card and About page show it. No framework code changes per chapter.
+all it takes: the registry finds it, the content test checks it, Học, the list
+and About page show it, and Ôn tập asks its checks once its lessons are done. No framework code changes per chapter.
 
 ## Content and text
 
@@ -64,7 +68,10 @@ over. Steps are store state, not routes. `next()` past the last step marks the
 lesson done. ✕ calls `close()` (forget the place) and goes back to the list;
 unmounting calls `leave()` (keep it). Sounds stop on every step change and on
 leaving. `StepView` renders a step; `LessonBlocks` its blocks; `LessonEnd` the
-end screen; `LessonFrame` the shell.
+end screen; `LessonFrame` the shell. `StepView`, `LessonBlocks`, `ChoiceList`,
+`CheckVerdict`, `PlayButton`, `RichText` and `TipBox` live in
+`core/components` (Ôn tập renders lesson checks with them); the rest stay in
+`theory/components`.
 
 A key check uses the drills' `AnswerPad`, spelled like the answer (`padFor`); a
 lone staff note in the check turns green, a wrong pick is drawn beside it in red
@@ -76,29 +83,33 @@ lone staff note in the check turns green, a wrong pick is drawn beside it in red
 Through `progressStore` only (see `docs/fe/data-model.md`): `markLessonDone`
 saves the latest score per lesson in `theory.done`, `recordLessonTime` adds
 reading time under the local day in `days[date].lessons`. Both are additive
-fields, so the document stays version 1 and an older document reads as no
-lessons. The store counts time while the page is visible, capping each stretch
+fields, so an older document reads as no lessons. The store counts time while the page is visible, capping each stretch
 between taps at `THEORY_IDLE_CAP_MS` (3 min), and saves it on finish, close,
 leave and hide once it reaches `THEORY_MIN_RECORD_SEC` (15 s). Lesson time
 counts toward the day's minutes, streaks and active days; never toward bests.
 
 `outline.nextLesson` is the first unfinished lesson in course order (chapter
-number, then lesson order); it drives the home card, the open chapter and the
-"next" ring on the list. Nothing is locked.
+number, then lesson order); it drives Học's Học tiếp card and current chapter, the
+open chapter and the "next" ring on the list. No lesson is locked; a lesson
+can open a drill on Luyện (the drill entry's `unlockedBy`, see
+`docs/fe/architecture.md`, "Drill registry").
 
 ## Practice link
 
-A lesson's `practice` is a `DrillPreset` (`app/drillPreset.ts`):
-`{ drill: 'note-id', level, durationSec, accidentals? }` or
-`{ drill: 'hear-play', level, durationSec }`, lengths 60 or 120 s. The end
+A lesson's `practice` is a `DrillPreset` (`app/drillPreset.ts`): any
+registered drill's id, a level of that drill, a length of 60 or 120 s, and any
+of the options its registry entry lets a preset set (`presetOptions`, e.g.
+`{ drill: 'note-id', level, durationSec, accidentals? }`). The validator checks
+it against the registry, so a new drill is usable in lessons as soon as it is
+registered. The end
 screen's "Luyện ngay" links to the drill with route state
 `{ autostart: true, preset }`. `useDrillRoute` hands the preset to the drill's
 `autostart`, which starts a session on `withPreset(settings, preset)`: the
-reader's settings with the preset's level, length and accidentals laid over
-them, **for that session only**. Nothing is saved; the drill's setup still shows
+reader's settings with the preset's level, length and options laid over
+that drill's, **for that session only**. Nothing is saved; the drill's setup still shows
 the reader's own choices afterwards, and the result's Again replays the
 session's settings. A preset for another drill is ignored. Stepping back from
-the drill (swipe, or its result's Home link, which steps back) returns to the
+the drill (swipe, or its result's back link, which steps back) returns to the
 lesson's end screen.
 
 A lesson with no fitting drill has no `practice`; its end screen makes "Bài
@@ -110,8 +121,9 @@ the review).
 `/theory` (ChapterList), `/theory/:chapter/:lesson` (LessonPlayer; an unknown
 lesson redirects to `/theory`), `/theory/about` (TheoryAbout), each a
 `splitPage` chunk in `app/routes.ts`. All lesson content sits in the registry
-chunk; home loads it on mount (`loadTheory`) for its card and prefetches the
-list and player chunks when idle.
+chunk; Học (`/learn`, `theory/pages/LearnTab`, its own chunk) and Luyện's
+Hôm nay card load it (`loadTheory`); Luyện prefetches Học and the player when
+idle. ✕ in a lesson opened directly goes to Học.
 
 ## Licence
 
