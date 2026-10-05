@@ -23,10 +23,30 @@ function splitPage(load: () => Promise<ComponentType>) {
 
 const noteId = splitPage(() => import('@/drills/note-id/pages/NoteIdDrill').then(m => m.NoteIdDrill))
 const hearPlay = splitPage(() => import('@/drills/hear-play/pages/HearPlayDrill').then(m => m.HearPlayDrill))
+const chapterList = splitPage(() => import('@/theory/pages/ChapterList').then(m => m.ChapterList))
+const lessonPlayer = splitPage(() => import('@/theory/pages/LessonPlayer').then(m => m.LessonPlayer))
+const theoryAbout = splitPage(() => import('@/theory/pages/TheoryAbout').then(m => m.TheoryAbout))
 export const NoteIdDrillPage = noteId.Page
 export const HearPlayDrillPage = hearPlay.Page
 export const loadNoteIdDrill = noteId.prefetch
 export const loadHearPlayDrill = hearPlay.prefetch
+export const ChapterListPage = chapterList.Page
+export const LessonPlayerPage = lessonPlayer.Page
+export const TheoryAboutPage = theoryAbout.Page
+export const loadChapterList = chapterList.prefetch
+export const loadLessonPlayer = lessonPlayer.prefetch
+
+type TheoryRegistry = typeof import('@/theory/registry')
+let theory: TheoryRegistry | undefined
+/**
+ * The theory chapters (every lesson's text), for home's theory card. Split out
+ * like the pages, so home's first paint does not carry the lesson text; once
+ * loaded, `loadedTheory` hands it over without waiting.
+ */
+export function loadTheory(): Promise<TheoryRegistry> {
+  return import('@/theory/registry').then(m => (theory = m))
+}
+export const loadedTheory = () => theory
 
 /** Fetch a route's code when the browser is idle. Errors are left to the real load. */
 export function prefetchWhenIdle(load: () => Promise<unknown>) {

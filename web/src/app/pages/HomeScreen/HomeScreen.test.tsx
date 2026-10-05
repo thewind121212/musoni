@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { HomeScreen } from './HomeScreen'
 import { useAppStore } from '@/app/store'
-import { getSettings, recordSession } from '@/progress/progressStore'
+import { getSettings, markLessonDone, recordSession } from '@/progress/progressStore'
 import { resetStores, session } from '@/test/fixtures'
 
 const renderHome = () => render(<MemoryRouter><HomeScreen /></MemoryRouter>)
@@ -83,5 +83,29 @@ describe('HomeScreen', () => {
     expect(hearPlay.closest('[data-drill]')).toHaveAttribute('data-drill', 'hear-play')
     expect(noteId.closest('[data-drill]')).toBeNull()
     expect(screen.getByRole('link', { name: /Resume/ }).closest('[data-drill]')).toHaveAttribute('data-drill', 'hear-play')
+  })
+
+  it('offers the first lesson to a new reader, then the next unfinished one', async () => {
+    const first = renderHome()
+    expect(await screen.findByText('First lesson:')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Start · 3 min/ })).toHaveAttribute('href', '/theory/pitch-staff/pitch-names')
+    first.unmount()
+
+    markLessonDone('pitch-staff/pitch-names', { correct: 3, total: 3 })
+    markLessonDone('pitch-staff/c-clefs', { correct: 2, total: 3 })
+    renderHome()
+    expect(await screen.findByText('The staff and clefs')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Continue · 4 min/ })).toHaveAttribute('href', '/theory/pitch-staff/staff-clefs')
+    expect(screen.getByText('2/5 lessons')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'See all lessons' })).toHaveAttribute('href', '/theory')
+  })
+
+  it('says so once every lesson is done', async () => {
+    for (const id of ['pitch-names', 'staff-clefs', 'c-clefs', 'octaves', 'review']) {
+      markLessonDone(`pitch-staff/${id}`, { correct: 1, total: 1 })
+    }
+    renderHome()
+    expect(await screen.findByText(/You have finished all 5 lessons/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Look back over the lessons' })).toHaveAttribute('href', '/theory')
   })
 })

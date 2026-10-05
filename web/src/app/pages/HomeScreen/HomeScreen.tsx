@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { EarIcon, MusicNoteIcon, MusicNotesIcon, TimerIcon, TrophyIcon, WaveformIcon } from '@phosphor-icons/react'
-import { ActivityPanel, PracticeCard } from '@/app/components/organisms'
+import { ActivityPanel, PracticeCard, TheoryCard } from '@/app/components/organisms'
 import { ComingSoonCard, LanguageToggle, PausedNotice } from '@/app/components/molecules'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
-import { loadHearPlayDrill, loadNoteIdDrill, prefetchWhenIdle } from '@/app/routes'
 import {
-  getActiveDayCount, getBest, getDailyMinutes, getLongestStreak, getStreak, localDayKey,
+  loadChapterList, loadHearPlayDrill, loadLessonPlayer, loadNoteIdDrill, loadTheory, loadedTheory, prefetchWhenIdle,
+} from '@/app/routes'
+import {
+  getActiveDayCount, getBest, getDailyMinutes, getLessonsDone, getLongestStreak, getStreak, localDayKey,
 } from '@/progress/progressStore'
+import { allLessons, doneInChapter, nextLesson } from '@/theory/outline'
+import { plainText } from '@/theory/text'
 import { formatClock, formatDuration } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
 
@@ -24,13 +28,24 @@ export function HomeScreen() {
   useEffect(() => {
     prefetchWhenIdle(loadNoteIdDrill)
     prefetchWhenIdle(loadHearPlayDrill)
+    prefetchWhenIdle(loadLessonPlayer)
+    prefetchWhenIdle(loadChapterList)
   }, [])
+  // The lesson list is its own chunk; the card holds its place until it lands.
+  const [chapters, setChapters] = useState(() => loadedTheory()?.CHAPTERS ?? null)
+  useEffect(() => {
+    if (!chapters) loadTheory().then(m => setChapters(m.CHAPTERS)).catch(() => {})
+  }, [chapters])
   const level = settings.level
   const reduce = useReducedMotion()
   const t = useT()
   const best = getBest('note-id', level)
   const earBest = getBest('hear-play', settings.earLevel)
   const minutesByDay = getDailyMinutes()
+  const lessonsDone = getLessonsDone()
+  const next = chapters ? nextLesson(chapters, lessonsDone) : null
+  const started = Object.keys(lessonsDone).length > 0
+  const name = (text: { vi: string; en: string }) => plainText(text[settings.lang], settings.naming)
 
   const enter = (delay: number) => ({
     initial: reduce || !playIntro ? false : { opacity: 0, y: 16 },
@@ -70,6 +85,28 @@ export function HomeScreen() {
         </motion.div>
 
         <motion.div {...enter(0.12)} className="flex flex-col gap-3">
+          <h2 className="text-xs font-semibold tracking-wide text-ink-faint uppercase">{t('home.theory')}</h2>
+          <TheoryCard
+            loading={!chapters}
+            title={t('theory.title')}
+            next={next && {
+              label: t(started ? 'theory.home.next' : 'theory.home.first'),
+              title: name(next.lesson.title),
+              to: `/theory/${next.key}`,
+              action: t(started ? 'theory.home.continue' : 'theory.home.start', { count: next.lesson.minutes }),
+            }}
+            chapter={next && {
+              label: t('theory.chapter', { number: next.chapter.number, title: name(next.chapter.title) }),
+              progress: t('theory.lessonsDone', { done: doneInChapter(next.chapter, lessonsDone), total: next.chapter.lessons.length }),
+              fraction: doneInChapter(next.chapter, lessonsDone) / next.chapter.lessons.length,
+            }}
+            doneLabel={t('theory.home.allDone', { count: chapters ? allLessons(chapters).length : 0 })}
+            allLabel={t(next || !chapters ? 'theory.home.all' : 'theory.home.reviewAll')}
+            allTo="/theory"
+          />
+        </motion.div>
+
+        <motion.div {...enter(0.18)} className="flex flex-col gap-3">
           <h2 className="text-xs font-semibold tracking-wide text-ink-faint uppercase">{t('home.training')}</h2>
 
           <PracticeCard
