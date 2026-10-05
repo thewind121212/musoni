@@ -49,6 +49,16 @@ describe('NoteStaff', () => {
     expect(screen.getByText('Do')).toHaveClass('text-correct')
   })
 
+  it('keeps one box whatever the notes reach when pinned with room', () => {
+    const box = (src: string) => {
+      const { unmount } = render(<NoteStaff clef="treble" events={notes(src)} room={30} />)
+      const viewBox = screen.getByTestId('note-staff').querySelector('svg')!.getAttribute('viewBox')
+      unmount()
+      return viewBox
+    }
+    expect(box('C4+A5')).toBe(box('G4 B4'))
+  })
+
   it('rejects nothing it is given: a wrong pick beside a single note', () => {
     render(<NoteStaff clef="treble" events={notes('E4')} tone="correct" chosen={{ letter: 'F', accidental: '', octave: 4 }} />)
     expect(screen.getByTestId('note-staff').querySelector('svg')).toBeInTheDocument()
