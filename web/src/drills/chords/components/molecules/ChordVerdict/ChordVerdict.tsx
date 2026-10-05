@@ -12,16 +12,16 @@ interface Props {
  */
 export function ChordVerdict({ verdict }: Props) {
   return (
-    <div className="flex h-14 items-center justify-center md:h-16">
+    <div className="flex h-14 items-center justify-center md:h-16 [@media(max-height:640px)]:h-12">
       {verdict && (
         <div
           role="status"
           className={
-            'flex max-w-full flex-col items-center rounded-2xl px-4 py-1.5 text-center '
+            'flex max-w-full flex-col items-center rounded-2xl px-4 py-1.5 text-center max-[359px]:px-3 max-[359px]:py-1 '
             + (verdict.correct ? 'bg-correct/10 text-correct' : 'bg-wrong/10 text-wrong')
           }
         >
-          <span className="flex items-center gap-1.5 text-sm leading-snug font-semibold md:text-base">
+          <span className="flex items-center gap-1.5 text-sm leading-snug font-semibold max-[359px]:text-[13px] max-[359px]:leading-tight md:text-base">
             {verdict.correct
               ? <CheckIcon size={15} weight="bold" aria-hidden className="shrink-0" />
               : <XIcon size={15} weight="bold" aria-hidden className="shrink-0" />}

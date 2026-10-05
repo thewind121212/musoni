@@ -35,7 +35,7 @@ describe('Chords SetupPhase', () => {
     renderSetup()
     await userEvent.click(screen.getByRole('radio', { name: /Roman numeral/ }))
     expect(own()).toMatchObject({ level: 6, mode: 'roman' })
-    expect(screen.getByRole('radio', { name: /Numerals · 4/ })).toHaveAttribute('aria-checked', 'true')
+    expect(screen.getByRole('radio', { name: /Up to 4/ })).toHaveAttribute('aria-checked', 'true')
     expect(screen.queryByRole('radio', { name: /Inversions/ })).toBeNull()
     expect(screen.queryByRole('switch', { name: 'Names on keys' })).toBeNull()
 

@@ -42,7 +42,7 @@ const pickQuality = (i: number) => pick(() => useChordStore.getState().pickQuali
 const pickDegree = (d: number) => pick(() => useChordStore.getState().pickDegree(d))
 
 /** "1 · Nốt gốc": which half of the answer the controls below it give. */
-const STEP_LABEL = 'mt-1 text-xs font-semibold tracking-wide text-ink-faint uppercase md:text-sm'
+const STEP_LABEL = 'mt-1 text-xs font-semibold tracking-wide text-ink-faint uppercase md:text-sm [@media(max-height:640px)]:mt-0'
 
 /** The digit a key press stands for (top row or keypad), or null. */
 function digitOf(e: KeyboardEvent): number | null {

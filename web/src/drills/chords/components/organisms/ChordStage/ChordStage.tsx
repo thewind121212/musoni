@@ -32,7 +32,7 @@ export function ChordStage({ prompt, keyLine = null, notes, keySignature = null,
       <h2 className="text-lg font-semibold md:text-xl">{prompt}</h2>
       <div
         className="mt-2 aspect-[200/84] w-full max-w-sm overflow-hidden md:max-w-md
-                   [@media(max-height:640px)]:max-w-[16rem] [@media(max-height:900px)]:md:max-w-sm"
+                   [@media(max-height:640px)]:max-w-[15rem] [@media(max-height:900px)]:md:max-w-sm"
       >
         <NoteStaff
           clef="treble"

@@ -13,7 +13,7 @@ import { DurationPicker, OptionCards, SegmentedControl, SettingRow } from '@/cor
 import { CHORD_LEVELS, CHORD_ROMAN_FROM } from '@/config/constants'
 import { useChordStore } from '@/drills/chords/store'
 import chords, { modeOf, sessionLevel, type ChordsMode } from '@/drills/chords/drill'
-import { S, levelDetailKey, levelKey } from '@/drills/chords/strings'
+import { S, cardDetailKey, cardKey, levelDetailKey, levelKey } from '@/drills/chords/strings'
 
 const LEVELS = Object.keys(CHORD_LEVELS).map(Number)
 /** What each level asks, written as it reads: a symbol or a numeral. */
@@ -50,8 +50,8 @@ export function SetupPhase() {
   }))
   const levelOptions = LEVELS.filter(l => modeOf(l) === mode).map(l => ({
     value: l,
-    label: t(levelKey(l)),
-    hint: t(levelDetailKey(l)),
+    label: t(mode === 'roman' ? cardKey(l) : levelKey(l)),
+    hint: t(mode === 'roman' ? cardDetailKey(l) : levelDetailKey(l)),
     visual: <Glyph text={LEVEL_GLYPH[l]} />,
   }))
 

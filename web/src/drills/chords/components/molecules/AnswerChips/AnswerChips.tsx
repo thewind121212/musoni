@@ -36,7 +36,7 @@ export function AnswerChips({ chips, label, selected = null, feedback, onPick, s
     <div
       role="group"
       aria-label={label}
-      className="grid gap-1.5 md:gap-2"
+      className={'grid md:gap-2 ' + (size === 'tall' ? 'gap-1' : 'gap-1.5')}
       style={{ gridTemplateColumns: `repeat(${chips.length}, minmax(0, 1fr))` }}
     >
       {chips.map((chip, i) => {
@@ -51,10 +51,10 @@ export function AnswerChips({ chips, label, selected = null, feedback, onPick, s
             aria-pressed={feedback === null && !chip.disabled ? picked : undefined}
             onClick={() => onPick(i)}
             className={
-              'relative flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-2xl border-[1.5px] px-1 '
+              'relative flex min-w-0 flex-col items-center justify-center gap-0.5 rounded-2xl border-[1.5px] '
               + 'font-semibold transition-[background-color,border-color,color,transform] duration-150 '
               + 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent '
-              + (size === 'tall' ? 'h-16 text-lg md:h-20 md:text-xl ' : 'h-12 text-[15px] md:h-14 md:text-base ')
+              + (size === 'tall' ? 'h-16 px-0.5 text-base min-[400px]:text-lg md:h-20 md:text-xl ' : 'h-12 px-1 text-[15px] md:h-14 md:text-base [@media(max-height:640px)]:h-11 ')
               + (right
                 ? 'border-transparent bg-correct text-white'
                 : wrong
@@ -68,11 +68,10 @@ export function AnswerChips({ chips, label, selected = null, feedback, onPick, s
                         : 'border-line bg-raised text-ink hover:border-ink-faint active:scale-[0.97]')
             }
           >
-            <span className="flex max-w-full items-center gap-1 truncate">
-              {right && <CheckIcon size={14} weight="bold" aria-hidden className="shrink-0" />}
-              {wrong && <XIcon size={14} weight="bold" aria-hidden className="shrink-0" />}
-              <span className="truncate">{chip.label}</span>
-            </span>
+            {/* In the corner, so a long word ("Trưởng") keeps its room. */}
+            {right && <CheckIcon size={12} weight="bold" aria-hidden className="absolute top-1 right-1.5" />}
+            {wrong && <XIcon size={12} weight="bold" aria-hidden className="absolute top-1 right-1.5" />}
+            <span className="max-w-full truncate">{chip.label}</span>
             {chip.note && <span className="sr-only">, {chip.note}</span>}
             {!chip.disabled && feedback === null && <KeyHint hint={chip.keyHint} />}
           </button>
