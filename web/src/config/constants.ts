@@ -361,3 +361,5 @@ export const RHYTHM_MISSES_SHOWN = 4
  * phone; a busy one shrinks to fit.
  */
 export const RHYTHM_STAFF_WIDTH = { base: 110, perEvent: 24, min: 230, max: 400 } as const
+/** Rhythm marks: below this many pixels between two notes' marks, the marks are drawn small so they do not touch. */
+export const RHYTHM_MARK_ROOM_PX = 21

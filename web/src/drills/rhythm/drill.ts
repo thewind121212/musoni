@@ -28,6 +28,7 @@ export default defineDrill<RhythmOptions>({
   defaults: { level: 1, durationSec: RHYTHM_DEFAULT_DURATION_SECONDS, tempo: RHYTHM_DEFAULT_TEMPO, click: true, latencyMs: null },
   // A lesson may slow the tempo down; the click and the calibration stay the reader's.
   presetOptions: ['tempo'],
-  tags: s => [`♩ = ${s.tempo}`],
+  // No-break spaces: the note and its tempo never part at a line end.
+  tags: s => [`♩\u00a0=\u00a0${s.tempo}`],
   unlockedBy: 'durations-time/note-values',
 })

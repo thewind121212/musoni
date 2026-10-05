@@ -51,6 +51,19 @@ describe('RhythmStaff', () => {
     rerender(<RhythmStaff measure={tied} judgement={judgeTaps([0, 750, 2250], [0, 750, 2250], 100, 3000)} tickMs={62.5} t={t} />)
     expect(screen.getByTestId('staff')).toHaveAttribute('data-tone', 'correct')
   })
+
+  it('draws the marks small when the notes sit too close for full-size ones', () => {
+    const j = judgeTaps([0, 750, 2250], [0, 750, 2250], 100, 3000)
+    const width = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(400)
+    const { unmount } = render(<RhythmStaff measure={tied} judgement={j} tickMs={62.5} t={t} />)
+    expect(screen.getAllByRole('img')[0].className).not.toContain('size-3.5')
+    unmount()
+    // A phone-narrow staff: the first two notes' marks would be 17.5 px apart.
+    width.mockReturnValue(100)
+    render(<RhythmStaff measure={tied} judgement={j} tickMs={62.5} t={t} />)
+    expect(screen.getAllByRole('img')[0].className).toContain('size-3.5')
+    width.mockRestore()
+  })
 })
 
 describe('placeAt', () => {
