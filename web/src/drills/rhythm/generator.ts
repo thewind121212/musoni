@@ -1,4 +1,4 @@
-import { RHYTHM_COMPOUND_SHARE, RHYTHM_COMPOUND_TEMPO, RHYTHM_ODDS } from '@/config/constants'
+import { RHYTHM_COMPOUND_SHARE, RHYTHM_COMPOUND_TEMPO, RHYTHM_ODDS, RHYTHM_TEMPOS } from '@/config/constants'
 
 /*
  * Tiết tấu's measures. A measure is built from figures that each fill one
@@ -276,7 +276,17 @@ export interface Pulse {
   tickMs: number
 }
 
+/**
+ * The setup's tempo nearest to `tempo`. A lesson preset only has to give a
+ * number, so a tempo of 0 or one off the list still plays at a real speed.
+ */
+export function playableTempo(tempo: number): number {
+  if (!Number.isFinite(tempo)) return RHYTHM_TEMPOS[0]
+  return RHYTHM_TEMPOS.reduce((best, t) => (Math.abs(t - tempo) < Math.abs(best - tempo) ? t : best))
+}
+
 export function pulseOf(meter: Meter, tempo: number): Pulse {
+  tempo = playableTempo(tempo)
   const compound = meter === '6/8'
   const bpm = compound ? Math.round(tempo * RHYTHM_COMPOUND_TEMPO) : tempo
   const beatTicks = compound ? 1.5 * TICKS : TICKS

@@ -10,7 +10,7 @@ import { EarlyEndSummary, ResultSummary } from '@/core/components/organisms'
 import { formatElapsed } from '@/core/i18n/formatDuration'
 import { DAILY_GOAL_MINUTES } from '@/config/constants'
 import { useRhythmStore } from '@/drills/rhythm/store'
-import { pulseOf } from '@/drills/rhythm/generator'
+import { playableTempo, pulseOf } from '@/drills/rhythm/generator'
 import { MissedMeasures } from '@/drills/rhythm/components/organisms'
 import rhythm from '@/drills/rhythm/drill'
 import { S, levelKey } from '@/drills/rhythm/strings'
@@ -39,7 +39,7 @@ export function ResultPhase() {
   // This drill's third figure: how far the taps landed from the notes, on
   // average; a dash when no tap landed on a note (not "0 ms", which reads as perfect).
   const third = { value: paired > 0 ? `${result.avgMs} ms` : '–', label: t(S['result.offset']) }
-  const tempo = rhythm.of(settings).tempo
+  const tempo = playableTempo(rhythm.of(settings).tempo)
   const missed = misses.map(m => ({ ...m, tickMs: pulseOf(m.measure.meter, tempo).tickMs }))
   // Again plays the same session: a lesson's preset stays on, the saved setup stays as it was.
   const again = () => {

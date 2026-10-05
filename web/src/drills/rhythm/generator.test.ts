@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { allMeasures, generateMeasure, pulseOf, TICKS, type RhythmLevel, type RhythmMeasure } from './generator'
+import { allMeasures, generateMeasure, playableTempo, pulseOf, TICKS, type RhythmLevel, type RhythmMeasure } from './generator'
 import { parseNotation, quarters } from '@/core/music/notation'
 
 const LEVELS: RhythmLevel[] = [1, 2, 3, 4]
@@ -170,5 +170,14 @@ describe('rhythm generator', () => {
     expect(compound).toMatchObject({ beats: 2, bpm: 60, dotted: true, beatMs: 1000 })
     // An eighth: a third of the dotted-quarter beat.
     expect(compound.tickMs * 6).toBeCloseTo(1000 / 3)
+  })
+
+  it("plays a lesson's odd tempo at the setup tempo nearest to it, never at zero or infinity", () => {
+    expect(playableTempo(100)).toBe(100)
+    expect(playableTempo(90)).toBe(80)
+    expect(playableTempo(0)).toBe(60)
+    expect(playableTempo(400)).toBe(120)
+    expect(playableTempo(Number.NaN)).toBe(60)
+    expect(pulseOf('4/4', 0).beatMs).toBe(1000)
   })
 })
