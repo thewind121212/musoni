@@ -86,6 +86,7 @@ defaults, and `entry.of(settings)` reads saved values over them
 |---|---|
 | `note-id` | `level` (1), `durationSec` (60, any value; offered 30/60/120/300, custom 60-1800), `accidentals` (false) |
 | `hear-play` | `level` (1), `durationSec` (120), `cadenceEach` (false, listening aid: the cadence before every question), `oneKey` (false, listening aid: C at every level) |
+| `intervals` | `level` (1), `durationSec` (60), `hear` (true: the interval plays after each answer) |
 | `review` | `level` (1, the only one), `durationSec` (120), `chapters` (null = every chapter with a finished lesson; else chapter ids) |
 
 `drill` is a registered drill's id (`DrillId`, a string: `"note-id"`,

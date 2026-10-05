@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 570 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 649 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -253,6 +253,19 @@ a real browser.
       `docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`,
       `docs/theory/framework.md`, `docs/theory/port-guide.md`, `docs/summary.md`
 
+- [x] **Quãng (intervals) drill** (2026-10-05, `drills/intervals`, route `/train/intervals`):
+      two notes on a treble or bass staff, side by side or stacked, lower first; one tap
+      on a size × quality grid (2-8 across; thứ, trưởng / đúng, tăng, giảm down; minor
+      4/5/8 blank; only the level's rows drawn; one computer key per cell). Levels: size
+      only on white keys / M, m, P on white keys (no tritone) / with ♯ ♭ and the bass
+      clef / adds A2 A4 A5 A6 d4 d5 d7. The verdict names it in the reader's naming
+      ("Quãng 6 thứ (Mi → Do)"); "Nghe" (on by default) plays it as written. Opens with
+      lesson `accidentals-steps/half-whole-steps`. Generator tested over every spelling
+      of every level. Core `NoteStaff` gained an optional `room` (box pinned to the
+      staff, so the question staff never jumps). 649 web tests green. Screenshots: project files
+      `screenshots/drill-intervals/` — `docs/fe/drill-intervals.md`,
+      `docs/fe/architecture.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
+
 ## Theory chapters
 
 Port guide: `docs/theory/port-guide.md`; one PR per chapter.
@@ -271,9 +284,12 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   phone — not runnable headlessly, remains for a human pass
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
-- Four drills on the new registry, built in parallel: key signatures, intervals,
-  chords, rhythm (each declares the lesson that opens it with `unlockedBy`). Until
-  one does, Luyện's "more drills" line stays hidden (every listed drill is open)
+- Four drills on the new registry, built in parallel: key signatures, intervals
+  (built, see Done), chords, rhythm (each declares the lesson that opens it with
+  `unlockedBy`). A drill whose lesson is not written yet stays unopened on Luyện,
+  counted in its "more drills" line and reachable from "Xem tất cả"
+- Quãng: a human pass on a phone for the interval sound (melodic spacing, the dyad)
+  and the feedback holds (`INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`)
 
 ## Next
 
