@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { PracticeTab } from './PracticeTab'
 import { useAppStore } from '@/app/store'
-import { addDrills } from '@/app/drills'
+import { addDrills, listedDrills } from '@/app/drills'
 import { fakeDrill } from '@/test/fakeDrill'
 import { getSettings, getUnlocksSeen, markLessonDone, recordSession } from '@/progress/progressStore'
 import { resetStores, session, withDrill } from '@/test/fixtures'
@@ -66,7 +66,9 @@ describe('PracticeTab', () => {
     expect(within(card('Fake drill')).getByText('Just opened')).toBeInTheDocument()
     expect(getUnlocksSeen()).toContain('fake')
     await userEvent.click(screen.getByRole('button', { name: 'See all' }))
-    expect(screen.getAllByText('Opens later')).toHaveLength(1)
+    // "later", and any real drill whose lesson is not finished (or not written yet).
+    const locked = listedDrills().filter(d => d.unlockedBy && d.unlockedBy !== 'pitch-staff/staff-clefs')
+    expect(screen.getAllByText('Opens later')).toHaveLength(locked.length)
     first.unmount()
 
     renderTab()
