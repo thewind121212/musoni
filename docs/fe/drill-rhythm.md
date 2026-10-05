@@ -74,7 +74,8 @@ enumerates every measure a level can draw (L1 5, L2 95, L3 83, L4 6691, of
 which 25 in 6/8); the tests check every one with an independent validator.
 
 **Tempo.** The setup tempo is the quarter note. In 6/8 the beat is the dotted
-quarter at `tempo × 0.75` (♩ = 80 → ♩. = 60), so eighths keep their speed.
+quarter at `tempo × 0.75` (♩ = 80 → ♩. = 60): the beat is slower, and the
+eighths move only a little faster than in 4/4 (333 ms against 375 ms at 80).
 The count-in is four beats in both meters (`pulseOf`).
 
 ## Timing and judging
@@ -92,10 +93,13 @@ The count-in is four beats in both meters (`pulseOf`).
   early tap never shifts every later note. A tap more than twice the
   tolerance from its note is not paired: the note is missed and the tap extra.
 - **Latency calibration** (setup, "Gõ theo 8 tiếng click"): eight clicks at
-  100 bpm; the median tap offset becomes `latencyMs` when at least five taps
-  landed near clicks and their spread is under 60 ms, clamped to
-  −150…400 ms (`calibrate.ts`). Saved in the drill's settings and taken off
-  every tap before judging.
+  100 bpm. A tap counts for a click when it lands from 150 ms before it to
+  400 ms after it (narrower than the 600 ms between clicks, so a long delay
+  is never read as an early tap for the next click); the median offset
+  becomes `latencyMs` when at least five clicks got a tap and their spread
+  is under 60 ms (`calibrate.ts`). The run listens until 400 ms past the
+  last click. Saved in the drill's settings and taken off every tap before
+  judging.
 
 ## Store flow
 
@@ -115,7 +119,8 @@ The shared practice score (`practiceScore`): pace of right measures ×
 accuracy × the level's weight × endurance. A slower tempo means fewer measures
 a minute, so a faster tempo scores more. The result's third figure is
 **Lệch TB**, the mean distance of paired taps from their notes in ms
-(`SessionResult.avgMs` for this drill), in place of time per answer. The
+(`SessionResult.avgMs` for this drill), in place of time per answer; a dash
+when no tap landed on a note (not "0 ms", which would read as perfect). The
 result lists up to four missed measures with their marks.
 
 ## Code map

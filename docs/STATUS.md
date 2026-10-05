@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 627 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 710 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -283,7 +283,14 @@ a real browser.
       beams by the time signature, tuplets before beams (triplets were mis-beamed);
       `SessionStats` optional third figure. Replaces Complete-the-Measure.
       Screenshots: project files `screenshots/drill-rhythm/` — `docs/fe/drill-rhythm.md`,
-      `docs/fe/architecture.md`, `docs/fe/data-model.md`, `docs/fe/screens.md`
+      `docs/fe/architecture.md`, `docs/fe/data-model.md`, `docs/fe/screens.md`.
+      Functional review: every measure of every level rendered in a browser (beams,
+      ties, tuplets, one mark per onset), timed sessions at L1 and L4 judged in time,
+      pause / reload / Esc / early end / time up checked. Fixed: Lệch TB showed "0 ms"
+      when no tap landed on a note (now "–"); calibration paired a tap with the nearest
+      click, so a delay over 300 ms read as early for the next click (now a tap counts
+      from 150 ms before to 400 ms after its click). Merged with main (Hóa biểu).
+      710 web tests green
 
 ## Theory chapters
 
