@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 625 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 627 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -264,7 +264,7 @@ a real browser.
       signature twice running. Opens with `major-scales-keys/key-signatures` (chapter 3).
       Names checked against the standard 15-key table; generator tested over every level.
       Core `NoteStaff` now draws a staff with no notes (it threw). Screenshots: project files
-      `screenshots/drill-key-sig/`. 625 web tests green — `docs/fe/drill-key-sig.md`,
+      `screenshots/drill-key-sig/`. 627 web tests green — `docs/fe/drill-key-sig.md`,
       `docs/fe/architecture.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
 
 ## Theory chapters

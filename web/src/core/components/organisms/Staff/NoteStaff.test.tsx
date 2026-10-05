@@ -31,11 +31,16 @@ describe('NoteStaff', () => {
     expect(screen.getByTestId('note-staff').querySelectorAll('path, rect').length).toBeGreaterThan(10)
   })
 
-  it('draws a key signature with no notes on either clef', () => {
-    for (const clef of ['treble', 'bass'] as const) {
-      const { unmount } = render(<NoteStaff clef={clef} events={[]} keySignature="C#" />)
-      expect(screen.getByTestId('note-staff').querySelector('svg')).toBeInTheDocument()
-      unmount()
+  it('draws a key signature with no notes on a single, bass, grand or bare staff', () => {
+    for (const clef of ['treble', 'bass', 'grand', 'none'] as const) {
+      for (const [key, count] of [['C#', 7], ['Cb', 7], ['Bb', 2], ['C', 0]] as const) {
+        const { unmount } = render(<NoteStaff clef={clef} events={[]} keySignature={key} />)
+        const staves = screen.getByTestId('note-staff').querySelectorAll('.vf-keysignature')
+        // Every staff carries the whole signature: a grand staff has it twice.
+        expect(staves, `${key} on ${clef}`).toHaveLength(clef === 'grand' ? 2 : 1)
+        staves.forEach(s => expect(s.children, `${key} on ${clef}`).toHaveLength(count))
+        unmount()
+      }
     }
   })
 
