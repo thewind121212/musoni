@@ -99,10 +99,10 @@ two notes): a repeat would be answered from the last tap, not by reading.
 
 Tests walk every spelling of every level (`generator.test.ts`): two real notes,
 in range, in the level's clefs, no excluded spelling, the name matches the
-semitones, the answer's own cell exists on the level's rows and is marked
-right; every answer of a level is reachable, with both clefs from L3; no answer
-repeats in 3,000 questions per level; L4's share of augmented and diminished is
-near 40%.
+semitones and a textbook table kept apart from `interval.ts`, the answer's own
+cell exists on the level's rows and is marked right; every answer of a level is
+reachable, with both clefs from L3; no answer repeats in 3,000 questions per
+level; L4's share of augmented and diminished is near 40%.
 
 ## Session, score, pause
 
@@ -113,7 +113,7 @@ Same shell as the other drills:
   a lesson preset sets level and length only.
 - `practiceScore` = pace × 10 × level weight × accuracy × endurance
   (`core/scoring`). Answer time runs from when the question appears; the
-  feedback hold is not counted against it. Bests and week averages per drill
+  feedback hold and paused time are not counted against it. Bests and week averages per drill
   and level (`getBest('intervals', level)`). `SessionResult.accidentals` is true
   from L3.
 - ✕ / Esc pause, leaving pauses, back goes where the session started, ending

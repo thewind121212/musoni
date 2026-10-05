@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 649 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 656 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -262,9 +262,13 @@ a real browser.
       ("Quãng 6 thứ (Mi → Do)"); "Nghe" (on by default) plays it as written. Opens with
       lesson `accidentals-steps/half-whole-steps`. Generator tested over every spelling
       of every level. Core `NoteStaff` gained an optional `room` (box pinned to the
-      staff, so the question staff never jumps). 649 web tests green. Screenshots: project files
+      staff, so the question staff never jumps). 656 web tests green. Screenshots: project files
       `screenshots/drill-intervals/` — `docs/fe/drill-intervals.md`,
-      `docs/fe/architecture.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
+      `docs/fe/architecture.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`.
+      Functional review (2026-10-05): every spelling checked against a textbook table, flows
+      run in a browser (keyboard, pause, reload mid-verdict, end early, staff never clipped
+      at L4); no bugs found; tests added for answer timing across holds and pauses, keys
+      during the verdict or a pause, Esc, and leaving mid-verdict
 
 ## Theory chapters
 
