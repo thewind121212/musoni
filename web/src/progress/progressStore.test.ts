@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS = {
   lang: 'vi',
   activityExpanded: false,
 } as const
-import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount, getRecentAverage, saveLiveSession, getLiveSession, getLiveSessions, clearLiveSession } from './progressStore'
+import { getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes, getLongestStreak, getActiveDayCount, getRecentAverage, saveLiveSession, getLiveSession, getLiveSessions, clearLiveSession, recordLessonTime, markLessonDone, getLessonsDone } from './progressStore'
 
 const session = (over = {}) => ({
   drill: 'note-id' as const, level: 1, accidentals: false, naming: 'letters' as const, durationSec: 60,
@@ -259,5 +259,53 @@ describe('live sessions', () => {
     localStorage.setItem('musoni-live-v1', '{oops')
     expect(getLiveSession('note-id')).toBeNull()
     expect(getLiveSessions()).toEqual([])
+  })
+})
+
+describe('theory lessons', () => {
+  const lessonAt = (at: string, seconds = 90) => ({ lesson: 'pitch-staff/staff-clefs', seconds, at })
+
+  it('counts lesson time toward the day, the streak and active days, beside drill sessions', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 9, 5, 12))
+    try {
+      recordLessonTime(lessonAt(new Date(2026, 9, 5, 9).toISOString(), 150))
+      recordSession(session({ at: new Date(2026, 9, 5, 10).toISOString(), durationSec: 90 }))
+      recordLessonTime(lessonAt(new Date(2026, 9, 4, 9).toISOString()))
+      expect(getDailyMinutes()['2026-10-05']).toBe(4)
+      expect(getStreak()).toBe(2)
+      expect(getLongestStreak()).toBe(2)
+      expect(getActiveDayCount()).toBe(2)
+      // A lesson-only day has no drill sessions to show.
+      expect(getDay('2026-10-04')).toEqual([])
+      expect(getBest('note-id', 1)?.durationSec).toBe(90)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('remembers finished lessons with their latest score', () => {
+    expect(getLessonsDone()).toEqual({})
+    markLessonDone('pitch-staff/pitch-names', { correct: 2, total: 3 }, new Date('2026-10-05T09:00:00Z'))
+    markLessonDone('pitch-staff/pitch-names', { correct: 3, total: 3 }, new Date('2026-10-06T09:00:00Z'))
+    expect(getLessonsDone()).toEqual({
+      'pitch-staff/pitch-names': { correct: 3, total: 3, at: '2026-10-06T09:00:00.000Z' },
+    })
+  })
+
+  it('reads a document saved before theory existed and keeps its history when lessons are added', () => {
+    // An existing reader's document: version 1, sessions only, no theory fields.
+    const old = { version: 1, settings: DEFAULT_SETTINGS, days: { '2026-08-28': { sessions: [session()] } } }
+    localStorage.setItem('musoni-progress-v1', JSON.stringify(old))
+    expect(getLessonsDone()).toEqual({})
+    expect(getDailyMinutes()).toEqual({ '2026-08-28': 1 })
+
+    recordLessonTime(lessonAt('2026-08-28T12:00:00Z'))
+    markLessonDone('pitch-staff/octaves', { correct: 1, total: 2 })
+    const saved = JSON.parse(localStorage.getItem('musoni-progress-v1')!)
+    expect(saved.version).toBe(1)
+    expect(saved.days['2026-08-28'].sessions).toHaveLength(1)
+    expect(getDay('2026-08-28')).toHaveLength(1)
+    expect(Object.keys(getLessonsDone())).toEqual(['pitch-staff/octaves'])
   })
 })

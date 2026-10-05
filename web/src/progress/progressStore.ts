@@ -53,7 +53,40 @@ export interface SessionResult {
    */
   aids?: true
 }
-interface Doc { version: 1; settings: Settings; days: Record<string, { sessions: SessionResult[] }> }
+/**
+ * Time spent in a theory lesson. It counts toward the day's minutes, the
+ * streak and active days like a drill session, but it is not a session: no
+ * score, no level, never a best.
+ */
+export interface LessonTime {
+  /** The lesson's key, `chapter/lesson` (see theory/registry). */
+  lesson: string
+  seconds: number
+  at: string
+}
+
+/** A finished theory lesson: when it was last finished and how its checks went. */
+export interface LessonResult {
+  at: string
+  correct: number
+  total: number
+}
+
+/**
+ * A local day. `lessons` was added with the theory lessons; days written
+ * before it have none, and days with only lesson time have no sessions.
+ */
+interface Day { sessions: SessionResult[]; lessons?: LessonTime[] }
+/**
+ * The progress document. `theory` was added with the theory lessons (additive,
+ * so `version` stays 1): finished lessons by key.
+ */
+interface Doc {
+  version: 1
+  settings: Settings
+  days: Record<string, Day>
+  theory?: { done: Record<string, LessonResult> }
+}
 
 const KEY = 'musoni-progress-v1'
 // Vietnamese market first, and Vietnamese music teaching leads with solfege,
@@ -160,16 +193,41 @@ export function clearLiveSession(drill: DrillId): void {
 export function recordSession(r: SessionResult): void {
   const d = load()
   const day = localDayKey(new Date(r.at))
-  ;(d.days[day] ??= { sessions: [] }).sessions.push(r)
+  ;((d.days[day] ??= { sessions: [] }).sessions ??= []).push(r)
   save(d)
 }
 export function getDay(date: string): SessionResult[] { return load().days[date]?.sessions ?? [] }
 export function getRange(from: string, to: string): Record<string, SessionResult[]> {
   const out: Record<string, SessionResult[]> = {}
   for (const [day, v] of Object.entries(load().days)) {
-    if (day >= from && day <= to) out[day] = v.sessions
+    if (day >= from && day <= to) out[day] = v.sessions ?? []
   }
   return out
+}
+
+/** Adds time spent in a theory lesson to its local day. */
+export function recordLessonTime(t: LessonTime): void {
+  const d = load()
+  const day = localDayKey(new Date(t.at))
+  ;((d.days[day] ??= { sessions: [] }).lessons ??= []).push(t)
+  save(d)
+}
+
+/** Marks a theory lesson finished, with its check score. Finishing again replaces the score. */
+export function markLessonDone(lesson: string, result: Omit<LessonResult, 'at'>, now: Date = new Date()): void {
+  const d = load()
+  ;(d.theory ??= { done: {} }).done[lesson] = { ...result, at: now.toISOString() }
+  save(d)
+}
+
+/** Finished theory lessons by key. Empty for a document written before theory existed. */
+export function getLessonsDone(): Record<string, LessonResult> {
+  return load().theory?.done ?? {}
+}
+
+/** A day counts as practised with a drill session or time in a lesson. */
+function practised(day: Day | undefined): boolean {
+  return (day?.sessions?.length ?? 0) > 0 || (day?.lessons?.length ?? 0) > 0
 }
 /**
  * Best session for a drill at a given level, across every session length.
@@ -182,7 +240,7 @@ export function getRange(from: string, to: string): Record<string, SessionResult
 export function getBest(drill: DrillId, level: number): SessionResult | null {
   let best: SessionResult | null = null
   for (const v of Object.values(load().days)) {
-    for (const s of v.sessions) {
+    for (const s of v.sessions ?? []) {
       if (s.drill === drill && s.level === level && !s.partial && !s.aids
         && (!best || s.practiceScore > best.practiceScore)) best = s
     }
@@ -219,7 +277,7 @@ export function getRecentAverage(
  */
 export function getStreak(now: Date = new Date()): number {
   const doc = load()
-  const hasSessions = (d: Date) => (doc.days[localDayKey(d)]?.sessions.length ?? 0) > 0
+  const hasSessions = (d: Date) => practised(doc.days[localDayKey(d)])
 
   const cursor = new Date(now)
   if (!hasSessions(cursor)) cursor.setDate(cursor.getDate() - 1)
@@ -232,11 +290,12 @@ export function getStreak(now: Date = new Date()): number {
   return streak
 }
 
-/** Minutes practised per local day, for every day that has sessions. */
+/** Minutes practised per local day (drill sessions and lesson time), for every day that has any. */
 export function getDailyMinutes(): Record<string, number> {
   const out: Record<string, number> = {}
   for (const [day, value] of Object.entries(load().days)) {
-    const seconds = value.sessions.reduce((sum, s) => sum + s.durationSec, 0)
+    const seconds = (value.sessions ?? []).reduce((sum, s) => sum + s.durationSec, 0)
+      + (value.lessons ?? []).reduce((sum, l) => sum + l.seconds, 0)
     if (seconds > 0) out[day] = Math.round(seconds / 60)
   }
   return out
@@ -249,9 +308,8 @@ export function getDailyMinutes(): Record<string, number> {
  * cost is the number of days practised rather than the age of the account.
  */
 export function getLongestStreak(): number {
-  const days = Object.keys(load().days)
-    .filter(d => (load().days[d]?.sessions.length ?? 0) > 0)
-    .sort()
+  const all = load().days
+  const days = Object.keys(all).filter(d => practised(all[d])).sort()
   if (days.length === 0) return 0
 
   const dayNumber = (key: string) => Math.round(new Date(key + 'T00:00:00').getTime() / 86_400_000)
@@ -265,7 +323,7 @@ export function getLongestStreak(): number {
   return longest
 }
 
-/** Number of days with at least one session. */
+/** Number of days with at least one session or some lesson time. */
 export function getActiveDayCount(): number {
-  return Object.values(load().days).filter(d => d.sessions.length > 0).length
+  return Object.values(load().days).filter(practised).length
 }

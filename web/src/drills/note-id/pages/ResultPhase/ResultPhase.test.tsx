@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { ResultPhase } from './ResultPhase'
 import { useDrillStore } from '@/drills/note-id/store'
+import { useAppStore } from '@/app/store'
 import { recordSession } from '@/progress/progressStore'
 import { resetStores, session } from '@/test/fixtures'
 
@@ -53,6 +54,15 @@ describe('ResultPhase', () => {
     await userEvent.click(screen.getByRole('button', { name: /Again/ }))
     expect(useDrillStore.getState().phase).toBe('running')
     expect(useDrillStore.getState().level).toBe(3)
+  })
+
+  it("plays again on the session's own settings, so a lesson's preset carries over", async () => {
+    finish({ level: 2 })
+    useDrillStore.setState({ settings: { ...useAppStore.getState().settings, durationSec: 120, accidentals: true } })
+    renderResult()
+    await userEvent.click(screen.getByRole('button', { name: /Again/ }))
+    const drill = useDrillStore.getState()
+    expect([drill.level, drill.settings.durationSec, drill.settings.accidentals]).toEqual([2, 120, true])
   })
 
   it('goes back to setup', async () => {

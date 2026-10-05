@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAppStore } from '@/app/store'
 import { useDrillRoute, type DrillRouteControls } from '@/app/useDrillRoute'
+import { withPreset } from '@/app/drillPreset'
 import { useEarStore } from '@/drills/hear-play/store'
 import { SetupPhase } from '../SetupPhase'
 import { RunPhase } from '../RunPhase'
@@ -9,8 +10,10 @@ import { ResultPhase } from '../ResultPhase'
 
 const controls: DrillRouteControls = {
   usePhase: () => useEarStore(s => s.phase),
-  autostart: () => {
-    const { settings } = useAppStore.getState()
+  autostart: preset => {
+    const saved = useAppStore.getState().settings
+    // A lesson's preset applies to this session only; the saved setup stays.
+    const settings = preset?.drill === 'hear-play' ? withPreset(saved, preset) : saved
     useEarStore.getState().start(settings.earLevel, settings)
   },
   backToSetup: () => useEarStore.getState().backToSetup(),

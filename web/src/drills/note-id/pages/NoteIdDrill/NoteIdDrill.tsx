@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useAppStore } from '@/app/store'
 import { useDrillRoute, type DrillRouteControls } from '@/app/useDrillRoute'
+import { withPreset } from '@/app/drillPreset'
 import { useDrillStore } from '@/drills/note-id/store'
 import { SetupPhase } from '../SetupPhase'
 import { RunPhase } from '../RunPhase'
@@ -8,8 +9,10 @@ import { ResultPhase } from '../ResultPhase'
 
 const controls: DrillRouteControls = {
   usePhase: () => useDrillStore(s => s.phase),
-  autostart: () => {
-    const { settings } = useAppStore.getState()
+  autostart: preset => {
+    const saved = useAppStore.getState().settings
+    // A lesson's preset applies to this session only; the saved setup stays.
+    const settings = preset?.drill === 'note-id' ? withPreset(saved, preset) : saved
     useDrillStore.getState().start(settings.level, settings)
   },
   backToSetup: () => useDrillStore.getState().backToSetup(),

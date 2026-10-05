@@ -18,3 +18,21 @@ describe('MiniKeyboard', () => {
     expect(container.querySelectorAll('circle')).toHaveLength(0)
   })
 })
+
+describe('MiniKeyboard for lessons', () => {
+  it('spans several octaves and fills the marked keys instead of dotting them', () => {
+    const { container } = render(<MiniKeyboard lit={[0, 13, 24]} octaves={3} mark="fill" />)
+    expect(container.querySelectorAll('rect')).toHaveLength(36)
+    expect(container.querySelectorAll('circle')).toHaveLength(0)
+    const filled = [...container.querySelectorAll('rect[data-lit]')]
+    expect(filled.map(k => k.getAttribute('data-lit'))).toEqual(['0', '24', '13'])
+    expect(filled.every(k => /fill-accent/.test(k.getAttribute('class')!))).toBe(true)
+  })
+
+  it('places a label under the centre of its key', () => {
+    const { getByText } = render(<MiniKeyboard lit={[0, 12]} octaves={2} mark="fill" labels={{ 0: 'Do3', 12: 'Do4' }} />)
+    // C is the first of 14 white keys, the next C the eighth.
+    expect(parseFloat(getByText('Do3').style.left)).toBeCloseTo((0.5 / 14) * 100)
+    expect(parseFloat(getByText('Do4').style.left)).toBeCloseTo((7.5 / 14) * 100)
+  })
+})

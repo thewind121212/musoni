@@ -6,12 +6,15 @@ import { DrillLoading } from '@/app/pages/DrillLoading'
 import { PageTransition } from '@/app/components/templates'
 // VexFlow is the heaviest dependency in the app and only the drills need it,
 // so each drill route is split out and the home screen paints without it.
-import { HearPlayDrillPage, NoteIdDrillPage } from '@/app/routes'
+import {
+  ChapterListPage, HearPlayDrillPage, LessonPlayerPage, NoteIdDrillPage, TheoryAboutPage,
+} from '@/app/routes'
 
 /**
  * App-level routes only. Each drill owns one route and runs its own phases
- * internally, so training never changes the URL. Account and library
- * routes join this table later.
+ * internally, so training never changes the URL. Theory lessons have three:
+ * the chapter list, one lesson (its steps are store state), and the content's
+ * licence notice. Account and library routes join this table later.
  */
 export default function App() {
   const location = useLocation()
@@ -42,6 +45,19 @@ export default function App() {
               </Suspense>
             </PageTransition>
           }
+        />
+        {/* Theory lessons: the chapter list, a lesson, and the content's licence notice. */}
+        <Route
+          path="/theory"
+          element={<PageTransition instant={instant}><Suspense fallback={<DrillLoading what="lesson" />}><ChapterListPage /></Suspense></PageTransition>}
+        />
+        <Route
+          path="/theory/about"
+          element={<PageTransition instant={instant}><Suspense fallback={<DrillLoading what="lesson" />}><TheoryAboutPage /></Suspense></PageTransition>}
+        />
+        <Route
+          path="/theory/:chapter/:lesson"
+          element={<PageTransition instant={instant}><Suspense fallback={<DrillLoading what="lesson" />}><LessonPlayerPage /></Suspense></PageTransition>}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

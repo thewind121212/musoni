@@ -12,15 +12,19 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `app` (global) | `app/store.ts` | app-wide state: user settings (each drill's level and length, naming, keys, sound, language, activity-panel mode); keeps `<html lang>` in step with the language; `pausedSession`, which a drill publishes when the reader leaves mid-session so home can offer the way back |
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
+| `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | *(later)* `drills/complete-measure` | its own store | its session state |
 
 Modules never import each other's stores; sharing goes through `app` or props.
 
 ## Routing vs drill phases
 
-React Router covers **app-level** navigation only: `/` (home) and one route per
-drill (`/train/note-id`, `/train/hear-play`). Account, library and settings pages join that table
-later.
+React Router covers **app-level** navigation only: `/` (home), one route per
+drill (`/train/note-id`, `/train/hear-play`) and the theory lessons (`/theory`,
+`/theory/:chapter/:lesson`, `/theory/about`). Every page but home is a lazy
+chunk (`app/routes.ts`). Account, library and settings pages join that table
+later. A lesson's steps are not routed either: the step lives in the theory
+store, like a drill's phase.
 
 Inside a drill route the flow is **not** routed. Each drill is a self-contained
 SPA with phases held in its own store:
@@ -38,7 +42,12 @@ back leaves the drill for home, and `useRunGuards` pauses it and publishes the
 paused-session bar; ending one with nothing to keep (✕ before any answer) also
 steps back home. It also
 applies home's route state (`autostart`, `setup`, `resume`) before the phase is
-first read. `useBackLink` knows about the entry, so the result screen's Home
+first read. `autostart` may carry a **drill preset** (`app/drillPreset.ts`,
+`{ drill, level, durationSec, accidentals? }`): a theory lesson's "Luyện ngay"
+starts the drill with those settings for that one session (`withPreset` lays
+them over the reader's settings in the drill store; nothing is saved, and the
+result screen's Again replays the session's settings). A drill ignores another
+drill's preset. `useBackLink` knows about the entry, so the result screen's Home
 link steps back past setup in one go.
 
 Every drill route uses the same two app hooks, given its own store:
@@ -81,12 +90,26 @@ Shared, module-agnostic, reuse-first building blocks:
   clef underneath (redrawn only when the clef or size changes) and the notes on
   top (keyed on the question, so only the note is replaced and fades in).
   The tests also pin that a new question keeps the stave's SVG node.
+  The same folder holds **NoteStaff**, the general notation renderer for
+  lessons: several notes, chords, rests, durations, ties, tuplets, bar lines,
+  key and time signatures, any clef (treble, bass, alto, tenor), a grand staff
+  (brace, notes from middle C up on top unless `@t`/`@b` says otherwise) or
+  bare lines (`none`). It crops its viewBox to the drawn ink, puts labels under
+  the notes as HTML (so they wrap the reader's naming and font), draws chosen
+  notes blue and takes the same `tone`/`chosen` feedback as Staff. Its input
+  is the parsed notation from `core/music/notation`. `theme.ts` holds the
+  shared ink colour and the redraw-on-theme hook.
 - `core/music/` — shared pitch/note domain types and helpers (parsing,
   diatonic indexing, labeling, `pitchFromMidi`) used by the generators and
   Staff; `pianoKeys.ts` builds the 12-key answer pad (`buildOptions`,
   `NoteOption`); `keyboard.ts` maps the computer keyboard onto it; `keys.ts`
   holds major keys, their spelling, the I-IV-V-I cadence and the walk home to
   the tonic (Nghe & Đàn).
+- `core/music/notation.ts` — a small strict text notation for music in data
+  (`C4 E4 G4`, `C4+E4+G4:h`, `R:q`, `|`, ties, tuplets, `@t`/`@b`): parser,
+  error messages naming the bad token, MIDI and sounding pitch, and
+  `toSounds` for playback. Grammar in its header and in
+  `docs/theory/port-guide.md` section 7. `Clef` includes `alto` and `tenor`.
 - `core/music/pitch.nearestOctave` places an answer key (a name with no octave)
   at the octave nearest the printed note, so a wrong pick can be drawn on the
   staff.
@@ -142,11 +165,11 @@ owns it (`core/components/`, `app/components/`, `drills/<name>/components/`):
 
 | Level | What it is | Examples |
 |---|---|---|
-| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine`, `MiniKeyboard` |
-| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PausedNotice`, `PianoKey`, `DurationPicker`, `SessionStats` |
-| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `ListenStage` (hear-play) |
-| template | layout shell with no content of its own | `PageTransition` |
-| page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `HearPlayDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase` |
+| atom | one element, no children components of ours | `Button`, `Panel`, `CountPill`, `ProgressBar`, `Chip`, `StatTile`, `IconStat`, `FieldLegend`, `GoalRing`, `Switch`, `KeyHint`, `MissLine`, `MiniKeyboard` (1-4 octaves, dot or fill marks, names under keys); theory: `StepBar`, `RichText`, `TipBox`, `LessonDot` |
+| molecule | a few atoms doing one job | `OptionCards`, `StatStrip`, `SegmentedControl`, `SettingRow`, `ScoreCompare`, `LanguageToggle`, `ComingSoonCard`, `PausedNotice`, `PianoKey`, `DurationPicker`, `SessionStats`; theory: `PlayButton`, `ChoiceList`, `CheckVerdict`, `LessonRow`, `PracticeOffer`, `SourceLine` |
+| organism | a self-contained section of a screen | `Staff`, `ActivityPanel`, `ActivityCalendar` (`ActivityWeek` + `ActivityGrid`), `PracticeCard`, `AnswerPad`, `RunHeader`, `QuestionStaff`, `ResultSummary`, `EarlyEndSummary`, `MissedNotes`, `PausePanel` (a `vaul` bottom sheet), `ListenStage` (hear-play), `TheoryCard` (home); theory: `LessonBlocks`, `StepView`, `LessonEnd`, `ChapterCard` |
+| template | layout shell with no content of its own | `PageTransition`, `LessonFrame` (theory) |
+| page | one screen or drill phase; the **only** level that reads stores | `HomeScreen`, `NoteIdDrill`, `HearPlayDrill`, and each drill's `SetupPhase`, `RunPhase`, `ResultPhase`; theory: `ChapterList`, `LessonPlayer`, `TheoryAbout` |
 
 Rules:
 
@@ -197,7 +220,10 @@ other component touches it. No direct localStorage anywhere else.
 
 `config/constants.ts` holds all tunable constants: level weights and note
 ranges, accidentals weight and chance, endurance curve, offered session lengths
-and custom-stepper bounds, feedback timings, tick interval, audio gain. Nothing
+and custom-stepper bounds, feedback timings, tick interval, audio gain, and the
+theory rules (`THEORY_RULES`: steps, checks, sentences, recap counts the
+validator enforces; `THEORY_PLAY`, `THEORY_STAFF_WIDTH`, idle cap, minimum
+time recorded; `PRESET_SECONDS`). Nothing
 tunable is inlined. Pure helpers that depend only on these constants
 (`isPresetDuration`, `customOpeningSeconds`) live beside them and are tested in
 `config/duration.test.ts`.
@@ -210,16 +236,21 @@ tunable is inlined. Pure helpers that depend only on these constants
 ```
 web/src/
 ├── app/                    # global module: app store (settings), useT, drill route hooks
-│   ├── components/         #   molecules / organisms / templates used by app pages
+│   ├── components/         #   molecules / organisms / templates used by app pages (TheoryCard)
+│   ├── drillPreset.ts      #   a drill session set up from a lesson
 │   └── pages/HomeScreen/
 ├── core/
-│   ├── components/         # shared library: atoms / molecules / organisms (Staff)
-│   └── music/ (pitch, piano keys, keyboard, keys) scoring / audio / i18n / engine (placeholder)
+│   ├── components/         # shared library: atoms / molecules / organisms (Staff, NoteStaff)
+│   └── music/ (pitch, notation, piano keys, keyboard, keys) scoring / audio / i18n / engine (placeholder)
 ├── drills/note-id/         # drill module: store (phases), generator
 │   └── pages/              #   NoteIdDrill (phase switch), SetupPhase, RunPhase, ResultPhase
 ├── drills/hear-play/       # drill module: store, generator (key, note, sounds)
 │   ├── components/         #   organisms only this drill uses (ListenStage)
 │   └── pages/              #   HearPlayDrill, SetupPhase, RunPhase, ResultPhase
+├── theory/                 # theory module: types, text tokens, registry, outline, validate, blocks, store
+│   ├── components/         #   atoms / molecules / organisms / templates for lessons
+│   ├── pages/              #   ChapterList, LessonPlayer, TheoryAbout
+│   └── content/            #   GFDL lesson data: LICENSE, NOTICE.md, chNN-<slug>/ (index.ts + one file per lesson)
 ├── progress/               # progressStore (localStorage door, cloud plug)
 ├── config/                 # tunable constants (levels, durations, feedback, tick, audio)
 ├── test/                   # test helpers
@@ -248,11 +279,11 @@ read notation on white, so the reading surface never flips under a session.
 The dark palette is kept but opt-in via an explicit `data-theme="dark"`
 attribute (nothing in the UI sets it yet).
 
-Motion lives in four places, each behind `prefers-reduced-motion`: route
+Motion lives in five places, each behind `prefers-reduced-motion`: route
 changes (`PageTransition`, forward only: back and forward navigation swap
 routes instantly; forward also opens the page at the top), drill phase changes (`NoteIdDrill`), answer
-feedback plus note entry inside the run phase, and the home activity panel's
-week/calendar resize and cross-fade.
+feedback plus note entry inside the run phase, the home activity panel's
+week/calendar resize and cross-fade, and the lesson player's step slide.
 
 Layout is mobile-first with a single hinge at `md` (768px): base utilities
 describe the phone, `md:` utilities describe desktop. Both are first-class

@@ -83,6 +83,15 @@ different heights don't shift sideways as the scrollbar comes and goes.
   - The mode is a persisted setting (`activityExpanded`), so the panel opens the
     way it was left. Switching is one box that resizes while the two views
     cross-fade, behind `prefers-reduced-motion`.
+- **Học lý thuyết / Learn theory** (above Training): the `TheoryCard`. A book
+  icon, "Lý thuyết âm nhạc", and "Bài đầu tiên: …" for a new reader or "Bài
+  tiếp: …" once a lesson is done (the first unfinished lesson in course order,
+  `theory/outline.nextLesson`), the chapter and its progress bar ("Chương 1 ·
+  Cao độ & khuông nhạc", "1/5 bài"), one amber "Bắt đầu · 3 phút" / "Học tiếp
+  · 4 phút" straight into that lesson, and "Xem tất cả bài" to the list. With
+  every lesson done it says so and offers "Xem lại các bài". The lesson list is
+  its own chunk: home loads it on mount, and the card holds its place (same
+  height, no text) until it lands, so nothing below jumps.
 - Training list: the note-id card with a line saying what the drill asks, its
   Level / Length / Best in one three-column `StatStrip` (equal columns, labels
   and values wrap, so it fits a 320px phone), then the **Nghe & Đàn** card
@@ -114,6 +123,70 @@ simply there, as it was. The in-app back links (the setup caret, the result
 screen's Home) step back through history too (`useBackLink`), so they look the
 same and do not stack a new entry that a later swipe-back would land on.
 Opened directly on a drill, with no in-app history, the back link goes to `/`.
+
+### Theory (`/theory`, `/theory/:chapter/:lesson`, `/theory/about`)
+
+Mockups: project files `screenshots/theory-lessons/`; as built:
+`screenshots/theory-ch01/`. Module design: `docs/theory/framework.md`. The three
+pages are lazy chunks; home prefetches the list and the player when idle, and a
+cold open shows the loading keyboard with "Đang mở bài học…".
+
+**Chapter list** (`/theory`): back arrow and "Lý thuyết âm nhạc", one line
+("1 chương. Mỗi bài 3 đến 5 phút, học xong luyện ngay."), the note-naming
+switch (Do Re Mi / C D E, the same setting the drills use), then one card per
+chapter: number tile (filled blue for the chapter holding the next lesson),
+title, "1/5 bài". The chapter with the next lesson opens by default; tapping a
+header folds it (the choice is kept in the theory store while the app is
+open). Each lesson row: a tick when done, a blue ring on the next one ("Bài tiếp
+theo" for screen readers), its number otherwise; the title (bold on the next
+one); and a tag: "♪ Đọc nốt" / "♪ Nghe & Đàn" when it ends with a practice
+link, otherwise its minutes. Nothing is locked. "Về nội dung" at the bottom.
+
+**Lesson player** (`/theory/:chapter/:lesson`): ✕ and a step bar on top, the
+step in the middle, a sticky "Tiếp" (last step: "Xong") at the bottom in the
+thumb zone. Steps slide in from the right (fade only with reduced motion).
+- *Explain step*: eyebrow "Bài 1.2 · Khuông nhạc và khóa", title, then its
+  blocks in order: text (bold glossary terms, note names in the reader's
+  naming), staff (NoteStaff, names under the notes, chosen notes blue), a
+  "Nghe …" pill and a caption with a small keyboard on one row, a keyboard, a
+  blue tip box.
+- *Check step*: eyebrow "Thử nhé", the prompt, what to look at, and either the
+  answer pad at the bottom (the drills' piano or boxes, the reader's labels
+  setting; a "where is the key" check hides the names) or a list of 2-4
+  choices. "Tiếp" is off until it is answered; one answer only. Then a verdict
+  pill ("Đúng: Mi" / "Chưa đúng: đây là Mi", or "Đúng" / "Chưa đúng" for
+  choices, which mark the right one green and a wrong pick red) and the
+  one-sentence reason. On a staff note check the printed note turns green and
+  a wrong pick is drawn beside it in red, like the drills; with sound on, the
+  note sounds. Desktop: Enter goes on, the drill's piano keys answer, 1-4 pick
+  a choice.
+- *End screen*: a green tick, "Xong bài 1.2" and the title, a card with "Bạn
+  vừa học" (3-4 bullets) and "Kiểm tra: 3/4 đúng", then the amber-bordered
+  "Luyện ngay điều vừa học" card (drill icon, name, "Khóa Sol · 1 phút", amber
+  "Luyện ngay") and a quiet "Bài tiếp: Khóa Do →" link. A lesson with no fitting
+  drill makes "Bài tiếp" the blue main button and adds "Ôn lại cả chương" under
+  it. The source line closes the screen: "Phỏng theo *Music Theory for the
+  21st-Century Classroom*, R. Hutchinson, mục 1.2 · GNU FDL 1.3", each section
+  linking to the book page and the licence to `/theory/about`.
+
+Back behaviour: ✕ forgets the place and goes back to the list (a step back when
+the lesson was opened from it, otherwise it replaces the lesson with
+`/theory`). "Bài tiếp" *replaces* the lesson in history, so ✕ or a swipe back
+from lesson 1.3 still lands on the list, not on 1.2. Leaving any other way
+(swipe back, a link) keeps the place: opening the same lesson again resumes it.
+"Luyện ngay" pushes the drill with `{ autostart: true, preset }`; stepping back
+from the drill (swipe, or its result's Home link, which steps back) shows the
+lesson's end screen again, as it was. A fresh visit to a finished lesson starts
+it over.
+
+**About** (`/theory/about`, "Về nội dung"): the GFDL notice in the reader's
+language: the original's title, author, copyright and link; its licence notice
+(GFDL 1.2 or later, no Invariant Sections or cover texts); that the lessons are
+a Modified Version under GFDL 1.3 with no Invariant Sections added; that every
+example is ours; the History (2017 original, 2026 Musoni lessons); the chapters
+adapted and their book sections (from the lessons' `sources`); and a link to the
+full licence text (`/licenses/gfdl-1.3.txt`). Mirrors
+`web/src/theory/content/NOTICE.md`.
 
 ### Note reading (`/train/note-id`)
 
