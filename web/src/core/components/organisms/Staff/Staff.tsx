@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { Renderer, Stave, StaveNote, Accidental, Formatter, Voice } from 'vexflow/bravura'
 import type { Pitch, Clef } from '@/core/music/types'
+import { inkColor, token, useRedrawOnThemeChange } from './theme'
 
 /**
  * Crops the rendered SVG to what was actually drawn. Used for static glyphs.
@@ -35,26 +36,6 @@ function cropToContent(svg: SVGSVGElement, fallbackWidth: number, fallbackHeight
  */
 export const LEDGER_ROOM = 70
 
-function inkColor(el: HTMLElement): string {
-  return getComputedStyle(el).getPropertyValue('--staff').trim() || '#111'
-}
-
-/**
- * Repaints when the theme changes, because the ink colour is read from a token
- * at draw time. The app is white-locked and only switches on an explicit
- * data-theme attribute, so that attribute is what is watched, not the OS
- * preference.
- */
-function useRedrawOnThemeChange(draw: () => void, deps: unknown[]) {
-  useEffect(() => {
-    draw()
-    const observer = new MutationObserver(draw)
-    observer.observe(document.documentElement, { attributeFilter: ['data-theme'] })
-    return () => observer.disconnect()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps)
-}
-
 export type StaffTone = 'neutral' | 'correct' | 'wrong'
 
 interface StaffProps {
@@ -66,11 +47,6 @@ interface StaffProps {
   tone?: StaffTone
   /** The reader's wrong choice, drawn beside the answer so the gap is visible. */
   chosen?: Pitch | null
-}
-
-/** Reads a semantic colour token, so notation follows the theme like everything else. */
-function token(el: HTMLElement, name: string, fallback: string): string {
-  return getComputedStyle(el).getPropertyValue(name).trim() || fallback
 }
 
 /** A stave with its clef, at the geometry every layer of one Staff shares. */
