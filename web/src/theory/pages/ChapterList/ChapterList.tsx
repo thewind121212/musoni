@@ -6,10 +6,11 @@ import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { SegmentedControl } from '@/core/components/molecules'
 import { getLessonsDone } from '@/progress/progressStore'
+import { findDrill } from '@/app/drills'
 import { CHAPTERS } from '@/theory/registry'
 import { useTheoryStore } from '@/theory/store'
 import { FROM_LIST, doneInChapter, lessonKey, nextLesson } from '@/theory/outline'
-import { plainText } from '@/theory/text'
+import { plainText } from '@/core/lesson/text'
 import { ChapterCard } from '@/theory/components/organisms'
 import { LessonRow } from '@/theory/components/molecules'
 import type { LessonState } from '@/theory/components/atoms'
@@ -36,7 +37,7 @@ export function ChapterList() {
     <div className="mx-auto w-full max-w-md px-4 pb-12 md:max-w-2xl md:px-8">
       <header className="-ml-2 flex h-14 items-center gap-2 md:mt-6">
         <Link
-          to="/" onClick={backLink} aria-label={t('theory.back')}
+          to="/learn" onClick={backLink} aria-label={t('theory.back')}
           className="flex size-11 items-center justify-center rounded-full text-ink-soft transition-colors duration-150
                      hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
         >
@@ -78,6 +79,7 @@ export function ChapterList() {
                 {chapter.lessons.map((lesson, i) => {
                   const key = lessonKey(chapter, lesson)
                   const state: LessonState = key in done ? 'done' : next?.key === key ? 'current' : 'todo'
+                  const practised = lesson.practice && findDrill(lesson.practice.drill)
                   return (
                     <LessonRow
                       key={lesson.id}
@@ -87,8 +89,8 @@ export function ChapterList() {
                       state={state}
                       mark={String(i + 1)}
                       stateLabel={state === 'done' ? t('theory.lessonDone') : state === 'current' ? t('theory.upNext') : undefined}
-                      tag={lesson.practice
-                        ? `♪ ${t(`theory.tag.${lesson.practice.drill}` as 'theory.tag.note-id')}`
+                      tag={practised
+                        ? `♪ ${t(practised.short ?? practised.title)}`
                         : t('theory.minutes', { count: lesson.minutes })}
                     />
                   )

@@ -11,8 +11,8 @@ interface Props {
   mark: string
   /** Spoken state for done and current lessons. */
   stateLabel?: string
-  /** On the right: the drill it practises ("♪ Đọc nốt"), else its minutes. */
-  tag: string
+  /** On the right: the drill it practises ("♪ Đọc nốt"), or its minutes. None when absent. */
+  tag?: string
 }
 
 /** One lesson on the chapter list. Nothing is locked: every row opens its lesson. */
@@ -28,9 +28,11 @@ export function LessonRow({ to, linkState, title, state, mark, stateLabel, tag }
       <span className={'min-w-0 flex-1 text-[15px] ' + (state === 'current' ? 'font-semibold text-ink' : state === 'done' ? 'text-ink' : 'text-ink-soft')}>
         {title}
       </span>
-      <span className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-ink-soft">
-        {tag}
-      </span>
+      {tag && (
+        <span className="shrink-0 rounded-full border border-line px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap text-ink-soft">
+          {tag}
+        </span>
+      )}
     </Link>
   )
 }

@@ -7,19 +7,25 @@ interface Props {
   actionLabel: string
   /** The drill route holding the paused session. */
   to: string
+  /** Sit above the tabs' bottom bar on a phone (it moves to the top from `md`). */
+  aboveTabBar?: boolean
 }
 
 /**
  * A session left mid-way (back, swipe) waits paused in its drill. This bar
- * says so on home and takes the reader straight back into it, so leaving by
+ * says so on the tabs and takes the reader straight back into it, so leaving by
  * accident costs nothing and the session is not silently lost.
  */
-export function PausedNotice({ title, detail, actionLabel, to }: Props) {
+export function PausedNotice({ title, detail, actionLabel, to, aboveTabBar = false }: Props) {
   return (
     <div
       role="status"
-      className="fixed inset-x-3 bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 mx-auto flex max-w-md
-                 items-center gap-3 rounded-2xl bg-ink py-3 pr-3 pl-4 text-raised shadow-xl"
+      className={
+        'fixed inset-x-3 z-30 mx-auto flex max-w-md items-center gap-3 rounded-2xl bg-ink py-3 pr-3 pl-4 text-raised shadow-xl ' +
+        (aboveTabBar
+          ? 'bottom-[calc(4.75rem+env(safe-area-inset-bottom))] md:bottom-4'
+          : 'bottom-[max(1rem,env(safe-area-inset-bottom))]')
+      }
     >
       <div className="min-w-0 flex-1 text-sm leading-snug">
         <div className="font-semibold">{title}</div>
