@@ -54,6 +54,15 @@ function at4(n: NoteName): Pitch {
   return { letter: n.letter, accidental: n.accidental, octave: 4 }
 }
 
+/**
+ * A pad key's own sound, C4 to B4 left to right like the pad. A renamed white
+ * key keeps its place: B# (on C) sounds C4, not C5; Cb (on B) sounds B4, not B3.
+ */
+function onPad(n: NoteName): Pitch {
+  const m = midi(at4(n))
+  return { ...at4(n), octave: m < 60 ? 5 : m > 71 ? 3 : 4 }
+}
+
 /** The key's home chord, root position from the tonic at octave 4. Spelling does not matter: it only sounds. */
 export function homeChord(fifths: number, mode: Mode): Pitch[] {
   const root = midi(at4(tonicOf(fifths, mode)))
@@ -69,7 +78,7 @@ export function answerSound(question: KeySigQuestion, chosenIndex: number): Soun
   const chord: SoundEvent = { pitches: homeChord(question.fifths, question.mode), at: 0, hold: KEY_SIG_CHORD_HOLD_SEC }
   if (chosenIndex === question.correctIndex) return [chord]
   return [
-    { pitches: [at4(question.options[chosenIndex])], at: 0, hold: KEY_SIG_MISS_GAP_SEC - 0.1 },
+    { pitches: [onPad(question.options[chosenIndex])], at: 0, hold: KEY_SIG_MISS_GAP_SEC - 0.1 },
     { ...chord, at: KEY_SIG_MISS_GAP_SEC },
   ]
 }

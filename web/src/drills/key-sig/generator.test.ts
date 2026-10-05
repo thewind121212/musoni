@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { midi } from '@/core/music/pitch'
 import { KEY_SIG_LEVELS } from '@/config/constants'
 import { answerSound, generateKeySigQuestion, homeChord, signaturesFor, type KeySigQuestion } from './generator'
-import { tonicOf } from './signatures'
+import { keyPad, tonicOf } from './signatures'
 import type { KeySigLevel } from './strings'
 
 const LEVELS: KeySigLevel[] = [1, 2, 3, 4]
@@ -83,5 +83,18 @@ describe('answer sounds', () => {
     expect(miss[0].pitches).toEqual([{ letter: q.options[wrong].letter, accidental: q.options[wrong].accidental, octave: 4 }])
     expect(miss[1].at).toBeGreaterThan(miss[0].at)
     expect(miss[1].pitches).toEqual(right[0].pitches)
+  })
+
+  it('plays a missed pick where its key sits on the pad, renamed keys included (B# low, Cb high)', () => {
+    for (const fifths of signaturesFor(4)) {
+      const options = keyPad(fifths, 'letters')
+      const q: KeySigQuestion = { fifths, mode: 'major', clef: 'treble', options, correctIndex: -1 }
+      const at = (o: KeySigQuestion['options'][number]) => options.indexOf(o)
+      const sound = (i: number) => midi(answerSound(q, i)[0].pitches[0])
+      const whites = q.options.filter(o => o.row === 'natural').map(o => sound(at(o)))
+      expect(whites, `whites of ${q.fifths}`).toEqual([60, 62, 64, 65, 67, 69, 71])
+      const blacks = q.options.filter(o => o.row === 'accidental').map(o => sound(at(o)))
+      expect(blacks, `blacks of ${q.fifths}`).toEqual([61, 63, 66, 68, 70])
+    }
   })
 })

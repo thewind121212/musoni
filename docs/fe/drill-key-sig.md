@@ -36,7 +36,8 @@ Proposal: project files `theory/drills-proposal.md`; approved mockup
    The pad marks the right key green and a wrong pick red.
 5. **Sound** (with the Sound setting on): a right answer plays the key's home
    chord (major or minor triad from the tonic at octave 4); a miss plays the
-   picked note, then the chord 0.6 s later.
+   picked note where its key sits on the pad (C4 to B4, so a renamed Si# sounds
+   C4 and Dob B4), then the chord 0.6 s later.
 6. Next question after **0.9 s** (right) or **2.6 s** (wrong): longer than
    note reading's, since the rule is worth a glance when right and a read
    when wrong.
