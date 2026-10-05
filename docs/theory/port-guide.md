@@ -36,15 +36,19 @@ Source: https://musictheory.pugetsound.edu/mt21c/MusicTheory.html
   published before 1929 is safe).
 - **No images copied from the book.** All notation is drawn with VexFlow through
   the core `Staff`, so it works in dark mode and in both namings.
-- Add yourself to nothing: the `NOTICE.md` history entry is maintained in PR 0;
-  chapter PRs add their chapter to its "Contents adapted" list.
+- The `NOTICE.md` History entry is already written. A chapter PR only adds a
+  row to its "Contents adapted" table; the About page picks the chapter up from
+  its lessons' sources on its own.
 
 ## 3. Lesson shape
 
 - A **chapter** = one coherent topic, 3 to 5 lessons. A **lesson** = 3 to 5
   minutes, 4 to 7 steps.
-- A **step** carries one idea. Explain steps hold at most three short sentences
-  (about 50 words in Vietnamese) per text block, at most two text blocks.
+- A **step** carries one idea. Explain steps hold at most two text blocks, each
+  at most three sentences and 55 Vietnamese words. Staff labels are short tags of
+  up to 6 characters (a line number, a Roman numeral), not prose. Pitch names on
+  keys only on a one-octave keyboard; keyboards span at most 4 octaves. The
+  validator (`THEORY_RULES` in `config/constants.ts`) enforces these limits.
 - **Show and play every idea.** If a step talks about notes, they are on a staff
   and a "Nghe" button plays them. Use the piano keys block whenever position on
   the keyboard helps (steps, accidentals, scales, intervals, chords).
@@ -60,10 +64,15 @@ Source: https://musictheory.pugetsound.edu/mt21c/MusicTheory.html
 
 ## 4. Practice links
 
-Each lesson ends with the drill that trains what it taught, with a preset (level,
-length 1 or 2 min, sharps/flats, clef). Use an existing drill setting only; never
-add drill features in a chapter PR. If no drill fits, the end screen offers the
-chapter review instead. Current drills: Đọc nốt (`note-id`: clef levels, sharps
+Each lesson ends with the drill that trains what it taught, with a preset: the
+drill's level, a length of 60 or 120 s, and (Đọc nốt) sharps/flats. The clef is
+part of the Đọc nốt level; there is no separate clef setting. Use an existing
+drill setting only; never add drill features in a chapter PR.
+
+Leaving out `practice` is fine when no drill fits: the end screen then makes
+"Bài tiếp" the main button and adds an "Ôn lại cả chương" link. Known gaps today:
+Đọc nốt has no C clef level, and nothing trains key-finding without a staff,
+rhythm, intervals or chords yet. Current drills: Đọc nốt (`note-id`: clef levels, sharps
 and flats) and Nghe & Đàn (`hear-play`: L1 Do Mi Sol in C, L2 Do–Sol in 3 keys,
 L3 full scale in 5 keys, L4 all 12 notes in 7 keys). Read their stores and docs
 (`docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`) for the
@@ -74,6 +83,8 @@ exact preset values.
 - Never write a note name as a word in lesson text. Use a pitch token (`{G4}`
   for a specific note, `{G}` for a pitch class, `{F#}` / `{Bb}` with accidentals)
   so the app prints it in the reader's naming (Sol / G).
+- Exception: "Do Re Mi" / "C D E" may be plain words when the text is about the
+  naming systems themselves.
 - Use only glossary terms. New term → add it to `docs/theory/glossary.md` in your
   PR and say so in the description.
 - First use of a term in a lesson: bold, Vietnamese with the English in brackets.
@@ -94,6 +105,10 @@ exact preset values.
   dark, Vietnamese and English, both note namings; attach screenshots to the PR
   (and copy them to project files `screenshots/theory-chNN/`). Check the longest
   Vietnamese strings for overflow.
+- Also screenshot **every step** of every lesson at 375 px (vi light and en dark)
+  into `screenshots/theory-chNN/steps/` and look at each one: crowded labels and
+  keyboards only show up there. PR 0's chapter 1 set in
+  `screenshots/theory-ch01/steps/` is the reference.
 - `npm run build`, `npm run lint` (zero warnings) and `npm test` pass before push.
 
 ## 7. Content format
