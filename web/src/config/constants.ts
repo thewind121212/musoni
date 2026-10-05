@@ -295,3 +295,58 @@ export const REVIEW_FEEDBACK_CORRECT_MS = 1400
 export const REVIEW_DIFFICULTY = 1
 /** Ôn tập opens on two minutes: reading a reason takes longer than naming a note. */
 export const REVIEW_DEFAULT_DURATION_SECONDS = 120
+
+/*
+ * Quãng (intervals): two notes on the staff, named on a size × quality grid.
+ * Design: docs/fe/drill-intervals.md.
+ *
+ * L1 counts the size only, on white keys. L2 names major, minor and perfect
+ * intervals on white keys (F–B and B–F, the only white-key tritones, wait
+ * for L4). L3 adds a sharp or flat on either note and the bass clef. L4 adds
+ * the augmented and diminished intervals met in practice (`augDim`), asked
+ * `INTERVAL_AUG_DIM_SHARE` of the time. `rows` are the grid rows a level
+ * answers on (`size` = size only, `MP` = major or perfect).
+ */
+export const INTERVAL_LEVELS: Record<1 | 2 | 3 | 4, {
+  weight: number
+  rows: readonly ('size' | 'm' | 'MP' | 'A' | 'd')[]
+  accidentals: boolean
+  clefs: readonly ('treble' | 'bass')[]
+  augDim: readonly string[]
+}> = {
+  1: { weight: 1.0, rows: ['size'], accidentals: false, clefs: ['treble'], augDim: [] },
+  2: { weight: 1.3, rows: ['m', 'MP'], accidentals: false, clefs: ['treble'], augDim: [] },
+  3: { weight: 1.6, rows: ['m', 'MP'], accidentals: true, clefs: ['treble', 'bass'], augDim: [] },
+  4: {
+    weight: 2.0,
+    rows: ['m', 'MP', 'A', 'd'],
+    accidentals: true,
+    clefs: ['treble', 'bass'],
+    augDim: ['A2', 'A4', 'A5', 'A6', 'd4', 'd5', 'd7'],
+  },
+}
+/** L4: how often the question is one of the augmented or diminished intervals. */
+export const INTERVAL_AUG_DIM_SHARE = 0.4
+/** How often the two notes are stacked (harmonic) rather than side by side (melodic). */
+export const INTERVAL_HARMONIC_SHARE = 0.5
+/**
+ * Where the two notes may sit, by letter (a sharp or flat may go with it):
+ * one ledger line either side of each staff at most, so the staff keeps one
+ * size from question to question.
+ */
+export const INTERVAL_RANGE = { treble: { low: 'C4', high: 'A5' }, bass: { low: 'E2', high: 'C4' } } as const
+/** A right answer stays this long (long enough to hear it); a miss stays longer, to read its name. */
+export const INTERVAL_FEEDBACK_CORRECT_MS = 1100
+export const INTERVAL_FEEDBACK_WRONG_MS = 2200
+/** The interval played after an answer: melodic notes `stepSec` apart, each ringing `holdSec`; a dyad rings `dyadHoldSec`. */
+export const INTERVAL_PLAY = { stepSec: 0.55, holdSec: 0.8, dyadHoldSec: 1.3 } as const
+/**
+ * The question staff, in notation units across, and the room kept above and
+ * below its lines: the box is pinned to that, not cropped to the notes, so
+ * the staff holds still between questions. Room covers one ledger line plus
+ * an accidental, and the treble clef.
+ */
+export const INTERVAL_STAFF_WIDTH = 180
+export const INTERVAL_STAFF_ROOM = 30
+/** Result screen: a missed interval's staff width (two notes side by side). */
+export const INTERVAL_MISS_STAFF_WIDTH = 160
