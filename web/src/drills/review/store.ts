@@ -35,7 +35,7 @@ interface ReviewState {
   bestStreak: number
   sumMs: number
   lastResult: SessionResult | null
-  /** Check ids answered wrong this session, in order, for the result screen. Not persisted. */
+  /** Check ids answered wrong this session, in order, for the result screen (kept with the live session, ids only). */
   misses: string[]
   /** When the clock was stopped, or null while it runs. Paused time is handed back on resume. */
   pausedAt: number | null
