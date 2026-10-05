@@ -10,7 +10,9 @@
 A web app for pure sheet-music reading training combined with music theory.
 Train reading speed and playing by ear with short drills, track improvement
 day by day: note reading (see a note, name it) and Nghe & Đàn (hear a note in a
-key, play it on the keys).
+key, play it on the keys). Short bilingual theory lessons (adapted from an
+open textbook under the GNU FDL) teach what the drills train, and each ends on
+the drill that practises it.
 
 **Design principle: mobile-first technique, hybrid target** - training must be
 super comfortable on a phone, and desktop is a first-class layout rather than a
@@ -22,7 +24,7 @@ desktop layout, never the reverse (details: `fe/screens.md`).
 | Phase | Scope | Monetization |
 |---|---|---|
 | **1 (now)** | Note Identification drill, web only, no login, localStorage progress, activity calendar; Vietnamese-first UI (English second) | Free |
-| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), "read the shape" drill, Complete-the-Measure (design done: `fe/drill-complete-measure.md`, to be reshaped into tap-the-rhythm), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
+| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), theory lessons (framework and chapter 1 built, `theory/framework.md`; chapters 2-9 being ported), "read the shape" drill, Complete-the-Measure (design done: `fe/drill-complete-measure.md`, to be reshaped into tap-the-rhythm), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
 | **3** | More ear training (echo phrases, chords), more theory drills | Premium |
 
 ## Level 1 — Context: who uses it, what it does
@@ -52,7 +54,11 @@ Solid lines = Phase 1 (live). Dotted lines = Phase 2 (planned).
 ```mermaid
 graph TB
   subgraph "FE container"
-    HOME["Home route /<br/>drill list + activity calendar"]
+    HOME["Home route /<br/>theory card + drill list + activity calendar"]
+    THEORY["Theory routes /theory, /theory/:chapter/:lesson, /theory/about<br/>chapter list, lesson player, licence page"]
+    THEORYSTORE["Theory Store (Zustand)<br/>lesson place, answers, reading time"]
+    CONTENT["Lesson content (GFDL)<br/>theory/content/chNN-*, found by import.meta.glob,<br/>checked by the content validator"]
+    NOTESTAFF["NoteStaff<br/>(VexFlow, core/components: any clef, grand staff, rhythms)"]
     DRILLROUTE["Drill routes /train/note-id, /train/hear-play<br/>each a self-contained SPA"]
     ROUTEHOOKS["Route hooks (app)<br/>useDrillRoute, useRunGuards"]
     SETUP["Setup phase<br/>level, length, settings"]
@@ -70,6 +76,13 @@ graph TB
     AUDIO["Audio<br/>(Web Audio, core: notes, chords, scheduled sequences)"]
 
     HOME -->|router| DRILLROUTE
+    HOME -->|router| THEORY
+    THEORY --> CONTENT
+    THEORY --> THEORYSTORE
+    THEORY --> NOTESTAFF
+    THEORY --> AUDIO
+    THEORY -->|"Luyện ngay: route state preset"| DRILLROUTE
+    THEORYSTORE --> STORE
     DRILLROUTE --> ROUTEHOOKS
     DRILLROUTE --> SETUP
     SETUP -->|start| RUN
@@ -90,9 +103,12 @@ graph TB
   end
 ```
 
-Routing is app-level only: the router owns `/`, `/train/note-id` and
-`/train/hear-play`, while each drill's three phases (setup, run, result) are
-store state inside its single route, so training never changes the URL. The
+Routing is app-level only: the router owns `/`, `/train/note-id`,
+`/train/hear-play` and the three theory routes, while each drill's three
+phases (setup, run, result) and a lesson's steps are store state inside a
+single route, so training never changes the URL. A
+lesson's practice link opens a drill with a preset in the route state, applied
+to that one session. The
 route side every drill shares (home's route state, back inside the drill,
 pausing when the reader leaves) lives in two app hooks, and the screens' shared
 parts (pad, header, pause sheet, result summaries) in `core/components`.

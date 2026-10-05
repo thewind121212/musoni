@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-03
+> Last updated: 2026-10-05
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -8,11 +8,12 @@
 
 A web app for pure sheet-music reading training combined with music theory.
 Phase 1: train note-identification speed on the staff. Phase 2 has begun with a second
-drill, Nghe & Đàn (hear a note in a key, play it on the keys). Later: more drills, login, subscriptions.
+drill, Nghe & Đàn (hear a note in a key, play it on the keys), and short theory lessons
+(adapted from an open textbook, GNU FDL) that end on the drill that trains them. Later: more drills, login, subscriptions.
 
 ## Current Phase
 
-**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill** (web only, no login, localStorage progress; pending human browser verification)
+**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill and theory lessons (chapter 1 of 9)** (web only, no login, localStorage progress; pending human browser verification)
 
 ## State
 
@@ -25,7 +26,11 @@ English switch, and answers play on a sampled piano. Leaving mid-session pauses 
 losing or miscounting the session. A second drill, **Nghe & Đàn** (`/train/hear-play`),
 plays a cadence and one note and has the reader find it on the same piano pad, then
 reveals it on the staff (relative pitch, four levels, the key moves from L2).
-Components follow atomic-design levels. Go `/health` stub behind it. 362 web tests (Vitest) + 1 Go test
+**Theory lessons** (`/theory`) teach in 3-5 minute bilingual steps (read, see on the staff, hear,
+check on the piano pad) and end on a practice link that starts the matching drill with a
+preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is in; chapters
+2-9 are ported one PR each against `docs/theory/port-guide.md`.
+Components follow atomic-design levels. Go `/health` stub behind it. 505 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -193,6 +198,34 @@ a real browser.
 - [x] Dev/preview server exposed on the LAN (`server.host`/`preview.host: true` in
       `web/vite.config.ts`) for testing on phones/other machines — `docs/infra/stack.md`, `README.md`
 
+- [x] **Theory lessons framework + chapter 1** (2026-10-05): `theory` module with typed
+      bilingual content (chapter → lessons → steps → blocks: text, staff, play, keys, tip,
+      checks answered on the piano pad or 2-4 choices, each with a reason), pitch tokens
+      printed in the reader's naming, an `import.meta.glob` registry, a content validator
+      run on every chapter, routes `/theory`, `/theory/:chapter/:lesson`, `/theory/about`
+      (lazy), the lesson player (step bar, sticky Tiếp, end screen with recap, score,
+      "Luyện ngay" card, next lesson, source line), lesson progress and reading time
+      through `progressStore` (additive: `theory.done`, `days[].lessons`; time counts toward
+      minutes and streaks), a home "Học lý thuyết" card, GFDL `LICENSE` + `NOTICE.md` +
+      About page. Drill presets (`app/drillPreset.ts`) start a drill with a lesson's level
+      and length for that session only. Core gained a notation parser
+      (`core/music/notation`), `NoteStaff` (any clef incl. alto/tenor, grand staff, rhythms)
+      and a multi-octave `MiniKeyboard`. Chapter 1 (book 1.1-1.3): pitch and note names,
+      staff and clefs, C clefs, octaves and middle C, review. Screenshots:
+      project files `screenshots/theory-ch01/`. 505 web tests green —
+      `docs/theory/framework.md`, `docs/theory/ch01-pitch-staff.md`,
+      `docs/theory/port-guide.md` §7, `docs/fe/architecture.md`, `docs/fe/screens.md`,
+      `docs/fe/data-model.md`, `docs/summary.md`
+
+## Theory chapters
+
+Port guide: `docs/theory/port-guide.md`; one PR per chapter.
+
+| Chapter | Folder | Book | State |
+|---|---|---|---|
+| 1. Cao độ & khuông nhạc | `ch01-pitch-staff` | 1.1-1.3, 1.6 | Done (PR 0, reference chapter) — `docs/theory/ch01-pitch-staff.md` |
+| 2-9 | | | To port |
+
 ## In Progress
 
 - Human browser spot-check: visual staff rendering across levels, the piano pad
@@ -200,6 +233,8 @@ a real browser.
   the activity panel expand/collapse, both languages, full play-through at 375px
   viewport, and listening to Nghe & Đàn (cadence, walk home, miss playback) on a
   phone — not runnable headlessly, remains for a human pass
+- Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
+  sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
 
 ## Next
 

@@ -45,7 +45,15 @@ keyed by local day for the day-by-day tracker:
           "practiceScore": 718,
           "at": "2026-08-28T14:32:00Z"
         }
+      ],
+      "lessons": [
+        { "lesson": "pitch-staff/staff-clefs", "seconds": 214, "at": "2026-08-28T15:02:00Z" }
       ]
+    }
+  },
+  "theory": {
+    "done": {
+      "pitch-staff/staff-clefs": { "at": "2026-08-28T15:02:00Z", "correct": 3, "total": 3 }
     }
   }
 }
@@ -87,6 +95,33 @@ streaks and active days, and is skipped by bests and averages. Optional and addi
 since a document was written (`durationSec`, `lang`, `activityExpanded`) fill in
 without a migration. That is why `version` is still `1`: every change so far has
 been additive.
+
+### Theory lessons
+
+Two optional, additive fields (added 2026-10-05, so `version` stays `1`; a
+document without them reads as no lessons, and `days[].sessions` is guarded the
+same way for a day that holds only lesson time):
+
+- `theory.done` maps a lesson key (`<chapter id>/<lesson id>`, the same slugs
+  as its URL) to its latest finish: when, and how many of its checks were right
+  out of how many. Finishing again overwrites it. The home card and the chapter
+  list read it through `getLessonsDone()`; `theory/outline` turns it into the
+  next lesson and chapter progress. Lesson and chapter ids are never renamed,
+  since they are these keys.
+- `days[date].lessons` lists time spent reading lessons that day
+  (`{ lesson, seconds, at }`). The theory store counts time while a lesson is
+  in view, caps each stretch between taps at 3 min (`THEORY_IDLE_CAP_MS`, so a
+  lesson left open is not study), and saves it when the lesson ends, is closed,
+  left or hidden. Under 15 s (`THEORY_MIN_RECORD_SEC`) it waits to be added to.
+
+Lesson time **counts toward today's minutes, the streak, the longest streak and
+active days** (`getDailyMinutes`, `getStreak`, `getLongestStreak`,
+`getActiveDayCount` sum sessions and lessons). It never touches bests or
+averages, which stay drill sessions only.
+
+A lesson's "Luyện ngay" starts its drill with a **preset** for that session only
+(`app/drillPreset.ts`); the preset is not stored, settings are not changed, and
+the session is recorded like any other with the level and length it was played at.
 
 Day keys are the viewer's **local** calendar day (`localDayKey`), not UTC, so a
 session at 1am in UTC+7 lands on today.
@@ -136,7 +171,9 @@ progress: it never syncs and is not part of the versioned document above.
   today counts back from yesterday)
 - `getLongestStreak()` — longest run of consecutive practised days on record
 - `getActiveDayCount()` — number of days with at least one session
-- `getDailyMinutes()` — minutes practised per local day
+- `getDailyMinutes()` — minutes practised per local day (drill sessions plus lesson time)
 - `localDayKey(date)` — the local `YYYY-MM-DD` key used everywhere
+- `recordLessonTime({ lesson, seconds, at })` — adds reading time under that local day
+- `markLessonDone(lesson, { correct, total }, now?)` / `getLessonsDone()` — finished lessons
 - `saveLiveSession(drill, state, summary, now?)` / `getLiveSession(drill)` /
   `getLiveSessions()` / `clearLiveSession(drill)` — the live session above
