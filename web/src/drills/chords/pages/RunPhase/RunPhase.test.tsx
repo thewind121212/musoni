@@ -14,7 +14,7 @@ const { RunPhase } = await import('./RunPhase')
 const { useChordStore } = await import('@/drills/chords/store')
 const { useAppStore } = await import('@/app/store')
 const { nameQuestion, romanQuestion } = await import('@/drills/chords/generator')
-const { playSequence } = await import('@/core/audio/playPitch')
+const { playSequence, stopSounds } = await import('@/core/audio/playPitch')
 const { CHORD_FEEDBACK_CORRECT_MS } = await import('@/config/constants')
 
 const renderRun = () => render(<MemoryRouter initialEntries={['/train/chords']}><RunPhase /></MemoryRouter>)
@@ -93,6 +93,44 @@ describe('Chords RunPhase, by name', () => {
     expect(useChordStore.getState().pickedRoot).toBe(amOverC().correctIndex)
     press('2')
     expect(useChordStore.getState().feedback?.correct).toBe(true)
+  })
+
+  it('takes nothing more while the answer shows: no second count, no second sound', async () => {
+    startAt(4)
+    useChordStore.setState({ question: amOverC() })
+    renderRun()
+    press('h')
+    press('2')
+    expect(playSequence).toHaveBeenCalledTimes(1)
+    press('a')
+    press('1')
+    await userEvent.click(screen.getByRole('button', { name: /Major/ }))
+    expect(useChordStore.getState()).toMatchObject({ correct: 1, wrong: 0, pickedRoot: null, pickedQuality: null })
+    expect(playSequence).toHaveBeenCalledTimes(1)
+  })
+
+  it('ignores the digit of a quality the level does not ask', () => {
+    startAt(2)
+    renderRun()
+    press('3')
+    press('4')
+    expect(useChordStore.getState().pickedQuality).toBeNull()
+    press('1')
+    expect(useChordStore.getState().pickedQuality).toBe('major')
+  })
+
+  it('silences the chord when the session pauses and when the run screen goes', () => {
+    startAt(4)
+    useChordStore.setState({ question: amOverC() })
+    const { unmount } = renderRun()
+    press('h')
+    press('2')
+    vi.mocked(stopSounds).mockClear()
+    act(() => useChordStore.getState().pause('menu'))
+    expect(stopSounds).toHaveBeenCalled()
+    vi.mocked(stopSounds).mockClear()
+    unmount()
+    expect(stopSounds).toHaveBeenCalled()
   })
 
   it('moves on to the next chord after the feedback hold', () => {

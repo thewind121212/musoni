@@ -134,6 +134,13 @@ describe('chords store: Roman numerals', () => {
     expect(store().endsAt).toBe(T0 + 60_000)
     expect(base.drills.chords?.mode).toBeUndefined()
   })
+
+  it('runs a lesson preset without a mode by name, even when the reader last chose Roman numerals', () => {
+    const settings = withPreset(at(6, { mode: 'roman' }), { drill: 'chords', level: 2, durationSec: 60 })
+    store().start(settings, T0)
+    expect(store().level).toBe(2)
+    expect(nameQ().kind).toBe('name')
+  })
 })
 
 describe('chords store: session', () => {
@@ -152,6 +159,21 @@ describe('chords store: session', () => {
     expect(getDay(DAY0)).toHaveLength(1)
     expect(getBest('chords', 3)!.practiceScore).toBe(r.practiceScore)
     expect(getBest('chords', 7)).toBeNull()
+  })
+
+  it('ends on time with a root still waiting for its quality: the pick is dropped, later taps do nothing', () => {
+    store().start(at(2), T0)
+    store().pickRoot(nameQ().correctIndex, T0)
+    store().pickQuality(nameQ().quality, T0)
+    store().nextQuestion(T0)
+    store().pickRoot(nameQ().correctIndex, T0 + 1000)
+    store().tick(T0 + 120_000)
+    expect(store()).toMatchObject({ phase: 'finished', pickedRoot: null, question: null })
+    expect(store().lastResult).toMatchObject({ correct: 1, wrong: 0, durationSec: 120 })
+    store().pickQuality('major', T0 + 121_000)
+    store().pickRoot(0, T0 + 121_000)
+    expect(store().lastResult).toMatchObject({ correct: 1, wrong: 0 })
+    expect(getDay(DAY0)).toHaveLength(1)
   })
 
   it('records an early end with answers as partial, and drops one without', () => {
