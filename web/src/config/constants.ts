@@ -364,3 +364,39 @@ export const RHYTHM_MISSES_SHOWN = 4
 export const RHYTHM_STAFF_WIDTH = { base: 110, perEvent: 24, min: 230, max: 400 } as const
 /** Rhythm marks: below this many pixels between two notes' marks, the marks are drawn small so they do not touch. */
 export const RHYTHM_MARK_ROOM_PX = 21
+
+/*
+ * Hóa biểu (key signatures): a signature on the staff, the reader taps its
+ * key's home note. `maxAccidentals` caps the sharps or flats a level shows
+ * (either kind, plus none for C major); `minor` asks for the relative minor
+ * instead of the major, at random (`KEY_SIG_MINOR_CHANCE`).
+ */
+export const KEY_SIG_LEVELS: Record<1 | 2 | 3 | 4, {
+  weight: number
+  maxAccidentals: number
+  clefs: readonly Clef[]
+  minor: boolean
+}> = {
+  1: { weight: 1.0, maxAccidentals: 2, clefs: ['treble'], minor: false },
+  2: { weight: 1.3, maxAccidentals: 4, clefs: ['treble'], minor: false },
+  3: { weight: 1.6, maxAccidentals: 7, clefs: ['treble', 'bass'], minor: false },
+  4: { weight: 2.0, maxAccidentals: 7, clefs: ['treble', 'bass'], minor: true },
+}
+/** Level 4: how often a question asks for the minor key rather than the major. */
+export const KEY_SIG_MINOR_CHANCE = 0.5
+/**
+ * Feedback holds. Longer than note reading's: the line under the staff says
+ * the rule that finds the key, worth a glance when right and a read when wrong.
+ */
+export const KEY_SIG_FEEDBACK_CORRECT_MS = 900
+export const KEY_SIG_FEEDBACK_WRONG_MS = 2600
+/** Notation units across the question staff (seven sharps fit with room), and across a result tile's. */
+export const KEY_SIG_STAFF_WIDTH = 170
+export const KEY_SIG_MISSED_STAFF_WIDTH = 130
+/** Notation units across a level's picture in setup: seven sharps fit, small enough to read in a card. */
+export const KEY_SIG_PICTURE_WIDTH = 116
+/** A reading drill: a session opens on one minute. */
+export const KEY_SIG_DEFAULT_DURATION_SECONDS = 60
+/** Answer sound: the home chord rings this long; on a miss the reader's note plays first, the chord this long after. */
+export const KEY_SIG_CHORD_HOLD_SEC = 1.2
+export const KEY_SIG_MISS_GAP_SEC = 0.6

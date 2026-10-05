@@ -52,6 +52,19 @@ describe('NoteStaff', () => {
     expect(end).toBeLessThanOrEqual(1)
   })
 
+  it('draws a key signature with no notes on a single, bass, grand or bare staff', () => {
+    for (const clef of ['treble', 'bass', 'grand', 'none'] as const) {
+      for (const [key, count] of [['C#', 7], ['Cb', 7], ['Bb', 2], ['C', 0]] as const) {
+        const { unmount } = render(<NoteStaff clef={clef} events={[]} keySignature={key} />)
+        const staves = screen.getByTestId('note-staff').querySelectorAll('.vf-keysignature')
+        // Every staff carries the whole signature: a grand staff has it twice.
+        expect(staves, `${key} on ${clef}`).toHaveLength(clef === 'grand' ? 2 : 1)
+        staves.forEach(s => expect(s.children, `${key} on ${clef}`).toHaveLength(count))
+        unmount()
+      }
+    }
+  })
+
   it('prints one label per note or rest, skipping bars and empty labels', () => {
     render(<NoteStaff clef="treble" events={notes('C4 | D4 E4')} labels={['Do', null, 'Mi']} />)
     expect(screen.getByText('Do')).toBeInTheDocument()

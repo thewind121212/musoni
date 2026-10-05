@@ -13,6 +13,7 @@ The FE is composed of **modules**, each owning one **Zustand store**:
 | `drills/note-id` | `drills/note-id/store.ts` | live drill session: current question, options, score, streak, timer, pause state |
 | `drills/hear-play` | `drills/hear-play/store.ts` (`useEarStore`) | Nghe & Đàn session: current key and note, questions in this key, when the note sounded, score, streak, timer, pause state (see `drill-hear-play.md`) |
 | `drills/review` | `drills/review/store.ts` (`useReviewStore`) | Ôn tập session: the check on screen (by id), its answer, the last few asked, score, streak, timer, pause state (see `drill-review.md`) |
+| `drills/key-sig` | `drills/key-sig/store.ts` (`useKeySigStore`) | Hóa biểu session: the signature on screen (sharps or flats, mode, clef, its pad), score, streak, timer, pause state, misses (see `drill-key-sig.md`) |
 | `theory` | `theory/store.ts` (`useTheoryStore`) | the lesson player's place: open lesson, step, answers to its checks; time read not yet saved; the chapter open on the list (see `docs/theory/framework.md`) |
 | `drills/rhythm` | `drills/rhythm/store.ts` (`useRhythmStore`) | Tiết tấu session: the measure on screen, whether a take is being played (`takeAt`), its judgement, score, streak, tap offsets, measures missed, timer, pause state (see `drill-rhythm.md`) |
 
@@ -171,7 +172,8 @@ Shared, module-agnostic, reuse-first building blocks:
   bare lines (`none`). It crops its viewBox to the drawn ink, puts labels under
   the notes as HTML (so they wrap the reader's naming and font), draws chosen
   notes blue and takes the same `tone`/`chosen` feedback as Staff. Its input
-  is the parsed notation from `core/music/notation`. `clef="percussion"` draws
+  is the parsed notation from `core/music/notation`; with no events it draws
+  the clef and key signature alone (Hóa biểu's question). `clef="percussion"` draws
   the neutral clef (Tiết tấu; notes written `B4` sit on the middle line).
   Beams follow the time signature's beat (6/8 eighths in threes, without a
   time signature in quarters), tuplets are built before the voices and beams

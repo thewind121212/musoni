@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 570 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 627 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -253,6 +253,20 @@ a real browser.
       `docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`,
       `docs/theory/framework.md`, `docs/theory/port-guide.md`, `docs/summary.md`
 
+- [x] **Drill: Hóa biểu** (key signatures, `/train/key-sig`, 2026-10-05): a signature with
+      no notes on the staff, "Giọng trưởng nào?" (L4: major or relative minor at random),
+      answered by tapping the tonic on the 12-key pad spelled the key's way (flats for flat
+      keys; Dob, Fab, Mi#, Si# rename the white key the signature puts them on, so Cb, Gb,
+      F#, C# majors are answered under their own names). The verdict names the key and the
+      rule ("La trưởng: 3 thăng, thăng cuối Sol# + nửa cung", "giáng áp chót", "không dấu",
+      "một giáng"); the answer plays the home chord. Levels: up to 2 sharps/flats, up to 4,
+      all 15 in treble and bass, relative minors too (×1.0 / 1.3 / 1.6 / 2.0); never the same
+      signature twice running. Opens with `major-scales-keys/key-signatures` (chapter 3).
+      Names checked against the standard 15-key table; generator tested over every level.
+      Core `NoteStaff` now draws a staff with no notes (it threw). Screenshots: project files
+      `screenshots/drill-key-sig/`. 627 web tests green — `docs/fe/drill-key-sig.md`,
+      `docs/fe/architecture.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`
+
 - [x] **Tiết tấu (rhythm) drill** (2026-10-05, `drills/rhythm`, group ear, opened by
       lesson `durations-time/note-values`): one measure on a percussion staff with its
       tempo, four count-in clicks (dots), tapped on a big pad, Space or any letter key;
@@ -292,9 +306,10 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   tempo (♩. = tempo × 0.75), time running out mid-measure
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
-- Four drills on the new registry, built in parallel: key signatures, intervals,
-  chords, rhythm (each declares the lesson that opens it with `unlockedBy`). Until
-  one does, Luyện's "more drills" line stays hidden (every listed drill is open)
+- Four drills on the new registry, built in parallel: key signatures and rhythm (done,
+  above), intervals, chords (each declares the lesson that opens it with `unlockedBy`).
+  Hóa biểu waits on chapter 3's key-signature lesson, so Luyện's "more drills" line now
+  shows; a human pass over its sound and feedback timing (`KEY_SIG_*`) is still to do
 
 ## Next
 

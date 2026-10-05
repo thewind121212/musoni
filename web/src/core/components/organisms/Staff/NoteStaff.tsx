@@ -209,9 +209,11 @@ export function NoteStaff({
       const stemmed = l.filter((n): n is StemmableNote => n instanceof StaveNote)
       return stemmed.length ? Beam.generateBeams(stemmed, { maintainStemDirections: false, groups }) : []
     })
-    const formatter = new Formatter().joinVoices(voices)
-    formatter.formatToStave(voices, staves[0])
-    voices.forEach((v, i) => v.draw(ctx, staves[i]))
+    // A staff with nothing on it (a key signature alone) has nothing to format.
+    if (lists[0].length > 0) {
+      new Formatter().joinVoices(voices).formatToStave(voices, staves[0])
+      voices.forEach((v, i) => v.draw(ctx, staves[i]))
+    }
     for (const item of [...beams, ...ties, ...tupletMarks]) item.setContext(ctx).draw()
 
     // Crop: the staff lines plus whatever the notes reach.

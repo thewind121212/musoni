@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { PracticeTab } from './PracticeTab'
 import { useAppStore } from '@/app/store'
-import { addDrills } from '@/app/drills'
+import { addDrills, listedDrills } from '@/app/drills'
 import { fakeDrill } from '@/test/fakeDrill'
 import { getSettings, getUnlocksSeen, markLessonDone, recordSession } from '@/progress/progressStore'
 import { resetStores, session, withDrill } from '@/test/fixtures'
@@ -60,16 +60,15 @@ describe('PracticeTab', () => {
   })
 
   it('counts the drills still to open, shows them all on request, and marks one as just opened once', async () => {
+    // Real drills whose lesson is not written yet stay to open as well.
+    const waiting = listedDrills().filter(d => d.unlockedBy).length
     remove = addDrills(fakeDrill({ unlockedBy: 'pitch-staff/staff-clefs' }), fakeDrill({ id: 'later', unlockedBy: 'nowhere/yet' }))
     markLessonDone('pitch-staff/staff-clefs', { correct: 3, total: 3 })
     const first = renderTab()
     expect(within(card('Fake drill')).getByText('Just opened')).toBeInTheDocument()
     expect(getUnlocksSeen()).toContain('fake')
     await userEvent.click(screen.getByRole('button', { name: 'See all' }))
-    // Only the drill whose lesson is not done is still closed (real drills may be closed too).
-    const later = document.querySelector('[data-drill="later"]') as HTMLElement
-    expect(within(later).getByText('Opens later')).toBeInTheDocument()
-    expect(within(document.querySelector('[data-drill="fake"]') as HTMLElement).queryByText('Opens later')).toBeNull()
+    expect(screen.getAllByText('Opens later')).toHaveLength(waiting + 1)
     first.unmount()
 
     renderTab()
