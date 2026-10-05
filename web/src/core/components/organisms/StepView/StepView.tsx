@@ -3,11 +3,11 @@ import type { Naming } from '@/core/music/types'
 import type { Lang, Translate } from '@/core/i18n/translate'
 import { nearestOctave } from '@/core/music/pitch'
 import { AnswerPad } from '@/core/components/organisms'
-import { RichText } from '../../atoms'
-import { CheckVerdict, ChoiceList } from '../../molecules'
+import { RichText } from '@/core/components/atoms'
+import { CheckVerdict, ChoiceList } from '@/core/components/molecules'
 import { LessonBlocks } from '../LessonBlocks'
-import { loneStaffNote, padFor } from '@/theory/blocks'
-import type { CheckStep, PlayBlock, Step } from '@/theory/types'
+import { loneStaffNote, padFor } from '@/core/lesson/blocks'
+import type { CheckStep, PlayBlock, Step } from '@/core/lesson/types'
 
 export interface StepAnswer {
   choice: number

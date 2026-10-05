@@ -4,7 +4,7 @@ import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { CHAPTERS } from '@/theory/registry'
-import { plainText } from '@/theory/text'
+import { plainText } from '@/core/lesson/text'
 import { BOOK_TITLE } from '@/theory/components/molecules'
 
 const BOOK_URL = 'https://musictheory.pugetsound.edu/mt21c/MusicTheory.html'

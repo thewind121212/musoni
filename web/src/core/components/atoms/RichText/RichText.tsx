@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Naming } from '@/core/music/types'
-import { parseText, pitchLabel } from '@/theory/text'
+import { parseText, pitchLabel } from '@/core/lesson/text'
 
 interface Props {
   /** Lesson text: `**bold**` and pitch tokens (`{G4}`). */

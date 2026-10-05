@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { keyLabels, keysLayout, loneStaffNote, playSounds, staffLabels, staffWidth } from './blocks'
+import { answerFromKey, keyLabels, keysLayout, loneStaffNote, playSounds, staffLabels, staffWidth } from './blocks'
 import { parseNotation } from '@/core/music/notation'
-import type { StaffBlock } from './types'
+import type { CheckStep, StaffBlock } from './types'
 import { THEORY_STAFF_WIDTH } from '@/config/constants'
 
 const staff = (over: Partial<StaffBlock>): StaffBlock => ({ type: 'staff', clef: 'treble', notes: 'C4', ...over })
@@ -41,5 +41,23 @@ describe('lesson blocks', () => {
     const sounds = playSounds({ type: 'play', notes: 'C4 E4 G4' })
     expect(sounds).toHaveLength(3)
     expect(sounds[2].at).toBeGreaterThan(sounds[1].at)
+  })
+})
+
+describe('answering a check from the keyboard', () => {
+  const ask = (answer: CheckStep['answer']): CheckStep => ({ kind: 'check', prompt: { vi: '', en: '' }, reason: { vi: '', en: '' }, answer })
+  const press = (key: string, code = '') => ({ key, code, ctrlKey: false, metaKey: false, altKey: false })
+
+  it('takes 1 to 4 for choices, and nothing past the last one', () => {
+    const check = ask({ type: 'choice', choices: [{ text: { vi: 'a', en: 'a' } }, { text: { vi: 'b', en: 'b' }, correct: true }] })
+    expect(answerFromKey(check, press('2'), 'letters')).toEqual({ choice: 1, correct: true })
+    expect(answerFromKey(check, press('1'), 'letters')).toEqual({ choice: 0, correct: false })
+    expect(answerFromKey(check, press('3'), 'letters')).toBeNull()
+  })
+
+  it('takes the piano keys for a key answer', () => {
+    const check = ask({ type: 'key', note: 'C' })
+    expect(answerFromKey(check, press('a', 'KeyA'), 'letters')).toEqual({ choice: 0, correct: true })
+    expect(answerFromKey(check, press('7'), 'letters')).toBeNull()
   })
 })

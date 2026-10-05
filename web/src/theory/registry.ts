@@ -1,4 +1,4 @@
-import type { Chapter } from './types'
+import type { Chapter } from '@/core/lesson/types'
 
 /**
  * Every chapter, found by its folder: `content/chNN-<id>/index.ts`, whose

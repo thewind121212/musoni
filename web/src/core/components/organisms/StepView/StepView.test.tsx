@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StepView } from './StepView'
-import { padFor } from '@/theory/blocks'
+import { padFor } from '@/core/lesson/blocks'
 import { t } from '@/test/i18n'
-import type { CheckStep, Step } from '@/theory/types'
+import type { CheckStep, Step } from '@/core/lesson/types'
 
 const L = (vi: string, en = vi) => ({ vi, en })
 const keyCheck: CheckStep = {

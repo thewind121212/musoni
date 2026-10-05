@@ -1,4 +1,4 @@
-import type { Chapter, Lesson } from './types'
+import type { Chapter, Lesson } from '@/core/lesson/types'
 
 /** A lesson with the chapter it belongs to and its place there. */
 export interface LessonRef {

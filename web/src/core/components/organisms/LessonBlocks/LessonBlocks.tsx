@@ -5,10 +5,10 @@ import type { Translate } from '@/core/i18n/translate'
 import { parseNotation } from '@/core/music/notation'
 import { MiniKeyboard } from '@/core/components/atoms'
 import { NoteStaff, type StaffTone } from '@/core/components/organisms'
-import { RichText, TipBox } from '../../atoms'
-import { PlayButton } from '../../molecules'
-import { keyLabels, keysLayout, staffLabels, staffWidth } from '@/theory/blocks'
-import type { Block, KeysBlock, PlayBlock, StaffBlock } from '@/theory/types'
+import { RichText, TipBox } from '@/core/components/atoms'
+import { PlayButton } from '@/core/components/molecules'
+import { keyLabels, keysLayout, staffLabels, staffWidth } from '@/core/lesson/blocks'
+import type { Block, KeysBlock, PlayBlock, StaffBlock } from '@/core/lesson/types'
 
 interface Props {
   blocks: readonly Block[]

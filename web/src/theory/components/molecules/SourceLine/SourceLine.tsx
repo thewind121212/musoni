@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import type { Source } from '@/theory/types'
+import type { Source } from '@/core/lesson/types'
 
 interface Props {
   /** "Phỏng theo". */

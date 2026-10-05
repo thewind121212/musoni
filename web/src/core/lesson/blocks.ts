@@ -3,9 +3,10 @@ import {
   midiOf, parseNotation, parsePitchName, toSounds, type NotePitch, type Sound, type StaffEvent,
 } from '@/core/music/notation'
 import { buildOptions, type NoteOption } from '@/core/music/pianoKeys'
+import { optionIndexFromKey, type KeyPress } from '@/core/music/keyboard'
 import { THEORY_PLAY, THEORY_STAFF_WIDTH } from '@/config/constants'
 import { pitchLabel, plainText } from './text'
-import type { Block, KeyAnswer, KeysBlock, PlayBlock, StaffBlock } from './types'
+import type { Block, CheckStep, KeyAnswer, KeysBlock, PlayBlock, StaffBlock } from './types'
 
 /** A note's name in the reader's naming: a chord's names joined, octave optional. */
 function nameOf(pitches: NotePitch[], naming: Naming, octave: boolean): string {
@@ -75,4 +76,20 @@ export function padFor(answer: KeyAnswer, naming: Naming): { options: NoteOption
   const accidental = p.alter === 1 ? '#' : p.alter === -1 ? 'b' : ''
   const options = buildOptions(naming, accidental !== '', accidental === 'b' ? 'b' : '#')
   return { options, correctIndex: options.findIndex(o => o.letter === p.letter && o.accidental === accidental) }
+}
+
+/**
+ * A check answered from the computer keyboard: the piano keys (A S D F...)
+ * for a key answer, 1 to 4 for a choice. Null when the key answers nothing.
+ */
+export function answerFromKey(check: CheckStep, press: KeyPress, naming: Naming): { choice: number; correct: boolean } | null {
+  if (check.answer.type === 'key') {
+    const pad = padFor(check.answer, naming)
+    const i = optionIndexFromKey(press, pad.options)
+    return i === null ? null : { choice: i, correct: i === pad.correctIndex }
+  }
+  if (press.ctrlKey || press.metaKey || press.altKey) return null
+  const i = Number(press.key) - 1
+  const choices = check.answer.choices
+  return Number.isInteger(i) && i >= 0 && i < choices.length ? { choice: i, correct: choices[i].correct === true } : null
 }

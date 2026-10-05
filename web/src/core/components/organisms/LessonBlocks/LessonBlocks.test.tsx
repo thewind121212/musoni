@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { LessonBlocks } from './LessonBlocks'
 import { t } from '@/test/i18n'
-import type { Block } from '@/theory/types'
+import type { Block } from '@/core/lesson/types'
 
 const blocks: Block[] = [
   { type: 'text', text: { vi: 'Nốt {G4}.', en: 'The note {G4}.' } },
