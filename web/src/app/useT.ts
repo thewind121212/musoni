@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useAppStore } from './store'
-import { translate, type TranslationParams } from '../core/i18n/translate'
-import type { TranslationKey } from '../core/i18n/translations'
+import { translate, type AnyKey, type TranslationParams } from '../core/i18n/translate'
 
 /**
  * Binds the pure translator to the user's chosen language.
@@ -12,7 +11,7 @@ import type { TranslationKey } from '../core/i18n/translations'
 export function useT() {
   const lang = useAppStore(s => s.settings.lang)
   return useCallback(
-    (key: TranslationKey, params?: TranslationParams) => translate(lang, key, params),
+    (key: AnyKey, params?: TranslationParams) => translate(lang, key, params),
     [lang],
   )
 }

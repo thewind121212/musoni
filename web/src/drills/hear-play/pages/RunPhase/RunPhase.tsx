@@ -7,6 +7,8 @@ import { playedMs, useEarStore, type PauseReason } from '@/drills/hear-play/stor
 import { answerSound, chosenPitch, questionSound, type EarQuestion } from '@/drills/hear-play/generator'
 import { useRunGuards } from '@/app/useRunGuards'
 import { useT } from '@/app/useT'
+import hearPlay from '@/drills/hear-play/drill'
+import { S } from '@/drills/hear-play/strings'
 import { optionIndexFromKey } from '@/core/music/keyboard'
 import { tonicOf } from '@/core/music/keys'
 import { label } from '@/core/music/pitch'
@@ -92,7 +94,7 @@ export function RunPhase() {
     const s = useEarStore.getState()
     if (!question || paused || s.feedback) return
     const cadence = played.current === null || played.current === question || question.newKey
-      || s.settings.earCadenceEach
+      || hearPlay.of(s.settings).cadenceEach
     played.current = question
     setSoundUntil(playQuestion(question, cadence))
     return stopSounds
@@ -139,7 +141,7 @@ export function RunPhase() {
 
   const msLeft = endsAt ? Math.max(0, endsAt - (pausedAt ?? now)) : 0
   const secondsLeft = Math.ceil(msLeft / 1000)
-  const fraction = endsAt ? msLeft / (settings.earDurationSec * 1000) : 0
+  const fraction = endsAt ? msLeft / (hearPlay.of(settings).durationSec * 1000) : 0
   const lastTen = secondsLeft <= 10
   const tonic = tonicOf(question.key)
   const keyName = label(tonic.letter, tonic.accidental, settings.naming)
@@ -166,10 +168,10 @@ export function RunPhase() {
         {/* The key, which the cadence sets, and the streak: fixed height so nothing below jumps. */}
         <div className="mt-2 flex h-6 items-center justify-between gap-2 text-sm md:text-base">
           <span className="flex items-center gap-2">
-            <span className="font-medium text-ink-soft">{t('ear.key', { key: keyName })}</span>
+            <span className="font-medium text-ink-soft">{t(S.key, { key: keyName })}</span>
             {question.keyChanged && !feedback && (
               <span className="rounded-full bg-accent/12 px-2 py-0.5 text-xs font-semibold text-accent">
-                {t('ear.newKey')}
+                {t(S.newKey)}
               </span>
             )}
           </span>
@@ -183,22 +185,22 @@ export function RunPhase() {
             listening={now < soundUntil && !paused}
             tone={feedback ? (feedback.correct ? 'correct' : 'wrong') : 'neutral'}
             chosen={feedback && !feedback.correct ? chosenPitch(question, feedback.chosenIndex) : null}
-            prompt={t('ear.prompt')}
+            prompt={t(S.prompt)}
           />
           {/* Fixed height: the line under the stage swaps between replay and the verdict. */}
           <div className="flex h-11 items-center">
             {!feedback ? (
               <Button variant="ghost" className="min-h-10 px-4 text-sm" onClick={replay}>
-                <ArrowClockwiseIcon size={16} weight="bold" /> {t('ear.replay')}
+                <ArrowClockwiseIcon size={16} weight="bold" /> {t(S.replay)}
                 <kbd className="hidden rounded border border-line px-1 font-mono text-[11px] text-ink-faint md:inline">Space</kbd>
               </Button>
             ) : feedback.correct ? (
               <div role="status" className="inline-flex items-center gap-2 rounded-full bg-correct/10 px-4 py-2 text-sm font-medium text-correct md:text-base">
                 <CheckIcon size={16} weight="bold" aria-hidden />
-                {t('ear.right', { answer: answerLabel })}
+                {t(S.right, { answer: answerLabel })}
               </div>
             ) : (
-              <MissLine text={t('ear.missed', { answer: answerLabel, chosen: question.options[feedback.chosenIndex].label })} />
+              <MissLine text={t(S.missed, { answer: answerLabel, chosen: question.options[feedback.chosenIndex].label })} />
             )}
           </div>
         </div>
@@ -208,7 +210,7 @@ export function RunPhase() {
             options={question.options} feedback={feedback} onAnswer={answer}
             showLabels={settings.keyLabels}
             layout={settings.padStyle}
-            home={{ index: question.tonicIndex, label: t('ear.home') }}
+            home={{ index: question.tonicIndex, label: t(S.home) }}
           />
         </div>
       </div>

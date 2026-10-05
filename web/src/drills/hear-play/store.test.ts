@@ -2,8 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { playedMs, useEarStore } from './store'
 import { getDay, getSettings, localDayKey } from '@/progress/progressStore'
 import { restoreLiveSession } from '@/app/liveSession'
+import { withDrill } from '@/test/fixtures'
 
-const settings = { ...getSettings(), naming: 'letters' as const, earDurationSec: 120 }
+const base = withDrill('hear-play', { durationSec: 120 }, { ...getSettings(), naming: 'letters' as const })
+/** Settings for a session at this level, with any Nghe & Đàn options. */
+const at = (level: number, options: Record<string, boolean> = {}) => withDrill('hear-play', { level, ...options }, base)
 const T0 = new Date('2026-08-28T10:00:00Z').getTime()
 const DAY0 = localDayKey(new Date(T0))
 const store = () => useEarStore.getState()
@@ -15,7 +18,7 @@ beforeEach(() => {
 
 describe('hear-play store', () => {
   it('keeps every question in C when the session stays in one key', () => {
-    store().start(3, { ...settings, earOneKey: true }, T0)
+    store().start(at(3, { oneKey: true }), T0)
     for (let i = 0; i < 20; i++) {
       expect(store().question!.key).toBe('C')
       store().nextQuestion(T0)
@@ -23,36 +26,36 @@ describe('hear-play store', () => {
   })
 
   it('marks a session played with an aid, and only then', () => {
-    store().start(2, { ...settings, earCadenceEach: true }, T0)
+    store().start(at(2, { cadenceEach: true }), T0)
     store().tick(T0 + 120_000)
     expect(store().lastResult!.aids).toBe(true)
-    store().start(2, settings, T0)
+    store().start(at(2), T0)
     store().tick(T0 + 120_000)
     expect(store().lastResult!.aids).toBeUndefined()
   })
 
   it('does not count one key as an aid at level 1, which is already in C', () => {
-    store().start(1, { ...settings, earOneKey: true }, T0)
+    store().start(at(1, { oneKey: true }), T0)
     store().tick(T0 + 120_000)
     expect(store().lastResult!.aids).toBeUndefined()
   })
 
   it('starts a session in its own length, on a new key', () => {
-    store().start(2, settings, T0)
+    store().start(at(2), T0)
     expect(store().phase).toBe('running')
     expect(store().endsAt).toBe(T0 + 120_000)
     expect(store().question!.newKey).toBe(true)
   })
 
   it('times the answer from when the note sounded, not from the cadence', () => {
-    store().start(1, settings, T0)
+    store().start(at(1), T0)
     store().heard(T0 + 2500)
     store().answer(store().question!.correctIndex, T0 + 3500)
     expect(store().sumMs).toBe(1000)
   })
 
   it('keeps a miss with both labels, and the note on a treble staff', () => {
-    store().start(1, settings, T0)
+    store().start(at(1), T0)
     const q = store().question!
     const wrong = q.options.findIndex((_, i) => i !== q.correctIndex)
     store().answer(wrong, T0 + 1000)
@@ -63,7 +66,7 @@ describe('hear-play store', () => {
   })
 
   it('counts questions per key and starts over on a new one', () => {
-    store().start(2, settings, T0)
+    store().start(at(2), T0)
     let expected = 1
     for (let i = 0; i < 14; i++) {
       store().answer(store().question!.correctIndex, T0)
@@ -74,7 +77,7 @@ describe('hear-play store', () => {
   })
 
   it('records a finished session as hear-play with its level weight and score', () => {
-    store().start(3, settings, T0)
+    store().start(at(3), T0)
     store().answer(store().question!.correctIndex, T0 + 1000)
     store().tick(T0 + 120_000)
     const [saved] = getDay(DAY0)
@@ -84,7 +87,7 @@ describe('hear-play store', () => {
   })
 
   it('pauses the clock and hands paused time back on resume', () => {
-    store().start(1, settings, T0)
+    store().start(at(1), T0)
     store().pause('menu', T0 + 10_000)
     store().tick(T0 + 200_000)
     expect(store().phase).toBe('running')
@@ -94,11 +97,11 @@ describe('hear-play store', () => {
   })
 
   it('ending early keeps answered time as partial, or drops a session with none', () => {
-    store().start(1, settings, T0)
+    store().start(at(1), T0)
     store().endEarly(T0 + 5000)
     expect(store().phase).toBe('setup')
     expect(getDay(DAY0)).toHaveLength(0)
-    store().start(1, settings, T0)
+    store().start(at(1), T0)
     store().answer(store().question!.correctIndex, T0 + 1000)
     store().endEarly(T0 + 30_000)
     expect(store().phase).toBe('finished')
@@ -116,7 +119,7 @@ function reload(store: { setState: (s: object) => void }, drill: 'note-id' | 'he
 
 describe('hear-play session across a page load', () => {
   it('comes back paused with its key and answers after a refresh', () => {
-    store().start(2, settings, T0)
+    store().start(at(2), T0)
     const key = store().question!.key
     store().answer(store().question!.correctIndex, T0 + 1_000)
     store().pause('away', T0 + 4_000)

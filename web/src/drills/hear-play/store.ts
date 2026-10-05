@@ -5,6 +5,11 @@ import { accuracy, practiceScore } from '../../core/scoring'
 import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
 import { EAR_LEVELS } from '../../config/constants'
 import { keepLiveSession } from '../../app/liveSession'
+import hearPlay, { type HearPlayOptions } from './drill'
+import type { DrillSettings } from '../../app/drill'
+
+/** This drill's workout (level, length, listening aids) from the settings a session runs on. */
+const own = (s: Settings) => hearPlay.of(s)
 
 /**
  * Nghe & Đàn: one route, three phases, like the note-id drill. `setup` picks
@@ -26,6 +31,7 @@ export interface Miss {
 interface EarState {
   phase: Phase
   level: EarLevel
+  /** The settings this session runs on: the reader's, or a preset laid over them. */
   settings: Settings
   question: EarQuestion | null
   /** Questions asked in the current key, the current one included. */
@@ -45,7 +51,8 @@ interface EarState {
   /** When the clock was stopped, or null while it runs. */
   pausedAt: number | null
   pauseReason: PauseReason | null
-  start: (level: EarLevel, settings: Settings, now?: number) => void
+  /** Starts a session on these settings (this drill's level and length are read from them). */
+  start: (settings: Settings, now?: number) => void
   /** The page tells the store when the current note sounds, once it has scheduled it. */
   heard: (at: number) => void
   answer: (index: number, now?: number) => void
@@ -62,12 +69,12 @@ interface EarState {
 export function playedMs(s: Pick<EarState, 'endsAt' | 'pausedAt' | 'settings'>, now = Date.now()) {
   if (s.endsAt === null) return 0
   const left = Math.max(0, s.endsAt - (s.pausedAt ?? now))
-  return s.settings.earDurationSec * 1000 - left
+  return own(s.settings).durationSec * 1000 - left
 }
 
 /** A listening aid is on. One key changes nothing at level 1, which is C only. */
-export function aidsOn(s: Pick<Settings, 'earCadenceEach' | 'earOneKey'>, level: EarLevel) {
-  return s.earCadenceEach || (s.earOneKey && level > 1)
+export function aidsOn(s: Pick<DrillSettings<HearPlayOptions>, 'cadenceEach' | 'oneKey'>, level: EarLevel) {
+  return s.cadenceEach || (s.oneKey && level > 1)
 }
 
 function result(s: EarState, durationSec: number, score: number, now: number, partial: boolean): SessionResult {
@@ -83,7 +90,7 @@ function result(s: EarState, durationSec: number, score: number, now: number, pa
     practiceScore: score,
     at: new Date(now).toISOString(),
     ...(partial ? { partial: true as const } : {}),
-    ...(aidsOn(s.settings, s.level) ? { aids: true as const } : {}),
+    ...(aidsOn(own(s.settings), s.level) ? { aids: true as const } : {}),
   }
 }
 
@@ -105,13 +112,15 @@ export const useEarStore = create<EarState>((set, get) => ({
   correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
   feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
 
-  start: (level, settings, now = Date.now()) => {
+  start: (settings, now = Date.now()) => {
     // Starting over ends a session left paused; its played time still counts.
     recordPartial(get(), now)
+    const { level: l, durationSec, oneKey } = own(settings)
+    const level = l as EarLevel
     set({
       phase: 'running', level, settings,
-      question: generateEarQuestion(level, settings.naming, null, Math.random, { oneKey: settings.earOneKey }), inKey: 1,
-      endsAt: now + settings.earDurationSec * 1000, askedAt: now,
+      question: generateEarQuestion(level, settings.naming, null, Math.random, { oneKey }), inKey: 1,
+      endsAt: now + durationSec * 1000, askedAt: now,
       correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
       feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
     })
@@ -148,7 +157,7 @@ export const useEarStore = create<EarState>((set, get) => ({
     if (s.phase !== 'running' || !s.question) return
     const question = generateEarQuestion(s.level, s.settings.naming, {
       key: s.question.key, semitones: s.question.semitones, inKey: s.inKey,
-    }, Math.random, { oneKey: s.settings.earOneKey })
+    }, Math.random, { oneKey: own(s.settings).oneKey })
     // The page sets the real start once it schedules the note; until then
     // (or while paused) the clock starts here.
     set({ feedback: null, question, inKey: question.newKey ? 1 : s.inKey + 1, askedAt: s.pausedAt ?? now })
@@ -157,7 +166,7 @@ export const useEarStore = create<EarState>((set, get) => ({
   tick: (now = Date.now()) => {
     const s = get()
     if (s.phase !== 'running' || s.endsAt === null || s.pausedAt !== null || now < s.endsAt) return
-    const duration = s.settings.earDurationSec
+    const duration = own(s.settings).durationSec
     const weight = EAR_LEVELS[s.level].weight
     const r = result(s, duration, practiceScore(s.correct, s.wrong, weight, duration), now, false)
     recordSession(r)
@@ -192,4 +201,4 @@ export const useEarStore = create<EarState>((set, get) => ({
 }))
 
 // A running session survives a page load (refresh, a typed URL): see app/liveSession.
-keepLiveSession(useEarStore, 'hear-play', '/train/hear-play')
+keepLiveSession(useEarStore, hearPlay.id, hearPlay.route)

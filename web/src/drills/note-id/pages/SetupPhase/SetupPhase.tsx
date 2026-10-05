@@ -10,15 +10,18 @@ import { useDrillStore } from '@/drills/note-id/store'
 import { getBest } from '@/progress/progressStore'
 import { Button, FieldLegend, Switch } from '@/core/components/atoms'
 import { DurationPicker, OptionCards, SegmentedControl, SettingRow } from '@/core/components/molecules'
-import { formatDuration } from '@/core/i18n/formatDuration'
 import { ClefGlyph } from '@/core/components/organisms'
+import { sessionSummary } from '@/app/drillPreset'
+import noteId from '@/drills/note-id/drill'
+import { S, levelDetailKey, levelKey } from '@/drills/note-id/strings'
 
 const LEVELS = [1, 2, 3, 4] as const
 
 /** Page: the drill's settings, read from and written to the app store, and the start button. */
 export function SetupPhase() {
-  const { settings, updateSettings, setLevel } = useAppStore()
-  const level = settings.level
+  const { settings, updateSettings, updateDrill } = useAppStore()
+  const own = noteId.of(settings)
+  const level = own.level
   const reduce = useReducedMotion()
   const t = useT()
   const backLink = useBackLink()
@@ -26,8 +29,8 @@ export function SetupPhase() {
 
   const levelOptions = LEVELS.map(l => ({
     value: l,
-    label: t(`level.${l}` as 'level.1'),
-    hint: t(`level.${l}.detail` as 'level.1.detail'),
+    label: t(levelKey(l)),
+    hint: t(levelDetailKey(l)),
     visual: l === 3
       ? <ClefGlyph clef="bass" />
       : l === 4
@@ -50,11 +53,7 @@ export function SetupPhase() {
     { value: 'boxes' as const, label: t('setup.padStyle.boxes') },
   ]
 
-  const summary = [
-    t(`level.${level}` as 'level.1'),
-    formatDuration(settings.durationSec, t),
-    ...(settings.accidentals ? ['\u266F \u266D'] : []),
-  ].join(' \u00B7 ')
+  const summary = sessionSummary(noteId, own, t)
 
   // Level and length are what a session practises, so they keep their large
   // controls; the rest are yes-or-no or two-way preferences, one row each.
@@ -62,14 +61,14 @@ export function SetupPhase() {
     <OptionCards
       key="level"
       layout="row"
-      label={t('setup.clef')}
+      label={t(S.clef)}
       icon={<MusicNoteIcon size={15} weight="fill" />}
-      options={levelOptions} value={level} onChange={setLevel}
+      options={levelOptions} value={level} onChange={l => updateDrill(noteId.id, { level: l })}
     />,
     <DurationPicker
       key="length"
-      durationSec={settings.durationSec}
-      onChange={durationSec => updateSettings({ durationSec })}
+      durationSec={own.durationSec}
+      onChange={durationSec => updateDrill(noteId.id, { durationSec })}
       t={t}
     />,
     <fieldset key="prefs" className="border-0 p-0">
@@ -77,9 +76,9 @@ export function SetupPhase() {
       <div className="divide-y divide-line rounded-2xl border border-line bg-raised">
         <SettingRow label={t('setup.accidentals')} hint={t('setup.accidentals.hint')}>
           <Switch
-            checked={settings.accidentals}
+            checked={own.accidentals}
             label={t('setup.accidentals')}
-            onChange={accidentals => updateSettings({ accidentals })}
+            onChange={accidentals => updateDrill(noteId.id, { accidentals })}
           />
         </SettingRow>
         <SettingRow label={t('setup.naming')}>
@@ -125,7 +124,7 @@ export function SetupPhase() {
           <Link to="/" onClick={backLink} aria-label={t('setup.back')}>
             <Button variant="quiet" className="px-2"><CaretLeftIcon size={22} weight="bold" /></Button>
           </Link>
-          <h1 className="text-lg font-semibold md:text-2xl">{t('home.noteReading')}</h1>
+          <h1 className="text-lg font-semibold md:text-2xl">{t(noteId.title)}</h1>
         </div>
 
         <div className="mt-4 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-7">
@@ -162,7 +161,7 @@ export function SetupPhase() {
           <Button
             variant="cta"
             className="h-14 w-full text-lg md:w-56"
-            onClick={() => useDrillStore.getState().start(level, settings)}
+            onClick={() => useDrillStore.getState().start(settings)}
           >
             <PlayIcon size={20} weight="fill" /> {t('setup.start')}
           </Button>

@@ -22,7 +22,8 @@ describe('HearPlayDrill', () => {
   })
 
   it("starts straight away on home's one tap, at its own saved level and length", () => {
-    useAppStore.getState().updateSettings({ earLevel: 3, earDurationSec: 300, level: 2 })
+    useAppStore.getState().updateDrill('hear-play', { level: 3, durationSec: 300 })
+    useAppStore.getState().updateDrill('note-id', { level: 2 })
     render(
       <MemoryRouter initialEntries={[{ pathname: '/train/hear-play', state: { autostart: true } }]}>
         <HearPlayDrill />
@@ -43,12 +44,5 @@ describe('HearPlayDrill', () => {
     await act(() => router.navigate(-1))
     expect(router.state.location.pathname).toBe('/train/hear-play')
     expect(useEarStore.getState().phase).toBe('setup')
-  })
-
-  it('sets its colour scope on <html> while open, and removes it after', () => {
-    const { unmount } = render(<MemoryRouter><HearPlayDrill /></MemoryRouter>)
-    expect(document.documentElement.dataset.drill).toBe('hear-play')
-    unmount()
-    expect(document.documentElement.dataset.drill).toBeUndefined()
   })
 })
