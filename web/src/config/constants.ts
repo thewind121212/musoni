@@ -297,6 +297,75 @@ export const REVIEW_DIFFICULTY = 1
 export const REVIEW_DEFAULT_DURATION_SECONDS = 120
 
 /*
+ * Tiết tấu (rhythm): tap one measure in time (docs/fe/drill-rhythm.md).
+ */
+
+/**
+ * Per level: the difficulty weight in the pace score, and how far a tap may
+ * land from its note and still be on time (ms). Within twice that it is early
+ * or late; further away the note is missed (and the tap is extra). Widest at
+ * L1, where the reader is still finding the beat.
+ */
+export const RHYTHM_LEVELS: Record<1 | 2 | 3 | 4, { weight: number; toleranceMs: number }> = {
+  1: { weight: 1.0, toleranceMs: 120 },
+  2: { weight: 1.3, toleranceMs: 100 },
+  3: { weight: 1.6, toleranceMs: 85 },
+  4: { weight: 2.0, toleranceMs: 70 },
+}
+
+/** Tempos offered in setup (quarter notes per minute), and the one a reader starts on. */
+export const RHYTHM_TEMPOS = [60, 80, 100, 120] as const
+export const RHYTHM_DEFAULT_TEMPO = 80
+/**
+ * In 6/8 the beat is the dotted quarter, counted at this share of the quarter
+ * tempo: ♩ = 80 becomes ♩. = 60, so the eighths move only a little faster than
+ * in 4/4 while the beat itself is slower.
+ */
+export const RHYTHM_COMPOUND_TEMPO = 0.75
+/** Metronome clicks before the measure, one per beat. */
+export const RHYTHM_COUNT_IN = 4
+/** A new measure is on screen this long before its count-in starts. */
+export const RHYTHM_READ_MS = 700
+/** Clicks are scheduled this far ahead on the audio clock, so the first is never clipped. */
+export const RHYTHM_LEAD_SEC = 0.15
+/** How often a running measure (or calibration) reads the audio clock, in ms: lights the dots, closes the take. */
+export const RHYTHM_FRAME_MS = 16
+/** At L4, the share of measures in 6/8 (the rest are 4/4 with triplets or sixteenths). */
+export const RHYTHM_COMPOUND_SHARE = 0.4
+/**
+ * Generator odds in 4/4: a figure filling the whole measure (whole note,
+ * dotted half), a half-bar figure instead of two beats, from L3 a tie across
+ * beat 3, and for each figure, one the level adds rather than an older one
+ * (a measure always holds at least one new figure).
+ */
+export const RHYTHM_ODDS = { whole: 0.12, half: 0.3, tie: 0.3, fresh: 0.4 } as const
+/** How long the marks stay before the next measure: after a right measure, after a wrong one. */
+export const RHYTHM_FEEDBACK_CORRECT_MS = 1300
+export const RHYTHM_FEEDBACK_WRONG_MS = 2800
+/** A measure with its count-in takes 6-10 s, so a session opens on two minutes. */
+export const RHYTHM_DEFAULT_DURATION_SECONDS = 120
+/** The metronome click: a short tone, higher on the downbeat. */
+export const RHYTHM_CLICK = { hz: 1100, accentHz: 1760, decaySec: 0.045, gain: 0.55 } as const
+/**
+ * Latency calibration: tap along with `clicks` clicks at `bpm`. A tap counts
+ * for a click when it lands from `minMs` before it to `maxMs` after it (a
+ * range narrower than the gap between clicks); the offset is the median of at
+ * least `minTaps` such pairs, refused when they spread more than
+ * `maxSpreadMs` (median distance from the median).
+ */
+export const RHYTHM_CALIBRATION = { clicks: 8, bpm: 100, minTaps: 5, maxSpreadMs: 60, minMs: -150, maxMs: 400 } as const
+/** Result screen: how many missed measures to show. */
+export const RHYTHM_MISSES_SHOWN = 4
+/**
+ * Notation units across a measure: a base for the clef and time signature
+ * plus room per note or rest, clamped. A sparse measure is drawn large on a
+ * phone; a busy one shrinks to fit.
+ */
+export const RHYTHM_STAFF_WIDTH = { base: 110, perEvent: 24, min: 230, max: 400 } as const
+/** Rhythm marks: below this many pixels between two notes' marks, the marks are drawn small so they do not touch. */
+export const RHYTHM_MARK_ROOM_PX = 21
+
+/*
  * Hóa biểu (key signatures): a signature on the staff, the reader taps its
  * key's home note. `maxAccidentals` caps the sharps or flats a level shows
  * (either kind, plus none for C major); `minor` asks for the relative minor

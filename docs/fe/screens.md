@@ -472,3 +472,38 @@ read. Result: the drills' summary ("Lượt Ôn tập", pace score, week average
 best), "Nên xem lại" listing each missed question once (×2 when missed twice)
 with its lesson, each a link into that lesson (✕ there comes back to the
 result), then Tập lại, Đổi thiết lập and "Học" (back to Học).
+
+### Tiết tấu (`/train/rhythm`)
+
+Design and rules: `drill-rhythm.md`. Mockup: project files
+`screenshots/theory-drills/5-rhythm.png`. Same shape as the other drills: one
+route, setup / run / result in its own store, the same back behaviour, pause
+sheet, early end and result screen.
+
+**Setup**: back caret, "Tiết tấu", one line ("Bốn tiếng click đếm vào, rồi gõ
+từng nốt của ô nhịp cho đúng nhịp."), then **Trường độ**: four cards, each
+with a small figure of its level on a bare staff (Tròn, trắng, đen / Móc đơn,
+dấu lặng / Chấm dôi, dấu nối / 6/8 và liên ba). **Nhịp**: tempo pills
+(60/80/100/120, hint "♩ = 80"), the **Click trong ô nhịp** switch, and **Độ trễ
+khi gõ** ("Chưa hiệu chỉnh" or "Trừ 45 ms mỗi lần gõ") with a **Hiệu chỉnh**
+button that opens the calibration panel in place: "Gõ theo 8 tiếng click",
+eight dots that light with the clicks, a compact Gõ pad (Space works too),
+"Phát tiếng click", and the outcome ("Đã lưu: 45 ms", or why to try again).
+Then the length pills (2 min by default) and the sticky bar (summary with
+"♩ = 80", best at the level, amber Bắt đầu, which also wakes the sound).
+
+**Run**: the drills' header and time bar; under it the tempo ("♩ = 80", in
+6/8 "♩. = 60") with "· đếm vào" or "· gõ", four count-in dots, and the streak
+on the right. The measure on a percussion staff with its time signature; once
+judged, a row of marks above the notes (green check, amber arrow, red cross;
+extra taps as red crosses on a lower row) and the measure green when right. A
+legend (Đúng nhịp · Sớm / trễ · Thiếu / thừa), the verdict line ("Đúng nhịp",
+"Nốt thứ 2 trễ 157 ms"), and the big blue **Gõ** pad ("chạm, phím cách hoặc
+phím chữ") at the bottom, in thumb reach. Busy measures on a phone draw their
+marks smaller so they never touch. Checked to fit without scrolling at
+320×568, 375×812, 390×844 and 1280×800.
+
+**Result**: the drills' summary, with **Lệch TB** (mean tap offset, "34 ms")
+as the third figure in place of time per answer; **Ô nhịp cần ôn** shows up
+to four missed measures with their marks; then Tập lại / Đổi thiết lập / Trang
+chủ.

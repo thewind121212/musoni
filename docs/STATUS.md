@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 804 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 888 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -302,6 +302,31 @@ a real browser.
       at L4); no bugs found; tests added for answer timing across holds and pauses, keys
       during the verdict or a pause, Esc, and leaving mid-verdict
 
+- [x] **Tiết tấu (rhythm) drill** (2026-10-05, `drills/rhythm`, group ear, opened by
+      lesson `durations-time/note-values`): one measure on a percussion staff with its
+      tempo, four count-in clicks (dots), tapped on a big pad, Space or any letter key;
+      taps judged on the Web Audio clock (`getOutputTimestamp`), aligned to the note
+      onsets in order, marked green / amber early-late / red missed, extra taps as red
+      crosses. Four levels (whole-half-quarter; eighths and rests; dots and ties across
+      beat 3; 6/8, triplets, sixteenths) with tolerances ±120/100/85/70 ms; measures
+      built from beat / half-bar figures so beams and beat 3 follow the book's
+      notation rules, every measure of every level checked by the tests. Setup: tempo
+      60-120 (preset may set it), metronome-through-the-measure switch, one-time
+      latency calibration (8 clicks, median, saved in the drill's settings). A pause
+      drops the measure in play; time up lets it finish. Result's third figure is the
+      mean tap offset (ms). Shared changes: `NoteStaff` percussion clef, `onLayout`,
+      beams by the time signature, tuplets before beams (triplets were mis-beamed);
+      `SessionStats` optional third figure. Replaces Complete-the-Measure.
+      Screenshots: project files `screenshots/drill-rhythm/` — `docs/fe/drill-rhythm.md`,
+      `docs/fe/architecture.md`, `docs/fe/data-model.md`, `docs/fe/screens.md`.
+      Functional review: every measure of every level rendered in a browser (beams,
+      ties, tuplets, one mark per onset), timed sessions at L1 and L4 judged in time,
+      pause / reload / Esc / early end / time up checked. Fixed: Lệch TB showed "0 ms"
+      when no tap landed on a note (now "–"); calibration paired a tap with the nearest
+      click, so a delay over 300 ms read as early for the next click (now a tap counts
+      from 150 ms before to 400 ms after its click). Merged with main (Hóa biểu).
+      710 web tests green
+
 ## Theory chapters
 
 Port guide: `docs/theory/port-guide.md`; one PR per chapter.
@@ -318,15 +343,18 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   the activity panel expand/collapse, both languages, full play-through at 375px
   viewport, and listening to Nghe & Đàn (cadence, walk home, miss playback) on a
   phone — not runnable headlessly, remains for a human pass
+- Tiết tấu by hand on a real phone and a laptop: click sound and its timing, the
+  audio wake on iOS, latency calibration, whether the tolerances feel fair, the 6/8
+  tempo (♩. = tempo × 0.75), time running out mid-measure
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
-- Four drills on the new registry, built in parallel: key signatures, chords and
-  intervals (done, above), rhythm (each declares the lesson that opens it with
-  `unlockedBy`). A drill whose lesson is not written yet stays unopened on Luyện,
-  counted in its "more drills" line and reachable from "Xem tất cả" (Hóa biểu waits
-  on chapter 3, Quãng on chapter 2, Hợp âm on chapter 8)
+- Four drills on the new registry, built in parallel: key signatures, chords, intervals
+  and rhythm (all done, above; each declares the lesson that opens it with `unlockedBy`).
+  A drill whose lesson is not written yet stays unopened on Luyện, counted in its "more
+  drills" line and reachable from "Xem tất cả" (Quãng waits on chapter 2, Hóa biểu on
+  chapter 3, Tiết tấu on chapter 5, Hợp âm on chapter 8)
 - A human pass on a phone over the new drills' sound and feedback timing
-  (`KEY_SIG_*`, `CHORD_*`, `INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`)
+  (`KEY_SIG_*`, `CHORD_*`, `INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`, `RHYTHM_*`, calibration)
 
 ## Next
 
@@ -334,8 +362,7 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   single-note drill has been tried; a human ear check of the cadence and the timings
   (`EAR_*` in `config/`).
 - Drill 3 candidate: "read the shape" (2-4 note groups on the staff, played in order);
-  chords as their own drill after it; Complete-the-Measure to be reshaped into
-  tap-the-rhythm.
+  chords as their own drill after it.
 - Login + cloud progress sync, subscriptions (Stripe)
 - Phase 2 hygiene: nothing open.
   Closed: the dead `config/presets.ts` (deleted with the drill platform); the stale `result.yourBest` copy (replaced by the comparison bar); the local-day-key regression test pins its timezone per case (UTC+7 and
@@ -347,6 +374,6 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 
 ## Parked (Phase 2+)
 
-- Complete-the-Measure drill (design already written)
+- ~~Complete-the-Measure drill~~: superseded by Tiết tấu (`docs/fe/drill-rhythm.md`)
 - Login, subscriptions (Stripe), cloud sync of progress
 - More ear training (chords by ear, echo phrases)

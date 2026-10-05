@@ -1,5 +1,7 @@
 # Drill 2 — Complete the Measure (PARKED — Phase 2)
 
+> **Superseded (2026-10-05)** by Tiết tấu (`drill-rhythm.md`): rhythm is now trained by tapping a measure in time, not by completing its sum.
+
 > Design approved 2026-08-28, implementation deferred. Phase 1 ships Drill 1 only.
 
 Rhythm-sum training: a measure is shown with one gap; pick the note/rest value

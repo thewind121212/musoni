@@ -9,8 +9,23 @@ import { diatonicStep, TUPLET_OCCUPIES } from '@/core/music/notation'
 import { inkColor, token, useRedrawOnThemeChange } from './theme'
 import type { StaffTone } from './Staff'
 
-/** A single clef, a grand staff (treble over bass, braced), or a bare staff with no clef. */
-export type NoteStaffClef = Clef | 'grand' | 'none'
+/**
+ * A single clef, a grand staff (treble over bass, braced), a bare staff with
+ * no clef, or a percussion staff (rhythm: the neutral clef, notes on the
+ * middle line written as B4).
+ */
+export type NoteStaffClef = Clef | 'grand' | 'none' | 'percussion'
+
+/**
+ * Where the drawing put things, as shares of its width: each note or rest
+ * (bars skipped), and where the notes' space starts and ends (after the
+ * clef and signatures, before the last bar line).
+ */
+export interface NoteStaffLayout {
+  xs: number[]
+  start: number
+  end: number
+}
 
 export interface NoteStaffProps {
   clef: NoteStaffClef
@@ -30,6 +45,11 @@ export interface NoteStaffProps {
   chosen?: Pitch | null
   /** Notation units across; the drawing scales to its container. */
   width?: number
+  /**
+   * Called after each drawing with where the notes landed, for marks laid
+   * over the staff (Tiết tấu's timing dots). Pass a stable function.
+   */
+  onLayout?: (layout: NoteStaffLayout) => void
   /**
    * Pins the box to the staff lines plus this much room above and below
    * (notation units) instead of cropping it to the ink, so a question staff
@@ -75,7 +95,7 @@ interface Drawn {
  * below them, so a figure with no ledger lines carries no empty band.
  */
 export function NoteStaff({
-  clef, events, keySignature, time, labels, highlight = [], tone = 'neutral', chosen = null, width = 320, room,
+  clef, events, keySignature, time, labels, highlight = [], tone = 'neutral', chosen = null, width = 320, onLayout, room,
 }: NoteStaffProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [drawn, setDrawn] = useState<Drawn>({ xs: [] })
@@ -98,7 +118,7 @@ export function NoteStaff({
     ctx.setStrokeStyle(ink)
 
     const x = grand ? 22 : 8
-    const make = (y: number, c: Clef | null) => {
+    const make = (y: number, c: Clef | 'percussion' | null) => {
       const stave = new Stave(x, y, width - x - 8)
       if (c) stave.addClef(c)
       if (keySignature) stave.addKeySignature(keySignature)
@@ -107,7 +127,8 @@ export function NoteStaff({
       return stave
     }
     const staves = grand ? [make(0, 'treble'), make(GRAND_GAP, 'bass')] : [make(0, clef === 'none' ? null : clef)]
-    const clefs: Clef[] = grand ? ['treble', 'bass'] : [clef === 'none' ? 'treble' : clef]
+    // A bare or percussion staff places notes as a treble staff does.
+    const clefs: Clef[] = grand ? ['treble', 'bass'] : [clef === 'none' || clef === 'percussion' ? 'treble' : clef]
     if (grand) {
       const start = Math.max(...staves.map(s => s.getNoteStartX()))
       staves.forEach(s => s.setNoteStartX(start))
@@ -180,15 +201,19 @@ export function NoteStaff({
       lists[0].push(pick)
     }
 
-    const voices = lists.map(l => new Voice({ numBeats: 4, beatValue: 4 }).setMode(Voice.Mode.SOFT).addTickables(l))
-    if (keySignature) Accidental.applyAccidentals(voices, keySignature)
-    const beams = lists.flatMap(l => {
-      const stemmed = l.filter((n): n is StemmableNote => n instanceof StaveNote)
-      return stemmed.length ? Beam.generateBeams(stemmed, { maintainStemDirections: false }) : []
-    })
+    // Tuplets first: they shorten their notes, which the voice, the beams and
+    // the spacing must all see (a triplet of eighths fills one beat).
     const tupletMarks = [...tuplets].map(([group, notes]) => {
       const count = tupletCount.get(group)!
       return new Tuplet(notes, { numNotes: count, notesOccupied: TUPLET_OCCUPIES[count] })
+    })
+    const voices = lists.map(l => new Voice({ numBeats: 4, beatValue: 4 }).setMode(Voice.Mode.SOFT).addTickables(l))
+    if (keySignature) Accidental.applyAccidentals(voices, keySignature)
+    // Beams follow the meter's beat (6/8 beams eighths in threes); quarter beats without one.
+    const groups = time ? Beam.getDefaultBeamGroups(time) : undefined
+    const beams = lists.flatMap(l => {
+      const stemmed = l.filter((n): n is StemmableNote => n instanceof StaveNote)
+      return stemmed.length ? Beam.generateBeams(stemmed, { maintainStemDirections: false, groups }) : []
     })
     // A staff with nothing on it (a key signature alone) has nothing to format.
     if (lists[0].length > 0) {
@@ -206,6 +231,13 @@ export function NoteStaff({
         const box = note.getBoundingBox()
         ys.push(box.getY() - MARGIN / 2, box.getY() + box.getH() + MARGIN / 2)
       } catch { /* no metrics: keep the staff's own box */ }
+    }
+    // A tuplet's number sits past the beam, outside its notes' boxes.
+    for (const mark of tupletMarks) {
+      try {
+        const y = mark.getYPosition()
+        ys.push(y - MARGIN, y + MARGIN)
+      } catch { /* no metrics */ }
     }
     const top = Math.min(...ys)
     const bottom = Math.max(...ys)
@@ -226,6 +258,7 @@ export function NoteStaff({
       return centre / width
     })
     setDrawn(d => (d.xs.join() === xs.join() ? d : { xs }))
+    onLayout?.({ xs, start: staves[0].getNoteStartX() / width, end: staves[0].getNoteEndX() / width })
   }, [clef, events, keySignature, time, labels, highlight.join(), tone, chosen?.letter, chosen?.accidental,
       chosen?.octave, width, room])
 
