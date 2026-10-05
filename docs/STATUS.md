@@ -30,7 +30,7 @@ reveals it on the staff (relative pitch, four levels, the key moves from L2).
 check on the piano pad) and end on a practice link that starts the matching drill with a
 preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is in; chapters
 2-9 are ported one PR each against `docs/theory/port-guide.md`.
-Components follow atomic-design levels. Go `/health` stub behind it. 505 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 506 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -212,7 +212,7 @@ a real browser.
       (`core/music/notation`), `NoteStaff` (any clef incl. alto/tenor, grand staff, rhythms)
       and a multi-octave `MiniKeyboard`. Chapter 1 (book 1.1-1.3): pitch and note names,
       staff and clefs, C clefs, octaves and middle C, review. Screenshots:
-      project files `screenshots/theory-ch01/`. 505 web tests green —
+      project files `screenshots/theory-ch01/`. 506 web tests green —
       `docs/theory/framework.md`, `docs/theory/ch01-pitch-staff.md`,
       `docs/theory/port-guide.md` §7, `docs/fe/architecture.md`, `docs/fe/screens.md`,
       `docs/fe/data-model.md`, `docs/summary.md`

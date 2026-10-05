@@ -64,4 +64,13 @@ describe('theory store', () => {
     const saved = JSON.parse(localStorage.getItem('musoni-progress-v1')!)
     expect(saved.days[today].lessons).toEqual([expect.objectContaining({ lesson: 'ch/a', seconds: 28 })])
   })
+
+  it('saves the time read in one lesson under it when the next opens straight away', () => {
+    store().open('ch/a', 1, true, T0)
+    store().next(T0 + 10_000) // finished at 10 s: not enough to save yet
+    store().open('ch/b', 2, true, T0 + 40_000) // 30 s more on the end screen, then "Bài tiếp"
+    const doc = JSON.parse(localStorage.getItem('musoni-progress-v1')!)
+    expect(doc.days[today].lessons).toEqual([expect.objectContaining({ lesson: 'ch/a', seconds: 40 })])
+    expect(store().pendingMs).toBe(0)
+  })
 })

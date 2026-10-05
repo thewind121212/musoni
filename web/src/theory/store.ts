@@ -69,9 +69,10 @@ export const useTheoryStore = create<TheoryState>((set, get) => ({
   open: (key, steps, fresh, now = Date.now()) => {
     const s = get()
     const keep = s.lesson === key && s.steps === steps && !(fresh && s.step >= steps)
-    set(keep
-      ? { activeAt: now }
-      : { lesson: key, steps, step: 0, answers: {}, activeAt: now })
+    if (keep) return set({ activeAt: now })
+    // Straight from another lesson ("Bài tiếp"): its time so far is saved under it first.
+    const pendingMs = flush(s.lesson, s.pendingMs + stretch(s, now), now)
+    set({ lesson: key, steps, step: 0, answers: {}, activeAt: now, pendingMs })
   },
 
   answer: (choice, correct, now = Date.now()) => {
