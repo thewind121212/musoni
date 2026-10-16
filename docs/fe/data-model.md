@@ -16,7 +16,7 @@ keyed by local day for the day-by-day tracker:
     "naming": "solfege",
     "sound": true,
     "keyLabels": true,
-    "padStyle": "piano",
+    "padStyle": "boxes",
     "lang": "vi",
     "activityExpanded": false,
     "startPoint": "beginner",
@@ -69,7 +69,7 @@ keyed by local day for the day-by-day tracker:
 |---|---|---|
 | `naming` | `"solfege"` | preference (Vietnamese teaching leads with solfège) |
 | `sound` | `true` | preference |
-| `padStyle` | `"piano"` | preference: answer keys as a drawn piano or as boxes (`"boxes"`, the older look) |
+| `padStyle` | `"boxes"` | preference: answer keys as boxes or as a drawn piano (`"piano"`). Default was `"piano"` until 2026-10-16; a stored value is kept, so earlier users keep theirs |
 | `keyLabels` | `true` | preference: note names on the answer keys |
 | `lang` | `"vi"` | preference (`"vi"` / `"en"`) |
 | `activityExpanded` | `false` | preference: Luyện's activity panel shows the full calendar |

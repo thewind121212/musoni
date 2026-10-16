@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-05
+> Last updated: 2026-10-16
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -37,7 +37,7 @@ preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 888 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 896 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -91,8 +91,8 @@ a real browser.
       expandable to a 20-week heatmap with longest streak and active days; mode is
       persisted; fixed today missing from its own calendar and the clipped today ring
 - [x] Note-id plays a sampled piano (Salamander Grand, CC BY 3.0, ~260 kB, lazy-loaded,
-      sine fallback) and answers from a piano-shaped keyboard: `A S D F G H J` = C..B,
-      `W E T Y U` = black keys; held-key repeats are ignored. Kawai samples requested;
+      sine fallback) and answers from the computer keyboard (now the note letters, see
+      below); held-key repeats are ignored. Kawai samples requested;
       swap pending network access
 - [x] Phone fixes: the home card's level / length / best no longer overflow at 375px
       (one three-column `StatStrip`), and the drill header counts wrong answers next to
@@ -326,6 +326,15 @@ a real browser.
       click, so a delay over 300 ms read as early for the next click (now a tap counts
       from 150 ms before to 400 ms after its click). Merged with main (Hóa biểu).
       710 web tests green
+- [x] **Safari audio + letter keys** (user feedback): every audio context now comes from
+      `core/audio/context.ts`, which resumes it on any tap / click / key press while it is
+      not running (Safari's `interrupted` state after a call or app switch included),
+      unlocks older iOS with a silent frame, falls back to `webkitAudioContext`, and asks
+      iOS for playback audio so a phone on silent still sounds; notes requested before the
+      context runs are scheduled once it does. Answer keys default to boxes for new users
+      (a stored choice is kept), and the computer keys are the note letters `C D E F G A B`,
+      Shift+letter for a black key as it is spelled (replaces `A S D F G H J` / `W E T Y U`).
+      Not yet heard on a real iPhone or Mac Safari. 896 web tests green
 
 ## Theory chapters
 
@@ -342,7 +351,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   in both spellings, the wrong-note overlay on the staff, audio pitch playback,
   the activity panel expand/collapse, both languages, full play-through at 375px
   viewport, and listening to Nghe & Đàn (cadence, walk home, miss playback) on a
-  phone — not runnable headlessly, remains for a human pass
+  phone — not runnable headlessly, remains for a human pass. Includes the Safari audio
+  fix: sound on iPhone (ringer on and on silent, after switching apps) and Mac Safari
 - Tiết tấu by hand on a real phone and a laptop: click sound and its timing, the
   audio wake on iOS, latency calibration, whether the tolerances feel fair, the 6/8
   tempo (♩. = tempo × 0.75), time running out mid-measure

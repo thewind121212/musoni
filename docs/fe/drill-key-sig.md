@@ -20,8 +20,9 @@ Proposal: project files `theory/drills-proposal.md`; approved mockup
 2. **Staff**: the clef and the key signature, nothing else
    (`SignatureStaff`, drawn by the core `NoteStaff` with no notes, so VexFlow
    places each sharp and flat for the clef).
-3. **Answer**: tap the tonic on the pad (or its computer key, `A S D F G H J`
-   / `W E T Y U`). One answer per question.
+3. **Answer**: tap the tonic on the pad (or its computer key: its letter, Shift+letter
+   on a black key; a renamed white key such as Cb keeps the letter of the key it
+   sits on, `B`). One answer per question.
 4. **Verdict** under the staff, green with a check or red with a cross, naming
    the key and the rule that finds it (`rule.ts`):
 

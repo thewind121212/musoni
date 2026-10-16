@@ -101,9 +101,9 @@ describe('keyPad', () => {
     expect(whites(-5)).toBe('C D E F G A B')
     expect(whites(-6)).toBe('C D E F G A Cb')
     expect(whites(-7)).toBe('C D Fb F G A Cb')
-    // Cb major is answered on the key where B sits, named Dob in solfège.
+    // Cb major is answered on the key where B sits, named Dob in solfège, typed with B.
     const cb = keyPad(-7, 'solfege').find(o => o.letter === 'C' && o.accidental === 'b')!
-    expect(cb).toMatchObject({ label: 'Dob', row: 'natural', slot: 6, keyHint: 'j' })
+    expect(cb).toMatchObject({ label: 'Dob', row: 'natural', slot: 6, keyHint: 'b' })
   })
 
   it('shows all seven notes of the key under the names the signature gives them', () => {

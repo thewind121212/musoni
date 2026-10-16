@@ -21,14 +21,16 @@ export interface NoteOption {
 
 const LETTERS: Letter[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 
+/** Marks a key hint that is typed with Shift: `⇧c` is Shift+C. */
+export const SHIFT = '⇧'
+
 /**
- * The computer keyboard laid out as a piano, the convention of DAW "musical
- * typing": the home row A S D F G H J is the white keys C to B, and the row
- * above holds the black keys in the gaps where a piano has them (W E between
- * C-D-E, nothing over the E-F gap at R, then T Y U).
+ * The computer key for a pad key is its note's letter: C to B on the white
+ * keys, and Shift with the letter the black key is spelled with (Shift+C for
+ * C#, Shift+D for Db on a row of flats). So typing answers with the name the
+ * reader just read, whatever the naming shown on the keys.
  */
-const NATURAL_KEYS = ['a', 's', 'd', 'f', 'g', 'h', 'j']
-const ACCIDENTAL_KEYS = ['w', 'e', 't', 'y', 'u']
+const keyFor = (letter: Letter, black: boolean) => (black ? SHIFT : '') + letter.toLowerCase()
 
 /**
  * The five black keys, as the white key they sit above when spelled sharp and
@@ -57,7 +59,7 @@ export function buildOptions(naming: Naming, accidentals: boolean, spelling: Exc
     label: label(letter, '', naming),
     letter,
     accidental: '' as Accidental,
-    keyHint: NATURAL_KEYS[i],
+    keyHint: keyFor(letter, false),
     row: 'natural' as const,
     slot: i,
   }))
@@ -69,7 +71,7 @@ export function buildOptions(naming: Naming, accidentals: boolean, spelling: Exc
       label: label(letter, spelling, naming),
       letter,
       accidental: spelling,
-      keyHint: ACCIDENTAL_KEYS[i],
+      keyHint: keyFor(letter, true),
       row: 'accidental' as const,
       slot: i,
     }

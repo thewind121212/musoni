@@ -127,7 +127,7 @@ the reader's own setting: presets never change it. Tunables `CHORD_HOLD_SEC`,
 
 ## Computer keys
 
-A S D F G H J and W E T Y U for the root (as Đọc nốt), 1-4 for the quality,
+The note letter for the root (Shift+letter for a black key, as Đọc nốt), 1-4 for the quality,
 1-7 for a numeral. Esc pauses.
 
 ## Session, score, pause

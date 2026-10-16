@@ -1,4 +1,5 @@
 import { RHYTHM_CLICK } from '@/config/constants'
+import { createAudioContext, wake } from '@/core/audio/context'
 
 /*
  * The metronome and the clock taps are judged on. Clicks are scheduled on the
@@ -16,18 +17,14 @@ let ctx: AudioContext | null | undefined
 
 function context(): AudioContext | null {
   if (ctx !== undefined) return ctx
-  try {
-    ctx = typeof AudioContext === 'undefined' ? null : new AudioContext({ latencyHint: 'interactive' })
-  } catch {
-    ctx = null
-  }
+  ctx = createAudioContext({ latencyHint: 'interactive' })
   return ctx
 }
 
 /** Starts the audio clock if the browser holds it (call from a tap or a click: a user gesture). */
 export function wakeAudio(): void {
   const a = context()
-  if (a?.state === 'suspended') void a.resume().catch(() => {})
+  if (a) void wake(a)
 }
 
 /** Whether the audio clock runs, so a measure can be timed on it. True without Web Audio (the page clock stands in). */

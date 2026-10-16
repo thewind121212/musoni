@@ -5,7 +5,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 const DEFAULT_SETTINGS = {
   naming: 'solfege',
   sound: true,
-  keyLabels: true, padStyle: 'piano' as const,
+  keyLabels: true, padStyle: 'boxes' as const,
   lang: 'vi',
   activityExpanded: false,
   drills: {},
@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS = {
 /** A reader's settings as version 1 stored them: every drill field flat. */
 const V1_SETTINGS = {
   level: 3, durationSec: 300, accidentals: true, naming: 'letters', sound: false, keyLabels: true,
-  padStyle: 'boxes', earLevel: 2, earDurationSec: 60, earCadenceEach: true, earOneKey: false,
+  padStyle: 'piano', earLevel: 2, earDurationSec: 60, earCadenceEach: true, earOneKey: false,
   lang: 'en', activityExpanded: true,
 }
 import {
@@ -320,7 +320,7 @@ describe('settings migration (version 1 to 2)', () => {
       'note-id': { level: 3, durationSec: 300, accidentals: true },
       'hear-play': { level: 2, durationSec: 60, cadenceEach: true, oneKey: false },
     })
-    expect(doc.settings).toMatchObject({ naming: 'letters', sound: false, padStyle: 'boxes', lang: 'en', activityExpanded: true })
+    expect(doc.settings).toMatchObject({ naming: 'letters', sound: false, padStyle: 'piano', lang: 'en', activityExpanded: true })
     expect(doc.settings).not.toHaveProperty('level')
     expect(doc.settings).not.toHaveProperty('earLevel')
   })

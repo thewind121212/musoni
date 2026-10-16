@@ -9,7 +9,7 @@ interface Props {
   onAnswer: (index: number) => void
   /** Print note names on the keys. Off leaves a bare keyboard; answered keys still show theirs. */
   showLabels?: boolean
-  /** A drawn piano keyboard (default), or two rows of free-standing boxes. */
+  /** A drawn piano keyboard, or two rows of free-standing boxes (the app's default setting). */
   layout?: 'piano' | 'boxes'
   /** The key's home note, dotted as a landmark, with its screen-reader text. */
   home?: { index: number; label: string }
@@ -31,8 +31,9 @@ const BOX_BLACK_COLUMN = [2, 4, 8, 10, 12]
  * Keys hold the same position on every question, so the pad is a layout to
  * learn rather than a list to re-read.
  *
- * The box layout is the older look, kept as a setting: black keys as a row of
- * boxes above the white ones, hidden when accidentals are off.
+ * The box layout is the app's default setting: black keys as a row of boxes
+ * above the white ones, hidden when accidentals are off. Either way each key
+ * shows its computer key, the note's letter (Shift+letter on a black key).
  */
 export function AnswerPad({ options, feedback, onAnswer, showLabels = true, layout = 'piano', home, selected = null }: Props) {
   const naturals = options.filter(o => o.row === 'natural')

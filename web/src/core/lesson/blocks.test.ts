@@ -55,9 +55,9 @@ describe('answering a check from the keyboard', () => {
     expect(answerFromKey(check, press('3'), 'letters')).toBeNull()
   })
 
-  it('takes the piano keys for a key answer', () => {
+  it('takes the note letters for a key answer', () => {
     const check = ask({ type: 'key', note: 'C' })
-    expect(answerFromKey(check, press('a', 'KeyA'), 'letters')).toEqual({ choice: 0, correct: true })
+    expect(answerFromKey(check, press('c', 'KeyC'), 'letters')).toEqual({ choice: 0, correct: true })
     expect(answerFromKey(check, press('7'), 'letters')).toBeNull()
   })
 })
