@@ -210,6 +210,13 @@ Shared, module-agnostic, reuse-first building blocks:
   `formatElapsed` (time played: "12 giây", "2 phút 5 giây") and `formatClock`
   (time left: "9:40").
 - `core/audio/` — pitch playback (Web Audio): sampled piano with a sine fallback;
+  `context.ts` makes every audio context (the piano's and the rhythm metronome's)
+  Safari-safe: `webkitAudioContext` fallback, resume from any non-running state
+  (Safari's `interrupted` included) on every tap / click / key press while one
+  is not running, a silent frame to unlock older iOS, and
+  `navigator.audioSession.type = 'playback'` so iOS plays with the ringer
+  switch on silent; notes asked for before the context runs are scheduled
+  once it does;
   `playSequence` schedules notes and chords on the audio clock (a cadence, a
   walk home) and `stopSounds` cuts off everything playing or scheduled;
   `piano.ts` holds the pure nearest-sample math.

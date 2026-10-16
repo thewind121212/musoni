@@ -112,7 +112,7 @@ const DEFAULTS: Settings = {
   naming: 'solfege',
   sound: true,
   keyLabels: true,
-  padStyle: 'piano',
+  padStyle: 'boxes',
   lang: DEFAULT_LANG,
   // Opens short: the week answers "am I current" in one glance, and the
   // calendar is there for anyone who wants the longer view.

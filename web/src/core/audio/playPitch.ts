@@ -1,6 +1,7 @@
 import type { Pitch } from '../music/types'
 import { freq, midi } from '../music/pitch'
 import { nearestSample, sampleFromName, type PianoSample } from './piano'
+import { createAudioContext, wake } from './context'
 import {
   AUDIO_GAIN, AUDIO_DURATION_SEC,
   PIANO_SAMPLE_URL, PIANO_SAMPLES, PIANO_GAIN, PIANO_HOLD_SEC, PIANO_RELEASE_SEC,
@@ -12,7 +13,8 @@ const buffers = new Map<number, AudioBuffer>()
 let loading: Promise<void> | null = null
 
 function context(): AudioContext {
-  ctx ??= new AudioContext()
+  ctx ??= createAudioContext()
+  if (!ctx) throw new Error('no Web Audio')
   return ctx
 }
 
@@ -91,11 +93,23 @@ function voice(audio: AudioContext, p: Pitch, start: number, hold: number | unde
   else playSine(audio, p, start, hold ?? AUDIO_DURATION_SEC, AUDIO_GAIN * share)
 }
 
-function ready(): AudioContext {
+/** Bumped by stopSounds, so a note still waiting for the context to start is dropped. */
+let generation = 0
+
+/**
+ * Runs `play` on the context once it is running. A context that is still
+ * starting (Safari resolves resume() a moment after the tap) gets its notes
+ * scheduled from the time it actually starts, not from a clock that stood still.
+ */
+function whenRunning(play: (audio: AudioContext) => void) {
   const audio = context()
-  if (audio.state === 'suspended') void audio.resume()
   void preloadPiano()
-  return audio
+  if (audio.state === 'running') return play(audio)
+  const gen = generation
+  void wake(audio).then(() => {
+    if (gen !== generation || audio.state !== 'running') return
+    try { play(audio) } catch { /* no audio available — silent no-op */ }
+  })
 }
 
 /**
@@ -104,8 +118,7 @@ function ready(): AudioContext {
  */
 export function playPitch(p: Pitch): void {
   try {
-    const audio = ready()
-    voice(audio, p, audio.currentTime, undefined, 1)
+    whenRunning(audio => voice(audio, p, audio.currentTime, undefined, 1))
   } catch { /* no audio available — silent no-op */ }
 }
 
@@ -116,17 +129,19 @@ export function playPitch(p: Pitch): void {
  */
 export function playSequence(events: readonly SoundEvent[]): void {
   try {
-    const audio = ready()
-    const now = audio.currentTime
-    for (const e of events) {
-      const share = 1 / Math.sqrt(Math.max(1, e.pitches.length))
-      for (const p of e.pitches) voice(audio, p, now + e.at, e.hold, share)
-    }
+    whenRunning(audio => {
+      const now = audio.currentTime
+      for (const e of events) {
+        const share = 1 / Math.sqrt(Math.max(1, e.pitches.length))
+        for (const p of e.pitches) voice(audio, p, now + e.at, e.hold, share)
+      }
+    })
   } catch { /* no audio available — silent no-op */ }
 }
 
 /** Silences everything playing or scheduled: a replay or the next question starts clean. */
 export function stopSounds(): void {
+  generation++
   for (const node of live) {
     try { node.stop() } catch { /* already stopped */ }
   }

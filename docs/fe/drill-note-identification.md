@@ -61,11 +61,16 @@ shows as a distance on the staff rather than only as a red key.
 ## Answering
 
 - Big tappable keys (mobile-first) + keyboard shortcuts on desktop.
-- Keyboard shortcuts follow a piano ("musical typing", as in DAWs), matched on
-  the physical key (`KeyboardEvent.code`) so Caps Lock and IME input still work:
-  - home row `A S D F G H J` = white keys C D E F G A B
-  - row above `W E T Y U` = black keys C#/Db, D#/Eb, F#/Gb, G#/Ab, A#/Bb
-    (`R` sits over the E-F gap and does nothing, like the piano)
+- Keyboard shortcuts are the note letters, matched on the physical key
+  (`KeyboardEvent.code`) so Caps Lock and IME input still work:
+  - `C D E F G A B` = the white keys of the same name, whatever naming
+    (letters or Do Re Mi) the keys show
+  - Shift + the letter a black key is spelled with: Shift+C/D/F/G/A on a row of
+    sharps, Shift+D/E/G/A/B on a row of flats (the row's spelling follows the
+    printed note, as before). Shift+E on sharps answers nothing: no E# on the pad.
+  - each key shows its shortcut in a corner (`C`, `⇧C`) on `md:` and up
+  - replaced the earlier DAW-style piano map (`A S D F G H J` / `W E T Y U`),
+    which put the wrong letters on the notes: `A` answered C
   - chords with Ctrl / Cmd / Alt are left to the browser, and auto-repeat
     keydowns from a held key are ignored so it cannot answer the next note.
   Shortcuts resolve by matching the key each option advertises (`core/music/keyboard.ts`),

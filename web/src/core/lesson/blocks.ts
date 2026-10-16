@@ -79,7 +79,7 @@ export function padFor(answer: KeyAnswer, naming: Naming): { options: NoteOption
 }
 
 /**
- * A check answered from the computer keyboard: the piano keys (A S D F...)
+ * A check answered from the computer keyboard: the note letters (C D E...)
  * for a key answer, 1 to 4 for a choice. Null when the key answers nothing.
  */
 export function answerFromKey(check: CheckStep, press: KeyPress, naming: Naming): { choice: number; correct: boolean } | null {

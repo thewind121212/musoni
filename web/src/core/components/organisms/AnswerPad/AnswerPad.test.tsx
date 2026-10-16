@@ -8,8 +8,8 @@ const naturalsOnly = buildOptions('letters', false, '#')
 const withSharps = buildOptions('letters', true, '#')
 
 // A key's name is its label, plus its keyboard hint (one lowercase letter) while it can be pressed.
-const keyNamed = (name: string) => screen.getByRole('button', { name: new RegExp(`^${name}[a-z]?$`) })
-const labelOf = (el: Element) => el.textContent!.replace(/[a-z]$/, '')
+const keyNamed = (name: string) => screen.getByRole('button', { name: new RegExp(`^${name}⇧?[a-g]?$`) })
+const labelOf = (el: Element) => el.textContent!.replace(/⇧?[a-g]$/, '')
 
 describe('AnswerPad', () => {
   it('without accidentals, answers on seven white keys and draws the black keys as landmarks only', () => {

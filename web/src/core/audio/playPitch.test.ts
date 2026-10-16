@@ -4,8 +4,9 @@ import { PIANO_SAMPLES } from '../../config/constants'
 /** A Web Audio stand-in that records which kind of voice each note used. */
 class FakeAudioContext {
   static instances: FakeAudioContext[] = []
-  state: 'suspended' | 'running' = 'suspended'
+  state: 'suspended' | 'running' | 'interrupted' = 'suspended'
   currentTime = 0
+  sampleRate = 44100
   destination = {}
   oscillators: { frequency: { value: number } }[] = []
   sources: { playbackRate: { value: number }; buffer: unknown }[] = []
@@ -30,6 +31,7 @@ class FakeAudioContext {
     this.oscillators.push(o)
     return o
   }
+  createBuffer = vi.fn(() => ({}))
   createBufferSource() {
     const s = { ...this.node(), buffer: null as unknown, playbackRate: this.param() }
     this.sources.push(s)
@@ -54,11 +56,14 @@ afterEach(() => { vi.unstubAllGlobals() })
 
 const load = () => import('./playPitch')
 const ctx = () => FakeAudioContext.instances[0]
+/** Lets a pending resume() settle and the notes waiting on it be scheduled. */
+const settle = () => new Promise(r => setTimeout(r))
 
 describe('playPitch', () => {
   it('falls back to a sine tone while the samples are still loading', async () => {
     const { playPitch } = await load()
     playPitch(C4)
+    await settle()
     expect(ctx().oscillators).toHaveLength(1)
     expect(ctx().oscillators[0].frequency.value).toBeCloseTo(261.63, 1)
     expect(ctx().sources).toHaveLength(0)
@@ -68,6 +73,7 @@ describe('playPitch', () => {
     const { playPitch, preloadPiano } = await load()
     await preloadPiano()
     playPitch(C4)
+    await settle()
     expect(ctx().oscillators).toHaveLength(0)
     expect(ctx().sources).toHaveLength(1)
     expect(ctx().sources[0].playbackRate.value).toBe(1)
@@ -77,6 +83,7 @@ describe('playPitch', () => {
     const { playPitch, preloadPiano } = await load()
     await preloadPiano()
     playPitch(Cs4)
+    await settle()
     expect(ctx().sources[0].playbackRate.value).toBeCloseTo(Math.pow(2, 1 / 12))
   })
 
@@ -95,6 +102,7 @@ describe('playPitch', () => {
     const { playPitch, preloadPiano } = await load()
     await preloadPiano()
     playPitch(C4)
+    await settle()
     expect(ctx().oscillators).toHaveLength(1)
     expect(ctx().sources).toHaveLength(0)
   })
@@ -112,6 +120,46 @@ describe('playPitch', () => {
     expect(ctx().resume).toHaveBeenCalled()
   })
 
+  it('resumes a context Safari left interrupted (after a call or an app switch)', async () => {
+    const { playPitch } = await load()
+    playPitch(C4)
+    await settle()
+    ctx().state = 'interrupted'
+    ctx().resume.mockClear()
+    playPitch(C4)
+    expect(ctx().resume).toHaveBeenCalled()
+    await settle()
+    expect(ctx().oscillators.length + ctx().sources.length).toBe(2)
+  })
+
+  it('schedules a waiting note from when the context starts, not from a clock that stood still', async () => {
+    const { playPitch, preloadPiano } = await load()
+    await preloadPiano()
+    ctx().resume.mockImplementation(async () => { ctx().state = 'running'; ctx().currentTime = 3 })
+    playPitch(C4)
+    expect(ctx().sources).toHaveLength(0)
+    await settle()
+    const start = (ctx().sources[0] as unknown as { start: ReturnType<typeof vi.fn> }).start
+    expect(start).toHaveBeenCalledWith(3)
+  })
+
+  it('drops a note still waiting for the context when the sounds are stopped', async () => {
+    const { playPitch, stopSounds } = await load()
+    playPitch(C4)
+    stopSounds()
+    await settle()
+    expect(ctx().oscillators).toHaveLength(0)
+  })
+
+  it('uses the prefixed webkitAudioContext of older Safari', async () => {
+    vi.stubGlobal('AudioContext', undefined)
+    vi.stubGlobal('webkitAudioContext', FakeAudioContext)
+    const { playPitch } = await load()
+    playPitch(C4)
+    await settle()
+    expect(ctx().oscillators).toHaveLength(1)
+  })
+
   it('is a silent no-op where Web Audio does not exist', async () => {
     vi.stubGlobal('AudioContext', undefined)
     const { playPitch, preloadPiano } = await load()
@@ -127,6 +175,7 @@ describe('playSequence', () => {
   it('schedules each event on the audio clock, a voice per chord note', async () => {
     const { playSequence, preloadPiano } = await load()
     await preloadPiano()
+    ctx().state = 'running'
     ctx().currentTime = 10
     playSequence([{ pitches: [C4, E4, G4], at: 0, hold: 0.5 }, { pitches: [C4], at: 0.6, hold: 1 }])
     const starts = ctx().sources.map(s => (s as unknown as { start: ReturnType<typeof vi.fn> }).start.mock.calls[0][0])
@@ -136,6 +185,7 @@ describe('playSequence', () => {
   it('shares one note\'s level across a chord, so a chord is no louder than the melody', async () => {
     const { playSequence } = await load()
     playSequence([{ pitches: [C4], at: 0, hold: 0.5 }, { pitches: [C4, E4, G4, C4], at: 1, hold: 0.5 }])
+    await settle()
     const levels = ctx().gains.map(g => g.gain.setValueAtTime.mock.calls[0][0] as number)
     expect(levels.slice(1).every(l => l === levels[0] / 2)).toBe(true)
   })
@@ -143,6 +193,7 @@ describe('playSequence', () => {
   it('stopSounds cuts off everything still playing or scheduled', async () => {
     const { playSequence, stopSounds } = await load()
     playSequence([{ pitches: [C4], at: 0, hold: 0.5 }, { pitches: [E4], at: 2, hold: 0.5 }])
+    await settle()
     const stops = ctx().oscillators.map(o => (o as unknown as { stop: ReturnType<typeof vi.fn> }).stop)
     stops.forEach(s => s.mockClear())
     stopSounds()
