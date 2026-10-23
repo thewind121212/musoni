@@ -75,15 +75,8 @@ export interface DrillDefinition<O extends DrillOptions = DrillOptions> {
   /** Its own action colour; amber when absent. */
   colour?: DrillColour
   /**
-   * The lesson (`<chapter id>/<lesson id>`, the key in finished lessons, e.g.
-   * `pitch-staff/staff-clefs`) that opens this drill on Luyện. Absent: open
-   * from the start. A lesson that does not exist yet keeps it unopened (it
-   * still opens once played, from "Xem tất cả" or a lesson's practice link).
-   */
-  unlockedBy?: string
-  /**
-   * False keeps it off Luyện, out of Hôm nay and out of the drills-to-open
-   * count (Ôn tập, reached from Học). Default true.
+   * False keeps it off Luyện and out of Hôm nay (Ôn tập, reached from Học).
+   * Default true.
    */
   listed?: boolean
 }

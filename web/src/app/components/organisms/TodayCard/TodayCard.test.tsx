@@ -12,10 +12,4 @@ describe('TodayCard', () => {
     expect(screen.getByText(pick.reason)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Bắt đầu' })).toHaveAttribute('href', '/train/note-id')
   })
-
-  it('holds the place of the pick while it loads, with the goal already shown', () => {
-    render(<MemoryRouter><TodayCard todayMinutes={3} dailyGoal={5} unit="phút" eyebrow="Hôm nay" streak="2 ngày" pick={null} loading /></MemoryRouter>)
-    expect(screen.queryByRole('link')).toBeNull()
-    expect(screen.getByText('2 ngày')).toBeInTheDocument()
-  })
 })

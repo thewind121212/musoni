@@ -1,1 +1,0 @@
-export { MoreDrills } from './MoreDrills'

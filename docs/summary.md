@@ -56,9 +56,8 @@ Solid lines = Phase 1 (live). Dotted lines = Phase 2 (planned).
 ```mermaid
 graph TB
   subgraph "FE container"
-    TABS["Tabs: Luyện / and Học /learn<br/>tab bar, Hôm nay pick, unlocked drills, activity;<br/>next lesson, current chapter, Ôn tập card"]
-    WELCOME["First open /welcome<br/>beginner → lesson 1, reader → Đọc nốt"]
-    REGISTRY["Drill registry (app/drills)<br/>drills/*/drill.ts by import.meta.glob:<br/>routes, levels, defaults, unlocks, colour"]
+    TABS["Tabs: Luyện / and Học /learn<br/>tab bar (amber Luyện / blue Học), activity, Hôm nay pick, every drill;<br/>next lesson, current chapter, Ôn tập card"]
+    REGISTRY["Drill registry (app/drills)<br/>drills/*/drill.ts by import.meta.glob:<br/>routes, levels, defaults, colour"]
     THEORY["Theory routes /theory, /theory/:chapter/:lesson, /theory/about<br/>chapter list, lesson player, licence page"]
     THEORYSTORE["Theory Store (Zustand)<br/>lesson place, answers, reading time"]
     CONTENT["Lesson content (GFDL)<br/>theory/content/chNN-*, found by import.meta.glob,<br/>checked by the content validator"]
@@ -82,7 +81,6 @@ graph TB
     TABS -->|router| DRILLROUTE
     TABS -->|router| THEORY
     TABS --> REGISTRY
-    WELCOME --> TABS
     DRILLROUTE --> REGISTRY
     THEORY --> CONTENT
     THEORY --> THEORYSTORE
@@ -110,15 +108,14 @@ graph TB
   end
 ```
 
-Routing is app-level only: the router owns the two tabs (`/`, `/learn`), the
-first-open question (`/welcome`), one `/train/<id>` route per registered drill
+Routing is app-level only: the router owns the two tabs (`/`, `/learn`), one `/train/<id>` route per registered drill
 and the three theory routes, while each drill's three
 phases (setup, run, result) and a lesson's steps are store state inside a
 single route, so training never changes the URL. A
 lesson's practice link opens a drill with a preset in the route state, applied
 to that one session. Every drill is one entry in the drill registry
 (`drills/<id>/drill.ts`, found by glob): routes, the loading screen, prefetch,
-presets, unlocks, settings and bests read it, so adding a drill touches no app
+presets, settings and bests read it, so adding a drill touches no app
 code. The
 route side every drill shares (the tabs' route state, back inside the drill,
 pausing when the reader leaves) lives in two app hooks, and the screens' shared

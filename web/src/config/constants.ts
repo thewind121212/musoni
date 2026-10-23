@@ -276,8 +276,6 @@ export const THEORY_STAFF_WIDTH = { base: 120, perNote: 36, grand: 24, min: 210,
  */
 export const TODAY_SHORT_SECONDS = 60
 export const TODAY_LONG_SECONDS = 120
-/** The drill a reader who answers "I can read a little" on first open starts with (its starter session). */
-export const READER_START_DRILL = 'note-id'
 
 /*
  * Ôn tập (theory review): checks from finished lessons, picked at random by

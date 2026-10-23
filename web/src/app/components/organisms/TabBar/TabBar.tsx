@@ -23,6 +23,8 @@ interface Props<T extends string> {
  * The app's tabs. On a phone, a bar pinned to the bottom within thumb reach;
  * from `md` up, the same tabs as a segmented control in a bar at the top,
  * beside the app's name. Each tab is a real link, so it can open in a new tab.
+ * The current tab sits on a pill in the action colour, which follows the mode
+ * (amber Luyện, blue Học), so the colour alone says where the reader is.
  */
 export function TabBar<T extends string>({ tabs, current, onSelect, label, brand }: Props<T>) {
   const select = (e: MouseEvent, tab: T) => {
@@ -50,10 +52,12 @@ export function TabBar<T extends string>({ tabs, current, onSelect, label, brand
                 'flex h-16 flex-col items-center justify-center gap-0.5 text-xs font-semibold transition-colors duration-150 ' +
                 'focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent ' +
                 'md:h-10 md:flex-row md:gap-2 md:rounded-full md:px-4 md:text-sm ' +
-                (active ? 'text-accent md:bg-accent/10' : 'text-ink-faint hover:text-ink')
+                (active ? 'text-ink md:bg-cta md:text-cta-ink' : 'text-ink-faint hover:text-ink')
               }
             >
-              {tab.icon(active)}
+              <span className={'flex rounded-full px-4 py-1 md:p-0 ' + (active ? 'bg-cta text-cta-ink md:bg-transparent' : '')}>
+                {tab.icon(active)}
+              </span>
               {tab.label}
             </Link>
           )

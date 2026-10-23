@@ -12,9 +12,17 @@ export type Tab = 'practice' | 'learn'
 
 export const TAB_ROUTE: Record<Tab, string> = { practice: '/', learn: '/learn' }
 
-/** The tab a path shows, or null off the tabs (drills, lessons, first open). */
+/** The tab a path shows, or null off the tabs (drills, lessons). */
 export function tabAt(path: string): Tab | null {
   return path === TAB_ROUTE.practice ? 'practice' : path === TAB_ROUTE.learn ? 'learn' : null
+}
+
+/**
+ * The mode a path belongs to, for its colour (`<html data-mode>`): Học and
+ * every lesson page are learning; Luyện and the drills are practice.
+ */
+export function modeAt(path: string): Tab {
+  return path === TAB_ROUTE.learn || path.startsWith('/theory') ? 'learn' : 'practice'
 }
 
 /** Route state of a tab opened from the tab bar. */

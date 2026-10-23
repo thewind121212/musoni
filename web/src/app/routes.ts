@@ -48,19 +48,6 @@ export const loadLearnTab = learnTab.prefetch
 export const loadChapterList = chapterList.prefetch
 export const loadLessonPlayer = lessonPlayer.prefetch
 
-type TheoryRegistry = typeof import('@/theory/registry')
-let theory: TheoryRegistry | undefined
-/**
- * The theory chapters (every lesson's text), for Luyện's Hôm nay pick and
- * the first-open question. Split out like the pages, so Luyện's first paint
- * does not carry the lesson text; once loaded, `loadedTheory` hands it over
- * without waiting.
- */
-export function loadTheory(): Promise<TheoryRegistry> {
-  return import('@/theory/registry').then(m => (theory = m))
-}
-export const loadedTheory = () => theory
-
 /** Fetch a route's code when the browser is idle. Errors are left to the real load. */
 export function prefetchWhenIdle(load: () => Promise<unknown>) {
   const run = () => { load().catch(() => {}) }

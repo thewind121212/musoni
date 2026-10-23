@@ -27,7 +27,7 @@ export function ActivityWeek({ minutesByDay, lang, t }: CalendarProps) {
               }
               className={
                 'h-9 w-full rounded-md ' + SHADE[shadeLevel(minutes)] +
-                (isToday ? ' ring-2 ring-accent ring-offset-2 ring-offset-raised' : '')
+                (isToday ? ' ring-2 ring-cta ring-offset-2 ring-offset-raised' : '')
               }
             />
             <span className={'text-[10px] ' + (isToday ? 'font-semibold text-ink' : 'text-ink-faint')}>

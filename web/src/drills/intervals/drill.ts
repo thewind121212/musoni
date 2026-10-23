@@ -24,5 +24,4 @@ export default defineDrill<IntervalsOptions>({
   // Hearing is the reader's own: a lesson preset never turns it on or off.
   defaults: { level: 1, durationSec: DEFAULT_DURATION_SECONDS, hear: true },
   // Half and whole steps are 2nds: the drill opens with the lesson that teaches them.
-  unlockedBy: 'accidentals-steps/half-whole-steps',
 })

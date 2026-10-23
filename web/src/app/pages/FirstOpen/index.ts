@@ -1,1 +1,0 @@
-export { FirstOpen } from './FirstOpen'

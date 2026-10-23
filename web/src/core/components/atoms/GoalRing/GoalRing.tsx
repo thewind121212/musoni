@@ -20,7 +20,7 @@ export function GoalRing({ value, goal, unit }: Props) {
           cx="42" cy="42" r={R} fill="none" strokeWidth="9" strokeLinecap="round"
           strokeDasharray={C} strokeDashoffset={C * (1 - done)}
           data-testid="goal-arc"
-          className={'transition-[stroke-dashoffset] duration-500 ' + (done >= 1 ? 'stroke-correct' : 'stroke-accent')}
+          className={'transition-[stroke-dashoffset] duration-500 ' + (done >= 1 ? 'stroke-correct' : 'stroke-cta')}
           // A zero-length round cap still draws a dot; hide the arc until there is progress.
           opacity={done > 0 ? 1 : 0}
         />

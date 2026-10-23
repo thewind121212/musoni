@@ -9,7 +9,6 @@ const DEFAULT_SETTINGS = {
   lang: 'vi',
   activityExpanded: false,
   drills: {},
-  startPoint: null,
 } as const
 /** A reader's settings as version 1 stored them: every drill field flat. */
 const V1_SETTINGS = {
@@ -21,7 +20,7 @@ import {
   getSettings, saveSettings, recordSession, getDay, getRange, getBest, localDayKey, getStreak, getDailyMinutes,
   getLongestStreak, getActiveDayCount, getRecentAverage, saveLiveSession, getLiveSession, getLiveSessions,
   clearLiveSession, recordLessonTime, markLessonDone, getLessonsDone, migrate, hasHistory, getLastPlayed,
-  getUnlocksSeen, markUnlocksSeen, getReviewMarks, recordReviewAnswer,
+  getReviewMarks, recordReviewAnswer,
 } from './progressStore'
 
 const session = (over = {}) => ({
@@ -336,7 +335,6 @@ describe('settings migration (version 1 to 2)', () => {
       version: 1, settings: V1_SETTINGS, days: { '2026-08-28': { sessions: [session()] } },
     }))
     expect(getSettings().drills['note-id']).toEqual({ level: 3, durationSec: 300, accidentals: true })
-    expect(getSettings().startPoint).toBeNull()
     recordSession(session({ at: '2026-08-29T10:00:00Z' }))
     const saved = JSON.parse(localStorage.getItem('musoni-progress-v1')!)
     expect(saved.version).toBe(2)
@@ -366,12 +364,6 @@ describe('what the tabs read', () => {
     recordSession(session({ at: '2026-08-29T10:00:00Z' }))
     recordSession(session({ drill: 'hear-play', at: '2026-08-01T10:00:00Z' }))
     expect(getLastPlayed()).toEqual({ 'note-id': '2026-08-30T10:00:00Z', 'hear-play': '2026-08-01T10:00:00Z' })
-  })
-
-  it('remembers drills shown open, once each', () => {
-    markUnlocksSeen(['key-sig'])
-    markUnlocksSeen(['key-sig', 'chords'])
-    expect(getUnlocksSeen()).toEqual(['key-sig', 'chords'])
   })
 
   it('keeps only the last answer to each review check', () => {

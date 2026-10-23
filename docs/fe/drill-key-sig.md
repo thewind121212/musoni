@@ -7,9 +7,8 @@ on the 12-key piano pad. Trains chapters 3 and 4 of the theory lessons.
 
 Route `/train/key-sig`, module `drills/key-sig`, store `useKeySigStore`,
 registry entry `drills/key-sig/drill.ts` (group `read`, order 20, icon `#`,
-amber action colour). Opens on Luyện when the lesson
-`major-scales-keys/key-signatures` is finished (`unlockedBy`); until that lesson
-is written it is reached from "Xem tất cả" and stays open once played.
+amber action colour). On Luyện from the start (no unlocks since 2026-10-23);
+the lesson `major-scales-keys/key-signatures` links to it.
 Proposal: project files `theory/drills-proposal.md`; approved mockup
 `screenshots/theory-drills/2-key-signatures.png`.
 

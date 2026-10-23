@@ -50,5 +50,4 @@ export default defineDrill<ChordsOptions>({
   defaults: { level: 1, durationSec: CHORD_DEFAULT_DURATION_SECONDS, mode: 'name', listen: true },
   // A lesson may ask for the Roman numeral mode; listening stays the reader's own.
   presetOptions: ['mode'],
-  unlockedBy: 'triads/triads-intro',
 })

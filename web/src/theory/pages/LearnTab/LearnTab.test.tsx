@@ -7,7 +7,7 @@ import { resetStores, session } from '@/test/fixtures'
 
 const renderTab = () => render(<MemoryRouter><LearnTab /></MemoryRouter>)
 
-beforeEach(() => resetStores({ lang: 'en', naming: 'letters', startPoint: 'beginner' }))
+beforeEach(() => resetStores({ lang: 'en', naming: 'letters' }))
 
 describe('LearnTab', () => {
   it('opens a new reader on the first lesson and the first chapter only, with no review yet', () => {
@@ -18,7 +18,6 @@ describe('LearnTab', () => {
     expect(screen.getByText(/Chapter 1 · Pitch and the staff/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Octaves and middle C/ })).toHaveAttribute('href', '/theory/pitch-staff/octaves')
     expect(screen.queryByText('Review')).toBeNull()
-    expect(screen.getByRole('link', { name: 'Change where you start' })).toHaveAttribute('href', '/welcome')
   })
 
   it('carries on with the next lesson and offers the review once a lesson is finished', () => {
