@@ -33,8 +33,7 @@ next language on tap. Its accessible label and tooltip name the target language
 written in that language, so it stays findable to someone who cannot read the
 current one. The document `lang` attribute follows the setting.
 
-Two tabs (Luyện and Học), a first-open question, one route per drill and the
-lesson routes; inside each drill route three phases. The sheet music is the
+Two tabs (Luyện and Học), one route per drill and the lesson routes; inside each drill route three phases. The sheet music is the
 interface: no clutter around the staff.
 
 ## App routes
@@ -65,13 +64,25 @@ different heights don't shift sideways as the scrollbar comes and goes.
 Mockups: project files `screenshots/beginner-tabs/` (s1-s4). Principles: one
 obvious next step per tab (one card, one amber button), progressive disclosure
 (a beginner sees two drills; the rest open as lessons are finished), no empty
-stats, a short Học list.
+stats, a short Học list. Luyện stands on its own (it never reads lessons);
+Học uses the drills as part of learning (lesson practice links, Ôn tập).
 
 - **Luyện** (`/`, default) and **Học** (`/learn`). On a phone a bar pinned to
   the bottom (music note, open book; filled on the current tab), within thumb
   reach; from `md` a bar at the top with "musoni" on the left and the two tabs
-  as a segmented control. Hidden inside drills, lessons, the chapter list and
-  the first-open question.
+  as a segmented control. Hidden inside drills, lessons and the chapter list.
+- **Two mode colours.** Practice is **amber**, learning is **blue** (the
+  `--accent`). The route's mode sits on `<html data-mode>` (`app/useTabs`
+  `modeAt`: `/learn` and `/theory…` are `learn`, everything else `practice`),
+  and `[data-mode="learn"]` turns the action colour (`--color-cta`) blue. So
+  the current tab's pill (filled behind the icon on a phone, the whole
+  segment on desktop), Học's and the lessons' buttons are blue, Luyện's and
+  the drills' amber, and the colour alone says which mode the reader is in. A
+  drill's own colour (Nghe & Đàn's violet) still wins inside its card and
+  run; Ôn tập, a Học drill, takes the blue. Luyện is amber throughout: the
+  drill icon tiles, goal ring, streak pill, today's ring and the practice-days
+  shades are drawn in the action colour too (`cta`, not `accent`); focus
+  outlines stay blue, since amber is too light to show focus on white.
 - Switching tabs is **instant** (no slide). Học opened from Luyện's tab bar sits
   one history entry above it: back, a phone's edge-swipe and the Luyện tab all
   step back to Luyện. Luyện tapped on a Học opened any other way (a reload, a
@@ -83,66 +94,37 @@ stats, a short Học list.
   resumes straight away (route state `resume`). Starting that drill another
   way ends the paused session as an early end (see below).
 
-### First open (`/welcome`)
-
-A brand-new reader (no `startPoint`, no history at all) opening either tab
-lands here first (replace). "Chào bạn. Bạn đã đọc được nốt nhạc chưa?", one line
-("Để Musoni chọn điểm bắt đầu hợp với bạn. Đổi lại lúc nào cũng được."), two
-large cards:
-- **"Chưa, tôi mới bắt đầu"** ("Học bài đầu tiên: 3 phút"): saves
-  `startPoint: beginner`, puts Học under it and opens lesson 1.1 (its ✕ steps
-  back to Học).
-- **"Rồi, tôi đọc được một ít"** ("Luyện đọc nốt: 1 phút"): saves `reader`,
-  puts Luyện under it and starts Đọc nốt at level 1 for one minute
-  (`READER_START_DRILL`, the drill's starter preset); back lands on Luyện.
-
-Asked once. A reader with any history (sessions, lesson time or a finished
-lesson, e.g. from before this question existed) never sees it. Học's
-"Đổi điểm bắt đầu" opens it again with a back arrow; the choice then starts in
-its place.
-
 ### Luyện (`/`)
 
 - "Luyện" and the language switch in the header corner.
+- **Những ngày bạn luyện** first (only once the reader has any history): the
+  habit dots, see below.
 - **Hôm nay** card: today's **goal ring** (`GoalRing`, minutes against
   `DAILY_GOAL_MINUTES` = 5; green once met), the eyebrow "Hôm nay" / "Hôm nay ·
   còn 2 phút" / "Hôm nay · đã đạt mục tiêu", a **streak pill** (flame + days,
   shown while a streak runs; an unpractised today counts back from yesterday),
   the pick as "Đọc nốt nhạc · 1 phút", one line saying why, and one amber
   **Bắt đầu** that opens the drill with the pick as a preset (`autostart`).
-  The pick (`app/practicePlan.pickToday`, pure and tested):
-  1. the drill the **last finished lesson** links to (its practice preset), if
-     not played since that lesson: "Vì bạn vừa học bài “Khuông nhạc và khóa”.";
-  2. else the open drill **practised least recently**, a never-played one
-     first: a never-played drill gets a gentle start at level 1 for one minute
-     ("Bắt đầu nhẹ: gọi tên nốt khóa Sol, chỉ phím trắng." from the drill's
-     `starter`); a played one the reader's own level and options ("Bạn chưa
-     luyện bài này 3 ngày."); with every open drill played today, "Hôm nay bạn
-     đã luyện mọi bài. Thêm một lượt bài này nhé?".
+  The pick (`app/practicePlan.pickToday`, pure and tested) is the drill
+  **practised least recently**, a never-played one first. It never looks at
+  lessons. A never-played drill gets a gentle start at level 1 for one minute
+  ("Bắt đầu nhẹ: gọi tên nốt khóa Sol, chỉ phím trắng." from the drill's
+  `starter`); a played one the reader's own level and options ("Bạn chưa
+  luyện bài này 3 ngày."); with every drill played today, "Hôm nay bạn
+  đã luyện mọi bài. Thêm một lượt bài này nhé?".
   The length fills what is left of the goal: 2 minutes while 2 or more are
-  left, else 1 (`TODAY_LONG_SECONDS` / `TODAY_SHORT_SECONDS`). With lessons
-  finished the pick waits for the lesson text chunk; the card keeps its place
-  (ring shown, grey bars) meanwhile.
-- **Bài luyện của bạn**: the open drills, in registry order (reading first,
+  left, else 1 (`TODAY_LONG_SECONDS` / `TODAY_SHORT_SECONDS`).
+- **Bài luyện của bạn**: every listed drill, open from the start (no unlocks;
+  Ôn tập is never listed here), in registry order (reading first,
   then ear), one `DrillCard` each (one column on a phone, two from `md`):
   - played at least once: icon, title and an amber **Luyện** pill (in the
     drill's colour; one tap into a session on the saved setup), then its
     Cấp độ / Thời lượng / Cao nhất strip (no level column for a drill with one
     level);
-  - never played: icon, title, what it asks, and a **"Chưa tập"** chip, or a
-    blue **"Mới mở"** chip when a lesson opened it since Luyện was last seen
-    (`unlocksSeen`, marked on the visit it shows).
+  - never played: icon, title, what it asks, and a **"Chưa tập"** chip.
   Tapping a card anywhere else opens its setup (`setup` route state).
-- **Unlocks**: a drill with `unlockedBy` (a lesson key) opens when that lesson
-  is finished **or** the reader has played it (from Xem tất cả or a lesson's
-  practice link). A lesson not written yet keeps it closed. Đọc nốt and Nghe &
-  Đàn are open from the start; Ôn tập is never listed here.
-- A dashed line counts the drills still to open: "✦ 3 bài luyện nữa mở dần khi
-  bạn học. **Xem tất cả**". Xem tất cả shows them below as cards with a "Mở
-  sau" chip (nothing is hard-locked: each opens its setup); "Thu gọn" hides
-  them. Hidden when nothing is left to open.
-- **Những ngày bạn luyện** (only once the reader has any history): the activity
-  panel without its old today header:
+- **Những ngày bạn luyện** (at the top, above Hôm nay; only once the reader
+  has any history): the activity panel without its old today header:
   - **Short mode (default)**: this week as a row of seven squares, today ringed,
     weekday under each.
   - **Full mode**: a 20-week contribution calendar (one square per day, weeks
@@ -177,7 +159,7 @@ A lazy chunk (it carries the lesson text); Luyện prefetches it when idle.
   next one). From `md`, Học tiếp and Ôn tập sit in the left column and the
   chapter in the right.
 - One link to the other chapters ("8 chương khác", "Tất cả các chương" while
-  there is one) to the full list at `/theory`, and "Đổi điểm bắt đầu".
+  there is one) to the full list at `/theory`.
 
 ### Back and motion
 
@@ -241,8 +223,8 @@ thumb zone. Steps slide in from the right (fade only with reduced motion).
   linking to the book page and the licence to `/theory/about`.
 
 Back behaviour: ✕ forgets the place and goes back to where the lesson was
-opened (a step back when it was opened from Học, the chapter list, the
-first-open question or an Ôn tập result; otherwise it replaces the lesson with
+opened (a step back when it was opened from Học, the chapter list or an Ôn
+tập result; otherwise it replaces the lesson with
 Học, `/learn`). "Bài tiếp" *replaces* the lesson in history, so ✕ or a swipe back
 from lesson 1.3 still lands on Học or the list, not on 1.2. Leaving any other way
 (swipe back, a link) keeps the place: opening the same lesson again resumes it.

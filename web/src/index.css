@@ -81,6 +81,11 @@
   color-scheme: dark;
 }
 
+/* Learning (Học and the lessons) acts in blue, practice in amber: App puts
+   the route's mode on <html> as data-mode. A drill's own colour, on a nested
+   [data-drill], still wins inside it. */
+[data-mode="learn"] { --color-cta: var(--accent); --color-cta-ink: var(--accent-ink); }
+
 /* A drill's own action colour (Nghe & Đàn's violet) is declared in its
    registry entry and written as a style rule on [data-drill="<id>"] by the
    app (app/drills drillColourCss, rendered in App). */

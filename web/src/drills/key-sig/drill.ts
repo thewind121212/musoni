@@ -18,5 +18,4 @@ export default defineDrill({
   defaults: { level: 1, durationSec: KEY_SIG_DEFAULT_DURATION_SECONDS },
   // Chapter 3's key-signature lesson. Until it is written, the drill opens
   // from "Xem tất cả" (and stays open once played).
-  unlockedBy: 'major-scales-keys/key-signatures',
 })

@@ -30,5 +30,4 @@ export default defineDrill<RhythmOptions>({
   presetOptions: ['tempo'],
   // No-break spaces: the note and its tempo never part at a line end.
   tags: s => [`♩\u00a0=\u00a0${s.tempo}`],
-  unlockedBy: 'durations-time/note-values',
 })

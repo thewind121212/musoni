@@ -15,8 +15,8 @@ interface Props {
   stats?: Stat[]
   /** Played: one start button on the right ("Luyện"). */
   action?: { label: string; to: string; state?: unknown }
-  /** Not played yet: a chip instead of empty stats ("Chưa tập", "Mới mở"). `new` is the blue one. */
-  chip?: { label: string; tone?: 'plain' | 'new' }
+  /** Not played yet: a chip instead of empty stats ("Chưa tập"). */
+  chip?: { label: string }
 }
 
 /**
@@ -29,7 +29,7 @@ export function DrillCard({ icon, title, description, to, toState, stats, action
   return (
     <div className="relative rounded-2xl border border-line bg-raised p-4 transition-colors duration-150 hover:border-ink-faint md:p-5">
       <div className="flex items-center gap-3 md:gap-4">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-ink md:size-12">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-cta text-cta-ink md:size-12">
           {icon}
         </span>
         <div className="min-w-0 flex-1">
@@ -45,12 +45,7 @@ export function DrillCard({ icon, title, description, to, toState, stats, action
           {!stats && <p className="text-sm leading-snug text-ink-faint">{description}</p>}
         </div>
         {chip && (
-          <span
-            className={
-              'shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap ' +
-              (chip.tone === 'new' ? 'bg-accent/12 text-accent' : 'border border-line text-ink-soft')
-            }
-          >
+          <span className="shrink-0 rounded-full border border-line px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-ink-soft">
             {chip.label}
           </span>
         )}

@@ -21,8 +21,6 @@ interface Props {
     to: string
     state?: unknown
   } | null
-  /** The pick waits on the lesson list: hold its place. */
-  loading?: boolean
 }
 
 /**
@@ -30,34 +28,27 @@ interface Props {
  * app suggests for it, with one amber button. The reader decides nothing to
  * start; the drill cards below are there for choosing.
  */
-export function TodayCard({ todayMinutes, dailyGoal, unit, eyebrow, streak, pick, loading = false }: Props) {
+export function TodayCard({ todayMinutes, dailyGoal, unit, eyebrow, streak, pick }: Props) {
   const reduce = useReducedMotion()
   return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-line bg-raised p-5" aria-busy={loading || undefined}>
+    <section className="flex flex-col gap-4 rounded-2xl border border-line bg-raised p-5">
       <div className="flex items-center gap-4">
         <GoalRing value={todayMinutes} goal={dailyGoal} unit={unit} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className="text-xs font-semibold tracking-wide text-ink-faint uppercase">{eyebrow}</span>
             {streak && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-accent/12 px-2 py-0.5 text-xs font-semibold text-accent">
+              <span className="inline-flex items-center gap-1 rounded-full bg-cta/25 px-2 py-0.5 text-xs font-semibold text-ink">
                 <FireIcon size={12} weight="fill" aria-hidden />
                 <span className="tnum">{streak}</span>
               </span>
             )}
           </div>
-          {loading
-            ? <div className="mt-1.5 h-6 w-40 max-w-full rounded-lg bg-line" />
-            : pick && <h2 className="mt-0.5 text-lg leading-snug font-semibold text-ink">{pick.title}</h2>}
+          {pick && <h2 className="mt-0.5 text-lg leading-snug font-semibold text-ink">{pick.title}</h2>}
         </div>
       </div>
 
-      {loading ? (
-        <>
-          <div className="h-5 w-3/4 rounded-lg bg-line" />
-          <div className="h-13 rounded-2xl bg-line" />
-        </>
-      ) : pick && (
+      {pick && (
         <>
           <p className="text-[15px] leading-snug text-ink-soft">{pick.reason}</p>
           <motion.div whileTap={reduce ? undefined : { scale: 0.98 }}>

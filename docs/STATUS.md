@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-16
+> Last updated: 2026-10-23
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -22,10 +22,11 @@ Phase 1 is complete on `main` and has grown well past the first cut: the note-id
 drill runs as a self-contained SPA (setup / run / result) at `/train/note-id`,
 answered on a fixed 12-key piano pad, scored as a pace with difficulty and
 endurance multipliers, with any session length allowed. The app has two tabs:
-**Luyện** (`/`: today's goal ring, streak and one picked drill with its reason, the
-drills the reader has opened, the activity calendar) and **Học** (`/learn`: the next
-lesson, the current chapter, Ôn tập); a first-open question sends a beginner to
-lesson 1 and a reader to a one-minute Đọc nốt. The UI is Vietnamese-first with an
+**Luyện** (`/`: the practice-days dots on top, today's goal ring, streak and one
+picked drill with its reason, every drill) and **Học** (`/learn`: the next lesson, the
+current chapter, Ôn tập). Luyện stands alone (never reads lessons); Học uses the
+drills to teach. Practice acts in amber, learning in blue, so the colour says which
+mode the reader is in. A new reader lands straight on Luyện. The UI is Vietnamese-first with an
 English switch, and answers play on a sampled piano. Leaving mid-session pauses the clock instead of
 losing or miscounting the session. A second drill, **Nghe & Đàn** (`/train/hear-play`),
 plays a cadence and one note and has the reader find it on the same piano pad, then
@@ -35,9 +36,9 @@ check on the piano pad) and end on a practice link that starts the matching dril
 preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is in; chapters
 2-9 are ported one PR each against `docs/theory/port-guide.md`. Every drill is one
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
-settings, strings, colour and the lesson that opens it; **Ôn tập** (`/train/review`)
+settings, strings and colour; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 896 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 881 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -335,6 +336,21 @@ a real browser.
       (a stored choice is kept), and the computer keys are the note letters `C D E F G A B`,
       Shift+letter for a black key as it is spelled (replaces `A S D F G H J` / `W E T Y U`).
       Not yet heard on a real iPhone or Mac Safari. 896 web tests green
+- [x] **Practice and learning apart, two mode colours** (2026-10-23, user request): the
+      first-open question (`/welcome`, `startPoint`, Học's "Đổi điểm bắt đầu") is gone; a
+      new reader lands on Luyện. Luyện no longer depends on lessons: no `unlockedBy`, no
+      "Mới mở" / "Xem tất cả" (`unlocksSeen`, `MoreDrills` removed), every listed drill
+      open from the start, and Hôm nay picks only by least-recently practised (the
+      last-lesson rule and its wait on the lesson chunk removed). Học still links into
+      drills (practice links, Ôn tập). The practice-days dots moved back to the top of
+      Luyện. **Mode colours**: `<html data-mode>` from the route (`modeAt`), and
+      `[data-mode="learn"]` turns the action colour blue; the tab bar's current tab is a
+      pill in that colour (amber Luyện, blue Học), Ôn tập is blue. Luyện is amber
+      throughout (drill icon tiles, goal ring, streak pill, practice-days shades use the
+      action colour; Nghe & Đàn's tile is its violet). Stale stored keys are
+      ignored (version stays 2). Screenshots checked at 375 px and 1280 px in headless
+      Chrome. Docs: `screens.md`, `architecture.md`, `data-model.md`, drill docs,
+      `theory/framework.md`, `summary.md`. 881 web tests green
 
 ## Theory chapters
 
@@ -359,10 +375,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 - Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
 - Four drills on the new registry, built in parallel: key signatures, chords, intervals
-  and rhythm (all done, above; each declares the lesson that opens it with `unlockedBy`).
-  A drill whose lesson is not written yet stays unopened on Luyện, counted in its "more
-  drills" line and reachable from "Xem tất cả" (Quãng waits on chapter 2, Hóa biểu on
-  chapter 3, Tiết tấu on chapter 5, Hợp âm on chapter 8)
+  and rhythm (all done, above; all on Luyện from the start since 2026-10-23; their
+  lessons come with chapters 2, 3, 5 and 8)
 - A human pass on a phone over the new drills' sound and feedback timing
   (`KEY_SIG_*`, `CHORD_*`, `INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`, `RHYTHM_*`, calibration)
 

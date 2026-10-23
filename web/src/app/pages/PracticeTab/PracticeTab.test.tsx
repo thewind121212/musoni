@@ -6,14 +6,15 @@ import { PracticeTab } from './PracticeTab'
 import { useAppStore } from '@/app/store'
 import { addDrills, listedDrills } from '@/app/drills'
 import { fakeDrill } from '@/test/fakeDrill'
-import { getSettings, getUnlocksSeen, markLessonDone, recordSession } from '@/progress/progressStore'
+import { getSettings, recordSession } from '@/progress/progressStore'
 import { resetStores, session, withDrill } from '@/test/fixtures'
+import { t } from '@/test/i18n'
 
 const renderTab = () => render(<MemoryRouter><PracticeTab /></MemoryRouter>)
 const card = (title: string) => screen.getByRole('link', { name: title }).closest('[data-drill]') as HTMLElement
 
 let remove = () => {}
-beforeEach(() => resetStores({ lang: 'en', startPoint: 'reader' }))
+beforeEach(() => resetStores({ lang: 'en' }))
 afterEach(() => remove())
 
 describe('PracticeTab', () => {
@@ -44,6 +45,8 @@ describe('PracticeTab', () => {
   it("moves Hôm nay on to the drill practised least recently, and fills what is left of today's goal", () => {
     const twoDaysAgo = new Date()
     twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
+    // Every drill is open, and a never-played one would come first: play them all.
+    for (const d of listedDrills()) if (d.id !== 'hear-play' && d.id !== 'note-id') recordSession(session({ drill: d.id, durationSec: 0 }))
     recordSession(session({ drill: 'hear-play', at: twoDaysAgo.toISOString() }))
     recordSession(session({ durationSec: 120 }))
     renderTab()
@@ -52,27 +55,19 @@ describe('PracticeTab', () => {
     expect(screen.getByText('Today · 3 min to go')).toBeInTheDocument()
   })
 
-  it("picks the last lesson's drill once the lesson text has loaded", async () => {
-    markLessonDone('pitch-staff/octaves', { correct: 3, total: 3 })
-    renderTab()
-    expect(await screen.findByText(/Because you just learned “Octaves and middle/)).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Note reading · 2 min' })).toBeInTheDocument()
-  })
-
-  it('counts the drills still to open, shows them all on request, and marks one as just opened once', async () => {
-    // Real drills whose lesson is not written yet stay to open as well.
-    const waiting = listedDrills().filter(d => d.unlockedBy).length
-    remove = addDrills(fakeDrill({ unlockedBy: 'pitch-staff/staff-clefs' }), fakeDrill({ id: 'later', unlockedBy: 'nowhere/yet' }))
-    markLessonDone('pitch-staff/staff-clefs', { correct: 3, total: 3 })
-    const first = renderTab()
-    expect(within(card('Fake drill')).getByText('Just opened')).toBeInTheDocument()
-    expect(getUnlocksSeen()).toContain('fake')
-    await userEvent.click(screen.getByRole('button', { name: 'See all' }))
-    expect(screen.getAllByText('Opens later')).toHaveLength(waiting + 1)
-    first.unmount()
-
+  it('lists every drill from the start, a new one among them', () => {
+    remove = addDrills(fakeDrill())
     renderTab()
     expect(within(card('Fake drill')).getByText('Not tried')).toBeInTheDocument()
+    for (const d of listedDrills()) expect(screen.getByRole('link', { name: t(d.title) })).toBeInTheDocument()
+    expect(screen.queryByText('See all')).toBeNull()
+  })
+
+  it('puts the practice days above Hôm nay', () => {
+    recordSession(session())
+    renderTab()
+    const days = screen.getByText('Your practice days')
+    expect(days.compareDocumentPosition(screen.getByRole('link', { name: 'Start' })) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('switches language through the app store and keeps it', async () => {

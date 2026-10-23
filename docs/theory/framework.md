@@ -90,9 +90,9 @@ counts toward the day's minutes, streaks and active days; never toward bests.
 
 `outline.nextLesson` is the first unfinished lesson in course order (chapter
 number, then lesson order); it drives Học's Học tiếp card and current chapter, the
-open chapter and the "next" ring on the list. No lesson is locked; a lesson
-can open a drill on Luyện (the drill entry's `unlockedBy`, see
-`docs/fe/architecture.md`, "Drill registry").
+open chapter and the "next" ring on the list. No lesson is locked, and no
+drill either: lessons use drills (the practice link below, Ôn tập), but
+Luyện never depends on lessons.
 
 ## Practice link
 

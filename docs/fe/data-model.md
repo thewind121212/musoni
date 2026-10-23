@@ -19,7 +19,6 @@ keyed by local day for the day-by-day tracker:
     "padStyle": "boxes",
     "lang": "vi",
     "activityExpanded": false,
-    "startPoint": "beginner",
     "drills": {
       "note-id": { "level": 3, "durationSec": 60, "accidentals": true },
       "hear-play": { "level": 2, "cadenceEach": false },
@@ -55,7 +54,6 @@ keyed by local day for the day-by-day tracker:
       "pitch-staff/staff-clefs": { "at": "2026-08-28T15:02:00Z", "correct": 3, "total": 3 }
     }
   },
-  "unlocksSeen": ["note-id", "hear-play"],
   "review": {
     "pitch-staff/staff-clefs/3": { "at": "2026-08-29T09:10:00Z", "missed": true },
     "pitch-staff/staff-clefs/5": { "at": "2026-08-29T09:10:20Z" }
@@ -73,7 +71,6 @@ keyed by local day for the day-by-day tracker:
 | `keyLabels` | `true` | preference: note names on the answer keys |
 | `lang` | `"vi"` | preference (`"vi"` / `"en"`) |
 | `activityExpanded` | `false` | preference: Luyện's activity panel shows the full calendar |
-| `startPoint` | `null` | the first-open answer: `"beginner"` (lesson 1) or `"reader"` (a short Đọc nốt). Null until asked; a reader with history is never asked. Học can change it |
 | `drills` | `{}` | each drill's own workout, by drill id (below) |
 
 **Per-drill settings** (`settings.drills[id]`, `StoredDrillSettings`): a
@@ -133,8 +130,8 @@ same way for a day that holds only lesson time):
 
 - `theory.done` maps a lesson key (`<chapter id>/<lesson id>`, the same slugs
   as its URL) to its latest finish: when, and how many of its checks were right
-  out of how many. Finishing again overwrites it. Học, Luyện (unlocks, Hôm nay) and the chapter
-  list read it through `getLessonsDone()`; `theory/outline` turns it into the
+  out of how many. Finishing again overwrites it. Học and the chapter
+  list read it (Luyện never does) through `getLessonsDone()`; `theory/outline` turns it into the
   next lesson and chapter progress. Lesson and chapter ids are never renamed,
   since they are these keys.
 - `days[date].lessons` lists time spent reading lessons that day
@@ -153,12 +150,10 @@ A lesson's "Luyện ngay" (and Luyện's Hôm nay card) starts its drill with a
 stored, settings are not changed, and the session is recorded like any other
 with the level and length it was played at.
 
-### Luyện and Ôn tập
+### Ôn tập
 
-Two more optional fields (version 2):
+One more optional field (version 2):
 
-- `unlocksSeen`: drill ids Luyện has already shown as open. A drill opened by
-  a lesson and not yet seen is marked "Mới mở" on that one visit.
 - `review`: Ôn tập's history, one small entry per lesson check ever answered,
   keyed `<chapter id>/<lesson id>/<step index>`: when it was last answered,
   and `missed: true` when that answer was wrong. Only the latest answer is
@@ -222,10 +217,16 @@ progress: it never syncs and is not part of the versioned document above.
 - `localDayKey(date)` — the local `YYYY-MM-DD` key used everywhere
 - `recordLessonTime({ lesson, seconds, at })` — adds reading time under that local day
 - `markLessonDone(lesson, { correct, total }, now?)` / `getLessonsDone()` — finished lessons
-- `hasHistory()` — any session, lesson time or finished lesson (first open is skipped)
-- `getLastPlayed()` — each drill's latest session time, by id (unlocks, Hôm nay)
-- `getUnlocksSeen()` / `markUnlocksSeen(ids)` — drills Luyện has shown as open
+- `hasHistory()` — any session, lesson time or finished lesson (Luyện's practice days show)
+- `getLastPlayed()` — each drill's latest session time, by id (Luyện's cards, Hôm nay)
 - `getReviewMarks()` / `recordReviewAnswer(check, correct, now?)` — Ôn tập history
 - `migrate(doc)` — any stored version to the current one (pure)
 - `saveLiveSession(drill, state, summary, now?)` / `getLiveSession(drill)` /
   `getLiveSessions()` / `clearLiveSession(drill)` — the live session above
+
+### Removed fields (2026-10-23)
+
+`settings.startPoint` (the first-open answer) and `unlocksSeen` (Luyện's
+"Mới mở" marks) went with the first-open question and drill unlocks. A stored
+document that still has them reads fine: the keys are ignored, so `version`
+stays 2.

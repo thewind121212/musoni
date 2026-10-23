@@ -26,4 +26,9 @@ export default defineDrill<ReviewOptions>({
   levels: [{ name: S.title }],
   defaults: { level: 1, durationSec: REVIEW_DEFAULT_DURATION_SECONDS, chapters: null },
   listed: false,
+  // A Học drill: the learning blue, in both themes (the tokens follow the theme).
+  colour: {
+    light: { cta: 'var(--accent)', ink: 'var(--accent-ink)' },
+    dark: { cta: 'var(--accent)', ink: 'var(--accent-ink)' },
+  },
 })

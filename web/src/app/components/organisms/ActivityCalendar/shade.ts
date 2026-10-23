@@ -22,10 +22,10 @@ export function shadeLevel(minutes: number | undefined): ShadeLevel {
 
 export const SHADE: Record<ShadeLevel, string> = {
   0: 'bg-line/60',
-  1: 'bg-accent/25',
-  2: 'bg-accent/50',
-  3: 'bg-accent/75',
-  4: 'bg-accent',
+  1: 'bg-cta/25',
+  2: 'bg-cta/50',
+  3: 'bg-cta/75',
+  4: 'bg-cta',
 }
 
 export interface CalendarProps {

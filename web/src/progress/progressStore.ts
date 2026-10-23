@@ -11,9 +11,6 @@ export type DrillSettingValue = boolean | number | string | string[] | null
 /** One drill's saved workout settings. Its defaults live in the drill's registry entry, not here. */
 export type StoredDrillSettings = Record<string, DrillSettingValue>
 
-/** The first-run answer: new to notation (start with lesson 1) or reads some (start with a short drill). */
-export type StartPoint = 'beginner' | 'reader'
-
 export interface Settings {
   /** Preferences: how the user likes to work, shared by every drill and lesson. Presets never touch these. */
   naming: Naming
@@ -31,8 +28,6 @@ export interface Settings {
    * holds the defaults (`app/drills`). Presets lay over these for one session.
    */
   drills: Record<DrillId, StoredDrillSettings>
-  /** The first-run answer; null until asked (a reader with history is never asked). */
-  startPoint: StartPoint | null
 }
 
 export interface SessionResult {
@@ -88,7 +83,7 @@ export interface ReviewMark {
 interface Day { sessions: SessionResult[]; lessons?: LessonTime[] }
 /**
  * The progress document. Version 2 moved each drill's workout settings into
- * `settings.drills` (see `migrate`). `theory`, `unlocksSeen` and `review` are
+ * `settings.drills` (see `migrate`). `theory` and `review` are
  * optional: a document without them reads as none.
  */
 interface Doc {
@@ -97,8 +92,6 @@ interface Doc {
   days: Record<string, Day>
   /** Finished lessons by key. */
   theory?: { done: Record<string, LessonResult> }
-  /** Drills Luyện has shown as open, so a newly opened one is marked "Mới mở" on one visit only. */
-  unlocksSeen?: DrillId[]
   /** Ôn tập: the last answer to each lesson check, by check id (`chapter/lesson/step`). */
   review?: Record<string, ReviewMark>
 }
@@ -118,7 +111,6 @@ const DEFAULTS: Settings = {
   // calendar is there for anyone who wants the longer view.
   activityExpanded: false,
   drills: {},
-  startPoint: null,
 }
 
 /**
@@ -391,17 +383,6 @@ export function getLastPlayed(): Record<DrillId, string> {
     }
   }
   return out
-}
-
-/** Drills Luyện has already shown as open. */
-export function getUnlocksSeen(): DrillId[] { return load().unlocksSeen ?? [] }
-/** Remembers drills as shown open, so "Mới mở" marks each one on the visit it opened only. */
-export function markUnlocksSeen(drills: readonly DrillId[]): void {
-  const d = load()
-  const seen = d.unlocksSeen ?? []
-  if (drills.every(x => seen.includes(x))) return
-  d.unlocksSeen = [...new Set([...seen, ...drills])]
-  save(d)
 }
 
 /** Ôn tập: the last answer to every check answered so far, by check id. */

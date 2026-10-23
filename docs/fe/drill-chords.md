@@ -5,9 +5,8 @@ Roman numeral in a key. Trains the reading half of chapters 8 and 9 (triads,
 inversions, diatonic chords).
 
 Route `/train/chords`, module `drills/chords`, store `useChordStore`, group
-**Đọc** (`read`), order 40. Opens on Luyện once the lesson
-`triads/triads-intro` is finished (`unlockedBy`); until that lesson exists it
-stays under "Xem tất cả". Proposal: project files `theory/drills-proposal.md`;
+**Đọc** (`read`), order 40. On Luyện from the start (no unlocks since
+2026-10-23); the lesson `triads/triads-intro` links to it. Proposal: project files `theory/drills-proposal.md`;
 approved mockup: `screenshots/theory-drills/4-chords.png`.
 
 ## One question, by name (levels 1-4)

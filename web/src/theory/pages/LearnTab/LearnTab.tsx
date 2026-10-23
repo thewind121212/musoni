@@ -4,7 +4,6 @@ import { motion, useReducedMotion } from 'motion/react'
 import { CaretRightIcon, TimerIcon, TrophyIcon } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
-import { CHANGE_START, WELCOME_ROUTE } from '@/app/firstOpen'
 import { loadDrill, prefetchWhenIdle } from '@/app/routes'
 import { LanguageToggle } from '@/core/components/molecules'
 import { DrillCard } from '@/core/components/organisms'
@@ -127,9 +126,6 @@ export function LearnTab() {
             <Link to="/theory" className={link}>
               {others > 0 ? t('learn.otherChapters', { count: others }) : t('learn.allChapters')}
               <CaretRightIcon size={13} weight="bold" aria-hidden />
-            </Link>
-            <Link to={WELCOME_ROUTE} state={CHANGE_START} className={link}>
-              {t('learn.changeStart')}
             </Link>
           </div>
         </motion.section>
