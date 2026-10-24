@@ -38,7 +38,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Nhiều dấu thăng cùng lúc: dấu thăng đứng sau cùng trong thứ tự dấu thăng là cảm âm. Dấu hóa bị xóa ngay sau đó chỉ báo chủ âm hóa hoặc **nốt ngoài hợp âm** (non-chord tone) biến âm.',
+            vi: 'Nhiều dấu thăng cùng lúc: dấu thăng đứng sau cùng trong thứ tự dấu thăng là cảm âm. Dấu hóa bị xóa ngay sau đó chỉ báo ly điệu hoặc **nốt ngoài hợp âm** (non-chord tone) biến âm.',
             en: 'With several sharps, the one that comes last in the order of sharps is the leading tone. Accidentals that are soon canceled point to a tonicization or a chromatic non-chord tone.',
           },
         },

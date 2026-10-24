@@ -12,7 +12,7 @@ Neapolitan).
 
 | # | Lesson (id) | Book | Steps (checks) | Practice link |
 |---|---|---|---|---|
-| 23.1 | Chuyển giọng và chủ âm hóa / Modulation and tonicization (`modulation-tonicization`) | 22.1, 22.2 | 6 (3) | none |
+| 23.1 | Chuyển giọng và ly điệu / Modulation and tonicization (`modulation-tonicization`) | 22.1, 22.2 | 6 (3) | none |
 | 23.2 | Giọng gần và giọng xa / Closely related and foreign keys (`key-relationships`) | 22.3 | 6 (3) | Hóa biểu, level 4, 2 min |
 | 23.3 | Hợp âm trụ thuận giọng / Diatonic pivot chords (`diatonic-pivot`) | 22.4, 22.2 | 6 (3) | Hợp âm, level 6 (La Mã · 4 dấu), `mode: 'roman'`, 2 min |
 | 23.4 | Giọng mới và hợp âm trụ biến âm / The new key and chromatic pivots (`chromatic-pivot`) | 22.5, 22.6 | 7 (3) | none |
@@ -72,7 +72,7 @@ staff label stands in for the pivot bracket.
 ## Terms
 
 Given by the main agent (shared with the other chromatic chapters): chuyển
-giọng (modulation), chủ âm hóa (tonicization), hợp âm át phụ (secondary
+giọng (modulation), ly điệu (tonicization), hợp âm át phụ (secondary
 dominant), hợp âm mượn (borrowed chord), hợp âm Napoli (Neapolitan), hợp âm
 sáu tăng (augmented sixth), hợp âm trụ (pivot chord), giọng gần (closely
 related key).

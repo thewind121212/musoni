@@ -106,12 +106,12 @@ export default {
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: 'Chủ âm hóa', en: 'Tonicization' }, correct: true },
+          { text: { vi: 'Ly điệu', en: 'Tonicization' }, correct: true },
           { text: { vi: 'Chuyển giọng', en: 'Modulation' } },
         ],
       },
       reason: {
-        vi: 'V được làm nổi như chủ một lúc, nhưng không có kết ở giọng mới: đó là chủ âm hóa.',
+        vi: 'V được làm nổi như chủ một lúc, nhưng không có kết ở giọng mới: đó là ly điệu.',
         en: 'V is made to sound like a tonic for a moment, but there is no cadence in a new key: that is tonicization.',
       },
     },

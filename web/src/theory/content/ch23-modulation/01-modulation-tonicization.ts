@@ -8,7 +8,7 @@ import type { Lesson } from '@/theory/types'
  */
 export default {
   id: 'modulation-tonicization',
-  title: { vi: 'Chuyển giọng và chủ âm hóa', en: 'Modulation and tonicization' },
+  title: { vi: 'Chuyển giọng và ly điệu', en: 'Modulation and tonicization' },
   minutes: 5,
   sources: [
     { section: '22.1', url: 'https://musictheory.pugetsound.edu/mt21c/ModulationIntroduction.html' },
@@ -16,7 +16,7 @@ export default {
   ],
   recap: [
     { vi: 'Chuyển giọng là đổi giọng ngay trong một bản nhạc', en: 'Modulation is a change of key within a piece' },
-    { vi: 'Chủ âm hóa chỉ làm một hợp âm nghe như chủ trong chốc lát', en: 'Tonicization makes a chord sound like a tonic only for a moment' },
+    { vi: 'Ly điệu chỉ làm một hợp âm nghe như chủ trong chốc lát', en: 'Tonicization makes a chord sound like a tonic only for a moment' },
     { vi: 'Một kết ở giọng mới xác nhận lần chuyển giọng', en: 'A cadence in the new key confirms a modulation' },
     { vi: 'Công thức kết hay gặp: ii⁶–I⁶₄–V–I', en: 'A common cadential formula: ii⁶–I⁶₄–V–I' },
   ],
@@ -62,12 +62,12 @@ export default {
     },
     {
       kind: 'explain',
-      title: { vi: 'Chủ âm hóa hay chuyển giọng', en: 'Tonicization or modulation' },
+      title: { vi: 'Ly điệu hay chuyển giọng', en: 'Tonicization or modulation' },
       blocks: [
         {
           type: 'text',
           text: {
-            vi: '**Chủ âm hóa** (tonicization) dùng **hợp âm át phụ** (secondary dominant) để một hợp âm nghe như chủ trong chốc lát, như V/V–V. Nó có thể chỉ dài hai hợp âm hoặc vài ô nhịp, rồi nhạc quay về giọng cũ.',
+            vi: '**Ly điệu** (tonicization) dùng **hợp âm át phụ** (secondary dominant) để một hợp âm nghe như chủ trong chốc lát, như V/V–V. Nó có thể chỉ dài hai hợp âm hoặc vài ô nhịp, rồi nhạc quay về giọng cũ.',
             en: '**Tonicization** uses a **secondary dominant** to make a chord sound like a tonic for a moment, as in V/V–V. It can be as short as two chords or last several measures, and then the music returns to the home key.',
           },
         },
@@ -98,7 +98,7 @@ export default {
         {
           type: 'tip',
           text: {
-            vi: 'Trong các bài chorale của Bach, hợp âm đổi theo từng nốt đen. Vì vậy khó phân biệt chủ âm hóa với một lần chuyển giọng ngắn kết bằng V–I.',
+            vi: 'Trong các bài chorale của Bach, hợp âm đổi theo từng nốt đen. Vì vậy khó phân biệt ly điệu với một lần chuyển giọng ngắn kết bằng V–I.',
             en: 'In Bach chorales the chords change every quarter note. So a tonicization and a short modulation ending on V–I can be hard to tell apart.',
           },
         },
@@ -116,13 +116,13 @@ export default {
         ],
       },
       reason: {
-        vi: 'Hợp âm át phụ chỉ chủ âm hóa; chuyển giọng cần nhạc ở lại và kết ở giọng mới.',
+        vi: 'Hợp âm át phụ chỉ ly điệu; chuyển giọng cần nhạc ở lại và kết ở giọng mới.',
         en: 'A secondary dominant only tonicizes; a modulation needs the music to stay and cadence in the new key.',
       },
     },
     {
       kind: 'check',
-      prompt: { vi: 'Câu nhạc này chủ âm hóa hay chuyển giọng?', en: 'Does this phrase tonicize or modulate?' },
+      prompt: { vi: 'Câu nhạc này ly điệu hay chuyển giọng?', en: 'Does this phrase tonicize or modulate?' },
       blocks: [
         { type: 'staff', clef: 'grand', key: 'F', notes: 'F3+F4+A4+C5 A2+E4+A4+C#5 G2+D4+Bb4+D5 C3+E4+Bb4+C5 F2+F4+A4+C5', labels: ['I', 'V/ii', 'ii', 'V7', 'I'] },
         { type: 'play', notes: 'F3+F4+A4+C5:h A2+E4+A4+C#5:h G2+D4+Bb4+D5:h C3+E4+Bb4+C5:h F2+F4+A4+C5:w' },
@@ -130,7 +130,7 @@ export default {
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: 'Chủ âm hóa', en: 'It tonicizes' }, correct: true },
+          { text: { vi: 'Ly điệu', en: 'It tonicizes' }, correct: true },
           { text: { vi: 'Chuyển giọng', en: 'It modulates' } },
         ],
       },
