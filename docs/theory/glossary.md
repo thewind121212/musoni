@@ -244,6 +244,16 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | dấu nhắc lại / nhắc lại cả hai đoạn | repeat sign / two-reprise |
 | nốt giữ át | dominant pedal |
 | tiểu phẩm | character piece |
+| hình thức sonata (hình thức chương đầu) | sonata form (first-movement form) |
+| phần trình bày / phần phát triển / phần tái hiện | exposition / development / recapitulation |
+| chủ đề chính / chủ đề phụ / chủ đề kết | primary / secondary / closing theme |
+| đoạn chuyển trở về | retransition |
+| hình thức sonatina / nguyên tắc sonata / sonata một chủ đề | sonatina form / sonata principle / monothematic sonata |
+| chức năng cấu trúc (trình bày, chuyển tiếp, phát triển, kết thúc) | structural function (expository, transitional, developmental, terminative) |
+| tính chất rondo | rondo character |
+| chương (tác phẩm nhiều chương) | movement (multimovement work) |
+| rondo: đoạn điệp / đoạn xen | rondo: refrain / episode |
+| rondo bảy phần / sonata-rondo | seven-part rondo / sonata rondo |
 
 ## Contrast (app ch 16)
 | Tiếng Việt | English |

@@ -422,6 +422,7 @@ a real browser.
 - [x] **Theory chapter 30, Dẫn bè hợp âm biến âm** (2026-10-24; book 29.1-29.4, review after 29.5): voice leading secondary chords, borrowed chords, the Neapolitan and augmented sixths, review; SATB on a grand staff. `docs/theory/ch30-voice-leading-chromatic.md`
 - [x] **Theory chapter 27, Dẫn bè hợp âm ba** (2026-10-24; book 26.1-26.12, review after 26.13): four voices and types of motion, parallels, ranges and spacing, root-position triads in four parts, doubling in inversions, special situations and six-fours, review; SATB on a grand staff. `docs/theory/ch27-voice-leading-triads.md`
 - [x] **Theory chapter 25, Hình thức hai đoạn và ba đoạn** (2026-10-24; book 24.1-24.8, review after 24.9): sectional or continuous, balanced, rounded and simple binary, ternary form, telling rounded binary from ternary, review. `docs/theory/ch25-binary-ternary.md`
+- [x] **Theory chapter 26, Hình thức sonata và rondo** (2026-10-24; book 25.1-25.5, review after 25.6): sonata form, sonatina and the sonata principle, the four structural functions, rondo and sonata rondo, rondo character and multimovement works, review. `docs/theory/ch26-sonata-rondo.md`
 
 ## Theory chapters
 
@@ -454,6 +455,7 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 23. Chuyển giọng | `ch23-modulation` | 22.1-22.7, review after 22.8 | Done — `docs/theory/ch23-modulation.md` |
 | 24. Chuyển giọng trùng âm | `ch24-enharmonic-modulation` | 23.1-23.3, review after 23.4 | Done — `docs/theory/ch24-enharmonic-modulation.md` |
 | 25. Hình thức hai đoạn và ba đoạn | `ch25-binary-ternary` | 24.1-24.8, review after 24.9 | Done — `docs/theory/ch25-binary-ternary.md` |
+| 26. Hình thức sonata và rondo | `ch26-sonata-rondo` | 25.1-25.5, review after 25.6 | Done — `docs/theory/ch26-sonata-rondo.md` |
 | 27. Dẫn bè hợp âm ba | `ch27-voice-leading-triads` | 26.1-26.12, review after 26.13 | Done — `docs/theory/ch27-voice-leading-triads.md` |
 | 28. Dẫn bè hợp âm bảy | `ch28-voice-leading-sevenths` | 27.1-27.5, review after 27.6 | Done — `docs/theory/ch28-voice-leading-sevenths.md` |
 | 30. Dẫn bè hợp âm biến âm | `ch30-voice-leading-chromatic` | 29.1-29.4, review after 29.5 | Done — `docs/theory/ch30-voice-leading-chromatic.md` |
@@ -462,7 +464,7 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
 | 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi | `ch35-serialism` | 34.1-34.6, review after 34.7 | Done — `docs/theory/ch35-serialism.md` |
 | 36. Âm nhạc tối giản | `ch36-minimalism` | 35, 35.1-35.2, review after 35.3 | Done — `docs/theory/ch36-minimalism.md` |
-| … | | the rest of the book (33 of 36 chapters done) | Porting (one PR per chapter) |
+| … | | the rest of the book (34 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
