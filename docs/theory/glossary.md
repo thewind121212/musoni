@@ -151,5 +151,17 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | hợp âm bảy giảm (°7) | fully diminished seventh chord |
 | hợp âm IV/5 | IV/5 chord |
 
+## Harmonic progression (app ch 10)
+| Tiếng Việt | English |
+|---|---|
+| tiến trình hòa âm | harmonic progression |
+| tiến trình vòng quãng năm | circle of fifths progression |
+| mô tiến (hòa âm) | (harmonic) sequence |
+| tiết tấu hòa âm | harmonic rhythm |
+| chức năng hòa âm | harmonic function |
+| chức năng chủ / kéo dài chủ / tiền át / át | tonic / tonic prolongation / pre-dominant / dominant function |
+| sơ đồ chức năng | harmonic flowchart |
+| xoay vòng | rotation (of a progression) |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
