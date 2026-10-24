@@ -58,6 +58,7 @@ screen links them.
 | 32. Nhập môn hòa âm jazz / Introduction to jazz theory | `ch32-jazz` | 31.1-31.11 (jazz chords, symbols, altered dominants, voicings, standard progressions, jazz scales, chord-scale relationships, the bebop scale); review after 31.12 Practice exercises |
 | 33. Trường phái ấn tượng và điệu tính mở rộng / Impressionism and extended tonality | `ch33-impressionism` | 32.1 Impressionism, 32.2 Pandiatonicism, 32.3 Quartal, quintal and secundal harmony, 32.4 Polychords; review after 32.5 Practice exercises |
 | 34. Lý thuyết tập hợp / Set theory | `ch34-set-theory` | 33.1 Set theory, 33.2 Normal form, 33.3 Prime form, 33.4 Interval vector, 33.5 Forte numbers, 33.6 Lists of set classes, 33.7 Transposition, 33.8 Inversion; review after 33.9 Practice exercises |
+| 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi / Serialism | `ch35-serialism` | 34.1 Twelve-tone technique, 34.2 Determining row forms, 34.3 Writing row forms, 34.4 The twelve-tone matrix, 34.5 Row forms in music, 34.6 Non-twelve-tone serialism; review after 34.7 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
