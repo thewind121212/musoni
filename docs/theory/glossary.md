@@ -226,5 +226,17 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | dịch pha / đồng pha / lệch pha | phase shifting / in phase / out of phase |
 | bè | voice (part) |
 
+## Form (app ch 13)
+| Tiếng Việt | English |
+|---|---|
+| hình thức / đoạn | form / section |
+| phiên khúc / điệp khúc / câu hook | verse / chorus / hook |
+| tiền điệp khúc / hậu điệp khúc | pre-chorus / post-chorus |
+| dạo đầu / dạo giữa / đoạn solo | introduction / interlude / solo |
+| cầu nối / tám ô giữa | bridge / middle eight |
+| hình thức AABA / ABAC | AABA / ABAC form |
+| blues 12 ô nhịp | 12-bar blues |
+| đoạn khép kín / đoạn mở | harmonically closed / open section |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
