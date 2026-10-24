@@ -65,6 +65,7 @@ screen links them.
 | 17. Bè trầm số / Figured bass | `ch17-figured-bass` | 16.1 Historical context, 16.2 Figured bass inversion symbols, 16.3 The cadential six-four, 16.4 Other six-fours, 16.5 Additional information; review after 16.6 Practice exercises |
 | 12. Phân tích giai điệu / Melodic analysis | `ch12-melodic-analysis` | 11.1 Motive, 11.2 Melodic alteration, 11.3 Fragment, 11.4 Phrase, 11.5 Subphrase; review after 11.6 Practice exercises |
 | 14. Kết hợp các câu nhạc / Phrases in combination | `ch14-phrases` | 13.1 The perfect authentic cadence, 13.2 The sentence, 13.3 The period, 13.4 The asymmetrical period, 13.5 The double period, 13.6 Phrase groups and phrase chains, 13.7 The elision, 13.8 Summary; review after 13.9 Practice exercises |
+| 11. Nốt ngoài hợp âm / Non-chord tones | `ch11-non-chord-tones` | 10.1 Introduction, 10.2 Passing tones, 10.3 Neighbor tones, 10.4 Appoggiatura, 10.5 Escape tone, 10.6 Double neighbor, 10.7 Anticipation, 10.8 Pedal point, 10.9 Suspension, 10.10 Retardation, 10.11 Incomplete neighbor; review after 10.12 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
