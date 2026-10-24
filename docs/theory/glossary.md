@@ -190,5 +190,21 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | hòa âm chồng quãng 3 / 4 / 5 / 2 | tertian / quartal / quintal / secundal harmony |
 | đa hợp âm | polychord |
 
+## Set theory (app ch 34)
+| Tiếng Việt | English |
+|---|---|
+| lý thuyết tập hợp | set theory |
+| nhạc phi điệu tính | atonal music |
+| ký hiệu số nguyên | integer notation |
+| lớp cao độ | pitch class |
+| tập hợp lớp cao độ | pitch-class set |
+| dạng chuẩn | normal form |
+| dạng nguyên mẫu | prime form |
+| phân đoạn | segmentation |
+| lớp quãng | interval class (ic) |
+| vectơ quãng | interval vector |
+| số Forte / lớp tập hợp / quan hệ Z | Forte number / set class / Z-relation |
+| chuyển vị (Tn) / phép đảo (TnI) | transposition / inversion |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.

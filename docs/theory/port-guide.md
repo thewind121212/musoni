@@ -97,6 +97,8 @@ seventh chords, cadences, progressions or minor scales yet.
   prints them; use ♯ ♭ in them. Note and key names around them stay tokens:
   "{F} {A} {C}, hợp âm {F} trưởng, viết F/C". The validator can't see this, so
   check it by hand.
+- Integers and sets (set theory, serialism) are plain text: `[0, 3, 7]`, `(014)`, `T7I`,
+  with T and E for 10 and 11. They are numbers, not note names.
 - Use only glossary terms. New term → add it to `docs/theory/glossary.md` in your
   PR and say so in the description.
 - First use of a term in a lesson: bold, Vietnamese with the English in brackets.
