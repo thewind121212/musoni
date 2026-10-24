@@ -302,5 +302,17 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | nốt treo / nốt chậm | suspension / retardation |
 | nốt chuẩn bị / nốt giải quyết | preparation / resolution |
 
+## Textures (app ch 15)
+| Tiếng Việt | English |
+|---|---|
+| phần đệm | accompaniment |
+| kết cấu hợp xướng / đồng tiết tấu | chorale texture / homorhythmic |
+| hợp âm rải / bass Alberti | arpeggio / Alberti bass |
+| đường bass | bass line |
+| hợp âm khối | block chords |
+| đầu phách / nửa sau phách | downbeat / upbeat |
+| hợp âm sau phách / hợp âm phách lệch | afterbeats / offbeats (phách lệch; nghịch phách is syncopation) |
+| clave son 3–2 / 2–3, tiết tấu 3+3+2 | 3–2 / 2–3 son clave, 3+3+2 rhythm |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
