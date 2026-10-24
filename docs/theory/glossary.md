@@ -325,6 +325,7 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | ly điệu | tonicization |
 | biến âm / nốt biến âm | chromatic / chromatic note |
 | giải quyết (bất thường / đánh lừa) | resolution (irregular / deceptive) |
+| hợp âm giảm phụ | secondary diminished chord |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
