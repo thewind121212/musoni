@@ -393,6 +393,8 @@ a real browser.
 - [x] **Theory chapter 32, Nhập môn hòa âm jazz** (2026-10-24; book 31): ninth, eleventh and thirteenth
       chords, altered dominants, writing and analysing jazz chords, guide tones and II–V–I, blues and jazz
       scales, review. No jazz standard used. `docs/theory/ch32-jazz.md`
+- [x] **Theory chapter 33, Trường phái ấn tượng** (2026-10-24; book 32): modes, upper extensions, planing,
+      pandiatonicism and quartal harmony, polychords, review. `docs/theory/ch33-impressionism.md`
 
 ## Theory chapters
 
@@ -411,7 +413,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 9. Hợp âm bảy | `ch09-seventh-chords` | 8.1-8.3, review after 8.4 | Done — `docs/theory/ch09-seventh-chords.md` |
 | 10. Tiến trình hòa âm và chức năng | `ch10-harmonic-progression` | 9.1-9.8, review after 9.9 | Done — `docs/theory/ch10-harmonic-progression.md` |
 | 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
-| … | | the rest of the book (11 of 36 chapters done) | Porting (one PR per chapter) |
+| 33. Trường phái ấn tượng và điệu tính mở rộng | `ch33-impressionism` | 32.1-32.4, review after 32.5 | Done — `docs/theory/ch33-impressionism.md` |
+| … | | the rest of the book (12 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
