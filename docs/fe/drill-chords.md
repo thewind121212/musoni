@@ -1,8 +1,8 @@
 # Drill — Hợp âm (Chords)
 
 Read a triad on the staff and name it: by its root and quality, or by its
-Roman numeral in a key. Trains the reading half of chapters 8 and 9 (triads,
-inversions, diatonic chords).
+Roman numeral in a key. Trains the reading half of chapters 7 and 8 (triads,
+inversions, Roman numerals).
 
 Route `/train/chords`, module `drills/chords`, store `useChordStore`, group
 **Đọc** (`read`), order 40. On Luyện from the start (no unlocks since
