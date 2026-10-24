@@ -56,7 +56,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Giọng {D} trưởng có hai dấu thăng. Giọng trưởng nào có ba dấu thăng?', en: '{D} major has two sharps. Which major key has three?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'D', notes: '' }],
-      answer: { type: 'key', note: 'A' },
+      answer: { type: 'key', note: 'A', blackKeys: '#' },
       reason: {
         vi: 'Từ {D} đi lên quãng 5 ({D} {E} {F#} {G} {A}) là {A}, nên giọng {A} trưởng có ba dấu thăng.',
         en: 'A fifth up from {D} ({D} {E} {F#} {G} {A}) is {A}, so {A} major has three sharps.',

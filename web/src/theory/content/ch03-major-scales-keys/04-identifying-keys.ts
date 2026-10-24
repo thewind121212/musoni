@@ -40,7 +40,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng trưởng nào?', en: 'Which major key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'E', notes: '' }],
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: '#' },
       reason: {
         vi: 'Bốn dấu thăng {F#} {C#} {G#} {D#}: lên nửa cung từ {D#} là {E}.',
         en: 'Four sharps, {F#} {C#} {G#} {D#}: a half step up from {D#} is {E}.',
@@ -82,7 +82,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng trưởng nào?', en: 'Which major key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'bass', key: 'F', notes: '' }],
-      answer: { type: 'key', note: 'F' },
+      answer: { type: 'key', note: 'F', blackKeys: 'b' },
       reason: {
         vi: 'Chỉ một dấu giáng, {Bb}, là hóa biểu của giọng {F} trưởng.',
         en: 'A single flat, {Bb}, is the key signature of {F} major.',
@@ -92,7 +92,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng trưởng nào?', en: 'Which major key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'B', notes: '' }],
-      answer: { type: 'key', note: 'B' },
+      answer: { type: 'key', note: 'B', blackKeys: '#' },
       reason: {
         vi: 'Năm dấu thăng, dấu cuối là {A#}: lên nửa cung là {B}.',
         en: 'Five sharps, the last one {A#}: a half step up is {B}.',

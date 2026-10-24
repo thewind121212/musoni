@@ -58,7 +58,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng trưởng nào?', en: 'Which major key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'G', notes: '' }],
-      answer: { type: 'key', note: 'G' },
+      answer: { type: 'key', note: 'G', blackKeys: '#' },
       reason: {
         vi: 'Một dấu thăng, {F#}, là hóa biểu của giọng {G} trưởng.',
         en: 'One sharp, {F#}, is the key signature of {G} major.',

@@ -64,7 +64,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng trưởng nào?', en: 'Which major key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'A', notes: '' }],
-      answer: { type: 'key', note: 'A' },
+      answer: { type: 'key', note: 'A', blackKeys: '#' },
       reason: {
         vi: 'Ba dấu thăng, dấu cuối là {G#}: lên nửa cung là {A}.',
         en: 'Three sharps, the last one {G#}: a half step up is {A}.',
@@ -106,7 +106,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Theo vòng quãng năm, giọng trưởng nào có bốn dấu thăng?', en: 'On the circle of fifths, which major key has four sharps?' },
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: '#' },
       reason: {
         vi: 'Đi lên từng quãng 5 từ {C}: {G}, {D}, {A}, rồi {E} với bốn dấu thăng.',
         en: 'Up by fifths from {C}: {G}, {D}, {A}, then {E} with four sharps.',
