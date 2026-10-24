@@ -364,6 +364,9 @@ a real browser.
       review. Practice: Nghe & Đàn L3 after the scale, Hóa biểu L1 → L3 lesson by lesson.
       `docs/theory/ch03-major-scales-keys.md`. The port guide's drill list now names all six drills,
       and chord symbols are written in letters (chapter 7 onward)
+- [x] **Theory chapter 4, Gam thứ** (2026-10-24; book 3.1-3.4): natural, harmonic and melodic minor,
+      minor key signatures (relative = giọng song song, parallel = giọng cùng tên), scale degree
+      names, review. Practice: Hóa biểu L4, Nghe & Đàn L3. `docs/theory/ch04-minor-scales-keys.md`
 
 ## Theory chapters
 
@@ -374,7 +377,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 1. Cao độ & khuông nhạc | `ch01-pitch-staff` | 1.1-1.3, 1.6 | Done (PR 0, reference chapter) — `docs/theory/ch01-pitch-staff.md` |
 | 2. Dấu hóa, nửa cung, nguyên cung | `ch02-accidentals-steps` | 1.4, 1.5, 2.1; review after 1.6, 2.4 | Done — `docs/theory/ch02-accidentals-steps.md` |
 | 3. Gam trưởng và hóa biểu | `ch03-major-scales-keys` | 2.2-2.3, review after 2.4 | Done — `docs/theory/ch03-major-scales-keys.md` |
-| 4-10 | | book 3.1-9.9 | Porting (Tier 1, one PR each) |
+| 4. Gam thứ và hóa biểu giọng thứ | `ch04-minor-scales-keys` | 3.1-3.3, review after 3.4 | Done — `docs/theory/ch04-minor-scales-keys.md` |
+| … | | the rest of the book (4 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 

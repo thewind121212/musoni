@@ -64,6 +64,7 @@ Note names are never written into lesson text as words. Write a pitch token
 | tứ âm | tetrachord |
 | thứ tự dấu thăng / thứ tự dấu giáng | order of sharps / order of flats |
 | giọng trùng âm | enharmonic keys |
+| gam thứ / giọng thứ | minor scale / minor key |
 
 Trap: in Vietnamese "giọng song song" means **relative**, not parallel.
 
