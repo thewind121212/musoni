@@ -79,6 +79,7 @@ screen links them.
 | 27. Dẫn bè hợp âm ba / Voice leading triads | `ch27-voice-leading-triads` | 26.1 Voice leading, 26.2 Types of motion, 26.3 Objectionable parallels, 26.4 Voice ranges, 26.5 Rules of melody, 26.6 Rules of spacing, 26.7 Root-position triads in four parts, 26.8 First-inversion triads, 26.9 Second-inversion triads, 26.10 Special situations, 26.11 Types of six-four chords, 26.12 Summary of doubling rules; review after 26.13 Practice exercises |
 | 25. Hình thức hai đoạn và ba đoạn / Binary and ternary forms | `ch25-binary-ternary` | 24.1 Binary and ternary form, 24.2 Sectional versus continuous, 24.3 Balanced binary, 24.4 Rounded binary, 24.5 Simple binary, 24.6 Binary principle, 24.7 Ternary form, 24.8 Distinguishing between rounded binary and ternary; review after 24.9 Practice exercises |
 | 26. Hình thức sonata và rondo / Sonata and rondo forms | `ch26-sonata-rondo` | 25.1 Sonata form, 25.2 The four structural functions, 25.3 Rondo form, 25.4 Rondo character, 25.5 Standard forms in a multimovement Classical piece; review after 25.6 Practice exercises |
+| 29. Dẫn bè với nốt ngoài hợp âm / Voice leading with non-chord tones | `ch29-voice-leading-nct` | 28.1 Voice leading with non-chord tones, 28.2 Avoiding objectionable parallels, 28.3 Adding non-chord tones to a chord progression; review after 28.4 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).

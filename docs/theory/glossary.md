@@ -374,6 +374,9 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | khoảng cách giữa các bè | spacing |
 | âm vực (của một bè) | voice range |
 | kiểu hợp xướng / kiểu piano | chorale style / keyboard style |
+| bài hợp xướng | chorale |
+| quãng thuận | consonant interval |
+| (đi) so le | staggered (rhythmically) |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
