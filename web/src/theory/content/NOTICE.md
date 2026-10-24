@@ -67,6 +67,7 @@ screen links them.
 | 14. Kết hợp các câu nhạc / Phrases in combination | `ch14-phrases` | 13.1 The perfect authentic cadence, 13.2 The sentence, 13.3 The period, 13.4 The asymmetrical period, 13.5 The double period, 13.6 Phrase groups and phrase chains, 13.7 The elision, 13.8 Summary; review after 13.9 Practice exercises |
 | 11. Nốt ngoài hợp âm / Non-chord tones | `ch11-non-chord-tones` | 10.1 Introduction, 10.2 Passing tones, 10.3 Neighbor tones, 10.4 Appoggiatura, 10.5 Escape tone, 10.6 Double neighbor, 10.7 Anticipation, 10.8 Pedal point, 10.9 Suspension, 10.10 Retardation, 10.11 Incomplete neighbor; review after 10.12 Practice exercises |
 | 15. Kết cấu phần đệm / Accompanimental textures | `ch15-textures` | 14.1 Texture, 14.2 Chorale texture, 14.3 Arpeggiated accompaniments, 14.4 Block chord accompaniments, 14.5 Afterbeats and offbeats, 14.6 The 3-2 son clave, 14.7 Distinctive bass lines; review drawn from the lessons (the book has no practice exercises here) |
+| 21. Hợp âm Napoli / The Neapolitan chord | `ch21-neapolitan` | 20.1 The Neapolitan chord, 20.2 Examples of the Neapolitan chord; review after 20.3 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
