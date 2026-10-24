@@ -57,6 +57,7 @@ screen links them.
 | 10. Tiến trình hòa âm và chức năng / Harmonic progression and function | `ch10-harmonic-progression` | 9.1 The circle of fifths progression, 9.2 Harmonic rhythm, 9.3 Shorter progressions from the circle of fifths, 9.4 Harmonic function, 9.5 Exceptions created by harmonic sequences, 9.6 The subtonic VII chord in popular music, 9.7 The best-seller progression, 9.8 The i–VII–VI–VII progression; review after 9.9 Practice exercises |
 | 32. Nhập môn hòa âm jazz / Introduction to jazz theory | `ch32-jazz` | 31.1-31.11 (jazz chords, symbols, altered dominants, voicings, standard progressions, jazz scales, chord-scale relationships, the bebop scale); review after 31.12 Practice exercises |
 | 33. Trường phái ấn tượng và điệu tính mở rộng / Impressionism and extended tonality | `ch33-impressionism` | 32.1 Impressionism, 32.2 Pandiatonicism, 32.3 Quartal, quintal and secundal harmony, 32.4 Polychords; review after 32.5 Practice exercises |
+| 34. Lý thuyết tập hợp / Set theory | `ch34-set-theory` | 33.1 Set theory, 33.2 Normal form, 33.3 Prime form, 33.4 Interval vector, 33.5 Forte numbers, 33.6 Lists of set classes, 33.7 Transposition, 33.8 Inversion; review after 33.9 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).

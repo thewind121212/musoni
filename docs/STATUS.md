@@ -395,6 +395,9 @@ a real browser.
       scales, review. No jazz standard used. `docs/theory/ch32-jazz.md`
 - [x] **Theory chapter 33, Trường phái ấn tượng** (2026-10-24; book 32): modes, upper extensions, planing,
       pandiatonicism and quartal harmony, polychords, review. `docs/theory/ch33-impressionism.md`
+- [x] **Theory chapter 34, Lý thuyết tập hợp** (2026-10-24; book 33.1-33.9): integer notation, normal form,
+      prime form, interval vectors and Forte numbers, Tn and TnI, review. Sets are plain text ([0, 3, 7], (014)).
+      `docs/theory/ch34-set-theory.md`
 
 ## Theory chapters
 
@@ -414,7 +417,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 10. Tiến trình hòa âm và chức năng | `ch10-harmonic-progression` | 9.1-9.8, review after 9.9 | Done — `docs/theory/ch10-harmonic-progression.md` |
 | 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
 | 33. Trường phái ấn tượng và điệu tính mở rộng | `ch33-impressionism` | 32.1-32.4, review after 32.5 | Done — `docs/theory/ch33-impressionism.md` |
-| … | | the rest of the book (12 of 36 chapters done) | Porting (one PR per chapter) |
+| 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
+| … | | the rest of the book (13 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
