@@ -329,6 +329,10 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | pha trộn điệu thức | mode mixture |
 | hợp âm mượn / bậc mượn | borrowed chord / borrowed scale degree |
 | quãng ba Picardy | Picardy 3rd |
+| hợp âm sáu tăng (Ý / Pháp / Đức / Đức trùng âm) | augmented sixth chord (Italian / French / German / enharmonic German) |
+| bậc ♯4 | raised fourth scale degree |
+| hòa âm biến âm / hợp âm tiền át biến âm | chromatic harmony / chromatic pre-dominant |
+| đường bass nửa cung đi xuống | descending chromatic bass line |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
