@@ -333,6 +333,11 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | bậc ♯4 | raised fourth scale degree |
 | hòa âm biến âm / hợp âm tiền át biến âm | chromatic harmony / chromatic pre-dominant |
 | đường bass nửa cung đi xuống | descending chromatic bass line |
+| chuyển giọng | modulation |
+| hợp âm trụ (thuận giọng / biến âm) | pivot chord (diatonic / chromatic) |
+| giọng gần / giọng xa | closely related / foreign key |
+| chuyển giọng trực tiếp / qua nốt chung / bằng mô tiến | direct / common-tone / sequential modulation |
+| trung âm biến âm | chromatic mediant |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
