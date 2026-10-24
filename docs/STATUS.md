@@ -401,6 +401,9 @@ a real browser.
 - [x] **Theory chapter 35, Kỹ thuật mười hai âm** (2026-10-24; book 34): rows and row forms (P, I, R, RI),
       transposition numbers, determining and writing row forms, the matrix, rows in music, non-twelve-tone
       serialism, review. All on our own row (48 forms checked distinct by script). `docs/theory/ch35-serialism.md`
+- [x] **Theory chapter 36, Âm nhạc tối giản** (2026-10-24; book 35, the last chapter): what minimalism is,
+      additive and subtractive process, phase shifting, review. All patterns our own.
+      `docs/theory/ch36-minimalism.md`
 
 ## Theory chapters
 
@@ -422,7 +425,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 33. Trường phái ấn tượng và điệu tính mở rộng | `ch33-impressionism` | 32.1-32.4, review after 32.5 | Done — `docs/theory/ch33-impressionism.md` |
 | 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
 | 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi | `ch35-serialism` | 34.1-34.6, review after 34.7 | Done — `docs/theory/ch35-serialism.md` |
-| … | | the rest of the book (14 of 36 chapters done) | Porting (one PR per chapter) |
+| 36. Âm nhạc tối giản | `ch36-minimalism` | 35, 35.1-35.2, review after 35.3 | Done — `docs/theory/ch36-minimalism.md` |
+| … | | the rest of the book (15 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
