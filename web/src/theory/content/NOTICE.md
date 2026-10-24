@@ -73,6 +73,7 @@ screen links them.
 | 19. Hợp âm giảm phụ / Secondary diminished chords | `ch19-secondary-diminished` | 18.1 Secondary diminished chords, 18.2 In major and minor, 18.3 Analyzing, 18.4 Writing; review after 18.5 Practice exercises |
 | 20. Pha trộn điệu thức / Mode mixture | `ch20-mode-mixture` | 19.1 Mode mixture, 19.2 Harmonization of borrowed scale degrees, 19.3 Analyzing and writing borrowed chords, 19.4 The deceptive cadence with ♭VI, 19.5 The Picardy 3rd; review after 19.6 Practice exercises |
 | 22. Hợp âm sáu tăng / Augmented sixth chords | `ch22-augmented-sixth` | 21.1 Augmented sixth chords, 21.2 Types, 21.3 Analyzing, 21.4 Lead-sheet analysis, 21.5 Examples, 21.6 Distinguishing between chromatic harmonies, 21.7 Descending chromatic bass lines, 21.8 Chromatic pre-dominant chords; review after 21.9 Practice exercises |
+| 23. Chuyển giọng / Modulation | `ch23-modulation` | 22.1 Modulation, 22.2 Tonicization versus modulation, 22.3 Key relationships, 22.4 Diatonic pivot chords, 22.5 Recognizing the new key, 22.6 Chromatic pivot chords, 22.7 Modulations without pivot chords; review after 22.8 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
