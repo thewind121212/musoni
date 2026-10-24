@@ -314,5 +314,11 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | hợp âm sau phách / hợp âm phách lệch | afterbeats / offbeats (phách lệch; nghịch phách is syncopation) |
 | clave son 3–2 / 2–3, tiết tấu 3+3+2 | 3–2 / 2–3 son clave, 3+3+2 rhythm |
 
+## Chromatic harmony (app ch 18-24)
+| Tiếng Việt | English |
+|---|---|
+| hợp âm Napoli (N, N6) | Neapolitan chord |
+| bậc 2 hạ (♭2) | lowered second scale degree |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
