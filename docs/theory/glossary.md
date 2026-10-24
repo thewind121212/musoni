@@ -287,5 +287,20 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | nhóm câu / chuỗi câu | phrase group / phrase chain |
 | gối câu | elision |
 
+## Non-chord tones (app ch 11)
+| Tiếng Việt | English |
+|---|---|
+| nốt ngoài hợp âm / nốt trong hợp âm | non-chord tone / chord tone |
+| cùng nốt / liền bậc / nhảy | same note / step / leap |
+| nốt lướt | passing tone |
+| nốt thêu (trên / dưới / kép / khuyết) | neighbor tone (upper / lower / double / incomplete) |
+| có nhấn / không nhấn | accented / unaccented |
+| biến âm | chromatic |
+| nốt dựa / nốt thoát | appoggiatura / escape tone |
+| nốt đón trước | anticipation |
+| nốt giữ (kép) | (double) pedal point |
+| nốt treo / nốt chậm | suspension / retardation |
+| nốt chuẩn bị / nốt giải quyết | preparation / resolution |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
