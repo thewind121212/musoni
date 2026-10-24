@@ -413,6 +413,7 @@ a real browser.
 - [x] **Theory chapter 15, Kết cấu phần đệm** (2026-10-24; book 14.1-14.7): texture and chorale texture, arpeggios and the Alberti bass, block chords, afterbeats and offbeats, the son clave and bass lines, review; practice on Tiết tấu L3. `docs/theory/ch15-textures.md`
 - [x] **Theory chapter 21, Hợp âm Napoli** (2026-10-24; book 20.1-20.2, review after 20.3): what the Neapolitan is, from N6 to V, the Neapolitan in music, review. `docs/theory/ch21-neapolitan.md`
 - [x] **Theory chapter 24, Chuyển giọng trùng âm** (2026-10-24; book 23.1-23.3, review after 23.4): what enharmonic modulation is, V7 and Ger+6 as pivots, the diminished seventh as pivot, review. `docs/theory/ch24-enharmonic-modulation.md`
+- [x] **Theory chapter 18, Hợp âm át phụ** (2026-10-24; book 17.1-17.6, review after 17.7): tonicization and secondary dominants, in major and in minor, analysing and writing them, irregular resolutions, review. `docs/theory/ch18-secondary-dominants.md`
 
 ## Theory chapters
 
@@ -437,6 +438,7 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 15. Kết cấu phần đệm | `ch15-textures` | 14.1-14.7 | Done — `docs/theory/ch15-textures.md` |
 | 16. Tạo tương phản giữa các đoạn | `ch16-contrast` | 15.1-15.3 | Done — `docs/theory/ch16-contrast.md` |
 | 17. Bè trầm số | `ch17-figured-bass` | 16.1-16.5, review after 16.6 | Done — `docs/theory/ch17-figured-bass.md` |
+| 18. Hợp âm át phụ | `ch18-secondary-dominants` | 17.1-17.6, review after 17.7 | Done — `docs/theory/ch18-secondary-dominants.md` |
 | 21. Hợp âm Napoli | `ch21-neapolitan` | 20.1-20.2, review after 20.3 | Done — `docs/theory/ch21-neapolitan.md` |
 | 24. Chuyển giọng trùng âm | `ch24-enharmonic-modulation` | 23.1-23.3, review after 23.4 | Done — `docs/theory/ch24-enharmonic-modulation.md` |
 | 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
@@ -444,7 +446,7 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
 | 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi | `ch35-serialism` | 34.1-34.6, review after 34.7 | Done — `docs/theory/ch35-serialism.md` |
 | 36. Âm nhạc tối giản | `ch36-minimalism` | 35, 35.1-35.2, review after 35.3 | Done — `docs/theory/ch36-minimalism.md` |
-| … | | the rest of the book (24 of 36 chapters done) | Porting (one PR per chapter) |
+| … | | the rest of the book (25 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 

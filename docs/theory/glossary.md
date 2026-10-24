@@ -321,6 +321,10 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | bậc 2 hạ (♭2) | lowered second scale degree |
 | chuyển giọng trùng âm | enharmonic modulation |
 | bậc 6 hạ (♭6) | lowered sixth scale degree |
+| hợp âm át phụ (át phụ) | secondary dominant |
+| ly điệu | tonicization |
+| biến âm / nốt biến âm | chromatic / chromatic note |
+| giải quyết (bất thường / đánh lừa) | resolution (irregular / deceptive) |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
