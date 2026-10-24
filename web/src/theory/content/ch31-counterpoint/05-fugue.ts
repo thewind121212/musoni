@@ -11,10 +11,10 @@ export default {
   minutes: 5,
   sources: [{ section: '30.8', url: 'https://musictheory.pugetsound.edu/mt21c/FugueAnalysis.html' }],
   recap: [
-    { vi: 'Fugue gồm các phần trình bày và các đoạn chen', en: 'A fugue has expositions and episodes' },
+    { vi: 'Fugue gồm các phần trình bày và các đoạn xen', en: 'A fugue has expositions and episodes' },
     { vi: 'Phúc đáp là chủ đề ở giọng át, thực hoặc theo giọng', en: 'The answer is the subject in the dominant, real or tonal' },
     { vi: 'Đối đề luôn đi kèm chủ đề', en: 'A countersubject goes with every subject statement' },
-    { vi: 'Đoạn chen tách mảnh và mô tiến chủ đề', en: 'Episodes fragment and sequence the subject' },
+    { vi: 'Đoạn xen tách mảnh và mô tiến chủ đề', en: 'Episodes fragment and sequence the subject' },
   ],
   steps: [
     {
@@ -24,7 +24,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: '**Fugue** (fuga) là một bài đối âm có các **phần trình bày** (exposition) và các **đoạn chen** (episode). Phần trình bày chứa ít nhất một lần nêu trọn **chủ đề** (subject), ý giai điệu chính của bài.',
+            vi: '**Fugue** (fuga) là một bài đối âm có các **phần trình bày** (exposition) và các **đoạn xen** (episode). Phần trình bày chứa ít nhất một lần nêu trọn **chủ đề** (subject), ý giai điệu chính của bài.',
             en: 'A **fugue** is a contrapuntal piece whose form has **expositions** and **episodes**. An exposition holds at least one full statement of the **subject**, the main melodic idea.',
           },
         },
@@ -126,18 +126,18 @@ export default {
         ],
       },
       reason: {
-        vi: 'Đối đề đi cùng chủ đề và phúc đáp mỗi lần chúng xuất hiện; chủ đề ở giọng át là phúc đáp, còn đoạn không có chủ đề là đoạn chen.',
+        vi: 'Đối đề đi cùng chủ đề và phúc đáp mỗi lần chúng xuất hiện; chủ đề ở giọng át là phúc đáp, còn đoạn không có chủ đề là đoạn xen.',
         en: 'A countersubject comes with the subject and answer each time; the subject in the dominant is the answer, and a section without it is an episode.',
       },
     },
     {
       kind: 'explain',
-      title: { vi: 'Đoạn chen và đoạn nối', en: 'Episodes and the bridge' },
+      title: { vi: 'Đoạn xen và đoạn nối', en: 'Episodes and the bridge' },
       blocks: [
         {
           type: 'text',
           text: {
-            vi: 'Đoạn chen không nêu trọn chủ đề mà phát triển chủ đề hay ý khác bằng cách tách **mảnh** (fragment) và **mô tiến** (sequence). Chủ đề, phúc đáp và đối đề đều có thể tách thành motif đầu và motif đuôi.',
+            vi: 'Đoạn xen không nêu trọn chủ đề mà phát triển chủ đề hay ý khác bằng cách tách **mảnh** (fragment) và **mô tiến** (sequence). Chủ đề, phúc đáp và đối đề đều có thể tách thành motif đầu và motif đuôi.',
             en: 'An episode has no full statement of the subject; it develops the subject or other ideas by **fragmentation** and **sequence**. Subjects, answers and countersubjects can be split into head and tail motives.',
           },
         },
@@ -167,13 +167,13 @@ export default {
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: 'Đoạn chen', en: 'An episode' }, correct: true },
+          { text: { vi: 'Đoạn xen', en: 'An episode' }, correct: true },
           { text: { vi: 'Phần trình bày', en: 'An exposition' } },
           { text: { vi: 'Phúc đáp theo giọng', en: 'A tonal answer' } },
         ],
       },
       reason: {
-        vi: 'Phần trình bày luôn có ít nhất một lần nêu trọn chủ đề; đoạn chen thì không, nó phát triển các mảnh.',
+        vi: 'Phần trình bày luôn có ít nhất một lần nêu trọn chủ đề; đoạn xen thì không, nó phát triển các mảnh.',
         en: 'An exposition always holds at least one full statement of the subject; an episode does not, it develops fragments.',
       },
     },

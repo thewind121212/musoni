@@ -106,7 +106,7 @@ New, chosen here and used throughout (rows for the main agent to add):
 | đối âm hoa mỹ | florid counterpoint |
 | phần trình bày | exposition |
 | hòa âm nhỏ | microharmonies |
-| đoạn chen | episode |
+| đoạn xen | episode |
 | đoạn nối | bridge (fugue; not cầu nối, the pop-form bridge) |
 | motif đầu / motif đuôi | head / tail motive |
 
