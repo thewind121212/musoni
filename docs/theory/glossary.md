@@ -353,6 +353,10 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | nhân đôi | doubling |
 | chuyển động song song / ngược chiều / xiên / cùng chiều | parallel / contrary / oblique / similar motion |
 | quãng 8 song song | parallel octaves |
+| quãng 5 song song | parallel fifths |
+| khoảng cách giữa các bè | spacing |
+| âm vực (của một bè) | voice range |
+| kiểu hợp xướng / kiểu piano | chorale style / keyboard style |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
