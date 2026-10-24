@@ -253,5 +253,13 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | mô phỏng | imitation |
 | nốt láy | turn (ornament) |
 
+## Figured bass (app ch 17)
+| Tiếng Việt | English |
+|---|---|
+| bè trầm số / bè trầm | figured bass / bass line |
+| ký hiệu thế đảo | inversion symbol |
+| thế đảo 3 | third inversion |
+| hợp âm 6/4 (kết, lướt, âm giữ, bè trầm giai điệu, rải) | six-four chord (cadential, passing, pedal, melodic bass, arpeggiated) |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
