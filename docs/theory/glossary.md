@@ -261,5 +261,19 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | thế đảo 3 | third inversion |
 | hợp âm 6/4 (kết, lướt, âm giữ, bè trầm giai điệu, rải) | six-four chord (cadential, passing, pedal, melodic bass, arpeggiated) |
 
+## Melodic analysis (app ch 12)
+| Tiếng Việt | English |
+|---|---|
+| phân tích giai điệu | melodic analysis |
+| motif / motif ghép | motive / compound motive |
+| biến đổi giai điệu | melodic alteration |
+| đảo chiều (thực / theo giọng) | inversion, melodic (real / tonal) |
+| đổi quãng / đổi tiết tấu | intervallic change / rhythmic change |
+| tăng trường độ / giảm trường độ | augmentation / diminution |
+| trang trí / nối dài / đi ngược | ornamentation / extension / retrograde |
+| mảnh (mầm) | fragment (germ) |
+| tiết nhạc | subphrase |
+| a phẩy (a′) | a prime |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
