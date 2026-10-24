@@ -13,9 +13,9 @@ export default {
   sources: [{ section: '29.1', url: 'https://musictheory.pugetsound.edu/mt21c/VoiceLeadingSecondaryChords.html' }],
   recap: [
     { vi: 'Nốt bảy của hợp âm phụ đi xuống một bậc', en: 'The seventh of a secondary chord falls by step' },
-    { vi: 'Hợp âm bảy thế gốc nối nhau: xen kẽ xếp đủ và xếp thiếu', en: 'Successive root-position sevenths alternate complete and incomplete voicings' },
+    { vi: 'Hợp âm bảy thế gốc nối nhau: xen kẽ hợp âm đầy đủ và hợp âm thiếu', en: 'Successive root-position sevenths alternate complete and incomplete voicings' },
     { vi: 'Nốt ba được nâng có thể đi xuống nửa cung thành nốt bảy của hợp âm sau', en: 'The raised third can fall a half step to the next chord’s seventh' },
-    { vi: 'vii°7/V đến V: quãng 5 không bằng nhau tốt hơn nhân đôi cảm âm', en: 'vii°7/V to V: unequal fifths beat a doubled leading tone' },
+    { vi: 'vii°7/V đến V: quãng 5 không đều tốt hơn nhân đôi cảm âm', en: 'vii°7/V to V: unequal fifths beat a doubled leading tone' },
   ],
   steps: [
     {
@@ -51,12 +51,12 @@ export default {
     },
     {
       kind: 'explain',
-      title: { vi: 'Xếp đủ và xếp thiếu', en: 'Complete and incomplete voicings' },
+      title: { vi: 'Hợp âm đầy đủ và hợp âm thiếu', en: 'Complete and incomplete voicings' },
       blocks: [
         {
           type: 'text',
           text: {
-            vi: 'Khi các hợp âm bảy thế gốc nối nhau, hãy xen kẽ **xếp đủ** (complete voicing) với **xếp thiếu** (incomplete voicing), tức bỏ nốt năm và **nhân đôi** (doubling) nốt gốc.',
+            vi: 'Khi các hợp âm bảy thế gốc nối nhau, hãy xen kẽ **hợp âm đầy đủ** (complete chord) với **hợp âm thiếu** (incomplete chord), tức bỏ nốt năm và **nhân đôi** (doubling) nốt gốc.',
             en: 'When root-position seventh chords follow one another, alternate a **complete voicing** with an **incomplete voicing**, one that drops the fifth and has the root **doubled**.',
           },
         },
@@ -94,7 +94,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Khi đó hãy viết **quãng 5 không bằng nhau** (unequal fifths), quãng 5 giảm sang quãng 5 đúng, thay vì nhân đôi cảm âm. Ở đây {A}–{Eb} đi đến {G}–{D}.',
+            vi: 'Khi đó hãy viết **quãng 5 không đều** (unequal fifths), quãng 5 giảm sang quãng 5 đúng, thay vì nhân đôi cảm âm. Ở đây {A}–{Eb} đi đến {G}–{D}.',
             en: 'Then write **unequal fifths**, a diminished fifth moving to a perfect fifth, rather than doubling the leading tone. Here {A}–{Eb} moves to {G}–{D}.',
           },
         },
@@ -108,7 +108,7 @@ export default {
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: 'Xuống {G}, chấp nhận quãng 5 không bằng nhau', en: 'Down to {G}, accepting unequal fifths' }, correct: true },
+          { text: { vi: 'Xuống {G}, chấp nhận quãng 5 không đều', en: 'Down to {G}, accepting unequal fifths' }, correct: true },
           { text: { vi: 'Lên {B}, nhân đôi cảm âm', en: 'Up to {B}, doubling the leading tone' } },
           { text: { vi: 'Giữ nguyên {A}', en: 'Hold {A}' } },
         ],

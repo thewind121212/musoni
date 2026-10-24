@@ -76,8 +76,8 @@ Chosen for this chapter, used consistently (rows for the main agent to add):
 | giải quyết | resolution (resolve) |
 | chuyển động ngược chiều | contrary motion |
 | quãng 5 / quãng 8 song song | parallel fifths / octaves |
-| quãng 5 không bằng nhau | unequal fifths (d5 to P5) |
-| xếp đủ / xếp thiếu | complete / incomplete voicing |
+| quãng 5 không đều | unequal fifths (d5 to P5) |
+| hợp âm đầy đủ / hợp âm thiếu | complete / incomplete chord |
 | nốt khuynh hướng | tendency tone |
 | hợp âm át phụ | secondary dominant |
 | hợp âm giảm phụ | secondary leading-tone chord (vii°7/x, viiø7/x) |

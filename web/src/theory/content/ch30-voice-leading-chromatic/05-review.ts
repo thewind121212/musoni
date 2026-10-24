@@ -85,7 +85,7 @@ export default {
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: 'Quãng 5 không bằng nhau', en: 'Unequal fifths' } },
+          { text: { vi: 'Quãng 5 không đều', en: 'Unequal fifths' } },
           { text: { vi: 'Nhân đôi cảm âm', en: 'A doubled leading tone' }, correct: true },
         ],
       },
