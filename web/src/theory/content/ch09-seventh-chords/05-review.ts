@@ -32,7 +32,7 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng Re trưởng, hợp âm này mang bậc La Mã nào?', en: 'In D major, which Roman numeral is this chord?' },
+      prompt: { vi: 'Trong giọng {D} trưởng, hợp âm này mang bậc La Mã nào?', en: 'In {D} major, which Roman numeral is this chord?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'D', notes: 'G4+B4+D5+F#5' }],
       answer: {
         type: 'choice',
@@ -43,8 +43,8 @@ export default {
         ],
       },
       reason: {
-        vi: '{G} là bậc 4 của giọng Re trưởng; {G} {B} {D} là hợp âm ba trưởng và {G} lên {F#} là quãng 7 trưởng.',
-        en: '{G} is degree 4 of D major; {G} {B} {D} is major and {G} up to {F#} is a major 7th.',
+        vi: '{G} là bậc 4 của giọng {D} trưởng; {G} {B} {D} là hợp âm ba trưởng và {G} lên {F#} là quãng 7 trưởng.',
+        en: '{G} is degree 4 of {D} major; {G} {B} {D} is major and {G} up to {F#} is a major 7th.',
       },
     },
     {
@@ -59,7 +59,7 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Đây là V7 trong giọng Do thứ. Nốt nào là cảm âm được nâng lên?', en: 'This is V7 in C minor. Which note is the raised leading tone?' },
+      prompt: { vi: 'Đây là V7 trong giọng {C} thứ. Nốt nào là cảm âm được nâng lên?', en: 'This is V7 in {C} minor. Which note is the raised leading tone?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'Cm', notes: 'G4+Bn4+D5+F5' }],
       answer: { type: 'key', note: 'B' },
       reason: {
@@ -101,18 +101,18 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng Fa trưởng, IV/5 là hợp âm nào?', en: 'In F major, which chord is IV/5?' },
+      prompt: { vi: 'Trong giọng {F} trưởng, IV/5 là hợp âm nào?', en: 'In {F} major, which chord is IV/5?' },
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: '{C}/{Bb}', en: '{C}/{Bb}' } },
-          { text: { vi: '{Bb}/{C}', en: '{Bb}/{C}' }, correct: true },
-          { text: { vi: '{F}/{C}', en: '{F}/{C}' } },
+          { text: { vi: 'C/B♭', en: 'C/B♭' } },
+          { text: { vi: 'B♭/C', en: 'B♭/C' }, correct: true },
+          { text: { vi: 'F/C', en: 'F/C' } },
         ],
       },
       reason: {
-        vi: 'Hợp âm IV của giọng Fa trưởng là {Bb}, và bậc 5 là {C}, nên IV/5 là {Bb}/{C}.',
-        en: 'The IV chord of F major is {Bb} and degree 5 is {C}, so IV/5 is {Bb}/{C}.',
+        vi: 'Hợp âm IV của giọng {F} trưởng có nốt gốc {Bb}, và bậc 5 là {C}, nên IV/5 là B♭/C.',
+        en: 'The IV chord of {F} major has the root {Bb} and degree 5 is {C}, so IV/5 is B♭/C.',
       },
     },
   ],

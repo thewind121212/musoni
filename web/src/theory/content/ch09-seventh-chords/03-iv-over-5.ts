@@ -8,7 +8,7 @@ export default {
   sources: [{ section: '8.2', url: 'https://musictheory.pugetsound.edu/mt21c/IVover5SusChord.html' }],
   recap: [
     { vi: 'IV/5 là hợp âm IV với bậc 5 ở bass', en: 'IV/5 is the IV triad over scale degree 5 in the bass' },
-    { vi: 'Trong giọng Do trưởng, IV/5 là {F}/{G}', en: 'In C major, IV/5 is {F}/{G}' },
+    { vi: 'Trong giọng {C} trưởng, IV/5 là F/G', en: 'In {C} major, IV/5 is F/G' },
     { vi: 'Nó nghe và dẫn về I giống V7', en: 'It sounds like V7 and leads to I like it' },
   ],
   steps: [
@@ -19,8 +19,8 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Lấy hợp âm IV và đặt bậc 5 của giọng ở bass, ta có hợp âm bốn nốt **IV/5**. Trong giọng Do trưởng, đó là {F} {A} {C} trên {G}, viết thành hợp âm gạch chéo {F}/{G}.',
-            en: 'Take the IV chord and put scale degree 5 in the bass: that is the four-note **IV/5** chord. In C major it is {F} {A} {C} over {G}, the slash chord {F}/{G}.',
+            vi: 'Lấy hợp âm IV và đặt bậc 5 của giọng ở bass, ta có hợp âm bốn nốt **IV/5**. Trong giọng {C} trưởng, đó là {F} {A} {C} trên {G}, viết thành hợp âm gạch chéo F/G.',
+            en: 'Take the IV chord and put scale degree 5 in the bass: that is the four-note **IV/5** chord. In {C} major it is {F} {A} {C} over {G}, the slash chord F/G.',
           },
         },
         { type: 'staff', clef: 'bass', notes: 'G2+F3+A3+C4', labels: ['IV/5'] },
@@ -30,11 +30,11 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng Do trưởng, nốt bass của IV/5 là nốt nào?', en: 'In C major, which note is the bass of IV/5?' },
+      prompt: { vi: 'Trong giọng {C} trưởng, nốt bass của IV/5 là nốt nào?', en: 'In {C} major, which note is the bass of IV/5?' },
       answer: { type: 'key', note: 'G' },
       reason: {
-        vi: 'IV/5 đặt bậc 5 ở bass, và bậc 5 của giọng Do trưởng là {G}.',
-        en: 'IV/5 puts degree 5 in the bass, and degree 5 of C major is {G}.',
+        vi: 'IV/5 đặt bậc 5 ở bass, và bậc 5 của giọng {C} trưởng là {G}.',
+        en: 'IV/5 puts degree 5 in the bass, and degree 5 of {C} major is {G}.',
       },
     },
     {
@@ -66,8 +66,8 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Giống V7, IV/5 muốn đi về hợp âm I. Nghe IV/5 rồi I trong giọng Do trưởng.',
-            en: 'Like V7, IV/5 wants to move to the I chord. Hear IV/5 then I in C major.',
+            vi: 'Giống V7, IV/5 muốn đi về hợp âm I. Nghe IV/5 rồi I trong giọng {C} trưởng.',
+            en: 'Like V7, IV/5 wants to move to the I chord. Hear IV/5 then I in {C} major.',
           },
         },
         { type: 'staff', clef: 'bass', notes: 'G2+F3+A3+C4 C3+E3+G3+C4', labels: ['IV/5', 'I'] },
@@ -76,18 +76,18 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng Sol trưởng, IV/5 là hợp âm nào?', en: 'In G major, which chord is IV/5?' },
+      prompt: { vi: 'Trong giọng {G} trưởng, IV/5 là hợp âm nào?', en: 'In {G} major, which chord is IV/5?' },
       answer: {
         type: 'choice',
         choices: [
-          { text: { vi: '{C}/{D}', en: '{C}/{D}' }, correct: true },
-          { text: { vi: '{D}/{C}', en: '{D}/{C}' } },
-          { text: { vi: '{G}/{D}', en: '{G}/{D}' } },
+          { text: { vi: 'C/D', en: 'C/D' }, correct: true },
+          { text: { vi: 'D/C', en: 'D/C' } },
+          { text: { vi: 'G/D', en: 'G/D' } },
         ],
       },
       reason: {
-        vi: 'Hợp âm IV của giọng Sol trưởng là {C}, và bậc 5 là {D}, nên IV/5 là {C}/{D}.',
-        en: 'The IV chord of G major is {C} and degree 5 is {D}, so IV/5 is {C}/{D}.',
+        vi: 'Hợp âm IV của giọng {G} trưởng có nốt gốc {C}, và bậc 5 là {D}, nên IV/5 là C/D.',
+        en: 'The IV chord of {G} major has the root {C} and degree 5 is {D}, so IV/5 is C/D.',
       },
     },
   ],

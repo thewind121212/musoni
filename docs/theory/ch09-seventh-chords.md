@@ -76,9 +76,11 @@ agent to add):
   the book's 8.1-8.3 never explain seventh-chord inversions, so a check on them
   would test something the chapter did not teach.
 - Alternative symbols (Δ7, M7 as a lead-sheet suffix, m7♭5, -7): the lessons
-  use maj7, 7, m7, ø7 and °7 only. Lead-sheet symbols are taught as suffixes
-  (labels on the staff), because a root written as a letter would ignore the
-  reader's naming; the rule is never to write a note name as a word.
+  use maj7, 7, m7, ø7 and °7 only, as suffixes (labels on the staff). Following
+  chapter 7, a chord symbol is written in plain letters as the chords drill
+  prints it (F/G, B♭/C), while note and key names around it are pitch tokens
+  ("giọng {C} trưởng" / "{C} major"); text that names the notes themselves
+  ("{F} {A} {C} over {G}") keeps the tokens.
 - Seventh chords on augmented and minor-major triads: the book defers them to
   later chapters.
 - Ear checks: no drill or check type asks a reader to tell the five types

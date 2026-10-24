@@ -42,8 +42,8 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Dựng một hợp âm bảy trên mỗi bậc, chỉ dùng nốt của giọng, ta có bảy hợp âm bảy thuận giọng. Đây là giọng Do trưởng.',
-            en: 'Build a seventh chord on every scale degree, using only the key’s notes, and you get the seven diatonic seventh chords. Here they are in C major.',
+            vi: 'Dựng một hợp âm bảy trên mỗi bậc, chỉ dùng nốt của giọng, ta có bảy hợp âm bảy thuận giọng. Đây là giọng {C} trưởng.',
+            en: 'Build a seventh chord on every scale degree, using only the key’s notes, and you get the seven diatonic seventh chords. Here they are in {C} major.',
           },
         },
         {
@@ -66,7 +66,7 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng Sol trưởng, hợp âm này mang bậc La Mã nào?', en: 'In G major, which Roman numeral is this chord?' },
+      prompt: { vi: 'Trong giọng {G} trưởng, hợp âm này mang bậc La Mã nào?', en: 'In {G} major, which Roman numeral is this chord?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'G', notes: 'F#4+A4+C5+E5' }],
       answer: {
         type: 'choice',
@@ -77,8 +77,8 @@ export default {
         ],
       },
       reason: {
-        vi: '{F#} là bậc 7 của giọng Sol trưởng; {F#} {A} {C} là hợp âm ba giảm và {F#} lên {E} là quãng 7 thứ.',
-        en: '{F#} is degree 7 of G major; {F#} {A} {C} is diminished and {F#} up to {E} is a minor 7th.',
+        vi: '{F#} là bậc 7 của giọng {G} trưởng; {F#} {A} {C} là hợp âm ba giảm và {F#} lên {E} là quãng 7 thứ.',
+        en: '{F#} is degree 7 of {G} major; {F#} {A} {C} is diminished and {F#} up to {E} is a minor 7th.',
       },
     },
     {
@@ -88,8 +88,8 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Giọng thứ dùng cảm âm nâng lên của gam thứ hòa âm cho V7 và vii°7, như với hợp âm ba. Đây là giọng La thứ, với {G#}.',
-            en: 'Minor keys use the raised leading tone of the harmonic minor scale for V7 and vii°7, as with triads. Here is A minor, with {G#}.',
+            vi: 'Giọng thứ dùng cảm âm nâng lên của gam thứ hòa âm cho V7 và vii°7, như với hợp âm ba. Đây là giọng {A} thứ, với {G#}.',
+            en: 'Minor keys use the raised leading tone of the harmonic minor scale for V7 and vii°7, as with triads. Here is {A} minor, with {G#}.',
           },
         },
         {
@@ -105,7 +105,7 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng La thứ, hợp âm này mang bậc La Mã nào?', en: 'In A minor, which Roman numeral is this chord?' },
+      prompt: { vi: 'Trong giọng {A} thứ, hợp âm này mang bậc La Mã nào?', en: 'In {A} minor, which Roman numeral is this chord?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'Am', notes: 'E4+G#4+B4+D5' }],
       answer: {
         type: 'choice',
@@ -122,11 +122,11 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Trong giọng La thứ, nốt gốc của vii°7 là nốt nào?', en: 'In A minor, what is the root of vii°7?' },
+      prompt: { vi: 'Trong giọng {A} thứ, nốt gốc của vii°7 là nốt nào?', en: 'In {A} minor, what is the root of vii°7?' },
       answer: { type: 'key', note: 'G#' },
       reason: {
-        vi: 'vii°7 dựng trên cảm âm nâng lên, và cảm âm của giọng La thứ là {G#}.',
-        en: 'vii°7 is built on the raised leading tone, and the leading tone of A minor is {G#}.',
+        vi: 'vii°7 dựng trên cảm âm nâng lên, và cảm âm của giọng {A} thứ là {G#}.',
+        en: 'vii°7 is built on the raised leading tone, and the leading tone of {A} minor is {G#}.',
       },
     },
   ],
