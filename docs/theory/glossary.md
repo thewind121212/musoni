@@ -216,5 +216,15 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | ma trận mười hai âm | twelve-tone matrix |
 | gối đầu | overlap (elision of row forms) |
 
+## Minimalism (app ch 36)
+| Tiếng Việt | English |
+|---|---|
+| âm nhạc tối giản | minimalism |
+| mẫu | pattern |
+| nhạc quá trình | process music |
+| quá trình cộng thêm / bớt dần | additive / subtractive process |
+| dịch pha / đồng pha / lệch pha | phase shifting / in phase / out of phase |
+| bè | voice (part) |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
