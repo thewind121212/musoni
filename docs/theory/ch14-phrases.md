@@ -100,7 +100,7 @@ New terms (not yet in `glossary.md`), with the choice made:
 
 | Tiếng Việt | English | Note |
 |---|---|---|
-| mô-típ | motive | book ch 11 (app ch 12) may fix another word; align then |
+| motif | motive | as in app ch 12 |
 | câu trình bày–phát triển | sentence | "câu" alone is the glossary's phrase, so a descriptive name |
 | kết trọn / kết chưa trọn | conclusive / inconclusive cadence | |
 | đoạn nhạc | period | standard Vietnamese form term |

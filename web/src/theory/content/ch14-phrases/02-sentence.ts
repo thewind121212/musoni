@@ -23,7 +23,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: '**Câu trình bày–phát triển** (sentence) là câu nhạc có cách dựng giai điệu riêng. Một ý nhạc ngắn (**mô-típ**, motive) được lặp lại hoặc mô tiến, rồi phần sau đi tiếp đến chỗ kết.',
+            vi: '**Câu trình bày–phát triển** (sentence) là câu nhạc có cách dựng giai điệu riêng. Một ý nhạc ngắn (**motif**, motive) được lặp lại hoặc mô tiến, rồi phần sau đi tiếp đến chỗ kết.',
             en: 'A **sentence** is a phrase with a specific melodic construction. A short melodic idea (a **motive**) is repeated or sequenced, then more material leads on to a cadence.',
           },
         },
@@ -79,7 +79,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Ô 3 cắt nhỏ ý nhạc thành một mô-típ hai nốt và lặp nó. Ô 4 dẫn đến kết lửng.',
+            vi: 'Ô 3 cắt nhỏ ý nhạc thành một motif hai nốt và lặp nó. Ô 4 dẫn đến kết lửng.',
             en: 'Measure 3 breaks the idea into a two-note motive and repeats it. Measure 4 leads to a half cadence.',
           },
         },
