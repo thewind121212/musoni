@@ -7,7 +7,7 @@ brackets: **nửa cung** (half step). English follows the book's American usage.
 Note names are never written into lesson text as words. Write a pitch token
 (`{G4}`, `{G}`) and the app prints it in the reader's naming (Sol / G).
 
-## Pitch and the staff (ch 1)
+## Pitch and the staff (app ch 1)
 | Tiếng Việt | English |
 |---|---|
 | cao độ | pitch |
@@ -29,7 +29,7 @@ Note names are never written into lesson text as words. Write a pitch token
 | ký hiệu quãng tám (Do4) | octave register (C4) |
 | phím trắng / phím đen | white key / black key |
 
-## Accidentals and steps (ch 1–2)
+## Accidentals and steps (app ch 2)
 | Tiếng Việt | English |
 |---|---|
 | dấu hóa | accidental |
@@ -41,7 +41,7 @@ Note names are never written into lesson text as words. Write a pitch token
 | nửa cung | half step |
 | nguyên cung | whole step |
 
-## Scales and keys (ch 2–3)
+## Scales and keys (app ch 3-4)
 | Tiếng Việt | English |
 |---|---|
 | gam | scale |
@@ -68,10 +68,7 @@ Note names are never written into lesson text as words. Write a pitch token
 
 Trap: in Vietnamese "giọng song song" means **relative**, not parallel.
 
-Trap (rhythm): older Vietnamese books use "nhịp đơn / nhịp phức" for one strong beat against
-several (so 4/4 is "phức"). Here they mean the American simple / compound, as chapter 5 defines them.
-
-## Rhythm (ch 4)
+## Rhythm (app ch 5)
 | Tiếng Việt | English |
 |---|---|
 | trường độ | duration |
@@ -98,7 +95,10 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | nghịch phách | syncopation |
 | tiết tấu | rhythm |
 
-## Intervals (ch 5)
+Trap (rhythm): older Vietnamese books use "nhịp đơn / nhịp phức" for one strong beat against
+several (so 4/4 is "phức"). Here they mean the American simple / compound, as chapter 5 defines them.
+
+## Intervals (app ch 6)
 | Tiếng Việt | English |
 |---|---|
 | quãng | interval |
@@ -112,7 +112,7 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | quãng ba cung | tritone |
 | quãng trùng âm | enharmonic intervals |
 
-## Chords (ch 6–7)
+## Chords (app ch 7-8)
 | Tiếng Việt | English |
 |---|---|
 | hợp âm | chord |
@@ -162,6 +162,172 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | chức năng chủ / kéo dài chủ / tiền át / át | tonic / tonic prolongation / pre-dominant / dominant function |
 | sơ đồ chức năng | harmonic flowchart |
 | xoay vòng | rotation (of a progression) |
+
+## Non-chord tones (app ch 11)
+| Tiếng Việt | English |
+|---|---|
+| nốt ngoài hợp âm / nốt trong hợp âm | non-chord tone / chord tone |
+| cùng nốt / liền bậc / nhảy | same note / step / leap |
+| nốt lướt | passing tone |
+| nốt thêu (trên / dưới / kép / khuyết) | neighbor tone (upper / lower / double / incomplete) |
+| có nhấn / không nhấn | accented / unaccented |
+| biến âm | chromatic |
+| nốt dựa / nốt thoát | appoggiatura / escape tone |
+| nốt đón trước | anticipation |
+| nốt giữ (kép) | (double) pedal point |
+| nốt treo / nốt chậm | suspension / retardation |
+| nốt chuẩn bị / nốt giải quyết | preparation / resolution |
+
+## Melodic analysis (app ch 12)
+| Tiếng Việt | English |
+|---|---|
+| phân tích giai điệu | melodic analysis |
+| motif / motif ghép | motive / compound motive |
+| biến đổi giai điệu | melodic alteration |
+| đảo chiều (thực / theo giọng) | inversion, melodic (real / tonal) |
+| đổi quãng / đổi tiết tấu | intervallic change / rhythmic change |
+| tăng trường độ / giảm trường độ | augmentation / diminution |
+| trang trí / nối dài / đi ngược | ornamentation / extension / retrograde |
+| mảnh (mầm) | fragment (germ) |
+| tiết nhạc | subphrase |
+| a phẩy (a′) | a prime |
+
+## Form (app ch 13, 25-26)
+| Tiếng Việt | English |
+|---|---|
+| hình thức / đoạn | form / section |
+| phiên khúc / điệp khúc / câu hook | verse / chorus / hook |
+| tiền điệp khúc / hậu điệp khúc | pre-chorus / post-chorus |
+| dạo đầu / dạo giữa / đoạn solo | introduction / interlude / solo |
+| cầu nối / tám ô giữa | bridge / middle eight |
+| hình thức AABA / ABAC | AABA / ABAC form |
+| blues 12 ô nhịp | 12-bar blues |
+| đoạn khép kín / đoạn mở | harmonically closed / open section |
+| hình thức hai đoạn / hình thức ba đoạn (ba đoạn phức) | binary / ternary form (compound ternary) |
+| khép kín / liên tục | sectional / continuous |
+| hai đoạn cân bằng / hai đoạn tái hiện / hai đoạn đơn giản | balanced / rounded / simple binary |
+| nguyên tắc hai đoạn | binary principle |
+| dấu nhắc lại / nhắc lại cả hai đoạn | repeat sign / two-reprise |
+| nốt giữ át | dominant pedal |
+| tiểu phẩm | character piece |
+| hình thức sonata (hình thức chương đầu) | sonata form (first-movement form) |
+| phần trình bày / phần phát triển / phần tái hiện | exposition / development / recapitulation |
+| chủ đề chính / chủ đề phụ / chủ đề kết | primary / secondary / closing theme |
+| đoạn chuyển trở về | retransition |
+| hình thức sonatina / nguyên tắc sonata / sonata một chủ đề | sonatina form / sonata principle / monothematic sonata |
+| chức năng cấu trúc (trình bày, chuyển tiếp, phát triển, kết thúc) | structural function (expository, transitional, developmental, terminative) |
+| tính chất rondo | rondo character |
+| chương (tác phẩm nhiều chương) | movement (multimovement work) |
+| rondo: đoạn điệp / đoạn xen | rondo: refrain / episode |
+| rondo bảy phần / sonata-rondo | seven-part rondo / sonata rondo |
+
+## Phrases (app ch 14)
+| Tiếng Việt | English |
+|---|---|
+| câu trình bày–phát triển | sentence |
+| kết trọn / kết chưa trọn | conclusive / inconclusive cadence |
+| đoạn nhạc (song song / tương phản) | period (parallel / contrasting) |
+| câu hỏi / câu đáp | antecedent / consequent |
+| câu lặp lại / đoạn nhạc lặp lại | repeated phrase / repeated period |
+| đoạn nhạc bất đối xứng / đoạn nhạc kép | asymmetrical / double period |
+| nhóm câu / chuỗi câu | phrase group / phrase chain |
+| gối câu | elision |
+
+## Textures (app ch 15)
+| Tiếng Việt | English |
+|---|---|
+| phần đệm | accompaniment |
+| kết cấu hợp xướng / đồng tiết tấu | chorale texture / homorhythmic |
+| hợp âm rải / bass Alberti | arpeggio / Alberti bass |
+| đường bass | bass line |
+| hợp âm khối | block chords |
+| đầu phách / nửa sau phách | downbeat / upbeat |
+| hợp âm sau phách / hợp âm phách lệch | afterbeats / offbeats (phách lệch; nghịch phách is syncopation) |
+| clave son 3–2 / 2–3, tiết tấu 3+3+2 | 3–2 / 2–3 son clave, 3+3+2 rhythm |
+
+## Contrast (app ch 16)
+| Tiếng Việt | English |
+|---|---|
+| yếu tố âm nhạc | elements of music |
+| giai điệu / hòa âm | melody / harmony |
+| âm hình lặp | ostinato |
+| âm sắc / kết cấu | timbre / texture |
+| cách phát âm: ngắt tiếng / liền tiếng | articulation: staccato / legato |
+| cường độ | dynamics |
+| âm khu | register (not âm vực, which is range) |
+| hình thức rondo năm phần | five-part rondo |
+| đoạn chuyển | transition |
+| mô phỏng | imitation |
+| nốt láy | turn (ornament) |
+
+## Figured bass (app ch 17)
+| Tiếng Việt | English |
+|---|---|
+| bè trầm số / bè trầm | figured bass / bass line |
+| ký hiệu thế đảo | inversion symbol |
+| thế đảo 3 | third inversion |
+| hợp âm 6/4 (kết, lướt, âm giữ, bè trầm giai điệu, rải) | six-four chord (cadential, passing, pedal, melodic bass, arpeggiated) |
+
+## Chromatic harmony (app ch 18-24)
+| Tiếng Việt | English |
+|---|---|
+| hợp âm Napoli (N, N6) | Neapolitan chord |
+| bậc 2 hạ (♭2) | lowered second scale degree |
+| chuyển giọng trùng âm | enharmonic modulation |
+| bậc 6 hạ (♭6) | lowered sixth scale degree |
+| hợp âm át phụ (át phụ) | secondary dominant |
+| ly điệu | tonicization |
+| biến âm / nốt biến âm | chromatic / chromatic note |
+| giải quyết (bất thường / đánh lừa) | resolution (irregular / deceptive) |
+| hợp âm giảm phụ | secondary diminished chord |
+| pha trộn điệu thức | mode mixture |
+| hợp âm mượn / bậc mượn | borrowed chord / borrowed scale degree |
+| quãng ba Picardy | Picardy 3rd |
+| hợp âm sáu tăng (Ý / Pháp / Đức / Đức trùng âm) | augmented sixth chord (Italian / French / German / enharmonic German) |
+| bậc ♯4 | raised fourth scale degree |
+| hòa âm biến âm / hợp âm tiền át biến âm | chromatic harmony / chromatic pre-dominant |
+| đường bass nửa cung đi xuống | descending chromatic bass line |
+| chuyển giọng | modulation |
+| hợp âm trụ (thuận giọng / biến âm) | pivot chord (diatonic / chromatic) |
+| giọng gần / giọng xa | closely related / foreign key |
+| chuyển giọng trực tiếp / qua nốt chung / bằng mô tiến | direct / common-tone / sequential modulation |
+| trung âm biến âm | chromatic mediant |
+
+## Voice leading (app ch 27-30)
+| Tiếng Việt | English |
+|---|---|
+| quãng 5 không đều | unequal fifths |
+| hợp âm đầy đủ / hợp âm thiếu | complete / incomplete chord |
+| nốt chung | common tone |
+| giải quyết chặt / giải quyết tự do | strict / free resolution |
+| nốt khuynh hướng | tendency tone |
+| phối hòa âm | harmonize (a melody) |
+| dẫn bè | voice leading |
+| bè soprano / alto / tenor / bass | soprano / alto / tenor / bass |
+| nhân đôi | doubling |
+| chuyển động song song / ngược chiều / xiên / cùng chiều | parallel / contrary / oblique / similar motion |
+| quãng 8 song song | parallel octaves |
+| quãng 5 song song | parallel fifths |
+| khoảng cách giữa các bè | spacing |
+| âm vực (của một bè) | voice range |
+| kiểu hợp xướng / kiểu piano | chorale style / keyboard style |
+| bài hợp xướng | chorale |
+| quãng thuận | consonant interval |
+| (đi) so le | staggered (rhythmically) |
+
+## Counterpoint (app ch 31)
+| Tiếng Việt | English |
+|---|---|
+| đối âm (loài 1–5) / đối âm hoa mỹ | counterpoint (first to fifth species) / florid counterpoint |
+| giai điệu định sẵn | cantus firmus |
+| kết cấu đối âm / kết cấu chủ điệu | contrapuntal / homophonic texture |
+| thuận âm (hoàn toàn / không hoàn toàn) / nghịch âm | consonance (perfect / imperfect) / dissonance |
+| quãng 5 ẩn / quãng 8 ẩn | direct fifths / octaves |
+| hình cambiata | cambiata |
+| invention / fugue (fuga) | invention / fugue |
+| chủ đề / phúc đáp (thực / theo giọng) / đối đề | subject / answer (real / tonal) / countersubject |
+| đoạn xen / đoạn nối | episode / bridge (fugue) |
+| motif đầu / motif đuôi | head / tail motive |
 
 ## Jazz (app ch 32)
 | Tiếng Việt | English |
@@ -225,172 +391,6 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | quá trình cộng thêm / bớt dần | additive / subtractive process |
 | dịch pha / đồng pha / lệch pha | phase shifting / in phase / out of phase |
 | bè | voice (part) |
-
-## Form (app ch 13)
-| Tiếng Việt | English |
-|---|---|
-| hình thức / đoạn | form / section |
-| phiên khúc / điệp khúc / câu hook | verse / chorus / hook |
-| tiền điệp khúc / hậu điệp khúc | pre-chorus / post-chorus |
-| dạo đầu / dạo giữa / đoạn solo | introduction / interlude / solo |
-| cầu nối / tám ô giữa | bridge / middle eight |
-| hình thức AABA / ABAC | AABA / ABAC form |
-| blues 12 ô nhịp | 12-bar blues |
-| đoạn khép kín / đoạn mở | harmonically closed / open section |
-| hình thức hai đoạn / hình thức ba đoạn (ba đoạn phức) | binary / ternary form (compound ternary) |
-| khép kín / liên tục | sectional / continuous |
-| hai đoạn cân bằng / hai đoạn tái hiện / hai đoạn đơn giản | balanced / rounded / simple binary |
-| nguyên tắc hai đoạn | binary principle |
-| dấu nhắc lại / nhắc lại cả hai đoạn | repeat sign / two-reprise |
-| nốt giữ át | dominant pedal |
-| tiểu phẩm | character piece |
-| hình thức sonata (hình thức chương đầu) | sonata form (first-movement form) |
-| phần trình bày / phần phát triển / phần tái hiện | exposition / development / recapitulation |
-| chủ đề chính / chủ đề phụ / chủ đề kết | primary / secondary / closing theme |
-| đoạn chuyển trở về | retransition |
-| hình thức sonatina / nguyên tắc sonata / sonata một chủ đề | sonatina form / sonata principle / monothematic sonata |
-| chức năng cấu trúc (trình bày, chuyển tiếp, phát triển, kết thúc) | structural function (expository, transitional, developmental, terminative) |
-| tính chất rondo | rondo character |
-| chương (tác phẩm nhiều chương) | movement (multimovement work) |
-| rondo: đoạn điệp / đoạn xen | rondo: refrain / episode |
-| rondo bảy phần / sonata-rondo | seven-part rondo / sonata rondo |
-
-## Contrast (app ch 16)
-| Tiếng Việt | English |
-|---|---|
-| yếu tố âm nhạc | elements of music |
-| giai điệu / hòa âm | melody / harmony |
-| âm hình lặp | ostinato |
-| âm sắc / kết cấu | timbre / texture |
-| cách phát âm: ngắt tiếng / liền tiếng | articulation: staccato / legato |
-| cường độ | dynamics |
-| âm khu | register (not âm vực, which is range) |
-| hình thức rondo năm phần | five-part rondo |
-| đoạn chuyển | transition |
-| mô phỏng | imitation |
-| nốt láy | turn (ornament) |
-
-## Figured bass (app ch 17)
-| Tiếng Việt | English |
-|---|---|
-| bè trầm số / bè trầm | figured bass / bass line |
-| ký hiệu thế đảo | inversion symbol |
-| thế đảo 3 | third inversion |
-| hợp âm 6/4 (kết, lướt, âm giữ, bè trầm giai điệu, rải) | six-four chord (cadential, passing, pedal, melodic bass, arpeggiated) |
-
-## Melodic analysis (app ch 12)
-| Tiếng Việt | English |
-|---|---|
-| phân tích giai điệu | melodic analysis |
-| motif / motif ghép | motive / compound motive |
-| biến đổi giai điệu | melodic alteration |
-| đảo chiều (thực / theo giọng) | inversion, melodic (real / tonal) |
-| đổi quãng / đổi tiết tấu | intervallic change / rhythmic change |
-| tăng trường độ / giảm trường độ | augmentation / diminution |
-| trang trí / nối dài / đi ngược | ornamentation / extension / retrograde |
-| mảnh (mầm) | fragment (germ) |
-| tiết nhạc | subphrase |
-| a phẩy (a′) | a prime |
-
-## Phrases (app ch 14)
-| Tiếng Việt | English |
-|---|---|
-| câu trình bày–phát triển | sentence |
-| kết trọn / kết chưa trọn | conclusive / inconclusive cadence |
-| đoạn nhạc (song song / tương phản) | period (parallel / contrasting) |
-| câu hỏi / câu đáp | antecedent / consequent |
-| câu lặp lại / đoạn nhạc lặp lại | repeated phrase / repeated period |
-| đoạn nhạc bất đối xứng / đoạn nhạc kép | asymmetrical / double period |
-| nhóm câu / chuỗi câu | phrase group / phrase chain |
-| gối câu | elision |
-
-## Non-chord tones (app ch 11)
-| Tiếng Việt | English |
-|---|---|
-| nốt ngoài hợp âm / nốt trong hợp âm | non-chord tone / chord tone |
-| cùng nốt / liền bậc / nhảy | same note / step / leap |
-| nốt lướt | passing tone |
-| nốt thêu (trên / dưới / kép / khuyết) | neighbor tone (upper / lower / double / incomplete) |
-| có nhấn / không nhấn | accented / unaccented |
-| biến âm | chromatic |
-| nốt dựa / nốt thoát | appoggiatura / escape tone |
-| nốt đón trước | anticipation |
-| nốt giữ (kép) | (double) pedal point |
-| nốt treo / nốt chậm | suspension / retardation |
-| nốt chuẩn bị / nốt giải quyết | preparation / resolution |
-
-## Textures (app ch 15)
-| Tiếng Việt | English |
-|---|---|
-| phần đệm | accompaniment |
-| kết cấu hợp xướng / đồng tiết tấu | chorale texture / homorhythmic |
-| hợp âm rải / bass Alberti | arpeggio / Alberti bass |
-| đường bass | bass line |
-| hợp âm khối | block chords |
-| đầu phách / nửa sau phách | downbeat / upbeat |
-| hợp âm sau phách / hợp âm phách lệch | afterbeats / offbeats (phách lệch; nghịch phách is syncopation) |
-| clave son 3–2 / 2–3, tiết tấu 3+3+2 | 3–2 / 2–3 son clave, 3+3+2 rhythm |
-
-## Chromatic harmony (app ch 18-24)
-| Tiếng Việt | English |
-|---|---|
-| hợp âm Napoli (N, N6) | Neapolitan chord |
-| bậc 2 hạ (♭2) | lowered second scale degree |
-| chuyển giọng trùng âm | enharmonic modulation |
-| bậc 6 hạ (♭6) | lowered sixth scale degree |
-| hợp âm át phụ (át phụ) | secondary dominant |
-| ly điệu | tonicization |
-| biến âm / nốt biến âm | chromatic / chromatic note |
-| giải quyết (bất thường / đánh lừa) | resolution (irregular / deceptive) |
-| hợp âm giảm phụ | secondary diminished chord |
-| pha trộn điệu thức | mode mixture |
-| hợp âm mượn / bậc mượn | borrowed chord / borrowed scale degree |
-| quãng ba Picardy | Picardy 3rd |
-| hợp âm sáu tăng (Ý / Pháp / Đức / Đức trùng âm) | augmented sixth chord (Italian / French / German / enharmonic German) |
-| bậc ♯4 | raised fourth scale degree |
-| hòa âm biến âm / hợp âm tiền át biến âm | chromatic harmony / chromatic pre-dominant |
-| đường bass nửa cung đi xuống | descending chromatic bass line |
-| chuyển giọng | modulation |
-| hợp âm trụ (thuận giọng / biến âm) | pivot chord (diatonic / chromatic) |
-| giọng gần / giọng xa | closely related / foreign key |
-| chuyển giọng trực tiếp / qua nốt chung / bằng mô tiến | direct / common-tone / sequential modulation |
-| trung âm biến âm | chromatic mediant |
-
-## Voice leading (app ch 27-30)
-| Tiếng Việt | English |
-|---|---|
-| quãng 5 không đều | unequal fifths |
-| hợp âm đầy đủ / hợp âm thiếu | complete / incomplete chord |
-| nốt chung | common tone |
-| giải quyết chặt / giải quyết tự do | strict / free resolution |
-| nốt khuynh hướng | tendency tone |
-| phối hòa âm | harmonize (a melody) |
-| dẫn bè | voice leading |
-| bè soprano / alto / tenor / bass | soprano / alto / tenor / bass |
-| nhân đôi | doubling |
-| chuyển động song song / ngược chiều / xiên / cùng chiều | parallel / contrary / oblique / similar motion |
-| quãng 8 song song | parallel octaves |
-| quãng 5 song song | parallel fifths |
-| khoảng cách giữa các bè | spacing |
-| âm vực (của một bè) | voice range |
-| kiểu hợp xướng / kiểu piano | chorale style / keyboard style |
-| bài hợp xướng | chorale |
-| quãng thuận | consonant interval |
-| (đi) so le | staggered (rhythmically) |
-
-## Counterpoint (app ch 31)
-| Tiếng Việt | English |
-|---|---|
-| đối âm (loài 1–5) / đối âm hoa mỹ | counterpoint (first to fifth species) / florid counterpoint |
-| giai điệu định sẵn | cantus firmus |
-| kết cấu đối âm / kết cấu chủ điệu | contrapuntal / homophonic texture |
-| thuận âm (hoàn toàn / không hoàn toàn) / nghịch âm | consonance (perfect / imperfect) / dissonance |
-| quãng 5 ẩn / quãng 8 ẩn | direct fifths / octaves |
-| hình cambiata | cambiata |
-| invention / fugue (fuga) | invention / fugue |
-| chủ đề / phúc đáp (thực / theo giọng) / đối đề | subject / answer (real / tonal) / countersubject |
-| đoạn xen / đoạn nối | episode / bridge (fugue) |
-| motif đầu / motif đuôi | head / tail motive |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.

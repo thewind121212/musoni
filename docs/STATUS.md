@@ -14,7 +14,7 @@ review of finished lessons, and two tabs (Luyện, Học). Later: more drills, l
 
 ## Current Phase
 
-**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill, theory lessons (chapter 1 of 9), the drill platform and Ôn tập** (web only, no login, localStorage progress; pending human browser verification)
+**Phase 1 done; Phase 2 started with the Nghe & Đàn ear drill, theory lessons (the whole book: 36 chapters), the drill platform and Ôn tập** (web only, no login, localStorage progress; pending human browser verification)
 
 ## State
 
@@ -33,8 +33,9 @@ plays a cadence and one note and has the reader find it on the same piano pad, t
 reveals it on the staff (relative pitch, four levels, the key moves from L2).
 **Theory lessons** (`/theory`) teach in 3-5 minute bilingual steps (read, see on the staff, hear,
 check on the piano pad) and end on a practice link that starts the matching drill with a
-preset; lesson time counts toward the day's minutes and the streak. Chapter 1 is in; chapters
-2-9 are ported one PR each against `docs/theory/port-guide.md`. Every drill is one
+preset; lesson time counts toward the day's minutes and the streak. All 36 chapters are in: the
+whole of the source book (35 chapters; book chapters 1-2 became app chapters 1-3), ported
+one PR each against `docs/theory/port-guide.md`. Every drill is one
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings and colour; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
@@ -401,6 +402,10 @@ a real browser.
 - [x] **Theory chapter 35, Kỹ thuật mười hai âm** (2026-10-24; book 34): rows and row forms (P, I, R, RI),
       transposition numbers, determining and writing row forms, the matrix, rows in music, non-twelve-tone
       serialism, review. All on our own row (48 forms checked distinct by script). `docs/theory/ch35-serialism.md`
+- [x] **The whole theory book is ported** (2026-10-24): 36 app chapters from book chapters 1-35,
+      by agents in four waves with every chapter reviewed (answers checked, note names as tokens,
+      chord symbols in letters, no copyrighted music, one Vietnamese term per concept across
+      chapters) and swept in Chrome at 375 px. Glossary sections now follow the app chapters.
 - [x] **Theory chapter 36, Âm nhạc tối giản** (2026-10-24; book 35, the last chapter): what minimalism is,
       additive and subtractive process, phase shifting, review. All patterns our own.
       `docs/theory/ch36-minimalism.md`
@@ -480,9 +485,9 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 - Tiết tấu by hand on a real phone and a laptop: click sound and its timing, the
   audio wake on iOS, latency calibration, whether the tolerances feel fair, the 6/8
   tempo (♩. = tempo × 0.75), time running out mid-measure
-- The rest of the theory book: book chapters 10-35 as app chapters 11-36, one PR each (see the
-  table above); a human pass over the chapters' sound (the "Nghe" buttons) and chapter 1's
-  sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
+- A human pass over the 36 theory chapters on a phone: their sound (the "Nghe" buttons), the
+  lesson-to-drill-and-back flow, and a musician's read of the Vietnamese wording. Every step was
+  clicked through at 375 px in Chrome (no overflow, no console errors), but nobody has listened yet
 - Four drills on the new registry, built in parallel: key signatures, chords, intervals
   and rhythm (all done, above; all on Luyện from the start since 2026-10-23; their
   lessons are chapters 3-8)
