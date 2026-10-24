@@ -55,6 +55,7 @@ screen links them.
 | 8. Bậc La Mã và kết / Roman numerals and cadences | `ch08-roman-cadences` | 7.1 Roman numeral chord symbols, 7.2 Diatonic chords in major, 7.3 Diatonic chords in minor, 7.4 Cadences; review after 7.5 Practice exercises |
 | 9. Hợp âm bảy / Seventh chords | `ch09-seventh-chords` | 8.1 Introduction to seventh chords, 8.2 The IV/5 "sus" chord, 8.3 Roman numerals of diatonic seventh chords; review after 8.4 Practice exercises |
 | 10. Tiến trình hòa âm và chức năng / Harmonic progression and function | `ch10-harmonic-progression` | 9.1 The circle of fifths progression, 9.2 Harmonic rhythm, 9.3 Shorter progressions from the circle of fifths, 9.4 Harmonic function, 9.5 Exceptions created by harmonic sequences, 9.6 The subtonic VII chord in popular music, 9.7 The best-seller progression, 9.8 The i–VII–VI–VII progression; review after 9.9 Practice exercises |
+| 32. Nhập môn hòa âm jazz / Introduction to jazz theory | `ch32-jazz` | 31.1-31.11 (jazz chords, symbols, altered dominants, voicings, standard progressions, jazz scales, chord-scale relationships, the bebop scale); review after 31.12 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).

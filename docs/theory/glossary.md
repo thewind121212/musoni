@@ -163,5 +163,21 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | sơ đồ chức năng | harmonic flowchart |
 | xoay vòng | rotation (of a progression) |
 
+## Jazz (app ch 32)
+| Tiếng Việt | English |
+|---|---|
+| hợp âm chín | ninth chord |
+| nốt chín / nốt 11 / nốt 13 | ninth / eleventh / thirteenth |
+| hợp âm bảy thứ-trưởng | minor-major seventh chord |
+| hợp âm át biến âm | altered dominant |
+| nốt mở rộng | upper extension / upper structure |
+| nốt dẫn hướng | guide tones |
+| xếp hẹp / xếp rộng | close / spread voicing |
+| vòng quay về | turnaround |
+| thay thế quãng ba cung | tritone substitution |
+| gam blues / nốt blue | blues scale / blue note |
+| gam bebop | bebop scale |
+| quan hệ hợp âm–gam | chord-scale relationship |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.

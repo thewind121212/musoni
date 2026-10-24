@@ -390,6 +390,9 @@ a real browser.
       `C4@b+E4` marks one member). Staff labels may be `{ vi, en }` and stack lines with `\n`
       (figured bass `'6\n4'`, at most 3 lines). Lesson text prints doubles as 𝄪 𝄫 (chapter 2's
       {F##4} etc. now read "Fa𝄪4"). Docs: `theory/port-guide.md` §7, `theory/framework.md`
+- [x] **Theory chapter 32, Nhập môn hòa âm jazz** (2026-10-24; book 31): ninth, eleventh and thirteenth
+      chords, altered dominants, writing and analysing jazz chords, guide tones and II–V–I, blues and jazz
+      scales, review. No jazz standard used. `docs/theory/ch32-jazz.md`
 
 ## Theory chapters
 
@@ -407,7 +410,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 8. Bậc La Mã và kết | `ch08-roman-cadences` | 7.1-7.4, review after 7.5 | Done — `docs/theory/ch08-roman-cadences.md` |
 | 9. Hợp âm bảy | `ch09-seventh-chords` | 8.1-8.3, review after 8.4 | Done — `docs/theory/ch09-seventh-chords.md` |
 | 10. Tiến trình hòa âm và chức năng | `ch10-harmonic-progression` | 9.1-9.8, review after 9.9 | Done — `docs/theory/ch10-harmonic-progression.md` |
-| … | | the rest of the book (10 of 36 chapters done) | Porting (one PR per chapter) |
+| 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
+| … | | the rest of the book (11 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
