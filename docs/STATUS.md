@@ -404,6 +404,7 @@ a real browser.
 - [x] **Theory chapter 36, Âm nhạc tối giản** (2026-10-24; book 35, the last chapter): what minimalism is,
       additive and subtractive process, phase shifting, review. All patterns our own.
       `docs/theory/ch36-minimalism.md`
+- [x] **Theory chapter 13, Hình thức trong nhạc phổ thông** (2026-10-24; book 12.1-12.5, review after 12.6): verse-chorus, AABA and ABAC forms, the 12-bar blues, harmonically closed and open sections, review; every song replaced by our own chord charts and Beethoven's Ode to Joy (public domain). `docs/theory/ch13-pop-form.md`
 
 ## Theory chapters
 
@@ -421,12 +422,13 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 8. Bậc La Mã và kết | `ch08-roman-cadences` | 7.1-7.4, review after 7.5 | Done — `docs/theory/ch08-roman-cadences.md` |
 | 9. Hợp âm bảy | `ch09-seventh-chords` | 8.1-8.3, review after 8.4 | Done — `docs/theory/ch09-seventh-chords.md` |
 | 10. Tiến trình hòa âm và chức năng | `ch10-harmonic-progression` | 9.1-9.8, review after 9.9 | Done — `docs/theory/ch10-harmonic-progression.md` |
+| 13. Hình thức trong nhạc phổ thông | `ch13-pop-form` | 12.1-12.5, review after 12.6 | Done — `docs/theory/ch13-pop-form.md` |
 | 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
 | 33. Trường phái ấn tượng và điệu tính mở rộng | `ch33-impressionism` | 32.1-32.4, review after 32.5 | Done — `docs/theory/ch33-impressionism.md` |
 | 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
 | 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi | `ch35-serialism` | 34.1-34.6, review after 34.7 | Done — `docs/theory/ch35-serialism.md` |
 | 36. Âm nhạc tối giản | `ch36-minimalism` | 35, 35.1-35.2, review after 35.3 | Done — `docs/theory/ch36-minimalism.md` |
-| … | | the rest of the book (15 of 36 chapters done) | Porting (one PR per chapter) |
+| … | | the rest of the book (16 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
