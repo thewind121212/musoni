@@ -63,6 +63,7 @@ screen links them.
 | 13. Hình thức trong nhạc phổ thông / Form in popular music | `ch13-pop-form` | 12.1 Verse-chorus form, 12.2 AABA form, 12.3 ABAC form, 12.4 The 12-bar blues, 12.5 Harmonically closed and open sections; review after 12.6 Practice exercises |
 | 16. Tạo tương phản giữa các đoạn / Creating contrast between sections | `ch16-contrast` | 15.1 The elements of music, 15.2 Mozart, Eine kleine Nachtmusik, K. 525, II, 15.3 (a pop song, replaced by our own); review on 15.1-15.3 (the book has no practice exercises here) |
 | 17. Bè trầm số / Figured bass | `ch17-figured-bass` | 16.1 Historical context, 16.2 Figured bass inversion symbols, 16.3 The cadential six-four, 16.4 Other six-fours, 16.5 Additional information; review after 16.6 Practice exercises |
+| 12. Phân tích giai điệu / Melodic analysis | `ch12-melodic-analysis` | 11.1 Motive, 11.2 Melodic alteration, 11.3 Fragment, 11.4 Phrase, 11.5 Subphrase; review after 11.6 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
