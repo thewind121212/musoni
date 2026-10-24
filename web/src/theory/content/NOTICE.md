@@ -69,6 +69,7 @@ screen links them.
 | 15. Kết cấu phần đệm / Accompanimental textures | `ch15-textures` | 14.1 Texture, 14.2 Chorale texture, 14.3 Arpeggiated accompaniments, 14.4 Block chord accompaniments, 14.5 Afterbeats and offbeats, 14.6 The 3-2 son clave, 14.7 Distinctive bass lines; review drawn from the lessons (the book has no practice exercises here) |
 | 21. Hợp âm Napoli / The Neapolitan chord | `ch21-neapolitan` | 20.1 The Neapolitan chord, 20.2 Examples of the Neapolitan chord; review after 20.3 Practice exercises |
 | 24. Chuyển giọng trùng âm / Enharmonic modulation | `ch24-enharmonic-modulation` | 23.1 Enharmonic modulation, 23.2 The V7 and Ger+6 as pivot chords, 23.3 The fully diminished seventh as pivot chord; review after 23.4 Practice exercises |
+| 18. Hợp âm át phụ / Secondary dominant chords | `ch18-secondary-dominants` | 17.1 Examples with secondary dominants, 17.2 Tonicization, 17.3 Secondary dominants in major and minor, 17.4 Analyzing secondary dominants, 17.5 Writing secondary dominants, 17.6 Irregular resolutions; review after 17.7 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
