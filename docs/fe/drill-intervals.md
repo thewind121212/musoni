@@ -8,10 +8,8 @@ naming the size fast, then the quality.
 Route `/train/intervals`, module `drills/intervals`, store `useIntervalsStore`,
 group `read` (order 30, after Đọc nốt). Approved mockup: project files
 `screenshots/theory-drills/3-intervals.png`; proposal:
-`theory/drills-proposal.md`. Opens on Luyện once lesson
-`accidentals-steps/half-whole-steps` (chapter 2, half and whole steps, which
-are 2nds) is finished; until that lesson exists it is reached from "Xem tất
-cả".
+`theory/drills-proposal.md`. Listed on Luyện from the start;
+in Học, the intervals chapter's lessons (chapter 6) link to it.
 
 ## One question
 
