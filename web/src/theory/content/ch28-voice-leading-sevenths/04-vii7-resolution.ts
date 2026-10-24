@@ -14,7 +14,7 @@ export default {
     { section: '27.5', url: 'https://musictheory.pugetsound.edu/mt21c/WhenToUseSeventhChords.html' },
   ],
   recap: [
-    { vi: 'vii°7 và viiø7 chỉ gồm nốt xu hướng: bậc 7, 2, 4, 6', en: 'vii°7 and viiø7 are all tendency tones: 7, 2, 4, 6' },
+    { vi: 'vii°7 và viiø7 chỉ gồm nốt khuynh hướng: bậc 7, 2, 4, 6', en: 'vii°7 and viiø7 are all tendency tones: 7, 2, 4, 6' },
     { vi: 'Nốt bảy ở trên nốt ba: cho nốt ba (bậc 2) đi lên', en: 'Seventh above the third: move the third (2) up' },
     { vi: 'Nốt bảy ở dưới nốt ba: giải quyết như thường', en: 'Seventh below the third: resolve as usual' },
     { vi: 'Hợp âm bảy hay dùng nhất ở V, vii°, ii và IV', en: 'Sevenths are used most on V, vii°, ii and IV' },
@@ -22,12 +22,12 @@ export default {
   steps: [
     {
       kind: 'explain',
-      title: { vi: 'Toàn nốt xu hướng', en: 'All tendency tones' },
+      title: { vi: 'Toàn nốt khuynh hướng', en: 'All tendency tones' },
       blocks: [
         {
           type: 'text',
           text: {
-            vi: 'vii°7 và viiø7 chỉ gồm **nốt xu hướng** (tendency tones): bậc 7, 2, 4 và 6. Mỗi nốt có đường đi riêng: 7 lên 1, 2 xuống 1, 4 xuống 3, 6 xuống 5.',
+            vi: 'vii°7 và viiø7 chỉ gồm **nốt khuynh hướng** (tendency tones): bậc 7, 2, 4 và 6. Mỗi nốt có đường đi riêng: 7 lên 1, 2 xuống 1, 4 xuống 3, 6 xuống 5.',
             en: 'vii°7 and viiø7 consist entirely of **tendency tones**: scale degrees 7, 2, 4 and 6. Each has its own path: 7 up to 1, 2 down to 1, 4 down to 3, 6 down to 5.',
           },
         },
@@ -47,7 +47,7 @@ export default {
       prompt: { vi: 'Ở giọng {C} trưởng, nốt {F} (bậc 4) của viiø7 đi đến nốt nào?', en: 'In {C} major, where does the {F} (scale degree 4) of viiø7 go?' },
       answer: { type: 'key', note: 'E', blackKeys: '#' },
       reason: {
-        vi: 'Bậc 4 là nốt xu hướng đi xuống bậc 3: {F} xuống {E}.',
+        vi: 'Bậc 4 là nốt khuynh hướng đi xuống bậc 3: {F} xuống {E}.',
         en: 'Scale degree 4 is a tendency tone that falls to 3: {F} goes down to {E}.',
       },
     },

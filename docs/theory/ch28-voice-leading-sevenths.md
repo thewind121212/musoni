@@ -84,7 +84,7 @@ New in this chapter (rows for the main agent to add):
 | hợp âm đầy đủ / hợp âm thiếu | complete / incomplete chord |
 | nốt chung | common tone |
 | giải quyết chặt / giải quyết tự do | strict / free resolution |
-| nốt xu hướng | tendency tone |
+| nốt khuynh hướng | tendency tone |
 | phối hòa âm (cho giai điệu) | harmonize (a melody) |
 
 The title "Dẫn bè hợp âm bảy" is kept; it is the usual Vietnamese phrasing.

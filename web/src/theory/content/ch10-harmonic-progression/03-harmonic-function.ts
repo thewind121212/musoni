@@ -24,7 +24,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: '**Chức năng hòa âm** (harmonic function) là xu hướng của một hợp âm: muốn đi tiếp đến hợp âm khác, hay được nghỉ. Hợp âm I có **chức năng chủ** (tonic function): ổn định, không đòi đi đâu nữa.',
+            vi: '**Chức năng hòa âm** (harmonic function) là khuynh hướng của một hợp âm: muốn đi tiếp đến hợp âm khác, hay được nghỉ. Hợp âm I có **chức năng chủ** (tonic function): ổn định, không đòi đi đâu nữa.',
             en: '**Harmonic function** is a chord’s tendency to move on to other chords, or to stay at rest. The I chord has **tonic function**: stable, at rest, demanding no move.',
           },
         },
