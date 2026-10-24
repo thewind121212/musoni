@@ -6,7 +6,8 @@ note on a big pad. The taps are judged on the audio clock and marked over the
 notes.
 
 Route `/train/rhythm`, module `drills/rhythm`, store `useRhythmStore`. Group
-`ear`, opened by the lesson `durations-time/note-values`. Mockup: project
+`ear`, reached from Luyện, and from chapter 5's lessons
+(`durations-time/note-values` L1 up to the review at L4). Mockup: project
 files `screenshots/theory-drills/5-rhythm.png`; proposal
 `theory/drills-proposal.md`. This drill replaces the parked
 Complete-the-Measure design (`drill-complete-measure.md`).

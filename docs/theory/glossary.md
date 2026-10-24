@@ -68,6 +68,9 @@ Note names are never written into lesson text as words. Write a pitch token
 
 Trap: in Vietnamese "giọng song song" means **relative**, not parallel.
 
+Trap (rhythm): older Vietnamese books use "nhịp đơn / nhịp phức" for one strong beat against
+several (so 4/4 is "phức"). Here they mean the American simple / compound, as chapter 5 defines them.
+
 ## Rhythm (ch 4)
 | Tiếng Việt | English |
 |---|---|
@@ -86,6 +89,14 @@ Trap: in Vietnamese "giọng song song" means **relative**, not parallel.
 | nhịp hai / ba / bốn | duple / triple / quadruple |
 | nhóm liên (liên ba, liên hai) | tuplet (triplet, duplet) |
 | nhịp lấy đà | anacrusis (pickup) |
+| nhịp (nhịp đơn hai/ba/bốn, nhịp phức hai/ba/bốn) | meter (simple / compound duple, triple, quadruple) |
+| nhịp độ | tempo |
+| móc / gạch nối | flag / beam |
+| chấm dôi kép | double dot |
+| dấu luyến | slur |
+| liên bốn | quadruplet |
+| nghịch phách | syncopation |
+| tiết tấu | rhythm |
 
 ## Intervals (ch 5)
 | Tiếng Việt | English |

@@ -49,6 +49,7 @@ screen links them.
 | 2. Dấu hóa, nửa cung, nguyên cung / Accidentals and steps | `ch02-accidentals-steps` | 1.4 Accidentals, 1.5 Enharmonic notes, 2.1 Half steps and whole steps; review after 1.6 and 2.4 Practice exercises |
 | 3. Gam trưởng và hóa biểu / Major scales and key signatures | `ch03-major-scales-keys` | 2.2 The major scale, 2.3 Major key signatures (with 2.3.1 Identifying key signatures); review after 2.4 Practice exercises |
 | 4. Gam thứ và hóa biểu giọng thứ / Minor scales and key signatures | `ch04-minor-scales-keys` | 3.1 Minor scales, 3.2 Minor key signatures, 3.3 Scale degree names; review after 3.4 Practice exercises |
+| 5. Trường độ và nhịp / Basics of rhythm | `ch05-durations-time` | 4.1 Time signature, 4.2 Durational symbols, 4.3 Dots and ties, 4.4 Meter, 4.5 Tuplets, 4.6 Common rhythmic notation errors; review after 4.7 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).

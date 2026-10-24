@@ -367,6 +367,9 @@ a real browser.
 - [x] **Theory chapter 4, Gam thứ** (2026-10-24; book 3.1-3.4): natural, harmonic and melodic minor,
       minor key signatures (relative = giọng song song, parallel = giọng cùng tên), scale degree
       names, review. Practice: Hóa biểu L4, Nghe & Đàn L3. `docs/theory/ch04-minor-scales-keys.md`
+- [x] **Theory chapter 5, Trường độ và nhịp** (2026-10-24; book 4.1-4.7): note values, measures and time
+      signatures, dots and ties, simple and compound meter, tuplets and syncopation, review. Every lesson ends
+      on Tiết tấu, L1 → L4. `docs/theory/ch05-durations-time.md`
 
 ## Theory chapters
 
@@ -378,7 +381,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 2. Dấu hóa, nửa cung, nguyên cung | `ch02-accidentals-steps` | 1.4, 1.5, 2.1; review after 1.6, 2.4 | Done — `docs/theory/ch02-accidentals-steps.md` |
 | 3. Gam trưởng và hóa biểu | `ch03-major-scales-keys` | 2.2-2.3, review after 2.4 | Done — `docs/theory/ch03-major-scales-keys.md` |
 | 4. Gam thứ và hóa biểu giọng thứ | `ch04-minor-scales-keys` | 3.1-3.3, review after 3.4 | Done — `docs/theory/ch04-minor-scales-keys.md` |
-| … | | the rest of the book (4 of 36 chapters done) | Porting (one PR per chapter) |
+| 5. Trường độ và nhịp | `ch05-durations-time` | 4.1-4.6, review after 4.7 | Done — `docs/theory/ch05-durations-time.md` |
+| … | | the rest of the book (5 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
