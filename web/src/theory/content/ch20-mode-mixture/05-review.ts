@@ -46,8 +46,8 @@ export default {
         ],
       },
       reason: {
-        vi: '{Ab}–{C}–{Eb} là hợp âm trưởng A♭ trên ♭6, nên viết ♭VI.',
-        en: '{Ab}–{C}–{Eb} is an A♭ major triad on ♭6, so it is ♭VI.',
+        vi: '{Ab}–{C}–{Eb} là hợp âm {Ab} trưởng trên ♭6, nên viết ♭VI.',
+        en: '{Ab}–{C}–{Eb} is an {Ab} major triad on ♭6, so it is ♭VI.',
       },
     },
     {
