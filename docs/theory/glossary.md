@@ -179,5 +179,16 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | gam bebop | bebop scale |
 | quan hệ hợp âm–gam | chord-scale relationship |
 
+## Impressionism (app ch 33)
+| Tiếng Việt | English |
+|---|---|
+| trường phái ấn tượng | Impressionism |
+| điệu thức (Dorian, Phrygian, Lydian, Mixolydian) | mode |
+| hợp âm chín át | dominant ninth chord |
+| hợp âm song song | parallelism (planing) |
+| toàn thuận giọng | pandiatonicism |
+| hòa âm chồng quãng 3 / 4 / 5 / 2 | tertian / quartal / quintal / secundal harmony |
+| đa hợp âm | polychord |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
