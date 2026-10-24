@@ -6,7 +6,9 @@ inversions, Roman numerals).
 
 Route `/train/chords`, module `drills/chords`, store `useChordStore`, group
 **Đọc** (`read`), order 40. On Luyện from the start (no unlocks since
-2026-10-23); the lesson `triads/triads-intro` links to it. Proposal: project files `theory/drills-proposal.md`;
+2026-10-23); chapter 7's lessons link to its name levels (from
+`triads/triads-intro`) and chapter 8's to its Roman levels (`roman-cadences/roman-numerals` L5,
+`diatonic-major` L6, `diatonic-minor` and `review` L7). Proposal: project files `theory/drills-proposal.md`;
 approved mockup: `screenshots/theory-drills/4-chords.png`.
 
 ## One question, by name (levels 1-4)
