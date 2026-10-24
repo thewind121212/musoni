@@ -127,7 +127,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Trong giọng {F} trưởng, nốt gốc của hợp âm V là nốt nào?', en: 'In {F} major, what is the root of the V chord?' },
-      answer: { type: 'key', note: 'C' },
+      answer: { type: 'key', note: 'C', blackKeys: 'b' },
       reason: {
         vi: 'Đếm lên từ {F}: bậc 5 là {C}, nên V là {C}–{E}–{G}.',
         en: 'Count up from {F}: scale degree 5 is {C}, so V is {C}–{E}–{G}.',
