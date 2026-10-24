@@ -348,6 +348,11 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | giải quyết chặt / giải quyết tự do | strict / free resolution |
 | nốt khuynh hướng | tendency tone |
 | phối hòa âm | harmonize (a melody) |
+| dẫn bè | voice leading |
+| bè soprano / alto / tenor / bass | soprano / alto / tenor / bass |
+| nhân đôi | doubling |
+| chuyển động song song / ngược chiều / xiên / cùng chiều | parallel / contrary / oblique / similar motion |
+| quãng 8 song song | parallel octaves |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.

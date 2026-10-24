@@ -33,7 +33,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: '**Đoạn nhạc bất đối xứng** (asymmetrical period) có ba hoặc năm câu, nên số câu hỏi và câu đáp không bằng nhau. Câu cuối vẫn kết trọn nhất.',
+            vi: '**Đoạn nhạc bất đối xứng** (asymmetrical period) có ba hoặc năm câu, nên số câu hỏi và câu đáp không đều. Câu cuối vẫn kết trọn nhất.',
             en: 'An **asymmetrical period** has three or five phrases, so the antecedents and consequents are unequal in number. The last phrase still has the most conclusive cadence.',
           },
         },

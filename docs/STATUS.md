@@ -419,6 +419,7 @@ a real browser.
 - [x] **Theory chapter 22, Hợp âm sáu tăng** (2026-10-24; book 21.1-21.8, review after 21.9): what augmented sixths are, Italian, French and German, analysing and lead-sheet symbols, telling chromatic harmonies apart, review. `docs/theory/ch22-augmented-sixth.md`
 - [x] **Theory chapter 23, Chuyển giọng** (2026-10-24; book 22.1-22.7, review after 22.8): modulation and tonicization, closely related keys, diatonic and chromatic pivot chords, direct, common-tone and sequential modulation, review. `docs/theory/ch23-modulation.md`
 - [x] **Theory chapter 28, Dẫn bè hợp âm bảy** (2026-10-24; book 27.1-27.5, review after 27.6): the seventh resolves down, successive sevenths, V7 to I (and I6/4 to V7), resolving vii°7 and viiø7, review; SATB on a grand staff. `docs/theory/ch28-voice-leading-sevenths.md`
+- [x] **Theory chapter 30, Dẫn bè hợp âm biến âm** (2026-10-24; book 29.1-29.4, review after 29.5): voice leading secondary chords, borrowed chords, the Neapolitan and augmented sixths, review; SATB on a grand staff. `docs/theory/ch30-voice-leading-chromatic.md`
 
 ## Theory chapters
 
@@ -451,12 +452,13 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 23. Chuyển giọng | `ch23-modulation` | 22.1-22.7, review after 22.8 | Done — `docs/theory/ch23-modulation.md` |
 | 24. Chuyển giọng trùng âm | `ch24-enharmonic-modulation` | 23.1-23.3, review after 23.4 | Done — `docs/theory/ch24-enharmonic-modulation.md` |
 | 28. Dẫn bè hợp âm bảy | `ch28-voice-leading-sevenths` | 27.1-27.5, review after 27.6 | Done — `docs/theory/ch28-voice-leading-sevenths.md` |
+| 30. Dẫn bè hợp âm biến âm | `ch30-voice-leading-chromatic` | 29.1-29.4, review after 29.5 | Done — `docs/theory/ch30-voice-leading-chromatic.md` |
 | 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
 | 33. Trường phái ấn tượng và điệu tính mở rộng | `ch33-impressionism` | 32.1-32.4, review after 32.5 | Done — `docs/theory/ch33-impressionism.md` |
 | 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
 | 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi | `ch35-serialism` | 34.1-34.6, review after 34.7 | Done — `docs/theory/ch35-serialism.md` |
 | 36. Âm nhạc tối giản | `ch36-minimalism` | 35, 35.1-35.2, review after 35.3 | Done — `docs/theory/ch36-minimalism.md` |
-| … | | the rest of the book (30 of 36 chapters done) | Porting (one PR per chapter) |
+| … | | the rest of the book (31 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 

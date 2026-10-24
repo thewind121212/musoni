@@ -75,6 +75,7 @@ screen links them.
 | 22. Hợp âm sáu tăng / Augmented sixth chords | `ch22-augmented-sixth` | 21.1 Augmented sixth chords, 21.2 Types, 21.3 Analyzing, 21.4 Lead-sheet analysis, 21.5 Examples, 21.6 Distinguishing between chromatic harmonies, 21.7 Descending chromatic bass lines, 21.8 Chromatic pre-dominant chords; review after 21.9 Practice exercises |
 | 23. Chuyển giọng / Modulation | `ch23-modulation` | 22.1 Modulation, 22.2 Tonicization versus modulation, 22.3 Key relationships, 22.4 Diatonic pivot chords, 22.5 Recognizing the new key, 22.6 Chromatic pivot chords, 22.7 Modulations without pivot chords; review after 22.8 Practice exercises |
 | 28. Dẫn bè hợp âm bảy / Voice leading seventh chords | `ch28-voice-leading-sevenths` | 27.1 Voice leading seventh chords, 27.2 Successive seventh chords, 27.3 V7 to I, 27.4 The special resolution of vii°7 and viiø7, 27.5 When to use seventh chords; review after 27.6 Practice exercises |
+| 30. Dẫn bè hợp âm biến âm / Voice leading chromatic harmonies | `ch30-voice-leading-chromatic` | 29.1 Voice leading secondary chords, 29.2 Voice leading borrowed chords, 29.3 Voice leading the Neapolitan chord, 29.4 Voice leading augmented sixth chords; review after 29.5 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
