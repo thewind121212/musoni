@@ -139,5 +139,17 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | hợp âm cảm âm | leading-tone triad |
 | hợp âm bậc VII hạ | subtonic triad |
 
+## Seventh chords (app ch 9)
+| Tiếng Việt | English |
+|---|---|
+| hợp âm bảy | seventh chord |
+| nốt bảy | seventh (chord member) |
+| hợp âm bảy trưởng (maj7) | major seventh chord |
+| hợp âm bảy át / bảy trưởng-thứ (7) | dominant / major-minor seventh chord |
+| hợp âm bảy thứ (m7) | minor seventh chord |
+| hợp âm bảy nửa giảm (ø7) | half-diminished seventh chord |
+| hợp âm bảy giảm (°7) | fully diminished seventh chord |
+| hợp âm IV/5 | IV/5 chord |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.

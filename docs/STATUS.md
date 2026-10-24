@@ -378,6 +378,9 @@ a real browser.
 - [x] **Theory chapter 8, Bậc La Mã và kết** (2026-10-24; book 7.1-7.5): Roman numerals, diatonic chords in
       major and minor, the four cadences (each heard), review. Practice: Hợp âm L5 → L7 (Roman mode).
       `docs/theory/ch08-roman-cadences.md`
+- [x] **Theory chapter 9, Hợp âm bảy** (2026-10-24; book 8.1-8.4): what a seventh chord is, the five
+      qualities, the IV/5 chord, Roman numerals of diatonic sevenths, review. No practice link (the chords
+      drill asks triads only). `docs/theory/ch09-seventh-chords.md`
 
 ## Theory chapters
 
@@ -393,7 +396,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 6. Quãng | `ch06-intervals` | 5.1-5.5, review after 5.6 | Done — `docs/theory/ch06-intervals.md` |
 | 7. Hợp âm ba | `ch07-triads` | 6.1-6.6, review after 6.7 | Done — `docs/theory/ch07-triads.md` |
 | 8. Bậc La Mã và kết | `ch08-roman-cadences` | 7.1-7.4, review after 7.5 | Done — `docs/theory/ch08-roman-cadences.md` |
-| … | | the rest of the book (8 of 36 chapters done) | Porting (one PR per chapter) |
+| 9. Hợp âm bảy | `ch09-seventh-chords` | 8.1-8.3, review after 8.4 | Done — `docs/theory/ch09-seventh-chords.md` |
+| … | | the rest of the book (9 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
