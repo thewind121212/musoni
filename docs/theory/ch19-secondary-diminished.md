@@ -72,10 +72,10 @@ agent to add; the first two follow chapter 18):
 | Tiếng Việt | English |
 |---|---|
 | hợp âm át phụ | secondary dominant |
-| chủ âm hóa | tonicization (tonicize) |
+| ly điệu | tonicization (tonicize) |
 | hợp âm giảm phụ | secondary diminished chord |
 
-"Hợp âm được chủ âm hóa" / "the chord being tonicized" describes the target;
+"Hợp âm được ly điệu" / "the chord being tonicized" describes the target;
 "nốt ngoài giọng" / "a note from outside the key" stands in for the book's
 "chromaticism" without a new term. Inversion figures (65, 43, 42) and "thế đảo
 1" assume chapter 17 (figured bass).

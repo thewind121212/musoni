@@ -8,13 +8,13 @@ export default {
   sources: [{ section: '18.2', url: 'https://musictheory.pugetsound.edu/mt21c/SecondaryDiminishedChordsInMajorAndMinor.html' }],
   recap: [
     { vi: 'Trong giọng trưởng, ii, iii, IV, V và vi có hợp âm giảm phụ', en: 'In major, ii, iii, IV, V and vi have secondary diminished chords' },
-    { vi: 'Hợp âm thứ được chủ âm hóa bằng vii°7', en: 'Minor triads are tonicized by vii°7' },
+    { vi: 'Hợp âm thứ được ly điệu bằng vii°7', en: 'Minor triads are tonicized by vii°7' },
     { vi: 'Hợp âm trưởng thường dùng viiø7, cũng có thể dùng vii°7', en: 'Major triads usually take viiø7, but can also take vii°7' },
   ],
   steps: [
     {
       kind: 'explain',
-      title: { vi: 'Năm hợp âm được chủ âm hóa', en: 'Five chords to tonicize' },
+      title: { vi: 'Năm hợp âm được ly điệu', en: 'Five chords to tonicize' },
       blocks: [
         {
           type: 'text',
@@ -33,7 +33,7 @@ export default {
         {
           type: 'tip',
           text: {
-            vi: 'vii° trong giọng là hợp âm ba giảm, nên không được chủ âm hóa: một hợp âm giảm không làm chủ âm được.',
+            vi: 'vii° trong giọng là hợp âm ba giảm, nên không được ly điệu: một hợp âm giảm không làm chủ âm được.',
             en: 'The key’s own vii° is a diminished triad, so it is not tonicized: a diminished chord cannot act as a tonic.',
           },
         },
@@ -55,7 +55,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Hợp âm thứ (ii, iii, vi) được chủ âm hóa bằng hợp âm bảy giảm. Ví dụ vii°7/vi là {G#} {B} {D} {F}, giải về {A} {C} {E}.',
+            vi: 'Hợp âm thứ (ii, iii, vi) được ly điệu bằng hợp âm bảy giảm. Ví dụ vii°7/vi là {G#} {B} {D} {F}, giải về {A} {C} {E}.',
             en: 'Minor triads (ii, iii, vi) are tonicized by fully-diminished seventh chords. For example, vii°7/vi is {G#} {B} {D} {F}, resolving to {A} {C} {E}.',
           },
         },
@@ -80,7 +80,7 @@ export default {
     },
     {
       kind: 'check',
-      prompt: { vi: 'Loại hợp âm bảy nào chủ âm hóa ii (một hợp âm thứ)?', en: 'Which seventh chord tonicizes ii (a minor triad)?' },
+      prompt: { vi: 'Loại hợp âm bảy nào ly điệu ii (một hợp âm thứ)?', en: 'Which seventh chord tonicizes ii (a minor triad)?' },
       answer: {
         type: 'choice',
         choices: [
@@ -90,7 +90,7 @@ export default {
         ],
       },
       reason: {
-        vi: 'Hợp âm thứ được chủ âm hóa bằng hợp âm bảy giảm; viiø7 dành cho hợp âm trưởng.',
+        vi: 'Hợp âm thứ được ly điệu bằng hợp âm bảy giảm; viiø7 dành cho hợp âm trưởng.',
         en: 'Minor triads are tonicized by fully-diminished sevenths; viiø7 is for major triads.',
       },
     },

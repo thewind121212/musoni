@@ -7,7 +7,7 @@ export default {
   minutes: 4,
   sources: [{ section: '18.1', url: 'https://musictheory.pugetsound.edu/mt21c/SecondaryDiminishedChordSection.html' }],
   recap: [
-    { vi: 'vii° có chức năng át, nên nó chủ âm hóa được hợp âm khác', en: 'vii° has dominant function, so it can tonicize other chords' },
+    { vi: 'vii° có chức năng át, nên nó ly điệu được hợp âm khác', en: 'vii° has dominant function, so it can tonicize other chords' },
     { vi: 'vii°/x, viiø7/x, vii°7/x: hợp âm cảm âm của hợp âm x', en: 'vii°/x, viiø7/x, vii°7/x: the leading-tone chord of chord x' },
     { vi: 'Nốt gốc nằm nửa cung dưới nốt gốc của x', en: 'Its root is a half step below the root of x' },
     { vi: 'Dấu hóa là một phần của chính hợp âm', en: 'The accidental belongs to the chord itself' },
@@ -20,7 +20,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Hợp âm vii° có chức năng át, như V: nó muốn giải về chủ. Vì vậy, giống **hợp âm át phụ** (secondary dominant), nó cũng **chủ âm hóa** (tonicization) được một hợp âm khác ngoài I.',
+            vi: 'Hợp âm vii° có chức năng át, như V: nó muốn giải về chủ. Vì vậy, giống **hợp âm át phụ** (secondary dominant), nó cũng **ly điệu** (tonicization) được một hợp âm khác ngoài I.',
             en: 'The vii° chord has dominant function, like V: it wants to resolve to the tonic. So, like a **secondary dominant**, it can also bring about **tonicization** of a chord other than I.',
           },
         },
@@ -59,7 +59,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Hợp âm giảm phụ có ba loại: hợp âm ba giảm (vii°/x), hợp âm bảy nửa giảm (viiø7/x) và hợp âm bảy giảm (vii°7/x). Chữ sau dấu gạch chéo là hợp âm được chủ âm hóa.',
+            vi: 'Hợp âm giảm phụ có ba loại: hợp âm ba giảm (vii°/x), hợp âm bảy nửa giảm (viiø7/x) và hợp âm bảy giảm (vii°7/x). Chữ sau dấu gạch chéo là hợp âm được ly điệu.',
             en: 'Secondary diminished chords come in three kinds: a diminished triad (vii°/x), a half-diminished seventh (viiø7/x) and a fully-diminished seventh (vii°7/x). The numeral after the slash is the chord being tonicized.',
           },
         },
@@ -117,7 +117,7 @@ export default {
         ],
       },
       reason: {
-        vi: 'Chữ sau dấu gạch chéo là hợp âm được chủ âm hóa: vii°7/ii dẫn về ii.',
+        vi: 'Chữ sau dấu gạch chéo là hợp âm được ly điệu: vii°7/ii dẫn về ii.',
         en: 'The numeral after the slash is the chord being tonicized: vii°7/ii leads to ii.',
       },
     },
