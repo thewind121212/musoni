@@ -101,6 +101,9 @@ function validateStep(step: Step, err: (m: string) => void) {
     if (!p || p.octave !== null) err(`key answer "${answer.note}" is not a pitch class like E or F#`)
     else if (p.natural || Math.abs(p.alter) > 1 || isExcluded(p.letter, p.alter === 1 ? '#' : p.alter === -1 ? 'b' : '')) {
       err(`key answer "${answer.note}" is not on the answer pad`)
+    } else if (answer.blackKeys !== undefined) {
+      if (answer.blackKeys !== '#' && answer.blackKeys !== 'b') err(`blackKeys "${String(answer.blackKeys)}" is not # or b`)
+      else if (p.alter !== 0) err('blackKeys on a black-key answer (it already shows them)')
     }
   } else if (answer?.type === 'choice') {
     const n = answer.choices?.length ?? 0

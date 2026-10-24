@@ -160,7 +160,8 @@ export default {
   - `{ kind: 'check', prompt, blocks?, answer, reason }`: a question.
     `answer` is `{ type: 'key', note: 'E' }` (answered on the 12-key pad; a pitch
     class: `E`, `F#`, `Bb`; add `labels: false` to hide the names on the pad when
-    the question is where a key is) or `{ type: 'choice', choices: [{ text }, { text, correct: true }, …] }`
+    the question is where a key is; add `blackKeys: '#'` or `'b'` to show the black keys, so they can be
+    wrong answers, when the answer is a white key: "a half step below {C}") or `{ type: 'choice', choices: [{ text }, { text, correct: true }, …] }`
     (2-4 choices, exactly one `correct: true`, shown in the order written).
     `reason` is one sentence, shown after the answer, right or wrong.
 - `Block` is one of:

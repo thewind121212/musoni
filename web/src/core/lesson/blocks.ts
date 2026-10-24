@@ -74,7 +74,8 @@ export function loneStaffNote(blocks: readonly Block[] | undefined): Pitch | nul
 export function padFor(answer: KeyAnswer, naming: Naming): { options: NoteOption[]; correctIndex: number } {
   const p = parsePitchName(answer.note)!
   const accidental = p.alter === 1 ? '#' : p.alter === -1 ? 'b' : ''
-  const options = buildOptions(naming, accidental !== '', accidental === 'b' ? 'b' : '#')
+  const spelling = accidental || answer.blackKeys
+  const options = buildOptions(naming, spelling !== undefined, spelling === 'b' ? 'b' : '#')
   return { options, correctIndex: options.findIndex(o => o.letter === p.letter && o.accidental === accidental) }
 }
 

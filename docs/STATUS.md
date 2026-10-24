@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-23
+> Last updated: 2026-10-24
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -351,6 +351,10 @@ a real browser.
       ignored (version stays 2). Screenshots checked at 375 px and 1280 px in headless
       Chrome. Docs: `screens.md`, `architecture.md`, `data-model.md`, drill docs,
       `theory/framework.md`, `summary.md`. 881 web tests green
+- [x] **Lesson key checks can show the black keys** (2026-10-24): `blackKeys: '#' | 'b'` on a
+      white-key answer puts all twelve keys on the pad, so "a half step below {C}" can be
+      answered wrongly on {Bb}. Before, a white-key answer showed white keys only and gave
+      that away. Needed by chapter 2 on. Docs: `theory/port-guide.md`, `theory/framework.md`
 
 ## Theory chapters
 
