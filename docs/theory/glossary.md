@@ -237,6 +237,13 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | hình thức AABA / ABAC | AABA / ABAC form |
 | blues 12 ô nhịp | 12-bar blues |
 | đoạn khép kín / đoạn mở | harmonically closed / open section |
+| hình thức hai đoạn / hình thức ba đoạn (ba đoạn phức) | binary / ternary form (compound ternary) |
+| khép kín / liên tục | sectional / continuous |
+| hai đoạn cân bằng / hai đoạn tái hiện / hai đoạn đơn giản | balanced / rounded / simple binary |
+| nguyên tắc hai đoạn | binary principle |
+| dấu nhắc lại / nhắc lại cả hai đoạn | repeat sign / two-reprise |
+| nốt giữ át | dominant pedal |
+| tiểu phẩm | character piece |
 
 ## Contrast (app ch 16)
 | Tiếng Việt | English |

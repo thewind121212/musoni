@@ -77,6 +77,7 @@ screen links them.
 | 28. Dẫn bè hợp âm bảy / Voice leading seventh chords | `ch28-voice-leading-sevenths` | 27.1 Voice leading seventh chords, 27.2 Successive seventh chords, 27.3 V7 to I, 27.4 The special resolution of vii°7 and viiø7, 27.5 When to use seventh chords; review after 27.6 Practice exercises |
 | 30. Dẫn bè hợp âm biến âm / Voice leading chromatic harmonies | `ch30-voice-leading-chromatic` | 29.1 Voice leading secondary chords, 29.2 Voice leading borrowed chords, 29.3 Voice leading the Neapolitan chord, 29.4 Voice leading augmented sixth chords; review after 29.5 Practice exercises |
 | 27. Dẫn bè hợp âm ba / Voice leading triads | `ch27-voice-leading-triads` | 26.1 Voice leading, 26.2 Types of motion, 26.3 Objectionable parallels, 26.4 Voice ranges, 26.5 Rules of melody, 26.6 Rules of spacing, 26.7 Root-position triads in four parts, 26.8 First-inversion triads, 26.9 Second-inversion triads, 26.10 Special situations, 26.11 Types of six-four chords, 26.12 Summary of doubling rules; review after 26.13 Practice exercises |
+| 25. Hình thức hai đoạn và ba đoạn / Binary and ternary forms | `ch25-binary-ternary` | 24.1 Binary and ternary form, 24.2 Sectional versus continuous, 24.3 Balanced binary, 24.4 Rounded binary, 24.5 Simple binary, 24.6 Binary principle, 24.7 Ternary form, 24.8 Distinguishing between rounded binary and ternary; review after 24.9 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
