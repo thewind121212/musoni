@@ -53,6 +53,7 @@ screen links them.
 | 6. Quãng / Intervals | `ch06-intervals` | 5.1 Introduction to intervals, 5.2 Identifying intervals, 5.3 Writing intervals, 5.4 Inversion of intervals, 5.5 Augmented and diminished intervals; review after 5.6 Practice exercises |
 | 7. Hợp âm ba / Triads | `ch07-triads` | 6.1 Introduction to triads, 6.2 Lead-sheet symbols, 6.3 Inverted triads, 6.4 Analyzing chords, 6.5 Simple "sus" chords, 6.6 Summary; review after 6.7 Practice exercises |
 | 8. Bậc La Mã và kết / Roman numerals and cadences | `ch08-roman-cadences` | 7.1 Roman numeral chord symbols, 7.2 Diatonic chords in major, 7.3 Diatonic chords in minor, 7.4 Cadences; review after 7.5 Practice exercises |
+| 9. Hợp âm bảy / Seventh chords | `ch09-seventh-chords` | 8.1 Introduction to seventh chords, 8.2 The IV/5 "sus" chord, 8.3 Roman numerals of diatonic seventh chords; review after 8.4 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
