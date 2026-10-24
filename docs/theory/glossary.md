@@ -238,5 +238,20 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | blues 12 ô nhịp | 12-bar blues |
 | đoạn khép kín / đoạn mở | harmonically closed / open section |
 
+## Contrast (app ch 16)
+| Tiếng Việt | English |
+|---|---|
+| yếu tố âm nhạc | elements of music |
+| giai điệu / hòa âm | melody / harmony |
+| âm hình lặp | ostinato |
+| âm sắc / kết cấu | timbre / texture |
+| cách phát âm: ngắt tiếng / liền tiếng | articulation: staccato / legato |
+| cường độ | dynamics |
+| âm khu | register (not âm vực, which is range) |
+| hình thức rondo năm phần | five-part rondo |
+| đoạn chuyển | transition |
+| mô phỏng | imitation |
+| nốt láy | turn (ornament) |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.

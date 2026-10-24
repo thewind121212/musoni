@@ -61,6 +61,7 @@ screen links them.
 | 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi / Serialism | `ch35-serialism` | 34.1 Twelve-tone technique, 34.2 Determining row forms, 34.3 Writing row forms, 34.4 The twelve-tone matrix, 34.5 Row forms in music, 34.6 Non-twelve-tone serialism; review after 34.7 Practice exercises |
 | 36. Âm nhạc tối giản / Minimalism | `ch36-minimalism` | 35 Minimalism (introduction), 35.1 Additive minimalism, 35.2 Phase shifting; review after 35.3 Homework assignments |
 | 13. Hình thức trong nhạc phổ thông / Form in popular music | `ch13-pop-form` | 12.1 Verse-chorus form, 12.2 AABA form, 12.3 ABAC form, 12.4 The 12-bar blues, 12.5 Harmonically closed and open sections; review after 12.6 Practice exercises |
+| 16. Tạo tương phản giữa các đoạn / Creating contrast between sections | `ch16-contrast` | 15.1 The elements of music, 15.2 Mozart, Eine kleine Nachtmusik, K. 525, II, 15.3 (a pop song, replaced by our own); review on 15.1-15.3 (the book has no practice exercises here) |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
