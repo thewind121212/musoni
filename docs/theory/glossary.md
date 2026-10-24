@@ -61,6 +61,9 @@ Note names are never written into lesson text as words. Write a pitch token
 | cảm âm | leading tone |
 | bậc VII hạ | subtonic |
 | vòng quãng năm | circle of fifths |
+| tứ âm | tetrachord |
+| thứ tự dấu thăng / thứ tự dấu giáng | order of sharps / order of flats |
+| giọng trùng âm | enharmonic keys |
 
 Trap: in Vietnamese "giọng song song" means **relative**, not parallel.
 
