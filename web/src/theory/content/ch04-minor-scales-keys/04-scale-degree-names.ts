@@ -54,7 +54,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Trong giọng {G} trưởng, át âm là nốt nào?', en: 'In {G} major, which note is the dominant?' },
-      answer: { type: 'key', note: 'D' },
+      answer: { type: 'key', note: 'D', blackKeys: '#' },
       reason: {
         vi: 'Át âm là bậc 5: {G}, {A}, {B}, {C}, {D}.',
         en: 'The dominant is degree 5: {G}, {A}, {B}, {C}, {D}.',
@@ -80,7 +80,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Trong giọng {F} trưởng, cảm âm là nốt nào?', en: 'In {F} major, which note is the leading tone?' },
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: 'b' },
       reason: {
         vi: '{E} là bậc 7, thấp hơn chủ âm {F} nửa cung.',
         en: '{E} is degree 7, a half step below the tonic {F}.',

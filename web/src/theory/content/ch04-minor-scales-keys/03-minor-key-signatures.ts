@@ -106,7 +106,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng thứ nào?', en: 'Which minor key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'D', notes: '' }],
-      answer: { type: 'key', note: 'B' },
+      answer: { type: 'key', note: 'B', blackKeys: '#' },
       reason: {
         vi: 'Hai dấu thăng là {D} trưởng; đếm xuống ba nửa cung: {D}, {C#}, {C}, {B}.',
         en: 'Two sharps is {D} major; count down three half steps: {D}, {C#}, {C}, {B}.',

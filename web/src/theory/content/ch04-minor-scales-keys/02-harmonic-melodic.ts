@@ -38,7 +38,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Trong gam {C} thứ hòa âm, bậc 7 là nốt nào?', en: 'In {C} harmonic minor, what is the 7th degree?' },
-      answer: { type: 'key', note: 'B' },
+      answer: { type: 'key', note: 'B', blackKeys: 'b' },
       reason: {
         vi: 'Gam thứ tự nhiên có {Bb}; gam thứ hòa âm nâng nó lên nửa cung thành {Bn}.',
         en: 'The natural minor has {Bb}; the harmonic minor raises it a half step to {Bn}.',

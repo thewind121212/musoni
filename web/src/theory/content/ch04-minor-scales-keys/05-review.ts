@@ -18,7 +18,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Hóa biểu này là của giọng thứ nào?', en: 'Which minor key has this key signature?' },
       blocks: [{ type: 'staff', clef: 'treble', key: 'Bb', notes: '' }],
-      answer: { type: 'key', note: 'G' },
+      answer: { type: 'key', note: 'G', blackKeys: 'b' },
       reason: {
         vi: 'Hai dấu giáng là {Bb} trưởng; đếm xuống ba nửa cung: {Bb}, {A}, {Ab}, {G}.',
         en: 'Two flats is {Bb} major; count down three half steps: {Bb}, {A}, {Ab}, {G}.',
@@ -73,7 +73,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Giọng thứ song song của {F} trưởng là giọng nào?', en: 'What is the relative minor of {F} major?' },
-      answer: { type: 'key', note: 'D' },
+      answer: { type: 'key', note: 'D', blackKeys: 'b' },
       reason: {
         vi: 'Đếm xuống ba nửa cung từ {F}: {E}, {Eb}, {D}, nên {D} thứ cũng có một dấu giáng.',
         en: 'Count down three half steps from {F}: {E}, {Eb}, {D}, so {D} minor also has one flat.',
@@ -82,7 +82,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Trong một giọng thứ, {Ab} là trung âm. Đó là giọng nào?', en: 'In a minor key, {Ab} is the mediant. Which key is it?' },
-      answer: { type: 'key', note: 'F' },
+      answer: { type: 'key', note: 'F', blackKeys: 'b' },
       reason: {
         vi: 'Trung âm là bậc 3, nên chủ âm thấp hơn hai bậc: {Ab}, {G}, {F}.',
         en: 'The mediant is degree 3, so the tonic is two degrees below: {Ab}, {G}, {F}.',
@@ -91,7 +91,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Trong một giọng trưởng, {B} là át âm. Đó là giọng nào?', en: 'In a major key, {B} is the dominant. Which key is it?' },
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: '#' },
       reason: {
         vi: 'Át âm cao hơn chủ âm một quãng 5, và từ {E} lên quãng 5 là {B}.',
         en: 'The dominant is a 5th above the tonic, and a 5th above {E} is {B}.',
