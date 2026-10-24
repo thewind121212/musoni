@@ -59,7 +59,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt gốc của hợp âm này là nốt nào?', en: 'What is the root of this chord?' },
       blocks: [{ type: 'staff', clef: 'treble', notes: 'A4+C5+E5' }],
-      answer: { type: 'key', note: 'A' },
+      answer: { type: 'key', note: 'A', blackKeys: '#' },
       reason: {
         vi: 'Ba nốt đã xếp chồng theo quãng 3, nên nốt thấp nhất {A} là nốt gốc.',
         en: 'The notes are stacked in thirds, so the lowest one, {A}, is the root.',

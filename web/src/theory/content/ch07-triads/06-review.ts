@@ -72,7 +72,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt gốc của hợp âm này là nốt nào?', en: 'What is the root of this chord?' },
       blocks: [{ type: 'staff', clef: 'treble', notes: 'F#4+A4+D5' }],
-      answer: { type: 'key', note: 'D' },
+      answer: { type: 'key', note: 'D', blackKeys: '#' },
       reason: {
         vi: 'Xếp lại thành {D} {F#} {A}, nên nốt gốc là {D}; {F#} chỉ là nốt bass.',
         en: 'Restacked it is {D} {F#} {A}, so the root is {D}; {F#} is only the bass.',
@@ -94,8 +94,8 @@ export default {
         ],
       },
       reason: {
-        vi: 'Xếp lại thành {A} {C#} {E}, hợp âm A trưởng, với nốt năm {E} ở dưới cùng: A/E.',
-        en: 'Restacked it is {A} {C#} {E}, an A major triad with its fifth, {E}, at the bottom: A/E.',
+        vi: 'Xếp lại thành {A} {C#} {E}, hợp âm {A} trưởng, với nốt năm {E} ở dưới cùng: A/E.',
+        en: 'Restacked it is {A} {C#} {E}, an {A} major triad with its fifth, {E}, at the bottom: A/E.',
       },
     },
     {

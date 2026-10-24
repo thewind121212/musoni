@@ -77,7 +77,7 @@ export default {
         { type: 'staff', clef: 'treble', notes: 'G4+Bb4+E5+G5' },
         { type: 'play', notes: 'G4+Bb4+E5+G5' },
       ],
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: 'b' },
       reason: {
         vi: 'Xếp lại cho sát, {E4} {G4} {Bb4} nằm trên ba dòng liền nhau, nên {E} là nốt gốc.',
         en: 'Stacked close, {E4} {G4} {Bb4} sit on three lines in a row, so {E} is the root.',
@@ -134,8 +134,8 @@ export default {
         ],
       },
       reason: {
-        vi: 'Xếp lại thành {F} {A} {C}, hợp âm F trưởng; {C} nằm dưới cùng nên viết F/C.',
-        en: 'Restacked it is {F} {A} {C}, an F major triad; {C} is at the bottom, so it is F/C.',
+        vi: 'Xếp lại thành {F} {A} {C}, hợp âm {F} trưởng; {C} nằm dưới cùng nên viết F/C.',
+        en: 'Restacked it is {F} {A} {C}, an {F} major triad; {C} is at the bottom, so it is F/C.',
       },
     },
   ],

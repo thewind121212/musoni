@@ -123,7 +123,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt gốc của hợp âm Am/C là nốt nào?', en: 'What is the root of Am/C?' },
       blocks: [{ type: 'staff', clef: 'treble', notes: 'C5+E5+A5' }],
-      answer: { type: 'key', note: 'A' },
+      answer: { type: 'key', note: 'A', blackKeys: '#' },
       reason: {
         vi: 'Chữ đầu tiên là nốt gốc: Am là {A} thứ, còn {C} chỉ là nốt bass.',
         en: 'The first letter is the root: Am is {A} minor, and {C} is only the bass.',
