@@ -71,6 +71,7 @@ screen links them.
 | 24. Chuyển giọng trùng âm / Enharmonic modulation | `ch24-enharmonic-modulation` | 23.1 Enharmonic modulation, 23.2 The V7 and Ger+6 as pivot chords, 23.3 The fully diminished seventh as pivot chord; review after 23.4 Practice exercises |
 | 18. Hợp âm át phụ / Secondary dominant chords | `ch18-secondary-dominants` | 17.1 Examples with secondary dominants, 17.2 Tonicization, 17.3 Secondary dominants in major and minor, 17.4 Analyzing secondary dominants, 17.5 Writing secondary dominants, 17.6 Irregular resolutions; review after 17.7 Practice exercises |
 | 19. Hợp âm giảm phụ / Secondary diminished chords | `ch19-secondary-diminished` | 18.1 Secondary diminished chords, 18.2 In major and minor, 18.3 Analyzing, 18.4 Writing; review after 18.5 Practice exercises |
+| 20. Pha trộn điệu thức / Mode mixture | `ch20-mode-mixture` | 19.1 Mode mixture, 19.2 Harmonization of borrowed scale degrees, 19.3 Analyzing and writing borrowed chords, 19.4 The deceptive cadence with ♭VI, 19.5 The Picardy 3rd; review after 19.6 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).

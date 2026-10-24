@@ -326,6 +326,9 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | biến âm / nốt biến âm | chromatic / chromatic note |
 | giải quyết (bất thường / đánh lừa) | resolution (irregular / deceptive) |
 | hợp âm giảm phụ | secondary diminished chord |
+| pha trộn điệu thức | mode mixture |
+| hợp âm mượn / bậc mượn | borrowed chord / borrowed scale degree |
+| quãng ba Picardy | Picardy 3rd |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
