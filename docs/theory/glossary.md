@@ -275,5 +275,17 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | tiết nhạc | subphrase |
 | a phẩy (a′) | a prime |
 
+## Phrases (app ch 14)
+| Tiếng Việt | English |
+|---|---|
+| câu trình bày–phát triển | sentence |
+| kết trọn / kết chưa trọn | conclusive / inconclusive cadence |
+| đoạn nhạc (song song / tương phản) | period (parallel / contrasting) |
+| câu hỏi / câu đáp | antecedent / consequent |
+| câu lặp lại / đoạn nhạc lặp lại | repeated phrase / repeated period |
+| đoạn nhạc bất đối xứng / đoạn nhạc kép | asymmetrical / double period |
+| nhóm câu / chuỗi câu | phrase group / phrase chain |
+| gối câu | elision |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
