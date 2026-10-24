@@ -108,6 +108,9 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | đúng / trưởng / thứ / tăng / giảm | perfect / major / minor / augmented / diminished |
 | quãng giai điệu / quãng hòa âm | melodic / harmonic interval |
 | đảo quãng | interval inversion |
+| cỡ quãng | numeric size |
+| quãng ba cung | tritone |
+| quãng trùng âm | enharmonic intervals |
 
 ## Chords (ch 6–7)
 | Tiếng Việt | English |
