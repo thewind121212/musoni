@@ -16,6 +16,4 @@ export default defineDrill({
   order: 20,
   levels: [1, 2, 3, 4].map(l => ({ name: levelKey(l), detail: levelDetailKey(l) })),
   defaults: { level: 1, durationSec: KEY_SIG_DEFAULT_DURATION_SECONDS },
-  // Chapter 3's key-signature lesson. Until it is written, the drill opens
-  // from "Xem tất cả" (and stays open once played).
 })

@@ -70,14 +70,20 @@ part of the Đọc nốt level; there is no separate clef setting. Use an existi
 drill setting only; never add drill features in a chapter PR.
 
 Leaving out `practice` is fine when no drill fits: the end screen then makes
-"Bài tiếp" the main button and adds an "Ôn lại cả chương" link. Known gaps today:
-Đọc nốt has no C clef level, and nothing trains key-finding without a staff,
-rhythm, intervals or chords yet (drills for them are being built; a preset may
-name any registered drill). Current drills: Đọc nốt (`note-id`: clef levels, sharps
-and flats) and Nghe & Đàn (`hear-play`: L1 Do Mi Sol in C, L2 Do–Sol in 3 keys,
-L3 full scale in 5 keys, L4 all 12 notes in 7 keys). Read their stores and docs
-(`docs/fe/drill-note-identification.md`, `docs/fe/drill-hear-play.md`) for the
-exact preset values.
+"Bài tiếp" the main button and adds an "Ôn lại cả chương" link. Current drills
+(read each one's `drills/<id>/drill.ts` and `docs/fe/drill-*.md` for exact values):
+
+| Drill | id | Levels | Preset options |
+|---|---|---|---|
+| Đọc nốt | `note-id` | 1 Khóa Sol, 2 Khóa Sol +, 3 Khóa Fa, 4 Cả hai | `accidentals` |
+| Nghe & Đàn | `hear-play` | 1 Do Mi Sol in C, 2 Do–Sol in 3 keys, 3 full scale in 5 keys, 4 all 12 notes in 7 keys | none |
+| Hóa biểu | `key-sig` | 1 up to 2 ♯/♭, 2 up to 4, 3 all 15 (major), 4 major and relative minor | none |
+| Quãng | `intervals` | 1 size only, 2 major/minor/perfect, 3 with accidentals, 4 augmented and diminished | none |
+| Hợp âm | `chords` | 1-4 by name (C major's triads → inversions), 5-7 Roman numerals (≤2 ♯/♭, ≤4, minor keys) | `mode` (`'name'`/`'roman'`) |
+| Tiết tấu | `rhythm` | 1 whole/half/quarter → 4 adds 6/8, triplets, sixteenths | `tempo` |
+
+Known gaps: Đọc nốt has no C clef level or double accidentals; nothing trains
+seventh chords, cadences, progressions or minor scales yet.
 
 ## 5. Writing notes and terms
 
@@ -86,6 +92,11 @@ exact preset values.
   so the app prints it in the reader's naming (Sol / G).
 - Exception: "Do Re Mi" / "C D E" may be plain words when the text is about the
   naming systems themselves.
+- Chord symbols (lead-sheet and slash chords: `Gm`, `F/A`, `Bø7`) are written in
+  plain letters in every naming, as musicians write them and as the chords drill
+  prints them; use ♯ ♭ in them. Note and key names around them stay tokens:
+  "{F} {A} {C}, hợp âm {F} trưởng, viết F/C". The validator can't see this, so
+  check it by hand.
 - Use only glossary terms. New term → add it to `docs/theory/glossary.md` in your
   PR and say so in the description.
 - First use of a term in a lesson: bold, Vietnamese with the English in brackets.

@@ -47,6 +47,7 @@ screen links them.
 |---------|--------|---------------|
 | 1. Cao độ & khuông nhạc / Pitch and the staff | `ch01-pitch-staff` | 1.1 Pitch, 1.2 Notation, 1.3 Octave registers; review after 1.6 Practice exercises |
 | 2. Dấu hóa, nửa cung, nguyên cung / Accidentals and steps | `ch02-accidentals-steps` | 1.4 Accidentals, 1.5 Enharmonic notes, 2.1 Half steps and whole steps; review after 1.6 and 2.4 Practice exercises |
+| 3. Gam trưởng và hóa biểu / Major scales and key signatures | `ch03-major-scales-keys` | 2.2 The major scale, 2.3 Major key signatures (with 2.3.1 Identifying key signatures); review after 2.4 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).

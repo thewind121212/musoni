@@ -359,6 +359,11 @@ a real browser.
       sharps and flats, double sharps and naturals, enharmonic notes, half and whole steps,
       and a review. Practice: Đọc nốt with ♯ ♭ (L1 after sharps and flats, L4 after the review).
       White-key answers show the black keys. `docs/theory/ch02-accidentals-steps.md`
+- [x] **Theory chapter 3, Gam trưởng và hóa biểu** (2026-10-24; book 2.2-2.4): the major scale,
+      major key signatures, the circle of fifths, identifying a key from its signature, and a
+      review. Practice: Nghe & Đàn L3 after the scale, Hóa biểu L1 → L3 lesson by lesson.
+      `docs/theory/ch03-major-scales-keys.md`. The port guide's drill list now names all six drills,
+      and chord symbols are written in letters (chapter 7 onward)
 
 ## Theory chapters
 
@@ -368,7 +373,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 |---|---|---|---|
 | 1. Cao độ & khuông nhạc | `ch01-pitch-staff` | 1.1-1.3, 1.6 | Done (PR 0, reference chapter) — `docs/theory/ch01-pitch-staff.md` |
 | 2. Dấu hóa, nửa cung, nguyên cung | `ch02-accidentals-steps` | 1.4, 1.5, 2.1; review after 1.6, 2.4 | Done — `docs/theory/ch02-accidentals-steps.md` |
-| 3-10 | | book 2.2-9.9 | Porting (Tier 1, one PR each) |
+| 3. Gam trưởng và hóa biểu | `ch03-major-scales-keys` | 2.2-2.3, review after 2.4 | Done — `docs/theory/ch03-major-scales-keys.md` |
+| 4-10 | | book 3.1-9.9 | Porting (Tier 1, one PR each) |
 
 ## In Progress
 
