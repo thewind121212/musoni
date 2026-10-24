@@ -9,7 +9,8 @@ Route `/train/key-sig`, module `drills/key-sig`, store `useKeySigStore`,
 registry entry `drills/key-sig/drill.ts` (group `read`, order 20, icon `#`,
 amber action colour). On Luyện from the start (no unlocks since 2026-10-23);
 chapter 3's lessons link to it level by level (`major-scales-keys/key-signatures` L1,
-`circle-of-fifths` L2, `identifying-keys` and `review` L3).
+`circle-of-fifths` L2, `identifying-keys` and `review` L3), and chapter 4's
+`minor-scales-keys/minor-key-signatures` and `review` to L4.
 Proposal: project files `theory/drills-proposal.md`; approved mockup
 `screenshots/theory-drills/2-key-signatures.png`.
 
