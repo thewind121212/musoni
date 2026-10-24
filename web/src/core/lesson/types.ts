@@ -93,6 +93,12 @@ export interface KeyAnswer {
   note: string
   /** Names on the pad's keys. Off when the question is where a key is; the answer still shows its name. Default on. */
   labels?: boolean
+  /**
+   * Show the black keys, spelled with sharps or flats, when the answer is a
+   * white key, so a black key is a possible wrong answer ("a half step below
+   * {C}"). A black-key answer always shows them, spelled like the answer.
+   */
+  blackKeys?: '#' | 'b'
 }
 
 /** Two to four choices, exactly one with `correct: true`. */

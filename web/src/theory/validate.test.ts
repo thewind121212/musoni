@@ -64,6 +64,8 @@ describe('validateChapter', () => {
     expect(errorsAfter((_, l) => { delete (l.steps[1] as Partial<CheckStep>).reason })[0]).toMatch(/needs a reason/)
     expect(errorsAfter((_, l) => { (l.steps[1] as CheckStep).answer = { type: 'key', note: 'E#' } })[0])
       .toMatch(/not on the answer pad/)
+    expect(errorsAfter((_, l) => { (l.steps[1] as CheckStep).answer = { type: 'key', note: 'F#', blackKeys: 'b' } })[0])
+      .toMatch(/blackKeys on a black-key answer/)
   })
 
   it('fails on too few checks and on a step count outside 4-7', () => {

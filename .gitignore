@@ -8,3 +8,6 @@ dist/
 # env & editor
 .env
 .env.*
+
+# Agent worktrees (Claude Code)
+.claude/worktrees/

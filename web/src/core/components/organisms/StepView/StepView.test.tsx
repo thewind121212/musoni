@@ -68,4 +68,11 @@ describe('padFor', () => {
     expect(natural.options).toHaveLength(7)
     expect(natural.options[natural.correctIndex].label).toBe('G')
   })
+
+  it('shows black keys for a white-key answer when asked, in the spelling asked', () => {
+    const pad = padFor({ type: 'key', note: 'B', blackKeys: 'b' }, 'letters')
+    expect(pad.options).toHaveLength(12)
+    expect(pad.options[pad.correctIndex].label).toBe('B')
+    expect(pad.options.map(o => o.label)).toContain('Bb')
+  })
 })

@@ -73,7 +73,9 @@ end screen; `LessonFrame` the shell. `StepView`, `LessonBlocks`, `ChoiceList`,
 `core/components` (Ôn tập renders lesson checks with them); the rest stay in
 `theory/components`.
 
-A key check uses the drills' `AnswerPad`, spelled like the answer (`padFor`); a
+A key check uses the drills' `AnswerPad`, spelled like the answer (`padFor`): a
+white-key answer shows white keys only, unless the check asks for `blackKeys`
+(`'#'` or `'b'`), which shows all twelve in that spelling; a
 lone staff note in the check turns green, a wrong pick is drawn beside it in red
 (`nearestOctave`), and with sound on the note plays. A choice check uses
 `ChoiceList`. Either way one answer per check, then `CheckVerdict` and the reason.
