@@ -50,6 +50,7 @@ screen links them.
 | 3. Gam trưởng và hóa biểu / Major scales and key signatures | `ch03-major-scales-keys` | 2.2 The major scale, 2.3 Major key signatures (with 2.3.1 Identifying key signatures); review after 2.4 Practice exercises |
 | 4. Gam thứ và hóa biểu giọng thứ / Minor scales and key signatures | `ch04-minor-scales-keys` | 3.1 Minor scales, 3.2 Minor key signatures, 3.3 Scale degree names; review after 3.4 Practice exercises |
 | 5. Trường độ và nhịp / Basics of rhythm | `ch05-durations-time` | 4.1 Time signature, 4.2 Durational symbols, 4.3 Dots and ties, 4.4 Meter, 4.5 Tuplets, 4.6 Common rhythmic notation errors; review after 4.7 Practice exercises |
+| 6. Quãng / Intervals | `ch06-intervals` | 5.1 Introduction to intervals, 5.2 Identifying intervals, 5.3 Writing intervals, 5.4 Inversion of intervals, 5.5 Augmented and diminished intervals; review after 5.6 Practice exercises |
 
 A chapter PR adds its row here (and the About page lists it on its own, from the
 lessons' `sources`).
