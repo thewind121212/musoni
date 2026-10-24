@@ -33,7 +33,7 @@ export default {
         vi: 'Vòng quãng năm ở giọng {B} thứ: hợp âm VII có nốt gốc là gì?',
         en: 'The circle of fifths in {B} minor: what is the root of VII?',
       },
-      answer: { type: 'key', note: 'A' },
+      answer: { type: 'key', note: 'A', blackKeys: '#' },
       reason: {
         vi: 'VII nằm trên bậc VII hạ của gam {B} thứ tự nhiên, tức {A}: hợp âm {A} {C#} {E}.',
         en: 'VII sits on the subtonic of {B} natural minor, {A}: the chord {A} {C#} {E}.',

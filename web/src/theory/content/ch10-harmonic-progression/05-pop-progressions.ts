@@ -47,7 +47,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Ở giọng {G} trưởng, hợp âm ♭VII có nốt gốc là gì?', en: 'In {G} major, what is the root of ♭VII?' },
-      answer: { type: 'key', note: 'F' },
+      answer: { type: 'key', note: 'F', blackKeys: '#' },
       reason: {
         vi: 'Cảm âm của {G} trưởng là {F#}; hạ nửa cung ta được bậc VII hạ {F}, hợp âm {F} trưởng.',
         en: 'The leading tone of {G} major is {F#}; a half step lower is the subtonic {F}, the {F} major chord.',
@@ -133,7 +133,7 @@ export default {
         en: 'In {A} minor, what is the root of the chord that ends the Andalusian progression?',
       },
       blocks: [{ type: 'play', notes: 'A2+A4+C5+E5:h G2+G4+B4+D5:h F2+F4+A4+C5:h E2+E4+G#4+B4:w' }],
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: '#' },
       reason: {
         vi: 'Tiến trình Andalusia kết bằng V, và bậc 5 của gam {A} thứ là {E}.',
         en: 'The Andalusian progression ends on V, and the fifth degree of {A} minor is {E}.',

@@ -38,7 +38,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Ở giọng {G} trưởng, hợp âm ii có nốt gốc là gì?', en: 'In {G} major, what is the root of ii?' },
-      answer: { type: 'key', note: 'A' },
+      answer: { type: 'key', note: 'A', blackKeys: '#' },
       reason: {
         vi: 'Bậc 2 của gam {G} trưởng là {A}, nên ii là hợp âm {A} thứ.',
         en: 'The second degree of {G} major is {A}, so ii is the {A} minor chord.',

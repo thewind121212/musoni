@@ -88,7 +88,7 @@ export default {
         vi: 'Bass của I–vi–IV–V ở giọng {C} trưởng là {C}, {A}, {F}, rồi nốt gì?',
         en: 'The bass of I–vi–IV–V in {C} major is {C}, {A}, {F}, then what?',
       },
-      answer: { type: 'key', note: 'G' },
+      answer: { type: 'key', note: 'G', blackKeys: '#' },
       reason: {
         vi: 'Hợp âm cuối là V, có nốt gốc là bậc 5 của gam {C} trưởng, tức {G}.',
         en: 'The last chord is V, whose root is the fifth degree of {C} major, {G}.',

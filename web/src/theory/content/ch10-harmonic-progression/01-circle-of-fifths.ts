@@ -109,7 +109,7 @@ export default {
         vi: 'Ở giọng {A} thứ, hợp âm đi sau VII ({G}) có nốt gốc là gì?',
         en: 'In {A} minor, what is the root of the chord after VII ({G})?',
       },
-      answer: { type: 'key', note: 'C' },
+      answer: { type: 'key', note: 'C', blackKeys: '#' },
       reason: {
         vi: 'VII sang III: {G} xuống một quãng 5 là {C}, hợp âm {C} trưởng.',
         en: 'VII goes to III: a fifth down from {G} is {C}, the {C} major chord.',
