@@ -375,6 +375,9 @@ a real browser.
 - [x] **Theory chapter 7, Hợp âm ba** (2026-10-24; book 6.1-6.7): triads, lead-sheet symbols, inversions and
       slash chords, analysing chords, sus chords, review. Practice: Hợp âm L1 → L4 (by name).
       `docs/theory/ch07-triads.md`
+- [x] **Theory chapter 8, Bậc La Mã và kết** (2026-10-24; book 7.1-7.5): Roman numerals, diatonic chords in
+      major and minor, the four cadences (each heard), review. Practice: Hợp âm L5 → L7 (Roman mode).
+      `docs/theory/ch08-roman-cadences.md`
 
 ## Theory chapters
 
@@ -389,7 +392,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 5. Trường độ và nhịp | `ch05-durations-time` | 4.1-4.6, review after 4.7 | Done — `docs/theory/ch05-durations-time.md` |
 | 6. Quãng | `ch06-intervals` | 5.1-5.5, review after 5.6 | Done — `docs/theory/ch06-intervals.md` |
 | 7. Hợp âm ba | `ch07-triads` | 6.1-6.6, review after 6.7 | Done — `docs/theory/ch07-triads.md` |
-| … | | the rest of the book (7 of 36 chapters done) | Porting (one PR per chapter) |
+| 8. Bậc La Mã và kết | `ch08-roman-cadences` | 7.1-7.4, review after 7.5 | Done — `docs/theory/ch08-roman-cadences.md` |
+| … | | the rest of the book (8 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 

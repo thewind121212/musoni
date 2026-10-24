@@ -134,6 +134,10 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | kết đánh lừa | deceptive cadence |
 | tính chất hợp âm | chord quality |
 | hợp âm sus4 / sus2 | sus4 / sus2 chord |
+| câu nhạc | phrase |
+| dịch giọng | transposition |
+| hợp âm cảm âm | leading-tone triad |
+| hợp âm bậc VII hạ | subtonic triad |
 
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
