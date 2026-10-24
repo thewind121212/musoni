@@ -372,6 +372,9 @@ a real browser.
       on Tiết tấu, L1 → L4. `docs/theory/ch05-durations-time.md`
 - [x] **Theory chapter 6, Quãng** (2026-10-24; book 5.1-5.6): size, quality, identifying, writing and
       inverting, augmented and diminished, review. Practice: Quãng L1 → L4. `docs/theory/ch06-intervals.md`
+- [x] **Theory chapter 7, Hợp âm ba** (2026-10-24; book 6.1-6.7): triads, lead-sheet symbols, inversions and
+      slash chords, analysing chords, sus chords, review. Practice: Hợp âm L1 → L4 (by name).
+      `docs/theory/ch07-triads.md`
 
 ## Theory chapters
 
@@ -385,7 +388,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 4. Gam thứ và hóa biểu giọng thứ | `ch04-minor-scales-keys` | 3.1-3.3, review after 3.4 | Done — `docs/theory/ch04-minor-scales-keys.md` |
 | 5. Trường độ và nhịp | `ch05-durations-time` | 4.1-4.6, review after 4.7 | Done — `docs/theory/ch05-durations-time.md` |
 | 6. Quãng | `ch06-intervals` | 5.1-5.5, review after 5.6 | Done — `docs/theory/ch06-intervals.md` |
-| … | | the rest of the book (6 of 36 chapters done) | Porting (one PR per chapter) |
+| 7. Hợp âm ba | `ch07-triads` | 6.1-6.6, review after 6.7 | Done — `docs/theory/ch07-triads.md` |
+| … | | the rest of the book (7 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
