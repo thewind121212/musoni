@@ -82,7 +82,7 @@ export default {
           type: 'text',
           text: {
             vi: 'Vì vậy hợp âm F ở giọng {C} thứ là V/VII khi nó đi tới B♭. Khi nó mang chức năng tiền át và đi tới G hay B°, ta ghi là IV.',
-            en: 'So an F major chord in {C} minor is V/VII when it goes to B♭. When it has pre-dominant function and goes to G or B°, label it IV.',
+            en: 'So an {F} major chord in {C} minor is V/VII when it goes to B♭. When it has pre-dominant function and goes to G or B°, label it IV.',
           },
         },
         { type: 'staff', clef: 'treble', key: 'Cm', notes: 'F4+A4+C5 Bb4+D5+F5 | F4+A4+C5 G4+B4+D5', labels: ['V/VII', 'VII', 'IV', 'V'] },
@@ -105,8 +105,8 @@ export default {
         ],
       },
       reason: {
-        vi: 'Hợp âm F trưởng đi tới V với chức năng tiền át, nên ghi IV; nó chỉ là V/VII khi đi tới B♭.',
-        en: 'The F major chord goes to V with pre-dominant function, so it is IV; it is V/VII only when it goes to B♭.',
+        vi: 'Hợp âm {F} trưởng đi tới V với chức năng tiền át, nên ghi IV; nó chỉ là V/VII khi đi tới B♭.',
+        en: 'The {F} major chord goes to V with pre-dominant function, so it is IV; it is V/VII only when it goes to B♭.',
       },
     },
     {
