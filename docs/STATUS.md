@@ -398,6 +398,9 @@ a real browser.
 - [x] **Theory chapter 34, Lý thuyết tập hợp** (2026-10-24; book 33.1-33.9): integer notation, normal form,
       prime form, interval vectors and Forte numbers, Tn and TnI, review. Sets are plain text ([0, 3, 7], (014)).
       `docs/theory/ch34-set-theory.md`
+- [x] **Theory chapter 35, Kỹ thuật mười hai âm** (2026-10-24; book 34): rows and row forms (P, I, R, RI),
+      transposition numbers, determining and writing row forms, the matrix, rows in music, non-twelve-tone
+      serialism, review. All on our own row (48 forms checked distinct by script). `docs/theory/ch35-serialism.md`
 
 ## Theory chapters
 
@@ -418,7 +421,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 32. Nhập môn hòa âm jazz | `ch32-jazz` | 31.1-31.11, review after 31.12 | Done — `docs/theory/ch32-jazz.md` |
 | 33. Trường phái ấn tượng và điệu tính mở rộng | `ch33-impressionism` | 32.1-32.4, review after 32.5 | Done — `docs/theory/ch33-impressionism.md` |
 | 34. Lý thuyết tập hợp | `ch34-set-theory` | 33.1-33.8, review after 33.9 | Done — `docs/theory/ch34-set-theory.md` |
-| … | | the rest of the book (13 of 36 chapters done) | Porting (one PR per chapter) |
+| 35. Kỹ thuật mười hai âm và chủ nghĩa chuỗi | `ch35-serialism` | 34.1-34.6, review after 34.7 | Done — `docs/theory/ch35-serialism.md` |
+| … | | the rest of the book (14 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 

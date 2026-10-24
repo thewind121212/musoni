@@ -206,5 +206,15 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | số Forte / lớp tập hợp / quan hệ Z | Forte number / set class / Z-relation |
 | chuyển vị (Tn) / phép đảo (TnI) | transposition / inversion |
 
+## Serialism (app ch 35)
+| Tiếng Việt | English |
+|---|---|
+| kỹ thuật mười hai âm / chủ nghĩa chuỗi | twelve-tone technique / serialism |
+| chuỗi / dạng chuỗi | row (series) / row form |
+| dạng gốc (P) / dạng đảo (I) / dạng nghịch hành (R) / dạng đảo nghịch hành (RI) | prime / inversion / retrograde / retrograde inversion |
+| số chuyển vị | transposition number |
+| ma trận mười hai âm | twelve-tone matrix |
+| gối đầu | overlap (elision of row forms) |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
