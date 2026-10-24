@@ -72,7 +72,7 @@ Not in the glossary when written; chosen here and used throughout:
 | âm khu | register |
 | hình thức rondo năm phần | five-part rondo |
 | đoạn chuyển | transition |
-| tiểu câu | subphrase |
+| tiết nhạc | subphrase |
 | mô phỏng | imitation |
 | nốt láy | turn (ornament) |
 | nốt móc ba | thirty-second note |

@@ -88,14 +88,14 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Đoạn B vẫn nhiều nốt móc đơn, nhưng có thêm những chuỗi nốt móc kép. Ở đầu mỗi **tiểu câu** (subphrase), cả bốn bè đi cùng một tiết tấu.',
+            vi: 'Đoạn B vẫn nhiều nốt móc đơn, nhưng có thêm những chuỗi nốt móc kép. Ở đầu mỗi **tiết nhạc** (subphrase), cả bốn bè đi cùng một tiết tấu.',
             en: 'The B section still has mostly eighth notes, now with some sixteenth-note runs. At the start of each **subphrase**, all four voices move in the same rhythm.',
           },
         },
         {
           type: 'text',
           text: {
-            vi: 'Mỗi tiểu câu mở đầu bằng bốn nốt ngắt tiếng.',
+            vi: 'Mỗi tiết nhạc mở đầu bằng bốn nốt ngắt tiếng.',
             en: 'Four staccato notes start each subphrase.',
           },
         },
@@ -106,7 +106,7 @@ export default {
     {
       kind: 'check',
       prompt: {
-        vi: 'Ở đoạn B, bốn nốt mở đầu mỗi tiểu câu được chơi thế nào?',
+        vi: 'Ở đoạn B, bốn nốt mở đầu mỗi tiết nhạc được chơi thế nào?',
         en: 'In the B section, how are the four notes that start each subphrase played?',
       },
       answer: {
