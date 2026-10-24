@@ -39,7 +39,7 @@ export default {
           type: 'play',
           notes: 'C3+C5:q E5:q G5:q E5:q | G2+F5:8 E5:8 D5:8 C5:8 G2+B4:h | F2+A4:q C5:q F5:q A4:q | G2+G4:q B4:q C3+C5:h',
           bpm: 100,
-          label: { vi: 'Nghe một chủ đề kết bằng kết chính hoàn toàn', en: 'Hear a theme closed by a perfect authentic cadence' },
+          label: { vi: 'Nghe chủ đề và kết PAC', en: 'Hear a theme and its PAC' },
         },
       ],
     },

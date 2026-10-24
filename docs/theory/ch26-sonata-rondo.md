@@ -80,7 +80,7 @@ and tonicization use the words given for this wave (chuyển giọng, ly điệu
 | chuyển giọng | modulation |
 | ly điệu | tonicization |
 | phân mảnh | fragmentation |
-| hình thức hai phần có tái hiện / hai phần cân bằng | rounded / balanced binary |
+| hình thức hai đoạn tái hiện / hai đoạn cân bằng | rounded / balanced binary |
 | hình thức sonatina | sonatina form |
 | nguyên tắc sonata | sonata principle |
 | nghịch âm | dissonance |
@@ -91,7 +91,7 @@ and tonicization use the words given for this wave (chuyển giọng, ly điệu
 | hình thức sonata-rondo | sonata rondo form |
 | tính chất rondo | rondo character |
 | chương (tác phẩm nhiều chương) | movement (multimovement work) |
-| hình thức ba phần / ba phần phức | ternary / compound ternary form |
+| hình thức ba đoạn / ba đoạn phức | ternary / compound ternary form |
 | minuet và trio | minuet and trio |
 
 "Đoạn chuyển" (transition) and "cầu nối" (bridge) are the glossary's words;

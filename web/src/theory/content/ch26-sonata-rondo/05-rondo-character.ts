@@ -104,14 +104,14 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Giao hưởng, tứ tấu đàn dây và sonata Cổ điển thường có bốn chương. Chương 1: hình thức sonata. Chương 2: **hình thức ba phần** (ternary form, A B A), sonatina hoặc rondo năm phần.',
+            vi: 'Giao hưởng, tứ tấu đàn dây và sonata Cổ điển thường có bốn chương. Chương 1: hình thức sonata. Chương 2: **hình thức ba đoạn** (ternary form, A B A), sonatina hoặc rondo năm phần.',
             en: 'Classical symphonies, string quartets and sonatas often have four movements. First movement: sonata form. Second movement: **ternary form** (ABA), sonatina form or a five-part rondo.',
           },
         },
         {
           type: 'text',
           text: {
-            vi: 'Chương 3: **minuet và trio** (minuet and trio), một **hình thức ba phần phức** (compound ternary). Chương 4: rondo, sonata hoặc sonata-rondo.',
+            vi: 'Chương 3: **minuet và trio** (minuet and trio), một **hình thức ba đoạn phức** (compound ternary). Chương 4: rondo, sonata hoặc sonata-rondo.',
             en: 'Third movement: **minuet and trio**, a **compound ternary** form. Fourth movement: rondo, sonata or sonata rondo form.',
           },
         },
@@ -135,7 +135,7 @@ export default {
         ],
       },
       reason: {
-        vi: 'Chương 3 thường là minuet và trio, một hình thức ba phần phức.',
+        vi: 'Chương 3 thường là minuet và trio, một hình thức ba đoạn phức.',
         en: 'The third movement is usually a minuet and trio, a compound ternary form.',
       },
     },

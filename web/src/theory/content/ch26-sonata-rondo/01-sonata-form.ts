@@ -131,7 +131,7 @@ export default {
         {
           type: 'text',
           text: {
-            vi: 'Trong sonata Cổ điển, phần trình bày được nhắc lại, rồi phát triển và tái hiện nhắc lại cùng nhau. Sonata kết hợp **hình thức hai phần có tái hiện** (rounded binary) và **hai phần cân bằng** (balanced binary).',
+            vi: 'Trong sonata Cổ điển, phần trình bày được nhắc lại, rồi phát triển và tái hiện nhắc lại cùng nhau. Sonata kết hợp **hình thức hai đoạn tái hiện** (rounded binary) và **hai đoạn cân bằng** (balanced binary).',
             en: 'In a Classical sonata the exposition repeats, then the development and recapitulation repeat as one unit. The sonata combines **rounded binary** and **balanced binary** form.',
           },
         },
