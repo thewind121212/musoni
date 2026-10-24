@@ -378,5 +378,19 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | quãng thuận | consonant interval |
 | (đi) so le | staggered (rhythmically) |
 
+## Counterpoint (app ch 31)
+| Tiếng Việt | English |
+|---|---|
+| đối âm (loài 1–5) / đối âm hoa mỹ | counterpoint (first to fifth species) / florid counterpoint |
+| giai điệu định sẵn | cantus firmus |
+| kết cấu đối âm / kết cấu chủ điệu | contrapuntal / homophonic texture |
+| thuận âm (hoàn toàn / không hoàn toàn) / nghịch âm | consonance (perfect / imperfect) / dissonance |
+| quãng 5 ẩn / quãng 8 ẩn | direct fifths / octaves |
+| hình cambiata | cambiata |
+| invention / fugue (fuga) | invention / fugue |
+| chủ đề / phúc đáp (thực / theo giọng) / đối đề | subject / answer (real / tonal) / countersubject |
+| đoạn xen / đoạn nối | episode / bridge (fugue) |
+| motif đầu / motif đuôi | head / tail motive |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
