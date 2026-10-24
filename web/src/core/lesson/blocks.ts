@@ -1,4 +1,5 @@
 import type { Naming, Pitch } from '@/core/music/types'
+import type { Lang } from '@/core/i18n/translate'
 import {
   midiOf, parseNotation, parsePitchName, toSounds, type NotePitch, type Sound, type StaffEvent,
 } from '@/core/music/notation'
@@ -13,11 +14,18 @@ function nameOf(pitches: NotePitch[], naming: Naming, octave: boolean): string {
   return pitches.map(p => pitchLabel({ ...p, octave: octave ? p.octave : null }, naming)).join(' ')
 }
 
-/** One label per note or rest (bars skipped), in the reader's naming; undefined for none. */
-export function staffLabels(block: StaffBlock, events: readonly StaffEvent[], naming: Naming): (string | null)[] | undefined {
+/** One label per note or rest (bars skipped), in the reader's language and naming; undefined for none. */
+export function staffLabels(
+  block: StaffBlock, events: readonly StaffEvent[], naming: Naming, lang: Lang,
+): (string | null)[] | undefined {
   if (!block.labels) return undefined
   const sounding = events.filter(e => e.kind !== 'bar')
-  if (Array.isArray(block.labels)) return block.labels.map(l => (l ? plainText(l, naming) : null))
+  if (Array.isArray(block.labels)) {
+    return block.labels.map(l => {
+      const text = typeof l === 'string' ? l : l[lang]
+      return text ? plainText(text, naming) : null
+    })
+  }
   const octave = block.labels === 'pitches'
   return sounding.map(e => (e.kind === 'note' ? nameOf(e.pitches, naming, octave) : null))
 }

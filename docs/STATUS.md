@@ -385,6 +385,11 @@ a real browser.
       and its segments, harmonic rhythm, harmonic function (tonic, prolongation, pre-dominant, dominant),
       sequences, progressions of popular music with our own examples, review. Practice: Hợp âm L5 → L7
       (Roman). Book chapters 1-9 (Tier 1) are all in. `docs/theory/ch10-harmonic-progression.md`
+- [x] **Lesson staves for harmony chapters** (2026-10-24): on a grand staff each chord member
+      goes on its own staff (`C3+E4+G4:q`: C3 bass, E4+G4 treble, one x, bars aligned;
+      `C4@b+E4` marks one member). Staff labels may be `{ vi, en }` and stack lines with `\n`
+      (figured bass `'6\n4'`, at most 3 lines). Lesson text prints doubles as 𝄪 𝄫 (chapter 2's
+      {F##4} etc. now read "Fa𝄪4"). Docs: `theory/port-guide.md` §7, `theory/framework.md`
 
 ## Theory chapters
 

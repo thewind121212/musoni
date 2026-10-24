@@ -14,6 +14,8 @@ import { pitchFromMidi } from './pitch'
  *   |  ||         a bar line, a double bar line
  *   3( C4:8 D4:8 E4:8 )   a tuplet: N notes in the time of the usual number
  *   C4@b  C4@t    on a grand staff, force the bottom or top staff
+ *   C3@b+E4+G4:q  a mark right after a chord member places that member only;
+ *                 a mark at the end of the token places the whole chord
  *
  * The parser is pure and strict: anything it does not understand is an error
  * naming the token, so a typo in lesson data fails a test, not a page.
@@ -30,6 +32,8 @@ export interface NotePitch {
   alter: -2 | -1 | 0 | 1 | 2
   natural: boolean
   octave: number
+  /** Grand staff only: the staff this chord member was forced onto. */
+  staff?: 'top' | 'bottom'
 }
 
 /** A pitch class as written in text, with or without an octave (`{G}`, `{F#4}`). */
@@ -79,10 +83,11 @@ export function parsePitchName(text: string): PitchName | null {
 }
 
 function parseNotePitch(text: string, token: string): NotePitch {
-  const p = parsePitchName(text)
+  const [, name, mark] = /^(.*?)(?:@([tb]))?$/.exec(text)!
+  const p = parsePitchName(name)
   if (!p) throw new NotationError(`not a pitch: "${text}" in "${token}"`)
   if (p.octave === null) throw new NotationError(`pitch needs an octave: "${text}" in "${token}"`)
-  return { ...p, octave: p.octave }
+  return { ...p, octave: p.octave, ...(mark ? { staff: mark === 't' ? 'top' as const : 'bottom' as const } : {}) }
 }
 
 function parseDuration(text: string | undefined, fallback: Duration, token: string) {
@@ -124,7 +129,8 @@ export function parseNotation(src: string, fallback: Duration = 'w'): StaffEvent
       continue
     }
 
-    const m = /^([^:~@]+)(?::([^~@]+))?(~)?(?:@([tb]))?$/.exec(token)
+    // The body is lazy, so a trailing `@t`/`@b` marks the token, one inside the chord its member.
+    const m = /^([^:~]+?)(?::([^~@]+))?(~)?(?:@([tb]))?$/.exec(token)
     if (!m) throw new NotationError(`cannot read "${token}"`)
     const [, body, dur, tie, staffMark] = m
     const timing = {

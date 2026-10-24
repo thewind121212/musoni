@@ -98,6 +98,21 @@ describe('validateChapter', () => {
     expect(errorsAfter((_, l) => { Object.assign(explain(l)[3], { labels: 'pitches', octaves: 2 }) })[0]).toMatch(/one-octave keyboard/)
   })
 
+  it('checks a staff label in both languages, and each line of a stacked one', () => {
+    const labels = (value: unknown) => errorsAfter((_, l) => {
+      (l.steps[0] as unknown as { blocks: Record<string, unknown>[] }).blocks[1].labels = value
+    })
+    expect(labels([{ vi: 'Chủ âm', en: '{G}' }])).toEqual([])
+    expect(labels(['6\n4'])).toEqual([])
+    expect(labels(['{C#}\n{Ebb}\n7'])).toEqual([])
+    expect(labels([{ vi: 'Chủ', en: '' }])).toEqual([])
+    expect(labels([{ vi: 'Hợp âm chủ', en: 'I' }])[0]).toMatch(/label "Hợp âm chủ" is too long \(vi\)/)
+    expect(labels([{ vi: '{Sol}', en: 'I' }])[0]).toMatch(/not a pitch token.*\(vi\)/)
+    expect(labels([{ vi: 'I' }])[0]).toMatch(/missing en text/)
+    expect(labels(['6\n4\n3\n2'])[0]).toMatch(/4 lines, at most 3/)
+    expect(labels(['6\nseventh'])[0]).toMatch(/label "seventh" is too long/)
+  })
+
   it('counts sentences at their ends only', () => {
     expect(sentenceCount('Một câu. Hai câu? Ba!')).toBe(3)
     expect(sentenceCount('{C4} nằm giữa, ví dụ 1.5 không cắt câu')).toBe(1)

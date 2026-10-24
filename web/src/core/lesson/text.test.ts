@@ -10,7 +10,8 @@ describe('lesson text', () => {
 
   it('prints double accidentals and a written natural', () => {
     const [p] = parseText('{C##}')
-    expect(p.kind === 'pitch' && pitchLabel(p.pitch, 'letters')).toBe('C##')
+    expect(p.kind === 'pitch' && pitchLabel(p.pitch, 'letters')).toBe('C𝄪')
+    expect(plainText('{Ebb} {Bbb3}', 'solfege')).toBe('Mi𝄫 Si𝄫3')
     const [n] = parseText('{Fn4}')
     expect(n.kind === 'pitch' && pitchLabel(n.pitch, 'solfege')).toBe('Fa♮4')
   })

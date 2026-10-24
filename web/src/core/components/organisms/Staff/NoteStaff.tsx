@@ -35,7 +35,7 @@ export interface NoteStaffProps {
   keySignature?: string
   /** Time signature (`4/4`, `6/8`, `C`). */
   time?: string
-  /** One label per note or rest (bars skipped), printed under the staff; null for none. */
+  /** One label per note or rest (bars skipped), printed under the staff; null for none. `\n` stacks lines. */
   labels?: readonly (string | null)[]
   /** Notes or rests (bars skipped) drawn in the accent colour. */
   highlight?: readonly number[]
@@ -70,12 +70,18 @@ function vexKey(p: NotePitch): string {
   return `${p.letter.toLowerCase()}${p.natural ? 'n' : ACC[p.alter]}/${p.octave}`
 }
 
-/** Notes from middle C up go on the treble staff of a grand staff, unless the notation says otherwise. */
-function onTop(e: Exclude<StaffEvent, { kind: 'bar' }>): boolean {
-  if (e.staff) return e.staff === 'top'
-  if (e.kind === 'rest') return true
-  const lowest = Math.min(...e.pitches.map(diatonicStep))
-  return lowest >= diatonicStep({ letter: 'C', octave: 4 })
+const MIDDLE_C = diatonicStep({ letter: 'C', octave: 4 })
+
+/**
+ * What each staff of a grand staff draws for an event, top then bottom: the
+ * chord members it holds (`[]` for a rest), or null for nothing. A member goes
+ * by its own mark, else the event's, else from middle C up on top; a rest on
+ * top unless marked.
+ */
+function splitGrand(e: Exclude<StaffEvent, { kind: 'bar' }>): (NotePitch[] | null)[] {
+  if (e.kind === 'rest') return e.staff === 'bottom' ? [null, []] : [[], null]
+  const onTop = (p: NotePitch) => (p.staff ?? e.staff ?? (diatonicStep(p) >= MIDDLE_C ? 'top' : 'bottom')) === 'top'
+  return [e.pitches.filter(onTop), e.pitches.filter(p => !onTop(p))].map(m => (m.length ? m : null))
 }
 
 interface Drawn {
@@ -140,50 +146,61 @@ export function NoteStaff({
       }
     }
 
-    // One tickable list per staff; on a grand staff the other staff gets an
-    // invisible note of the same length, so both stay in step.
+    // One tickable list per staff. On a grand staff each chord member goes on
+    // its own staff, and a staff with nothing at that time gets an invisible
+    // note of the same length, so both stay in step and their bars line up.
     const lists: Note[][] = staves.map(() => [])
-    const sounding: { note: StaveNote; staff: number }[] = []
+    /** Per note or rest (bars skipped): what was drawn for it, top staff first. */
+    const sounding: StaveNote[][] = []
     const ties: StaveTie[] = []
-    const tuplets = new Map<number, StaveNote[]>()
-    const tupletCount = new Map<number, number>()
-    let tieFrom: StaveNote | null = null
+    const tuplets = new Map<string, { notes: StaveNote[]; count: number }>()
+    let tieFrom: (StaveNote | null)[] = []
     let index = 0
     for (const e of events) {
       if (e.kind === 'bar') {
         lists.forEach(l => l.push(new BarNote(e.double ? 2 : 1)))
         continue
       }
-      const staff = grand && !onTop(e) ? 1 : 0
-      const c = clefs[staff]
       const rest = e.kind === 'rest'
-      const note = new StaveNote({
-        keys: rest ? [REST_KEY[c]] : e.pitches.map(vexKey),
-        duration: e.duration + (rest ? 'r' : ''),
-        dots: e.dots,
-        clef: c,
-        autoStem: true,
-      })
-      if (!rest && !keySignature) {
-        e.pitches.forEach((p, i) => {
-          const acc = p.natural ? 'n' : ACC[p.alter]
-          if (acc) note.addModifier(new Accidental(acc), i)
-        })
-      }
-      if (e.dots) Dot.buildAndAttach([note], { all: true })
+      const parts = grand ? splitGrand(e) : [rest ? [] : e.pitches]
       const colour = tone === 'correct' ? correct : highlight.includes(index) ? accent : ink
-      note.setStyle({ fillStyle: colour, strokeStyle: colour })
-      note.setLedgerLineStyle({ fillStyle: ink, strokeStyle: ink })
-      lists.forEach((l, s) => l.push(s === staff
-        ? note
-        : new GhostNote({ duration: e.duration, dots: e.dots })))
-      if (tieFrom) ties.push(new StaveTie({ firstNote: tieFrom, lastNote: note }))
-      tieFrom = e.kind === 'note' && e.tie ? note : null
-      if (e.tuplet) {
-        tuplets.set(e.tuplet.group, [...(tuplets.get(e.tuplet.group) ?? []), note])
-        tupletCount.set(e.tuplet.group, e.tuplet.count)
-      }
-      sounding.push({ note, staff })
+      const drawnHere: StaveNote[] = []
+      tieFrom = parts.map((members, staff) => {
+        if (!members) {
+          const ghost = new GhostNote({ duration: e.duration, dots: e.dots })
+          // A spacer beside a tuplet note is shortened as the tuplet shortens its notes.
+          if (e.tuplet) ghost.applyTickMultiplier(TUPLET_OCCUPIES[e.tuplet.count], e.tuplet.count)
+          lists[staff].push(ghost)
+          return null
+        }
+        const c = clefs[staff]
+        const note = new StaveNote({
+          keys: rest ? [REST_KEY[c]] : members.map(vexKey),
+          duration: e.duration + (rest ? 'r' : ''),
+          dots: e.dots,
+          clef: c,
+          autoStem: true,
+        })
+        if (!rest && !keySignature) {
+          members.forEach((p, i) => {
+            const acc = p.natural ? 'n' : ACC[p.alter]
+            if (acc) note.addModifier(new Accidental(acc), i)
+          })
+        }
+        if (e.dots) Dot.buildAndAttach([note], { all: true })
+        note.setStyle({ fillStyle: colour, strokeStyle: colour })
+        note.setLedgerLineStyle({ fillStyle: ink, strokeStyle: ink })
+        lists[staff].push(note)
+        const from = tieFrom[staff]
+        if (from) ties.push(new StaveTie({ firstNote: from, lastNote: note }))
+        if (e.tuplet) {
+          const key = `${e.tuplet.group}:${staff}`
+          tuplets.set(key, { notes: [...(tuplets.get(key)?.notes ?? []), note], count: e.tuplet.count })
+        }
+        drawnHere.push(note)
+        return e.kind === 'note' && e.tie ? note : null
+      })
+      sounding.push(drawnHere)
       index++
     }
 
@@ -192,7 +209,7 @@ export function NoteStaff({
     if (chosen && single) {
       const pick = new StaveNote({
         keys: [`${chosen.letter.toLowerCase()}${chosen.accidental}/${chosen.octave}`],
-        duration: sounding[0].note.getDuration(),
+        duration: sounding[0][0].getDuration(),
         clef: clefs[0],
         autoStem: true,
       })
@@ -203,10 +220,12 @@ export function NoteStaff({
 
     // Tuplets first: they shorten their notes, which the voice, the beams and
     // the spacing must all see (a triplet of eighths fills one beat).
-    const tupletMarks = [...tuplets].map(([group, notes]) => {
-      const count = tupletCount.get(group)!
-      return new Tuplet(notes, { numNotes: count, notesOccupied: TUPLET_OCCUPIES[count] })
-    })
+    const tupletMarks = [...tuplets.values()].map(({ notes, count }) => (
+      new Tuplet(notes, { numNotes: count, notesOccupied: TUPLET_OCCUPIES[count] })
+    ))
+    // Each note knows its staff before formatting, so a chord split across a
+    // grand staff is not pushed aside as if its halves were two voices on one staff.
+    lists.forEach((l, i) => l.forEach(n => n.setStave(staves[i])))
     const voices = lists.map(l => new Voice({ numBeats: 4, beatValue: 4 }).setMode(Voice.Mode.SOFT).addTickables(l))
     if (keySignature) Accidental.applyAccidentals(voices, keySignature)
     // Beams follow the meter's beat (6/8 beams eighths in threes); quarter beats without one.
@@ -225,8 +244,8 @@ export function NoteStaff({
     // Crop: the staff lines plus whatever the notes reach, or plus `room` when pinned.
     const pad = room ?? MARGIN
     const ys: number[] = [staves[0].getYForLine(0) - pad, staves[staves.length - 1].getYForLine(4) + pad]
-    const inked = room === undefined ? sounding : []
-    for (const { note } of inked) {
+    const inked = room === undefined ? sounding.flat() : []
+    for (const note of inked) {
       try {
         const box = note.getBoundingBox()
         ys.push(box.getY() - MARGIN / 2, box.getY() + box.getH() + MARGIN / 2)
@@ -252,7 +271,7 @@ export function NoteStaff({
       svg.style.height = 'auto'
       svg.style.display = 'block'
     }
-    const xs = sounding.map(({ note }) => {
+    const xs = sounding.map(([note]) => {
       let centre = note.getAbsoluteX()
       try { centre += note.getGlyphWidth() / 2 } catch { /* jsdom: the left edge will do */ }
       return centre / width
@@ -263,16 +282,22 @@ export function NoteStaff({
       chosen?.octave, width, room])
 
   const shown = labels?.some(l => l) ? labels : null
+  // Stacked labels (figured bass): one line each, centred, set close together.
+  const lines = Math.max(1, ...(shown ?? []).map(l => (l ? l.split('\n').length : 1)))
   return (
     <div className="w-full">
       <div ref={ref} data-testid="note-staff" />
       {shown && (
-        <div className="relative h-7" aria-hidden="true">
+        <div
+          className="relative h-7" aria-hidden="true"
+          style={lines > 1 ? { height: `calc(1.75rem + ${lines - 1} * 1.1rem)` } : undefined}
+        >
           {shown.map((text, i) => text && drawn.xs[i] !== undefined && (
             <span
               key={i}
               data-label={i}
-              className={'absolute top-0 -translate-x-1/2 text-[15px] font-semibold whitespace-nowrap md:text-base '
+              className={'absolute top-0 -translate-x-1/2 text-center text-[15px] font-semibold whitespace-pre md:text-base '
+                + (lines > 1 ? 'leading-[1.1] ' : '')
                 + (tone === 'correct' ? 'text-correct' : highlight.includes(i) ? 'text-accent' : 'text-ink-soft')}
               style={{ left: `${drawn.xs[i] * 100}%` }}
             >

@@ -29,9 +29,11 @@ const KEY_LENGTH: Record<number, number> = { 1: 17, 2: 24, 3: 30, 4: 34 }
 /** How much larger than its notation units a staff may draw, so one note does not fill a desktop. */
 const STAFF_MAX_SCALE = 1.7
 
-function Staff({ block, naming, tone, chosen }: { block: StaffBlock; naming: Naming; tone?: StaffTone; chosen?: Pitch | null }) {
+function Staff({ block, lang, naming, tone, chosen }: {
+  block: StaffBlock; lang: Lang; naming: Naming; tone?: StaffTone; chosen?: Pitch | null
+}) {
   const events = useMemo(() => parseNotation(block.notes), [block.notes])
-  const labels = useMemo(() => staffLabels(block, events, naming), [block, events, naming])
+  const labels = useMemo(() => staffLabels(block, events, naming, lang), [block, events, naming, lang])
   const width = staffWidth(block, events)
   return (
     <div className="mx-auto w-full" style={{ maxWidth: width * STAFF_MAX_SCALE }}>
@@ -71,7 +73,7 @@ export function LessonBlocks({ blocks, lang, naming, t, onPlay, playing = null, 
         out.push(<TipBox key={i}>{text(block.text)}</TipBox>)
         break
       case 'staff':
-        out.push(<Staff key={i} block={block} naming={naming} tone={tone} chosen={chosen} />)
+        out.push(<Staff key={i} block={block} lang={lang} naming={naming} tone={tone} chosen={chosen} />)
         break
       case 'play': {
         const after = blocks[i + 1]

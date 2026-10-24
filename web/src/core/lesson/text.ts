@@ -9,9 +9,9 @@ export type Segment =
 
 export class TextError extends Error {}
 
-const ACC: Record<string, string> = { '2': '##', '1': '#', '0': '', '-1': 'b', '-2': 'bb' }
+const ACC: Record<string, string> = { '2': '𝄪', '1': '#', '0': '', '-1': 'b', '-2': '𝄫' }
 
-/** A note name in the reader's naming: `Sol`, `Sol4`, `Fa#`, `Sib3` (or `G`, `G4`, `F#`, `Bb3`). */
+/** A note name in the reader's naming: `Sol`, `Sol4`, `Fa#`, `Sib3`, `Do𝄪` (or `G`, `G4`, `F#`, `Bb3`, `C𝄪`). */
 export function pitchLabel(p: PitchName, naming: Naming): string {
   const acc = p.natural ? '♮' : ACC[String(p.alter)]
   return label(p.letter, '', naming) + acc + (p.octave ?? '')

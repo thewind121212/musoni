@@ -83,6 +83,57 @@ describe('NoteStaff', () => {
     expect(screen.getByText('Do')).toHaveClass('text-correct')
   })
 
+  it('stacks a label written with line breaks, and keeps one-line labels as they were', () => {
+    const { unmount } = render(<NoteStaff clef="bass" events={notes('E3 F3')} labels={['6\n4', '7']} />)
+    const stacked = document.querySelector('[data-label="0"]')!
+    expect(stacked.textContent).toBe('6\n4')
+    expect(stacked).toHaveClass('whitespace-pre')
+    expect((stacked.parentElement as HTMLElement).style.height).toMatch(/calc/)
+    unmount()
+    render(<NoteStaff clef="bass" events={notes('E3 F3')} labels={['I', 'V']} />)
+    expect((screen.getByText('I').parentElement as HTMLElement).style.height).toBe('')
+  })
+
+  describe('chords on a grand staff', () => {
+    const svg = () => screen.getByTestId('note-staff').querySelector('svg')!
+    /** Noteheads per drawn note, top staff (above the gap between staves) or bottom. */
+    const heads = () => [...svg().querySelectorAll('.vf-stavenote')].map(n => {
+      const ys = [...n.querySelectorAll('.vf-notehead text')].map(t => Number(t.getAttribute('y')))
+      return { count: ys.length, top: ys.every(y => y < 120) }
+    })
+    const bars = (top: boolean) => [...svg().querySelectorAll('.vf-stavebarline rect')]
+      .filter(r => Number(r.getAttribute('y')) < 120 === top)
+      .map(r => r.getAttribute('x'))
+
+    it('splits a chord at middle C: the low member on the bass staff, the rest on the treble', () => {
+      render(<NoteStaff clef="grand" events={notes('C3+E4+G4:q')} />)
+      expect(heads()).toEqual(expect.arrayContaining([{ count: 2, top: true }, { count: 1, top: false }]))
+      expect(heads()).toHaveLength(2)
+      // Both halves at one x: not pushed aside as two voices on one staff would be.
+      const xs = new Set([...svg().querySelectorAll('.vf-notehead text')].map(t => t.getAttribute('x')))
+      expect(xs.size).toBe(1)
+    })
+
+    it('keeps both staves in step, so their bar lines line up', () => {
+      render(<NoteStaff clef="grand" events={notes('C3+E4+G4:q C4:q F2+A4:h | G2+B3@t+D4+G4:h C3:h ||')} />)
+      expect(bars(true)).toEqual(bars(false))
+      expect(bars(true).length).toBeGreaterThan(2)
+    })
+
+    it('leaves a chord from middle C up whole on the treble staff, and follows a per-note mark', () => {
+      const { unmount } = render(<NoteStaff clef="grand" events={notes('C4+E4+G4')} />)
+      expect(heads()).toEqual([{ count: 3, top: true }])
+      unmount()
+      render(<NoteStaff clef="grand" events={notes('C4@b+E4+G4')} />)
+      expect(heads()).toEqual(expect.arrayContaining([{ count: 2, top: true }, { count: 1, top: false }]))
+    })
+
+    it('labels each chord once, whatever staves it spans', () => {
+      render(<NoteStaff clef="grand" events={notes('C3+E4+G4 | F2+F4+A4+C5')} labels={['I', 'IV']} />)
+      expect(document.querySelectorAll('[data-label]')).toHaveLength(2)
+    })
+  })
+
   it('keeps one box whatever the notes reach when pinned with room', () => {
     const box = (src: string) => {
       const { unmount } = render(<NoteStaff clef="treble" events={notes(src)} room={30} />)

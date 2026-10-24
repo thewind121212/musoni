@@ -23,6 +23,16 @@ describe('LessonBlocks', () => {
     expect(screen.getAllByText(/on the keys/)).toHaveLength(1)
   })
 
+  it('labels a staff in the reader\'s language', () => {
+    const staff: Block[] = [{ type: 'staff', clef: 'treble', notes: 'C4 G4', labels: [{ vi: 'Chủ', en: 'Tonic' }, 'V'] }]
+    const { unmount } = render(<LessonBlocks blocks={staff} lang="vi" naming="solfege" t={t} onPlay={() => {}} />)
+    expect(screen.getByText('Chủ')).toBeInTheDocument()
+    unmount()
+    render(<LessonBlocks blocks={staff} lang="en" naming="letters" t={t} onPlay={() => {}} />)
+    expect(screen.getByText('Tonic')).toBeInTheDocument()
+    expect(screen.getByText('V')).toBeInTheDocument()
+  })
+
   it('plays the block whose button is tapped', async () => {
     const onPlay = vi.fn()
     render(<LessonBlocks blocks={blocks} lang="vi" naming="solfege" t={t} onPlay={onPlay} />)

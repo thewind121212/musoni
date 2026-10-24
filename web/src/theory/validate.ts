@@ -9,6 +9,8 @@ const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/
 const CLEFS = ['treble', 'bass', 'alto', 'tenor', 'grand', 'none']
 const KEY_SIGNATURE = /^[A-G](#|b)?m?$/
 const TIME_SIGNATURE = /^(\d{1,2}\/(1|2|4|8|16)|C\|?)$/
+/** Lines in a stacked staff label: a figured-bass figure is at most three numbers. */
+const MAX_LABEL_LINES = 3
 const SOURCE_URL = /^https:\/\/musictheory\.pugetsound\.edu\/mt21c\/[\w-]+\.html(#[\w-]+)?$/
 
 /** Sentences in a piece of text: ends of . ? ! … followed by a space or the end. */
@@ -135,9 +137,11 @@ function validateBlock(block: Block, err: (m: string) => void) {
       if (Array.isArray(block.labels)) {
         if (block.labels.length !== sounding) err(`${block.labels.length} labels for ${sounding} notes`)
         block.labels.forEach(l => {
-          const problem = textError(l)
-          if (problem) err(`label: ${problem}`)
-          if (l.replace(/\{[^}]*\}/g, 'Xxx').length > R.maxLabelLength) err(`label "${l}" is too long`)
+          if (typeof l === 'string') return validateLabel(l, err)
+          for (const lang of ['vi', 'en'] as const) {
+            if (typeof l?.[lang] !== 'string') err(`label: missing ${lang} text (use '' for none)`)
+            else validateLabel(l[lang], m => err(`${m} (${lang})`))
+          }
         })
       } else if (block.labels !== undefined && block.labels !== 'names' && block.labels !== 'pitches') {
         err(`labels "${String(block.labels)}" is not names, pitches or a list`)
@@ -179,6 +183,17 @@ function validateBlock(block: Block, err: (m: string) => void) {
     default:
       err(`unknown block type "${(block as { type: string }).type}"`)
   }
+}
+
+/** A staff label: a short tag, or up to three stacked short lines (`'6\n4'`), pitch tokens allowed. */
+function validateLabel(label: string, err: (m: string) => void) {
+  const problem = textError(label)
+  if (problem) err(`label: ${problem}`)
+  const lines = label.split('\n')
+  if (lines.length > MAX_LABEL_LINES) err(`label "${label}" has ${lines.length} lines, at most ${MAX_LABEL_LINES}`)
+  lines.forEach(line => {
+    if (line.replace(/\{[^}]*\}/g, 'Xxx').length > R.maxLabelLength) err(`label "${line}" is too long`)
+  })
 }
 
 function localized(value: Localized | undefined, err: (m: string) => void, what: string, prose = false) {
