@@ -339,5 +339,15 @@ several (so 4/4 is "phức"). Here they mean the American simple / compound, as 
 | chuyển giọng trực tiếp / qua nốt chung / bằng mô tiến | direct / common-tone / sequential modulation |
 | trung âm biến âm | chromatic mediant |
 
+## Voice leading (app ch 27-30)
+| Tiếng Việt | English |
+|---|---|
+| quãng 5 không đều | unequal fifths |
+| hợp âm đầy đủ / hợp âm thiếu | complete / incomplete chord |
+| nốt chung | common tone |
+| giải quyết chặt / giải quyết tự do | strict / free resolution |
+| nốt khuynh hướng | tendency tone |
+| phối hòa âm | harmonize (a melody) |
+
 A chapter that needs a term not listed here adds it to this file in its own PR
 and names the addition in the PR description.
