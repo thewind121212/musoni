@@ -26,7 +26,7 @@ desktop layout, never the reverse (details: `fe/screens.md`).
 | Phase | Scope | Monetization |
 |---|---|---|
 | **1 (now)** | Note Identification drill, web only, no login, localStorage progress, activity calendar; Vietnamese-first UI (English second) | Free |
-| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), theory lessons (framework and chapter 1 built, `theory/framework.md`; chapters 2-9 being ported), "read the shape" drill, Tiết tấu rhythm drill (built, `fe/drill-rhythm.md`; replaces Complete-the-Measure), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
+| **2 (started)** | Nghe & Đàn ear drill (built, `fe/drill-hear-play.md`), theory lessons (framework and chapter 1 built, `theory/framework.md`; book chapters 1-9 ported as app chapters 1-10, the rest of the book being ported), "read the shape" drill, Tiết tấu rhythm drill (built, `fe/drill-rhythm.md`; replaces Complete-the-Measure), login, cloud progress sync, subscriptions (Stripe) | Freemium: basics free, premium = advanced levels + full stats (which drill levels are premium is not decided) |
 | **3** | More ear training (echo phrases, chords), more theory drills | Premium |
 
 ## Level 1 — Context: who uses it, what it does

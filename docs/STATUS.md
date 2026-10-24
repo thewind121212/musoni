@@ -381,6 +381,10 @@ a real browser.
 - [x] **Theory chapter 9, Hợp âm bảy** (2026-10-24; book 8.1-8.4): what a seventh chord is, the five
       qualities, the IV/5 chord, Roman numerals of diatonic sevenths, review. No practice link (the chords
       drill asks triads only). `docs/theory/ch09-seventh-chords.md`
+- [x] **Theory chapter 10, Tiến trình hòa âm** (2026-10-24; book 9.1-9.9): the circle of fifths progression
+      and its segments, harmonic rhythm, harmonic function (tonic, prolongation, pre-dominant, dominant),
+      sequences, progressions of popular music with our own examples, review. Practice: Hợp âm L5 → L7
+      (Roman). Book chapters 1-9 (Tier 1) are all in. `docs/theory/ch10-harmonic-progression.md`
 
 ## Theory chapters
 
@@ -397,7 +401,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 | 7. Hợp âm ba | `ch07-triads` | 6.1-6.6, review after 6.7 | Done — `docs/theory/ch07-triads.md` |
 | 8. Bậc La Mã và kết | `ch08-roman-cadences` | 7.1-7.4, review after 7.5 | Done — `docs/theory/ch08-roman-cadences.md` |
 | 9. Hợp âm bảy | `ch09-seventh-chords` | 8.1-8.3, review after 8.4 | Done — `docs/theory/ch09-seventh-chords.md` |
-| … | | the rest of the book (9 of 36 chapters done) | Porting (one PR per chapter) |
+| 10. Tiến trình hòa âm và chức năng | `ch10-harmonic-progression` | 9.1-9.8, review after 9.9 | Done — `docs/theory/ch10-harmonic-progression.md` |
+| … | | the rest of the book (10 of 36 chapters done) | Porting (one PR per chapter) |
 
 ## In Progress
 
@@ -410,11 +415,12 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
 - Tiết tấu by hand on a real phone and a laptop: click sound and its timing, the
   audio wake on iOS, latency calibration, whether the tolerances feel fair, the 6/8
   tempo (♩. = tempo × 0.75), time running out mid-measure
-- Theory chapters 2-9 (one PR each, see the table above); a human pass over chapter 1's
+- The rest of the theory book: book chapters 10-35 as app chapters 11-36, one PR each (see the
+  table above); a human pass over the chapters' sound (the "Nghe" buttons) and chapter 1's
   sound (the "Nghe" buttons) and the lesson-to-drill-and-back flow on a phone
 - Four drills on the new registry, built in parallel: key signatures, chords, intervals
   and rhythm (all done, above; all on Luyện from the start since 2026-10-23; their
-  lessons come with chapters 2, 3, 5 and 8)
+  lessons are chapters 3-8)
 - A human pass on a phone over the new drills' sound and feedback timing
   (`KEY_SIG_*`, `CHORD_*`, `INTERVAL_FEEDBACK_*`, `INTERVAL_PLAY`, `RHYTHM_*`, calibration)
 
