@@ -35,7 +35,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt này nằm trên phím nào?', en: 'Which key is this note?' },
       blocks: [{ type: 'staff', clef: 'treble', notes: 'C##5' }],
-      answer: { type: 'key', note: 'D' },
+      answer: { type: 'key', note: 'D', blackKeys: '#' },
       reason: {
         vi: 'Hai nửa cung trên {C} là {C#} rồi đến {D}, nên {C##5} nằm trên phím {D5}.',
         en: 'Two half steps above {C} are {C#}, then {D}, so {C##5} is the key {D5}.',
@@ -83,7 +83,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt cuối là nốt gì?', en: 'What is the last note?' },
       blocks: [{ type: 'staff', clef: 'treble', time: '4/4', notes: 'C#5:q D5:q Cn5:h' }],
-      answer: { type: 'key', note: 'C' },
+      answer: { type: 'key', note: 'C', blackKeys: '#' },
       reason: {
         vi: 'Dấu bình xóa dấu thăng trước đó trong ô nhịp, nên nốt cuối là {C}.',
         en: 'The natural cancels the earlier sharp in the measure, so the last note is {C}.',

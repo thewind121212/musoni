@@ -110,7 +110,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Bấm nốt thấp hơn {C} nửa cung.', en: 'Tap the note a half step below {C}.' },
-      answer: { type: 'key', note: 'B' },
+      answer: { type: 'key', note: 'B', blackKeys: 'b' },
       reason: {
         vi: 'Không có phím đen giữa {B} và {C}, nên phím ngay dưới {C} là {B}.',
         en: 'There is no black key between {B} and {C}, so the key right below {C} is {B}.',

@@ -84,7 +84,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt này nằm trên phím nào?', en: 'Which key is this note?' },
       blocks: [{ type: 'staff', clef: 'treble', notes: 'Fb4' }],
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: 'b' },
       reason: {
         vi: '{Fb} thấp hơn {F} nửa cung, và phím sát bên trái {F} là phím trắng {E}.',
         en: '{Fb} is a half step below {F}, and the key just left of {F} is the white key {E}.',

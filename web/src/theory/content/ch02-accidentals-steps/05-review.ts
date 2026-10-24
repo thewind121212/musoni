@@ -61,7 +61,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt này nằm trên phím nào?', en: 'Which key is this note?' },
       blocks: [{ type: 'staff', clef: 'treble', notes: 'B#4' }],
-      answer: { type: 'key', note: 'C' },
+      answer: { type: 'key', note: 'C', blackKeys: '#' },
       reason: {
         vi: '{B#} cao hơn {B} nửa cung, tức là phím trắng {C}.',
         en: '{B#} is a half step above {B}, which is the white key {C}.',
@@ -71,7 +71,7 @@ export default {
       kind: 'check',
       prompt: { vi: 'Nốt cuối là nốt gì?', en: 'What is the last note?' },
       blocks: [{ type: 'staff', clef: 'treble', time: '4/4', notes: 'Bb4:q A4:q Bn4:h' }],
-      answer: { type: 'key', note: 'B' },
+      answer: { type: 'key', note: 'B', blackKeys: 'b' },
       reason: {
         vi: 'Dấu bình xóa dấu giáng trước đó trong ô nhịp, nên nốt cuối là {B}.',
         en: 'The natural cancels the earlier flat in the measure, so the last note is {B}.',
@@ -99,7 +99,7 @@ export default {
     {
       kind: 'check',
       prompt: { vi: 'Bấm nốt cao hơn {D} một nguyên cung.', en: 'Tap the note a whole step above {D}.' },
-      answer: { type: 'key', note: 'E' },
+      answer: { type: 'key', note: 'E', blackKeys: '#' },
       reason: {
         vi: 'Từ {D} qua {D#} rồi đến {E}: hai nửa cung, tức một nguyên cung.',
         en: 'From {D} through {D#} to {E}: two half steps, which is a whole step.',
