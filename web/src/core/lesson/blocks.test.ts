@@ -9,11 +9,17 @@ const staff = (over: Partial<StaffBlock>): StaffBlock => ({ type: 'staff', clef:
 describe('lesson blocks', () => {
   it('labels notes by name or pitch in the naming given, and leaves rests and empty labels bare', () => {
     const b = staff({ notes: 'C4 R:q | G4+B4', labels: 'names' })
-    expect(staffLabels(b, parseNotation(b.notes), 'solfege')).toEqual(['Do', null, 'Sol Si'])
+    expect(staffLabels(b, parseNotation(b.notes), 'solfege', 'vi')).toEqual(['Do', null, 'Sol Si'])
     const p = staff({ notes: 'C4 D5', labels: 'pitches' })
-    expect(staffLabels(p, parseNotation(p.notes), 'letters')).toEqual(['C4', 'D5'])
+    expect(staffLabels(p, parseNotation(p.notes), 'letters', 'en')).toEqual(['C4', 'D5'])
     const own = staff({ notes: 'E4 G4', labels: ['1', ''] })
-    expect(staffLabels(own, parseNotation(own.notes), 'letters')).toEqual(['1', null])
+    expect(staffLabels(own, parseNotation(own.notes), 'letters', 'en')).toEqual(['1', null])
+  })
+
+  it('picks the reader\'s language from a two-language label, and keeps line breaks', () => {
+    const b = staff({ notes: 'C4 E4 G4', labels: [{ vi: 'Chủ', en: 'Tonic' }, '6\n4', { vi: '{G}', en: '' }] })
+    expect(staffLabels(b, parseNotation(b.notes), 'solfege', 'vi')).toEqual(['Chủ', '6\n4', 'Sol'])
+    expect(staffLabels(b, parseNotation(b.notes), 'letters', 'en')).toEqual(['Tonic', '6\n4', null])
   })
 
   it('widens the staff with the notes, within bounds', () => {

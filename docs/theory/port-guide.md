@@ -182,8 +182,13 @@ export default {
     `clef` is `treble`, `bass`, `alto`, `tenor`, `grand` or `none` (bare lines);
     `notes` in the notation below; `key` like `G`, `Bb`, `F#m`; `time` like
     `4/4`, `6/8`, `C`; `labels` is `'names'` (Sol), `'pitches'` (Sol4) or one
-    string per note or rest (bars skipped), up to 6 characters, pitch tokens
-    allowed, `''` for none; `highlight` lists notes (from 0, bars skipped) drawn blue.
+    label per note or rest (bars skipped): a string, the same in both
+    languages, or `{ vi, en }` when the words differ (`{ vi: 'Chủ', en: 'Tonic' }`);
+    up to 6 characters, pitch tokens allowed, `''` for none. `\n` stacks lines
+    under the note, centred (figured bass, inversion figures: `'6\n4'`,
+    `'V\n6\n5'`): at most 3 lines, each up to 6 characters. A chord gets one
+    label, even split across a grand staff. `highlight` lists notes (from 0,
+    bars skipped) drawn blue.
   - `{ type: 'play', notes, label?, bpm? }`: a "Nghe" button. Untimed notes
     play one after another; written durations play at `bpm` (default 90).
     A `play` right after a `keys` with a `caption` shares its row.
@@ -199,8 +204,8 @@ export default {
 ### Text: pitch tokens and bold
 
 - `{G4}`: a note with its octave → "Sol4" / "G4". `{G}`: a pitch class →
-  "Sol" / "G". Accidentals: `{F#}`, `{Bb3}`, `{C##4}`, `{Ebb}`, `{Fn}` (a
-  natural, printed ♮). Never write a note name as a plain word (not even in a
+  "Sol" / "G". Accidentals: `{F#}`, `{Bb3}` (printed # b), `{C##4}`, `{Ebb}`
+  (printed 𝄪 𝄫: "Do𝄪4", "Mi𝄫"), `{Fn}` (a natural, printed ♮). Never write a note name as a plain word (not even in a
   choice: write `{ text: { vi: '{C5}', en: '{C5}' } }`).
 - `**term**`: bold, for a glossary term's first use, Vietnamese first with the
   English in brackets: `**Khuông nhạc** (staff)`.
@@ -220,6 +225,21 @@ Tokens separated by spaces (`core/music/notation.ts`):
 | `\|`, `\|\|` | bar line, double bar line |
 | `3( C4:8 D4:8 E4:8 )` | a tuplet: 3 notes in the time of 2 |
 | `C4@t`, `C4@b` | grand staff only: put the note on the top or bottom staff (default: C4 and up on top) |
+| `C3+E4+G4:q` | on a grand staff each chord member goes on its own staff: C3 on the bass, E4+G4 on the treble, one chord at one x |
+| `C4@b+E4+G4:q` | a mark right after a member places that member only (here C4 on the bass) |
+| `C4+E4+G4:q@b` | a mark at the end of the token places the whole chord; with no duration, a trailing mark (`C4+E4@b`) also means the whole chord, so mark a single member before the last one |
+
+A grand-staff chord whose members sit on both staves draws them at the same
+x, with the same duration; the other staff stays in step, so bar lines line
+up. Example, a I-IV-V-I in four parts:
+
+```ts
+{ type: 'staff', clef: 'grand', time: '4/4',
+  notes: 'C3+E4+G4:q F2+F4+A4+C5:q G2+D4+G4+B4:q C3+E4+G4+C5:q ||',
+  labels: ['I', 'IV', 'V', 'I'] }
+{ type: 'staff', clef: 'bass', notes: 'C3+E3+G3 G2+C3+E3 F2+A2+C3+E3',
+  labels: [{ vi: 'Gốc', en: 'Root' }, '6\n4', '7'] }
+```
 
 A typo fails the content test with the bad token named. `keys` blocks take
 plain pitches only (no durations, rests or bars).

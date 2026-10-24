@@ -37,7 +37,10 @@ export interface TipBlock {
  */
 export interface StaffBlock {
   type: 'staff'
-  /** A clef, `grand` (treble over bass, notes from middle C up on top), or `none` (bare lines). */
+  /**
+   * A clef, `grand` (treble over bass; each note, and each chord member, from
+   * middle C up on top unless marked `@t`/`@b`), or `none` (bare lines).
+   */
   clef: Clef | 'grand' | 'none'
   notes: string
   /** Key signature (`G`, `Bb`, `F#m`); accidentals then follow the key. */
@@ -46,9 +49,10 @@ export interface StaffBlock {
   time?: string
   /**
    * Under each note or rest (bars skipped): `names` (Sol), `pitches` (Sol4),
-   * or one short label each (`'1'`, `'I'`, `'{C}'`; '' for none).
+   * or one short label each (`'1'`, `'I'`, `'{C}'`; '' for none), the same in
+   * both languages or `{ vi, en }`. `\n` stacks lines (`'6\n4'`), up to three.
    */
-  labels?: 'names' | 'pitches' | string[]
+  labels?: 'names' | 'pitches' | (string | Localized)[]
   /** Notes or rests (bars skipped, from 0) drawn in blue. */
   highlight?: number[]
 }

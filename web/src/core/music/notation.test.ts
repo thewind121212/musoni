@@ -32,6 +32,15 @@ describe('parseNotation', () => {
     expect(events[6]).toMatchObject({ staff: 'bottom' })
   })
 
+  it('marks one chord member, or the whole chord from the end of the token', () => {
+    const [one, all] = parseNotation('C4@b+E4+G4:q C4+E4:q@b') as NoteEvent[]
+    expect(one.staff).toBeUndefined()
+    expect(one.pitches.map(p => p.staff)).toEqual(['bottom', undefined, undefined])
+    expect(all.staff).toBe('bottom')
+    expect(all.pitches.every(p => p.staff === undefined)).toBe(true)
+    expect(notationError('C4@x+E4')).toMatch(/C4@x/)
+  })
+
   it('groups a tuplet and checks its size', () => {
     const events = parseNotation('3( C4:8 D4:8 E4:8 ) F4:q')
     expect(events.slice(0, 3).every(e => e.kind === 'note' && e.tuplet?.count === 3)).toBe(true)

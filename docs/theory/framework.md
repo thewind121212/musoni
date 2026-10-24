@@ -39,10 +39,21 @@ and About page show it, and Ôn tập asks its checks once its lessons are done.
 Lessons are data, Vietnamese and English side by side (`Localized`). Text runs
 through `text.ts`: `{C4}` is a note, `{C}` a pitch class, `{F#}` / `{Bb3}` with
 accidentals (`n` for a printed natural), printed in the reader's naming (Do4 /
-C4, ♯ ♭ ♮); `**term**` is bold. The parser is strict: an unknown token, a stray
+C4; # b ♮, and 𝄪 𝄫 for doubles); `**term**` is bold. The parser is strict: an unknown token, a stray
 brace or an odd `**` is an error, so the content test catches it instead of a
 reader seeing braces. Notes on a staff, played or filled on keys are written in
 the notation of `core/music/notation.ts` (grammar in the port guide §7).
+
+Staff blocks draw through the core `NoteStaff`. On a grand staff each chord
+member goes on its own staff (from middle C up on top, or by its own `@t`/`@b`
+mark; a mark at the end of the token moves the whole chord); the staff with
+nothing at that time gets an invisible spacer of the same length, and every
+note is given its staff before formatting, so a split chord lines up at one x
+and the bar lines meet. Labels, highlight and the reported layout index
+events (bars skipped), never chord members. A label is a string or
+`{ vi, en }` (`staffLabels` picks the reader's language); `\n` stacks its
+lines under the note, centred, in a tight line height, and the label row
+grows to the tallest label.
 
 ## Validator
 
@@ -52,7 +63,8 @@ of the book), the practice preset (against the drills' real levels and the
 offered lengths), recap counts, step and check counts (a review: checks only,
 last in the chapter), at most two text blocks per explain step, at most three
 sentences and about 55 Vietnamese words per text or tip, staff notation, key
-and time signatures, labels (count, length), highlights, play and keys blocks
+and time signatures, labels (count; length per line in each language, at
+most 3 stacked lines), highlights, play and keys blocks
 (pitches only, inside the keyboard, pitch labels only on one octave), key
 answers that exist on the pad, and 2-4 distinct choices with exactly one right.
 The limits are `THEORY_RULES` in `config/constants.ts`. Messages name the
