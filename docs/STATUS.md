@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-28
+> Last updated: 2026-10-24
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -45,7 +45,6 @@ a real browser.
 
 ## Done
 
-- [x] Product intro video (1:52, 1080p, Vietnamese, real app screens; built with HyperFrames in `../musoni-video`) served at `/video/musoni-intro.mp4` from `web/public/video/`
 - [x] Stack chosen: Vite + React + TypeScript + VexFlow (`web/`), Go `net/http` stub (`server/`) — see `docs/infra/stack.md`
 - [x] System summary: phase/business plan + C4 diagrams (context / containers / components) — `docs/summary.md`
 - [x] Drill 1 full design (generator, settings, difficulty, weighted scoring) — `docs/fe/drill-note-identification.md`
