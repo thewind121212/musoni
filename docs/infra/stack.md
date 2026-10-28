@@ -63,7 +63,9 @@ A lint warning fails CI, so keep oxlint at zero warnings.
 
 The frontend is connected to **Vercel** through its GitHub integration (project
 `musoni`, root directory `web/`, no `vercel.json`, so Vite defaults apply). Every
-PR branch gets a preview deployment, which the Vercel bot links on the PR.
+PR branch gets a preview deployment, which the Vercel bot links on the PR. Files in
+`web/public/` ship as-is at the site root, e.g. the intro video at
+`/video/musoni-intro.mp4` (its source project is `../musoni-video`, not in this repo).
 
 **Coolify (Docker)**: `web/Dockerfile` builds the app on `node:24-alpine` (`npm ci`,
 `npm run build`) and serves `dist/` from `nginx:alpine` with `web/nginx.conf`:
