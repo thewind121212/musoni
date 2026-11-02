@@ -63,7 +63,7 @@ interface DrillState {
   /** Starts a session on these settings (this drill's level and length are read from them). */
   start: (settings: Settings, now?: number) => void
   answer: (index: number, now?: number) => void
-  /** Moves the octave strip, clamped to the level's octaves. */
+  /** Moves the octave strip, clamped to the level's octaves. Ignored during feedback. */
   setOctave: (octave: number) => void
   nextQuestion: (now?: number) => void
   tick: (now?: number) => void
@@ -156,7 +156,8 @@ export const useDrillStore = create<DrillState>((set, get) => ({
 
   setOctave: octave => {
     const s = get()
-    if (s.phase !== 'running' || s.pausedAt !== null) return
+    // Held during feedback, like the pad, so the strip shows the octave answered.
+    if (s.phase !== 'running' || s.feedback || s.pausedAt !== null) return
     const { min, max } = levelOctaves(s.level)
     set({ octave: Math.min(max, Math.max(min, octave)) })
   },

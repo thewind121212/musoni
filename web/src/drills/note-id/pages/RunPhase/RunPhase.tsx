@@ -95,9 +95,9 @@ export function RunPhase() {
         if (s.pausedAt === null) quit()
         return
       }
-      if (!s.question || s.pausedAt !== null) return
+      if (!s.question || s.feedback || s.pausedAt !== null) return
       // The octave strip: digits jump to an octave the level has, arrows step.
-      // Free keys here, since notes answer on letters. Allowed during feedback.
+      // Free keys here, since notes answer on letters.
       if (noteId.of(s.settings).octave && !e.ctrlKey && !e.metaKey && !e.altKey) {
         const { min, max } = levelOctaves(s.level)
         const digit = digitOf(e)
@@ -188,6 +188,7 @@ export function RunPhase() {
                 onChange={n => useDrillStore.getState().setOctave(n)}
                 label={t(S['octave.strip'])}
                 valueText={t(S['octave.n'], { n: octave })}
+                answer={feedback ? question.pitch.octave : null}
               />
             </div>
           )}

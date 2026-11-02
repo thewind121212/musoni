@@ -125,10 +125,12 @@ describe('answering with the octave', () => {
     useDrillStore.getState().setOctave(9)
     expect(useDrillStore.getState().octave).toBe(3)
   })
-  it('keeps the octave from one question to the next', () => {
+  it('keeps the octave from one question to the next, and holds it during feedback', () => {
     useDrillStore.getState().start(withOctave(2), T0)
     useDrillStore.getState().setOctave(5)
     useDrillStore.getState().answer(0, T0 + 500)
+    useDrillStore.getState().setOctave(3) // the strip shows the octave answered until the next note
+    expect(useDrillStore.getState().octave).toBe(5)
     useDrillStore.getState().nextQuestion(T0 + 500)
     expect(useDrillStore.getState().octave).toBe(5)
   })

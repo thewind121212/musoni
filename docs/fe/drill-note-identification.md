@@ -83,8 +83,9 @@ shows as a distance on the staff rather than only as a red key. With
     keys answered nothing before (notes are letters, Esc pauses), so nothing
     collides. When the strip itself has focus it handles its own arrows (plus
     Home / End) and marks them handled, and the page listener skips marked
-    events, so an arrow steps once. Moving the octave is allowed during the
-    feedback hold; it never answers.
+    events, so an arrow steps once. Like the pad, the strip holds still
+    during the feedback hold (`setOctave` is ignored), so it keeps showing
+    the octave answered.
 - Instant feedback: the correct key fills green with a check, a wrong pick red
   with a cross, and the staff mirrors it (see Rendering), then auto-advance. A
   correct answer flashes for **260 ms** and moves on; a miss holds for **1.1 s**,
@@ -119,8 +120,11 @@ names the octave too, in scientific pitch notation (C4 = middle C): Mi4, not Mi.
   octave; no spelling crosses an octave line.
 - **Feedback**: a miss draws the pick at the exact octave picked (not
   `nearestOctave`) and names both with octaves ("Đây là Mi4, bạn chọn Mi5").
-  A right letter in the wrong octave leaves the pad key green: the staff and
-  the line show the octave was the wrong half. `misses` keep the octave
+  The strip marks the octave like the pad marks keys (`OctaveStrip`
+  `answer`): the window turns green when the octave was right, and red when
+  it was wrong, with the right octave outlined in green. So a right letter in
+  the wrong octave shows a green key and a red window: the octave was the
+  wrong half. Visual only; screen readers hear the miss line, not the strip. `misses` keep the octave
   picked (`octave`) and their labels carry octaves.
 - **Weight**: ×1.3 (`OCTAVE_WEIGHT`), stacking with accidentals (below).
 - **Accessible**: the strip is a `slider` (`aria-valuemin/max/now`,

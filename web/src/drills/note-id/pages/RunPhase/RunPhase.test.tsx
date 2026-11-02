@@ -315,5 +315,18 @@ describe('RunPhase octave', () => {
     const name = q.options[q.correctIndex].label
     expect(screen.getByText(`Đây là ${name}${q.pitch.octave}, bạn chọn ${name}${off}`)).toBeInTheDocument()
     expect(playPitch).toHaveBeenCalledWith(expect.objectContaining({ letter: q.pitch.letter, octave: off }))
+    // The strip marks it too: the octave picked red, the right one green.
+    expect(screen.getByTestId('octave-window').className).toMatch(/border-wrong/)
+    expect(screen.getByTestId('octave-answer')).toBeInTheDocument()
+  })
+
+  it('marks the strip green on a right answer and clears the marks on the next note', () => {
+    startOctave()
+    renderRun()
+    act(() => useDrillStore.getState().setOctave(useDrillStore.getState().question!.pitch.octave))
+    press(keys().right)
+    expect(screen.getByTestId('octave-window').className).toMatch(/border-correct/)
+    act(() => { vi.advanceTimersByTime(2000) })
+    expect(screen.getByTestId('octave-window').className).toMatch(/border-cta/)
   })
 })

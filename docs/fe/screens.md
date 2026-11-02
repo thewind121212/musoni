@@ -325,8 +325,10 @@ window, snapping to whole octaves. Under the pad, "Quãng 4" names the octave
 in words (on desktop followed by the keys that move it, "· 4–5 ← →"). The
 octave stays put between questions. On a miss the picked note is drawn at the
 octave picked and both are named with octaves ("Đây là Mi4, bạn chọn Mi5");
-a right letter in the wrong octave leaves the key green, so the staff and the
-line say which half was wrong. Checked at 390×844: the strip, pad and line fit
+during feedback the strip holds still and marks the octave as the pad marks
+keys: the window green when the octave was right, red when it was wrong with
+the right octave outlined green. A right letter in the wrong octave reads as a
+green key over a red window. Checked at 390×844: the strip, pad and line fit
 under the staff with no scroll at every level.
 
 **Leaving mid-session never runs the clock down unseen.** The clock pauses and

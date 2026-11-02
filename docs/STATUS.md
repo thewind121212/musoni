@@ -40,7 +40,7 @@ entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its 
 settings, strings and colour; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
 Đọc nốt can also ask for the octave (Quãng tám: Mi4, picked on an octave strip above the pad).
-Components follow atomic-design levels. Go `/health` stub behind it. 950 web tests (Vitest) + 1 Go test
+Components follow atomic-design levels. Go `/health` stub behind it. 953 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -437,11 +437,12 @@ a real browser.
       the level's octaves (from `LEVELS`: L1 4-5, L2 3-6, L3 2-3, L4 2-6); tap or drag snaps
       to an octave, which stays put between questions; "Quãng 4" under the pad. Right only
       when letter, accidental and octave match; a miss is drawn and named at the octave
-      picked ("Mi4"), the sound plays the pick. Keys: digits 2-6 jump (in range only), ← / →
+      picked ("Mi4"), the sound plays the pick; during feedback the strip marks the octave
+      (window green when right, red with the right octave outlined green when wrong). Keys: digits 2-6 jump (in range only), ← / →
       step (no clash: notes answer on letters). Sessions carry `octave: true` (additive,
       version stays 2). Checked at 390×844 in headless Chrome. Docs:
       `drill-note-identification.md`, `screens.md`, `data-model.md`, `architecture.md`.
-      950 web tests green
+      953 web tests green
 
 ## Theory chapters
 

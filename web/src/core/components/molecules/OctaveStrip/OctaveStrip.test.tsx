@@ -44,6 +44,20 @@ describe('OctaveStrip', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  it('after an answer in the right octave, the window turns green and nothing else is marked', () => {
+    render(<OctaveStrip min={2} max={6} value={4} answer={4} onChange={() => {}} label="Octave" valueText="Octave 4" />)
+    expect(screen.getByTestId('octave-window').className).toMatch(/border-correct/)
+    expect(screen.queryByTestId('octave-answer')).toBeNull()
+  })
+
+  it('after an answer in the wrong octave, the window turns red and the right one is outlined green', () => {
+    render(<OctaveStrip min={2} max={6} value={5} answer={3} onChange={() => {}} label="Octave" valueText="Octave 5" />)
+    expect(screen.getByTestId('octave-window').className).toMatch(/border-wrong/)
+    const right = screen.getByTestId('octave-answer')
+    expect(right.className).toMatch(/border-correct/)
+    expect(parseFloat(right.style.left)).toBeCloseTo(20)
+  })
+
   it('arrows step, Home and End jump, and are marked handled', () => {
     const { slider, onChange } = setup(6)
     fireEvent.keyDown(slider, { key: 'ArrowLeft' })

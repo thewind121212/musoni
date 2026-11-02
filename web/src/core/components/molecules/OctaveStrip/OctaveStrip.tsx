@@ -11,6 +11,12 @@ interface Props {
   label: string
   /** The value as words, read out and shown nowhere else ("Quãng 4"). */
   valueText: string
+  /**
+   * After an answer, the printed note's octave, marked like the pad marks
+   * keys: the window turns green on it, or red with the right octave outlined
+   * in green beside it. Visual only: the miss line says it in words.
+   */
+  answer?: number | null
 }
 
 const STEP: Record<string, number> = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1 }
@@ -24,10 +30,12 @@ const STEP: Record<string, number> = { ArrowLeft: -1, ArrowDown: -1, ArrowRight:
  * the ends). Arrow keys it handles are marked handled (`preventDefault`), so a
  * page-wide shortcut on the same keys can leave them alone.
  */
-export function OctaveStrip({ min, max, value, onChange, label, valueText }: Props) {
+export function OctaveStrip({ min, max, value, onChange, label, valueText, answer = null }: Props) {
   const count = max - min + 1
   const clamp = (n: number) => Math.min(max, Math.max(min, n))
   const move = (n: number) => { if (n !== value) onChange(n) }
+  const box = (o: number) => ({ left: `${((o - min) / count) * 100}%`, width: `${100 / count}%` })
+  const tone = answer === null ? 'border-cta bg-cta/30' : answer === value ? 'border-correct bg-correct/30' : 'border-wrong bg-wrong/30'
 
   const fromPointer = (e: PointerEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect()
@@ -65,9 +73,17 @@ export function OctaveStrip({ min, max, value, onChange, label, valueText }: Pro
         <div
           data-testid="octave-window"
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 rounded-md border-2 border-cta bg-cta/30 transition-[left] duration-150 motion-reduce:transition-none"
-          style={{ left: `${((value - min) / count) * 100}%`, width: `${100 / count}%` }}
+          className={'pointer-events-none absolute inset-y-0 rounded-md border-2 transition-[left] duration-150 motion-reduce:transition-none ' + tone}
+          style={box(value)}
         />
+        {answer !== null && answer !== value && (
+          <div
+            data-testid="octave-answer"
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 rounded-md border-2 border-correct bg-correct/15"
+            style={box(answer)}
+          />
+        )}
       </div>
       <div className="mt-0.5 flex" aria-hidden="true">
         {Array.from({ length: count }, (_, i) => min + i).map(o => (
