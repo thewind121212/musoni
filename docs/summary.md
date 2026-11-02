@@ -111,7 +111,8 @@ graph TB
 Routing is app-level only: the router owns the two tabs (`/`, `/learn`), one `/train/<id>` route per registered drill
 and the three theory routes, while each drill's three
 phases (setup, run, result) and a lesson's steps are store state inside a
-single route, so training never changes the URL. A
+single route, so training never changes the URL (a running session and each
+lesson step still get a history entry on that URL, so back steps back inside). A
 lesson's practice link opens a drill with a preset in the route state, applied
 to that one session. Every drill is one entry in the drill registry
 (`drills/<id>/drill.ts`, found by glob): routes, the loading screen, prefetch,

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavigationType, useNavigationType } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import { CaretRightIcon, TimerIcon, TrophyIcon } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
@@ -30,7 +30,9 @@ export function LearnTab() {
   const { settings, updateSettings, pausedSession } = useAppStore()
   const { lang, naming } = settings
   const t = useT()
-  const reduce = useReducedMotion()
+  // Back (a swipe out of a lesson) shows the tab as it was: no stagger.
+  const back = useNavigationType() === NavigationType.Pop
+  const still = useReducedMotion() || back
   useEffect(() => prefetchWhenIdle(() => loadDrill(review)), [])
 
   const done = getLessonsDone()
@@ -46,7 +48,7 @@ export function LearnTab() {
   const reviewBest = getBest(review.id, reviewOwn.level)
 
   const enter = (delay: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 12 },
+    initial: still ? false : { opacity: 0, y: 12 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.32, delay, ease: [0.16, 1, 0.3, 1] as const },
   })

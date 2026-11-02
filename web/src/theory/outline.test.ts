@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { doneInChapter, findLesson, lessonAfter, lessonNumber, nextLesson } from './outline'
+import { doneInChapter, findLesson, lessonAfter, lessonAt, lessonNumber, nextLesson, openerState } from './outline'
 import type { Chapter, Lesson } from '@/core/lesson/types'
 
 const lesson = (id: string, kind?: 'review'): Lesson => ({
@@ -30,5 +30,14 @@ describe('outline', () => {
     expect(lessonNumber(findLesson(chapters, 'one', 'r')!)).toBe('1')
     expect(findLesson(chapters, 'one', 'c')).toBeNull()
     expect(doneInChapter(chapters[0], { 'one/b': 1, 'two/c': 1 })).toBe(1)
+  })
+
+  it('reads the lesson history marker and the opener state without it', () => {
+    const state = { from: 'theory', lessonAt: { step: 2, depth: 1 } }
+    expect(lessonAt(state)).toEqual({ step: 2, depth: 1 })
+    expect(lessonAt({ from: 'theory' })).toBeNull()
+    expect(lessonAt(null)).toBeNull()
+    expect(openerState(state)).toEqual({ from: 'theory' })
+    expect(openerState({ lessonAt: { step: 0, depth: 0 } })).toBeNull()
   })
 })

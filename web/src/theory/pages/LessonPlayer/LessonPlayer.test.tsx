@@ -1,9 +1,12 @@
 import { beforeEach, describe, it, expect } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { useEffect } from 'react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Link, MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
+import {
+  Link, MemoryRouter, Route, Routes, useLocation, useNavigate, type InitialEntry, type NavigateFunction,
+} from 'react-router-dom'
 import { LessonPlayer } from './LessonPlayer'
-import { getDailyMinutes, getLessonsDone, localDayKey } from '@/progress/progressStore'
+import { getDailyMinutes, getLessonsDone, localDayKey, markLessonDone } from '@/progress/progressStore'
 import { useTheoryStore } from '@/theory/store'
 import { resetStores } from '@/test/fixtures'
 
@@ -128,6 +131,119 @@ describe('LessonPlayer', () => {
   it('sends an unknown lesson to the list', () => {
     renderLesson('/theory/pitch-staff/nope')
     expect(screen.getByTestId('landed')).toHaveTextContent('list')
+  })
+
+  describe('history', () => {
+    const L1 = '/theory/pitch-staff/pitch-names'
+    let nav: NavigateFunction
+    function Probe() {
+      const navigate = useNavigate()
+      useEffect(() => { nav = navigate })
+      return null
+    }
+    const back = () => act(() => { nav(-1) })
+    /** The app's routes on a memory history; `entries` after `/theory`, the last one shown. */
+    function renderAt(entries: InitialEntry[], first = '/theory') {
+      return render(
+        <MemoryRouter initialEntries={[first, ...entries]} initialIndex={entries.length}>
+          <Probe />
+          <Routes>
+            <Route path="/theory" element={<Landed name="list" />} />
+            <Route path="/learn" element={<Landed name="learn" />} />
+            <Route path="/theory/:chapter/:lesson" element={<LessonPlayer />} />
+          </Routes>
+        </MemoryRouter>,
+      )
+    }
+    const from = { from: 'theory' }
+    const at = (step: number, state: object | null = from) => ({ pathname: L1, state: { ...state, lessonAt: { step, depth: step } } })
+
+    it('gives each step an entry: back shows the step before with its answer kept, back from the first leaves', async () => {
+      const user = userEvent.setup()
+      renderAt([{ pathname: L1, state: from }])
+      await screen.findByRole('heading', { name: 'High and low' })
+      await user.click(next())
+      await screen.findByRole('heading', { name: 'Seven note names' })
+      await user.click(next())
+      await screen.findByRole('heading', { name: 'Finding notes by the black keys' })
+      await user.click(next())
+      await user.click(await screen.findByRole('button', { name: 'D' }))
+      await user.click(next())
+      await screen.findByText(/group of three black keys/)
+
+      await back()
+      expect(await screen.findByRole('status')).toHaveTextContent(/^Not quite/)
+      expect(next()).toBeEnabled()
+      await back()
+      expect(await screen.findByRole('heading', { name: 'Finding notes by the black keys' })).toBeInTheDocument()
+      await back()
+      await back()
+      expect(await screen.findByRole('heading', { name: 'High and low' })).toBeInTheDocument()
+      await back()
+      expect(screen.getByTestId('landed')).toHaveTextContent('list')
+      // Left by back: the place is kept.
+      expect(useTheoryStore.getState()).toMatchObject({ lesson: 'pitch-staff/pitch-names', step: 0 })
+    })
+
+    it('closes from a later step straight back to where the lesson was opened', async () => {
+      const user = userEvent.setup()
+      renderAt([{ pathname: L1, state: from }], '/learn')
+      await screen.findByRole('heading', { name: 'High and low' })
+      await user.click(next())
+      await user.click(next())
+      await user.click(screen.getByRole('button', { name: 'Close the lesson' }))
+      expect(await screen.findByTestId('landed')).toHaveTextContent('learn')
+      expect(useTheoryStore.getState().lesson).toBeNull()
+    })
+
+    it('closes a lesson opened directly to Học, with none of its steps left behind', async () => {
+      const user = userEvent.setup()
+      render(
+        <MemoryRouter initialEntries={[L1]}>
+          <Probe />
+          <Routes>
+            <Route path="/learn" element={<Landed name="learn" />} />
+            <Route path="/theory/:chapter/:lesson" element={<LessonPlayer />} />
+          </Routes>
+        </MemoryRouter>,
+      )
+      await screen.findByRole('heading', { name: 'High and low' })
+      await user.click(next())
+      await user.click(next())
+      await user.click(screen.getByRole('button', { name: 'Close the lesson' }))
+      expect(await screen.findByTestId('landed')).toHaveTextContent('learn')
+      await back() // nothing below Học
+      expect(screen.getByTestId('landed')).toHaveTextContent('learn')
+    })
+
+    it('puts the next lesson in place of the whole finished one, so back leads to the list', async () => {
+      const user = userEvent.setup()
+      useTheoryStore.setState({ lesson: 'pitch-staff/pitch-names', steps: 6, step: 6, answers: {} })
+      renderAt([0, 1, 2, 3, 4, 5, 6].map(i => at(i)))
+      await user.click(await screen.findByRole('link', { name: /Next: The staff and clefs/ }))
+      expect(await screen.findByText(/Lesson 1\.2/)).toBeInTheDocument()
+      expect(useTheoryStore.getState()).toMatchObject({ lesson: 'pitch-staff/staff-clefs', step: 0 })
+      await back()
+      expect(await screen.findByTestId('landed')).toHaveTextContent('list')
+    })
+
+    it('stepping back into a finished lesson keeps it finished', async () => {
+      useTheoryStore.setState({ lesson: 'pitch-staff/pitch-names', steps: 6, step: 6, answers: {} })
+      markLessonDone('pitch-staff/pitch-names', { correct: 0, total: 0 })
+      renderAt([0, 1, 2, 3, 4, 5, 6].map(i => at(i)))
+      await screen.findByText('What you learned')
+      await back()
+      expect(await screen.findByText(/Moving right on the keyboard/)).toBeInTheDocument()
+      expect(getLessonsDone()['pitch-staff/pitch-names']).toBeDefined()
+    })
+
+    it('resumes a reloaded mid-lesson entry on its step', async () => {
+      renderAt([0, 1, 2, 3].map(i => at(i)))
+      expect(await screen.findByText('Which note is the coloured key?')).toBeInTheDocument()
+      expect(next()).toBeDisabled()
+      await back()
+      expect(await screen.findByRole('heading', { name: 'Finding notes by the black keys' })).toBeInTheDocument()
+    })
   })
 
   it('counts the time read toward today\'s minutes', async () => {

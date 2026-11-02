@@ -1,5 +1,5 @@
 import { beforeEach, describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { ChapterList } from './ChapterList'
@@ -28,7 +28,7 @@ describe('ChapterList', () => {
   it('folds a chapter and switches the note naming through settings', async () => {
     renderList()
     await userEvent.click(screen.getByRole('button', { name: /Pitch and the staff/ }))
-    expect(screen.queryByRole('link', { name: /Pitch and note names/ })).toBeNull()
+    await waitFor(() => expect(screen.queryByRole('link', { name: /Pitch and note names/ })).toBeNull())
     await userEvent.click(screen.getByRole('radio', { name: 'Do Re Mi' }))
     expect(getSettings().naming).toBe('solfege')
   })

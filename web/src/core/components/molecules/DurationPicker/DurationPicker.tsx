@@ -4,7 +4,7 @@ import {
   customOpeningSeconds, isPresetDuration,
 } from '@/config/constants'
 import type { Translate } from '@/core/i18n/translate'
-import { FieldLegend } from '@/core/components/atoms'
+import { Collapse, FieldLegend } from '@/core/components/atoms'
 
 interface Props {
   durationSec: number
@@ -68,8 +68,9 @@ export function DurationPicker({ durationSec, onChange, t }: Props) {
         </button>
       </div>
 
-      {!isPreset && (
-        <div className="mt-2 flex items-center justify-between rounded-2xl border border-accent
+      <Collapse open={!isPreset}>
+        <div className="pt-2">
+        <div className="flex items-center justify-between rounded-2xl border border-accent
                         bg-accent/10 px-2 py-1.5">
           <button
             onClick={() => step(-1)}
@@ -95,7 +96,8 @@ export function DurationPicker({ durationSec, onChange, t }: Props) {
             <PlusIcon size={18} weight="bold" />
           </button>
         </div>
-      )}
+        </div>
+      </Collapse>
     </fieldset>
   )
 }

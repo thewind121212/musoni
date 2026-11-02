@@ -65,6 +65,19 @@ describe('theory store', () => {
     expect(saved.days[today].lessons).toEqual([expect.objectContaining({ lesson: 'ch/a', seconds: 28 })])
   })
 
+  it('steps back and forward to reached steps, keeping answers and the lesson finished', () => {
+    store().open('ch/a', 2, true, T0)
+    store().answer(1, true, T0)
+    store().next(T0)
+    store().next(T0)
+    expect(getLessonsDone()['ch/a']).toBeDefined()
+    store().goTo(0, T0)
+    expect([store().step, store().answers[0]]).toEqual([0, { choice: 1, correct: true }])
+    expect(getLessonsDone()['ch/a']).toBeDefined()
+    store().goTo(9, T0) // clamped to the end screen
+    expect(store().step).toBe(2)
+  })
+
   it('saves the time read in one lesson under it when the next opens straight away', () => {
     store().open('ch/a', 1, true, T0)
     store().next(T0 + 10_000) // finished at 10 s: not enough to save yet

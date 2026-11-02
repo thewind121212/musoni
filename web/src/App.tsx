@@ -16,7 +16,8 @@ import { ChapterListPage, LearnTabPage, LessonPlayerPage, TheoryAboutPage } from
  * App-level routes. Two tabs, Luyện (`/`) and Học (`/learn`). Each registered drill owns one route,
  * `/train/<id>`, and runs its phases internally, so training never changes the
  * URL. Theory lessons have three: the chapter list, one lesson (its steps are
- * store state), and the content's licence notice.
+ * store state, each with a history entry on the lesson's URL), and the
+ * content's licence notice.
  */
 export default function App() {
   const location = useLocation()

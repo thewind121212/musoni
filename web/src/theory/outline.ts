@@ -60,3 +60,28 @@ export const FROM_LIST = { from: 'theory' } as const
 export function fromList(state: unknown): boolean {
   return typeof state === 'object' && state !== null && (state as { from?: string }).from === FROM_LIST.from
 }
+
+/**
+ * History marker on a lesson's entries. The steps share the lesson's URL, but
+ * each move forward gets an entry of its own, so back (and a phone's
+ * edge-swipe) steps back through the lesson before leaving it. `step` is the
+ * step the entry shows; `depth` counts the lesson's entries below it, so
+ * leaving can skip them all at once.
+ */
+export interface LessonAt {
+  step: number
+  depth: number
+}
+
+export function lessonAt(state: unknown): LessonAt | null {
+  const at = typeof state === 'object' && state !== null ? (state as { lessonAt?: Partial<LessonAt> }).lessonAt : undefined
+  return typeof at?.step === 'number' && typeof at.depth === 'number' ? { step: at.step, depth: at.depth } : null
+}
+
+/** The route state the lesson was opened with (`FROM_LIST` or nothing), without the marker. */
+export function openerState(state: unknown): Record<string, unknown> | null {
+  if (typeof state !== 'object' || state === null) return null
+  const rest: Record<string, unknown> = { ...state }
+  delete rest.lessonAt
+  return Object.keys(rest).length ? rest : null
+}

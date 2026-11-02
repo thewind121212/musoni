@@ -35,6 +35,12 @@ interface TheoryState {
   answer: (choice: number, correct: boolean, now?: number) => void
   /** Moves on; past the last step the lesson is finished and saved. */
   next: (now?: number) => void
+  /**
+   * Shows a step the reader already reached, as history steps back or forward
+   * to it. Answers are kept, and nothing is saved: a finished lesson stays
+   * finished when the reader steps back into it.
+   */
+  goTo: (step: number, now?: number) => void
   /** The page went out of view: stop the clock and save the time. */
   hide: (now?: number) => void
   show: (now?: number) => void
@@ -96,6 +102,13 @@ export const useTheoryStore = create<TheoryState>((set, get) => ({
       pendingMs = flush(s.lesson, pendingMs, now)
     }
     set({ step, pendingMs, activeAt: s.activeAt === null ? null : now })
+  },
+
+  goTo: (step, now = Date.now()) => {
+    const s = get()
+    const to = Math.max(0, Math.min(step, s.steps))
+    if (!s.lesson || to === s.step) return
+    set({ step: to, pendingMs: s.pendingMs + stretch(s, now), activeAt: s.activeAt === null ? null : now })
   },
 
   hide: (now = Date.now()) => {

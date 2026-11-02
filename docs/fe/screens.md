@@ -176,6 +176,21 @@ same and do not stack a new entry that a later swipe-back would land on.
 Opened directly on a drill, with no in-app history, the back link goes to
 Luyện (`/`; Ôn tập's to Học).
 
+The same holds inside a page that moves through steps on one URL. A drill's
+session sits on an entry above its setup, and each lesson step the reader
+moves on to gets an entry of its own, so a swipe back shows the step before
+(instantly, as it was) instead of leaving the lesson. Học and the chapter list
+stagger their cards in only when moved to, not on a step back to them.
+
+**Folding.** Everything that opens under a toggle (a chapter on the list,
+Tiết tấu's latency calibration, the duration stepper) uses the core `Collapse`:
+it grows to its height and fades in over 240 ms on the app's ease-out
+(`[0.16, 1, 0.3, 1]`), and folds shut a little quicker (180 ms). Instant with
+reduced motion. Folded content is not rendered, so it stays out of the tab
+order and away from screen readers. Luyện's activity panel is a swap between
+the week and the calendar rather than a fold, and keeps its own resize and
+cross-fade.
+
 ### Theory (`/theory`, `/theory/:chapter/:lesson`, `/theory/about`)
 
 Mockups: project files `screenshots/theory-lessons/`; as built:
@@ -189,8 +204,9 @@ arrow returns to Học): back arrow and "Lý thuyết âm nhạc", one line
 switch (Do Re Mi / C D E, the same setting the drills use), then one card per
 chapter: number tile (filled blue for the chapter holding the next lesson),
 title, "1/5 bài". The chapter with the next lesson opens by default; tapping a
-header folds it (the choice is kept in the theory store while the app is
-open). Each lesson row: a tick when done, a blue ring on the next one ("Bài tiếp
+header folds it open or shut (animated, see "Folding" above; the choice is kept
+in the theory store while the app is open, so stepping back out of a lesson
+finds the same chapter open at the same scroll). Each lesson row: a tick when done, a blue ring on the next one ("Bài tiếp
 theo" for screen readers), its number otherwise; the title (bold on the next
 one); and a tag: "♪ Đọc nốt" / "♪ Nghe & Đàn" when it ends with a practice
 link, otherwise its minutes. Nothing is locked. "Về nội dung" at the bottom.
@@ -222,12 +238,23 @@ thumb zone. Steps slide in from the right (fade only with reduced motion).
   21st-Century Classroom*, R. Hutchinson, mục 1.2 · GNU FDL 1.3", each section
   linking to the book page and the licence to `/theory/about`.
 
-Back behaviour: ✕ forgets the place and goes back to where the lesson was
-opened (a step back when it was opened from Học, the chapter list or an Ôn
-tập result; otherwise it replaces the lesson with
-Học, `/learn`). "Bài tiếp" *replaces* the lesson in history, so ✕ or a swipe back
-from lesson 1.3 still lands on Học or the list, not on 1.2. Leaving any other way
-(swipe back, a link) keeps the place: opening the same lesson again resumes it.
+Back behaviour: every move on ("Tiếp", Enter, "Xong") adds a history entry on
+the same URL, marked in its route state (`lessonAt: { step, depth }`: the step it
+shows and how many of the lesson's entries lie below it). History is the source
+of truth for the step shown; the store follows it and keeps the answers. So a
+swipe back (or the browser's back) shows the step before, its check still
+answered; forward steps on again; neither animates. Stepping back from the end
+screen leaves the lesson finished. Back from the lesson's first entry leaves it
+as before. A reload keeps the entries and shows the step the entry names (the
+answers, held in memory, are gone; a skipped check can be answered again).
+✕ forgets the place and goes back to where the lesson was opened in one go, past
+all its step entries (a step back when it was opened from Học, the chapter list
+or an Ôn tập result; otherwise it replaces the lesson with Học, `/learn`).
+"Bài tiếp" (and "Ôn lại cả chương") *replace* the lesson in history: back past
+its step entries to its first, then replace that, so ✕ or a swipe back from
+lesson 1.3 still lands on Học or the list, never on 1.2 or one of its steps.
+Leaving any other way (a link) keeps the place: opening the same lesson again
+resumes it.
 "Luyện ngay" pushes the drill with `{ autostart: true, preset }`; stepping back
 from the drill (swipe, or its result's Home link, which steps back) shows the
 lesson's end screen again, as it was. A fresh visit to a finished lesson starts

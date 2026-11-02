@@ -1,5 +1,6 @@
 export * from './Button'
 export * from './Chip'
+export * from './Collapse'
 export * from './CountPill'
 export * from './FieldLegend'
 export * from './GoalRing'

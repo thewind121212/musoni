@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import { Navigate, NavigationType, useLocation, useNavigate, useNavigationType, useParams } from 'react-router-dom'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react'
 import { useAppStore } from '@/app/store'
 import { useT } from '@/app/useT'
 import { presetSummary } from '@/app/drillPreset'
@@ -9,7 +9,9 @@ import { playPitch, stopSounds } from '@/core/audio/playPitch'
 import { Button } from '@/core/components/atoms'
 import { CHAPTERS } from '@/theory/registry'
 import { useTheoryStore } from '@/theory/store'
-import { findLesson, fromList, lessonAfter, lessonNumber, reviewOf, lessonKey, type LessonRef } from '@/theory/outline'
+import {
+  findLesson, fromList, lessonAfter, lessonAt, lessonNumber, openerState, reviewOf, lessonKey, type LessonRef,
+} from '@/theory/outline'
 import { plainText } from '@/core/lesson/text'
 import { answerFromKey, loneStaffNote } from '@/core/lesson/blocks'
 import { usePlayBlock } from '@/core/lesson/usePlayBlock'
@@ -23,6 +25,10 @@ import { LessonFrame } from '@/theory/components/templates'
  * Page: one lesson, step by step, then its end screen. The place in the lesson
  * and the time spent live in the theory store; finishing saves the lesson
  * through progressStore.
+ *
+ * Each step moved to gets a history entry on the lesson's URL (`lessonAt`),
+ * so back steps back through the lesson; the entry shown says which step the
+ * store shows. Leaving (✕, "Bài tiếp") skips the lesson's entries in one go.
  */
 export function LessonPlayer() {
   const { chapter = '', lesson = '' } = useParams()
@@ -42,8 +48,14 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
   const reduce = useReducedMotion()
 
   // Opened before the first read, so a finished lesson never flashes its end
-  // screen on a fresh visit. A step back (from its practice drill) keeps it.
-  useState(() => useTheoryStore.getState().open(key, lesson.steps.length, navType !== NavigationType.Pop))
+  // screen on a fresh visit. A step back (from its practice drill) keeps it,
+  // and an entry that names its step (back, forward, a reload) shows that step.
+  const at = lessonAt(location.state)
+  useState(() => {
+    const store = useTheoryStore.getState()
+    store.open(key, lesson.steps.length, navType !== NavigationType.Pop)
+    if (at) store.goTo(at.step)
+  })
   const step = useTheoryStore(s => s.step)
   const answers = useTheoryStore(s => s.answers)
   const total = lesson.steps.length
@@ -85,13 +97,67 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
     }
   }, [lesson, settings.sound])
 
-  const goOn = useCallback(() => useTheoryStore.getState().next(), [])
+  // History is the source of truth for the step shown. The lesson's first
+  // entry gets its marker on arrival; any other entry moves the store to its step.
+  const depth = at?.depth ?? 0
+  const atStep = at?.step
+  const opener = useMemo(() => openerState(location.state), [location.state])
+  // Where to go once back on the lesson's first entry (see `replaceLesson`).
+  const pending = useRef<(() => void) | null>(null)
+  useEffect(() => {
+    if (atStep === undefined) {
+      navigate(location.pathname, { replace: true, state: { ...opener, lessonAt: { step: useTheoryStore.getState().step, depth: 0 } } })
+      return
+    }
+    const go = pending.current
+    if (!go) useTheoryStore.getState().goTo(atStep)
+    else if (depth === 0) {
+      pending.current = null
+      go()
+    }
+  }, [atStep, depth, opener, navigate, location.pathname])
+
+  const goOn = useCallback(() => {
+    const s = useTheoryStore.getState()
+    if (s.step >= s.steps) return
+    s.next()
+    const lessonAt = { step: useTheoryStore.getState().step, depth: depth + 1 }
+    navigate(location.pathname, { state: { ...opener, lessonAt } })
+  }, [depth, opener, navigate, location.pathname])
+
+  /**
+   * Leaves the lesson with its first entry replaced, so none of its step
+   * entries stays behind for a swipe back to land on: back past them first,
+   * then go.
+   */
+  const leaving = useRef(false)
+  const replaceLesson = useCallback((go: () => void) => {
+    if (leaving.current) return
+    leaving.current = true
+    if (depth === 0) return go()
+    pending.current = go
+    navigate(-depth)
+  }, [depth, navigate])
 
   const close = useCallback(() => {
-    useTheoryStore.getState().close()
-    if (fromList(location.state)) navigate(-1)
-    else navigate('/learn', { replace: true })
-  }, [location.state, navigate])
+    if (fromList(location.state)) {
+      if (leaving.current) return
+      leaving.current = true
+      useTheoryStore.getState().close()
+      navigate(-(depth + 1))
+    } else {
+      replaceLesson(() => {
+        useTheoryStore.getState().close()
+        navigate('/learn', { replace: true })
+      })
+    }
+  }, [location.state, depth, navigate, replaceLesson])
+
+  // The next lesson replaces this one in history, so ✕ and back still lead to
+  // where the reader came from rather than through every lesson read.
+  const openLesson = useCallback((to: string) => {
+    replaceLesson(() => navigate(to, { replace: true, state: opener }))
+  }, [replaceLesson, navigate, opener])
 
   // Desktop: Enter goes on, the piano keys answer a key check, 1-4 a choice.
   useEffect(() => {
@@ -110,6 +176,8 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [canGoOn, current, answer, naming, goOn, answerStep])
 
+  // Back and forward show the step as it was: the swipe already moved the page.
+  const instant = navType === NavigationType.Pop
   const review = lesson.kind === 'review'
   const number = lessonNumber(lessonRef)
   const title = plainText(lesson.title[lang], naming)
@@ -127,12 +195,14 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
       progressLabel={t('theory.progress', { step: Math.min(step + 1, total), total })}
       footer={footer}
     >
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait" initial={false} custom={instant}>
         <motion.div
           key={step}
-          initial={reduce ? false : { opacity: 0, x: 18 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={reduce ? undefined : { opacity: 0, x: -12, transition: { duration: 0.12 } }}
+          custom={instant}
+          variants={stepMotion}
+          initial={reduce || instant ? false : 'enter'}
+          animate="shown"
+          exit={reduce ? undefined : 'leave'}
           transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-1 flex-col"
         >
@@ -148,7 +218,7 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
               padLabels={settings.keyLabels} padLayout={settings.padStyle}
             />
           ) : (
-            <End lessonRef={lessonRef} title={title} number={number} onAllLessons={close} />
+            <End lessonRef={lessonRef} title={title} number={number} onAllLessons={close} onLesson={openLesson} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -156,15 +226,23 @@ function Player({ lessonRef }: { lessonRef: LessonRef }) {
   )
 }
 
+const stepMotion: Variants = {
+  enter: { opacity: 0, x: 18 },
+  shown: { opacity: 1, x: 0 },
+  // The leaving step reads `instant` from AnimatePresence's `custom`, as its own props are frozen.
+  leave: (instant: boolean) => ({ opacity: 0, x: instant ? 0 : -12, transition: { duration: instant ? 0 : 0.12 } }),
+}
+
 /** The end screen's data: recap, score, the practice link, the way on and the credit. */
-function End({ lessonRef, title, number, onAllLessons }: {
+function End({ lessonRef, title, number, onAllLessons, onLesson }: {
   lessonRef: LessonRef; title: string; number: string; onAllLessons: () => void
+  /** Opens another lesson in this one's place in history. */
+  onLesson: (to: string) => void
 }) {
   const { chapter, lesson, key } = lessonRef
   const { lang, naming } = useAppStore(s => s.settings)
   const answers = useTheoryStore(s => s.answers)
   const t = useT()
-  const location = useLocation()
   const review = lesson.kind === 'review'
   const results = Object.values(answers)
   const after = lessonAfter(CHAPTERS, key)
@@ -172,19 +250,17 @@ function End({ lessonRef, title, number, onAllLessons }: {
   const practice = lesson.practice
   const drill = practice ? findDrill(practice.drill) : undefined
 
-  // The next lesson replaces this one in history, so ✕ and back still lead to
-  // where the reader came from rather than through every lesson read.
+  const lessonLink = (to: string, label: string) => ({
+    to, label, onClick: (e: MouseEvent) => { e.preventDefault(); onLesson(to) },
+  })
   const next = after
-    ? {
-        to: `/theory/${after.key}`, replace: true, state: location.state,
-        label: t('theory.nextLesson', { title: plainText(after.lesson.title[lang], naming) }),
-      }
+    ? lessonLink(`/theory/${after.key}`, t('theory.nextLesson', { title: plainText(after.lesson.title[lang], naming) }))
     : {
         to: '/theory', label: t('theory.allLessons'),
         onClick: (e: MouseEvent) => { e.preventDefault(); onAllLessons() },
       }
   const also = !(practice && drill) && chapterReview && !review && after?.lesson !== chapterReview
-    ? { to: `/theory/${lessonKey(chapter, chapterReview)}`, replace: true, state: location.state, label: t('theory.reviewChapter') }
+    ? lessonLink(`/theory/${lessonKey(chapter, chapterReview)}`, t('theory.reviewChapter'))
     : undefined
 
   const offer = practice && drill && (
