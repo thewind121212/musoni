@@ -81,6 +81,13 @@ export function SetupPhase() {
             onChange={accidentals => updateDrill(noteId.id, { accidentals })}
           />
         </SettingRow>
+        <SettingRow label={t(S.octave)} hint={t(S['octave.hint'])}>
+          <Switch
+            checked={own.octave}
+            label={t(S.octave)}
+            onChange={octave => updateDrill(noteId.id, { octave })}
+          />
+        </SettingRow>
         <SettingRow label={t('setup.naming')}>
           <SegmentedControl
             compact

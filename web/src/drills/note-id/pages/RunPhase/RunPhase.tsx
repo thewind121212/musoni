@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MissLine, ProgressBar } from '@/core/components/atoms'
+import { OctaveStrip } from '@/core/components/molecules'
 import { AnswerPad, PausePanel, QuestionStaff, RunHeader } from '@/core/components/organisms'
 import { playedMs, useDrillStore, type PauseReason } from '@/drills/note-id/store'
 import { useRunGuards } from '@/app/useRunGuards'
@@ -9,6 +10,8 @@ import { formatClock, formatElapsed } from '@/core/i18n/formatDuration'
 import { nearestOctave } from '@/core/music/pitch'
 import { playPitch, preloadPiano } from '@/core/audio/playPitch'
 import noteId from '@/drills/note-id/drill'
+import { levelOctaves } from '@/drills/note-id/generator'
+import { S } from '@/drills/note-id/strings'
 import { FEEDBACK_CORRECT_MS, FEEDBACK_WRONG_MS, TICK_MS } from '@/config/constants'
 
 /** The ✕ button and Esc: pause to ask, or just leave when nothing was answered yet. */
@@ -19,6 +22,26 @@ function quit() {
 }
 
 /**
+ * Answers with pad key `i` and plays it: the printed note, or with the
+ * octave setting the note picked, at the octave the strip is on.
+ */
+function answerKey(i: number) {
+  const s = useDrillStore.getState()
+  if (!s.question || s.feedback || s.pausedAt !== null) return
+  const { question, octave } = s
+  s.answer(i)
+  if (!s.settings.sound) return
+  const key = question.options[i]
+  playPitch(noteId.of(s.settings).octave ? { letter: key.letter, accidental: key.accidental, octave } : question.pitch)
+}
+
+/** The octave a digit key names (2-6, top row or keypad), or null. */
+function digitOf(e: KeyboardEvent): number | null {
+  const m = /^(?:Digit|Numpad)(\d)$/.exec(e.code) ?? /^(\d)$/.exec(e.key)
+  return m ? Number(m[1]) : null
+}
+
+/**
  * Page: owns the sprint's timers and keyboard, and feeds the drill store into
  * the header, staff and pad.
  *
@@ -26,7 +49,7 @@ function quit() {
  * the page or leaving the route pauses too (see `useRunGuards`).
  */
 export function RunPhase() {
-  const { question, endsAt, correct, wrong, streak, feedback, settings, pausedAt, pauseReason } = useDrillStore()
+  const { question, endsAt, correct, wrong, streak, feedback, settings, pausedAt, pauseReason, level, octave, misses } = useDrillStore()
   const t = useT()
   // The clock lives in state, refreshed each tick, so render stays pure.
   const [now, setNow] = useState(() => Date.now())
@@ -73,10 +96,24 @@ export function RunPhase() {
         return
       }
       if (!s.question || s.feedback || s.pausedAt !== null) return
+      // The octave strip: digits jump to an octave the level has, arrows step.
+      // Free keys here, since notes answer on letters.
+      if (noteId.of(s.settings).octave && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const { min, max } = levelOctaves(s.level)
+        const digit = digitOf(e)
+        const step = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0
+        if (digit !== null) {
+          if (digit >= min && digit <= max) s.setOctave(digit)
+          return
+        }
+        if (step) {
+          e.preventDefault()
+          s.setOctave(s.octave + step)
+          return
+        }
+      }
       const i = optionIndexFromKey(e, s.question.options)
-      if (i === null) return
-      s.answer(i)
-      if (s.settings.sound) playPitch(s.question.pitch)
+      if (i !== null) answerKey(i)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -90,20 +127,20 @@ export function RunPhase() {
   const fraction = endsAt ? msLeft / (noteId.of(settings).durationSec * 1000) : 0
   const lastTen = secondsLeft <= 10
 
-  // On a miss, the note the reader picked, placed at the octave nearest the
-  // printed one so the staff shows how far off the read was.
+  const octaveOn = noteId.of(settings).octave
+  const octaves = levelOctaves(level)
+
+  // On a miss, the note the reader picked: at the octave picked on the strip,
+  // or without one at the octave nearest the printed note, so the staff
+  // shows how far off the read was.
   const wrongPick = feedback && !feedback.correct ? question.options[feedback.chosenIndex] : null
   const wrongChoice = wrongPick
-    ? nearestOctave(wrongPick.letter, wrongPick.accidental, question.pitch)
+    ? feedback?.octave !== undefined
+      ? { letter: wrongPick.letter, accidental: wrongPick.accidental, octave: feedback.octave }
+      : nearestOctave(wrongPick.letter, wrongPick.accidental, question.pitch)
     : null
-
-  const answer = (i: number) => {
-    const s = useDrillStore.getState()
-    if (!s.question || s.feedback || s.pausedAt !== null) return
-    const pitch = s.question.pitch
-    s.answer(i)
-    if (s.settings.sound) playPitch(pitch)
-  }
+  // The store names the miss (with its octaves when asked).
+  const miss = wrongPick ? misses.at(-1) : undefined
 
   return (
     <>
@@ -139,23 +176,33 @@ export function RunPhase() {
           />
           {/* Fixed height, so the staff does not jump when a miss is named. */}
           <div className="flex h-10 items-center">
-            {feedback && !feedback.correct && (
-              <MissLine
-                text={t('run.missed', {
-                  answer: question.options[feedback.correctIndex].label,
-                  chosen: question.options[feedback.chosenIndex].label,
-                })}
-              />
-            )}
+            {miss && <MissLine text={t('run.missed', { answer: miss.answer, chosen: miss.chosen })} />}
           </div>
         </div>
 
         <div className="md:mx-auto md:w-full md:max-w-2xl">
+          {octaveOn && (
+            <div className="mb-2">
+              <OctaveStrip
+                min={octaves.min} max={octaves.max} value={octave}
+                onChange={n => useDrillStore.getState().setOctave(n)}
+                label={t(S['octave.strip'])}
+                valueText={t(S['octave.n'], { n: octave })}
+                answer={feedback ? question.pitch.octave : null}
+              />
+            </div>
+          )}
           <AnswerPad
-            options={question.options} feedback={feedback} onAnswer={answer}
+            options={question.options} feedback={feedback} onAnswer={answerKey}
             showLabels={settings.keyLabels}
             layout={settings.padStyle}
           />
+          {octaveOn && (
+            <p data-testid="octave-now" className="mt-2 text-center text-sm font-semibold text-ink-soft">
+              {t(S['octave.n'], { n: octave })}
+              <span className="hidden font-normal text-ink-faint md:inline"> · {octaves.min}–{octaves.max} ← →</span>
+            </p>
+          )}
         </div>
       </div>
       <PausePanel

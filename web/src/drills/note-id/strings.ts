@@ -15,6 +15,10 @@ export const S = defineStrings('note-id', {
   'level.3.detail': 'Bass clef range',
   'level.4': 'Both',
   'level.4.detail': 'Treble and bass mixed',
+  octave: 'Octave',
+  'octave.hint': 'Answer C4, D5… on an octave strip',
+  'octave.n': 'Octave {n}',
+  'octave.strip': 'Octave to answer in',
 }, {
   title: 'Đọc nốt nhạc',
   what: 'Gọi tên nốt trên khuông nhạc',
@@ -29,6 +33,10 @@ export const S = defineStrings('note-id', {
   'level.3.detail': 'Quãng của khóa Fa',
   'level.4': 'Cả hai',
   'level.4.detail': 'Trộn khóa Sol và khóa Fa',
+  octave: 'Quãng tám',
+  'octave.hint': 'Trả lời cả quãng: Do4, Re5…',
+  'octave.n': 'Quãng {n}',
+  'octave.strip': 'Quãng tám để trả lời',
 })
 
 export type NoteIdLevel = 1 | 2 | 3 | 4

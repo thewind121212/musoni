@@ -13,6 +13,12 @@ describe('MiniKeyboard', () => {
     expect(dots.map(d => d.getAttribute('data-lit'))).toEqual(['0', '4', '7', '6'])
   })
 
+  it('stretched, fills its box with hairline outlines', () => {
+    const { container } = render(<MiniKeyboard lit={[]} octaves={3} stretch />)
+    expect(container.querySelector('svg')).toHaveAttribute('preserveAspectRatio', 'none')
+    expect(container.querySelector('rect')).toHaveAttribute('vector-effect', 'non-scaling-stroke')
+  })
+
   it('draws no dots when nothing is lit', () => {
     const { container } = render(<MiniKeyboard lit={[]} />)
     expect(container.querySelectorAll('circle')).toHaveLength(0)

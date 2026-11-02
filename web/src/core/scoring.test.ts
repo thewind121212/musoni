@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { OCTAVE_WEIGHT } from '../config/constants'
 import { difficultyWeight, accuracy, practiceScore, enduranceBonus } from './scoring'
 
 describe('scoring', () => {
@@ -6,6 +7,10 @@ describe('scoring', () => {
     expect(difficultyWeight(1, false)).toBe(1.0)
     expect(difficultyWeight(4, false)).toBe(1.8)
     expect(difficultyWeight(4, true)).toBeCloseTo(2.52)
+  })
+  it('the octave setting stacks on accidentals', () => {
+    expect(difficultyWeight(4, true, true)).toBeCloseTo(difficultyWeight(4, true) * OCTAVE_WEIGHT)
+    expect(difficultyWeight(2, false, true)).toBeGreaterThan(difficultyWeight(2, false))
   })
   it('accuracy', () => {
     expect(accuracy(9, 1)).toBe(0.9)

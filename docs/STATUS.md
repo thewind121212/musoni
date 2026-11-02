@@ -39,7 +39,8 @@ one PR each against `docs/theory/port-guide.md`. Every drill is one
 entry in a glob-discovered **drill registry** (`drills/<id>/drill.ts`) with its own
 settings, strings and colour; **Ôn tập** (`/train/review`)
 asks the checks of finished lessons, weighted toward the ones missed.
-Components follow atomic-design levels. Go `/health` stub behind it. 881 web tests (Vitest) + 1 Go test
+Đọc nốt can also ask for the octave (Quãng tám: Mi4, picked on an octave strip above the pad).
+Components follow atomic-design levels. Go `/health` stub behind it. 953 web tests (Vitest) + 1 Go test
 green, `tsc` + `npm run build` clean, oxlint zero warnings, all enforced by CI on every PR. Not yet spot-checked in
 a real browser.
 
@@ -437,6 +438,18 @@ a real browser.
 - [x] **Theory chapter 26, Hình thức sonata và rondo** (2026-10-24; book 25.1-25.5, review after 25.6): sonata form, sonatina and the sonata principle, the four structural functions, rondo and sonata rondo, rondo character and multimovement works, review. `docs/theory/ch26-sonata-rondo.md`
 - [x] **Theory chapter 29, Dẫn bè với nốt ngoài hợp âm** (2026-10-24; book 28.1-28.3, review after 28.4): non-chord tones and parallels, embellishing repeated notes and steps down, steps up and leaps, review; SATB on a grand staff. `docs/theory/ch29-voice-leading-nct.md`
 - [x] **Theory chapter 31, Nhập môn đối âm** (2026-10-24; book 30.1-30.8, review after 30.9): species counterpoint (first to fifth), invention expositions, fugue analysis, review. `docs/theory/ch31-counterpoint.md`
+- [x] **Đọc nốt: answer with the octave** (2026-11-02, user feedback): a **Quãng tám** setting
+      (off by default, ×1.3 weight stacking with ♯ ♭). On, an octave strip (new core molecule
+      `OctaveStrip`, a slider over a stretched `MiniKeyboard`) sits above the pad, spanning
+      the level's octaves (from `LEVELS`: L1 4-5, L2 3-6, L3 2-3, L4 2-6); tap or drag snaps
+      to an octave, which stays put between questions; "Quãng 4" under the pad. Right only
+      when letter, accidental and octave match; a miss is drawn and named at the octave
+      picked ("Mi4"), the sound plays the pick; during feedback the strip marks the octave
+      (window green when right, red with the right octave outlined green when wrong). Keys: digits 2-6 jump (in range only), ← / →
+      step (no clash: notes answer on letters). Sessions carry `octave: true` (additive,
+      version stays 2). Checked at 390×844 in headless Chrome. Docs:
+      `drill-note-identification.md`, `screens.md`, `data-model.md`, `architecture.md`.
+      953 web tests green
 
 ## Theory chapters
 

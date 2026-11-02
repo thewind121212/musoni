@@ -56,7 +56,9 @@ On feedback the staff itself answers too: the printed note turns green, and on
 a miss the note the reader picked is drawn beside it in red (and named in words
 under the staff), at the octave
 nearest the printed note (`core/music/pitch.nearestOctave`), so the mistake
-shows as a distance on the staff rather than only as a red key.
+shows as a distance on the staff rather than only as a red key. With
+**Quãng tám** on, the pick is drawn at the octave the reader picked instead
+(below).
 
 ## Answering
 
@@ -75,14 +77,61 @@ shows as a distance on the staff rather than only as a red key.
     keydowns from a held key are ignored so it cannot answer the next note.
   Shortcuts resolve by matching the key each option advertises (`core/music/keyboard.ts`),
   not by parsing a digit.
+  - With **Quãng tám** on: digits **2-6** (top row or keypad, matched on
+    `KeyboardEvent.code` too) jump the octave strip to that octave, and only
+    to one the level has (`3` at L1 does nothing); **← / →** step it. These
+    keys answered nothing before (notes are letters, Esc pauses), so nothing
+    collides. When the strip itself has focus it handles its own arrows (plus
+    Home / End) and marks them handled, and the page listener skips marked
+    events, so an arrow steps once. Like the pad, the strip holds still
+    during the feedback hold (`setOctave` is ignored), so it keeps showing
+    the octave answered.
 - Instant feedback: the correct key fills green with a check, a wrong pick red
   with a cross, and the staff mirrors it (see Rendering), then auto-advance. A
   correct answer flashes for **260 ms** and moves on; a miss holds for **1.1 s**,
   long enough to look at the staff (`FEEDBACK_CORRECT_MS` / `FEEDBACK_WRONG_MS`
   in `config/`).
-- Optional sound: the actual pitch plays on answer on a sampled piano
+- Optional sound: the actual pitch plays on answer (with Quãng tám on, the
+  note picked at the octave picked, so a wrong octave is heard) on a sampled piano
   (Salamander Grand, see `docs/infra/stack.md`), lazy-loaded when the sprint
   opens, with a sine tone as the fallback until the samples arrive.
+
+## Answering with the octave (Quãng tám)
+
+A setting, off by default; off, the drill is exactly as above. On, the reader
+names the octave too, in scientific pitch notation (C4 = middle C): Mi4, not Mi.
+
+- **Octave strip** (core molecule `OctaveStrip`) above the 12-key pad: a thin
+  keyboard spanning only the octaves the level's notes are written in, the
+  octave numbers under it, and a window in the practice-mode colour over the
+  chosen octave. Tap a point or drag along it; the window snaps to whole
+  octaves. Like the range strip of a phone piano app.
+- The octaves come from the level ranges in `LEVELS` (`levelOctaves`,
+  `drills/note-id/generator.ts`), never listed twice: L1 4-5, L2 3-6, L3 2-3,
+  L4 2-6. A session starts on the octave holding the middle of the range (4
+  for the treble levels and L4, 3 for L3), and the strip is clamped to the
+  level's octaves.
+- **The octave stays put between questions** (`octave` in the drill store),
+  so most answers are still one tap on the pad; the strip moves only when the
+  note jumps. Under the pad, "Quãng 4" says where it is without looking up.
+- **Judging** (`isCorrect`): right only when the letter, the accidental and
+  the octave all match the printed note. The pad never offers C♭, B♯, E♯ or
+  F♭ and the generator never prints them, so a key's octave is the written
+  octave; no spelling crosses an octave line.
+- **Feedback**: a miss draws the pick at the exact octave picked (not
+  `nearestOctave`) and names both with octaves ("Đây là Mi4, bạn chọn Mi5").
+  The strip marks the octave like the pad marks keys (`OctaveStrip`
+  `answer`): the window turns green when the octave was right, and red when
+  it was wrong, with the right octave outlined in green. So a right letter in
+  the wrong octave shows a green key and a red window: the octave was the
+  wrong half. Visual only; screen readers hear the miss line, not the strip. `misses` keep the octave
+  picked (`octave`) and their labels carry octaves.
+- **Weight**: ×1.3 (`OCTAVE_WEIGHT`), stacking with accidentals (below).
+- **Accessible**: the strip is a `slider` (`aria-valuemin/max/now`,
+  `aria-valuetext` "Quãng 4"), focusable with a visible ring, arrows / Home
+  / End when focused, 44 px tall.
+- Not a preset option: it is how the reader answers (like naming), so a
+  lesson's practice link keeps the reader's choice.
 
 ## Session format
 
@@ -107,8 +156,8 @@ session is trivially a record.
 
 ## Settings (user-chosen, saved in localStorage)
 
-Level, length and accidentals are this drill's own workout, saved under
-`settings.drills["note-id"]` (`level`, `durationSec`, `accidentals`; defaults in
+Level, length, accidentals and octave are this drill's own workout, saved under
+`settings.drills["note-id"]` (`level`, `durationSec`, `accidentals`, `octave`; defaults in
 `drills/note-id/drill.ts`, its registry entry). Naming, answer keys, names on
 keys and sound are shared preferences. A lesson preset may set `accidentals`
 (its entry's `presetOptions`).
@@ -117,6 +166,7 @@ keys and sound are shared preferences. A lesson preset may set `accidentals`
 |---|---|---|
 | Note naming | **Solfège** (Do Re Mi Fa Sol La Si, default) / **Letters** (C D E F G A B) | Keys and answers display in the chosen system. Solfège is the default because Vietnamese teaching leads with it |
 | Accidentals | ON / OFF | OFF = naturals only ever appear, and the black keys are landmarks only |
+| Quãng tám (Octave) | OFF (default) / ON | ON = answer the octave too, on the octave strip (see above) |
 | Answer keys | **Piano** (default) / Boxes | Piano draws a keyboard (black keys over the white ones, always shown). Boxes is the older look: two rows of buttons, the black row hidden without accidentals |
 | Names on keys | ON (default) / OFF | Note names printed on the answer keys. OFF trains finding the note on a bare keyboard rather than matching a name; the right key and a wrong pick show their names once answered, and every key keeps its name for screen readers. Scoring is unchanged |
 | Sound | ON / OFF | Pitch playback on answer |
@@ -135,6 +185,7 @@ note pool is allowed*.
 | L4 | Both clefs mixed (treble A3-C6, bass E2-E4) | ×1.8 |
 
 Accidentals ON multiplies the level weight by **×1.4** (e.g., L4 + accidentals = ×2.52).
+Quãng tám ON multiplies it by **×1.3**, stacking (L4 + accidentals + octave = ×3.28).
 
 ## Weighted scoring (comparable across all settings and lengths)
 
@@ -165,7 +216,7 @@ practiceScore = round(pace × 10 × difficultyWeight × accuracy × endurance)
 - The result screen shows the difficulty and endurance multipliers as chips, so
   the reward is visible rather than buried in the arithmetic.
 - All weights are tunable constants in `config/constants.ts`
-  (`LEVELS`, `ACCIDENTALS_WEIGHT`, `ENDURANCE_PER_DOUBLING`, `MIN_ENDURANCE_BONUS`).
+  (`LEVELS`, `ACCIDENTALS_WEIGHT`, `OCTAVE_WEIGHT`, `ENDURANCE_PER_DOUBLING`, `MIN_ENDURANCE_BONUS`).
 - Average response time stays a separate stat; pace already rewards speed.
 
 Each session record snapshots its settings, level and length (see
@@ -175,7 +226,8 @@ per-setting breakdown charts.
 ## Misses and the result screen
 
 Every wrong answer is kept in the drill store as `misses` (clef, pitch, and the
-answer and picked key labels in the reader's naming). They reset when a session
+answer and picked key labels in the reader's naming, with octaves and the
+octave picked when Quãng tám is on). They reset when a session
 starts and stay after it finishes, for the result screen's **notes to review**.
 They are not persisted: `SessionResult` and the saved document are unchanged.
 
