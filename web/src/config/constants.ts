@@ -345,6 +345,14 @@ export const RHYTHM_DEFAULT_DURATION_SECONDS = 120
 /** The metronome click: a short tone, higher on the downbeat. */
 export const RHYTHM_CLICK = { hz: 1100, accentHz: 1760, decaySec: 0.045, gain: 0.55 } as const
 /**
+ * The sound of a tap (Phản hồi khi gõ: Âm thanh): a woodblock-like knock, a
+ * sine well below the click that drops from `hz` to `endHz` as it dies away,
+ * so a tap and a click never sound alike.
+ */
+export const RHYTHM_TAP_SOUND = { hz: 640, endHz: 380, decaySec: 0.07, gain: 0.5 } as const
+/** The buzz of a tap (Phản hồi khi gõ: Rung), in ms. */
+export const RHYTHM_TAP_VIBRATE_MS = 15
+/**
  * Latency calibration: tap along with `clicks` clicks at `bpm`. A tap counts
  * for a click when it lands from `minMs` before it to `maxMs` after it (a
  * range narrower than the gap between clicks); the offset is the median of at

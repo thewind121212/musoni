@@ -13,13 +13,14 @@ import { NoteStaff } from '@/core/components/organisms'
 import { parseNotation } from '@/core/music/notation'
 import { RHYTHM_TEMPOS } from '@/config/constants'
 import { useRhythmStore } from '@/drills/rhythm/store'
-import { wakeAudio } from '@/drills/rhythm/metronome'
+import { canVibrate, wakeAudio } from '@/drills/rhythm/metronome'
 import { useCalibration } from '@/drills/rhythm/useCalibration'
 import { CalibrationPanel } from '@/drills/rhythm/components/organisms'
 import rhythm from '@/drills/rhythm/drill'
 import { S, levelDetailKey, levelKey } from '@/drills/rhythm/strings'
 
 const LEVELS = [1, 2, 3, 4] as const
+const FEEDBACK = ['sound', 'vibrate', 'off'] as const
 /** A figure from each level, to show what it asks. */
 const LEVEL_FIGURES: Record<(typeof LEVELS)[number], string> = {
   1: 'B4:h B4:q B4:q',
@@ -28,7 +29,7 @@ const LEVEL_FIGURES: Record<(typeof LEVELS)[number], string> = {
   4: '3( B4:8 B4:8 B4:8 ) B4:16 B4:16 B4:8',
 }
 
-/** Page: Tiết tấu's settings (level, tempo, click, length, tap latency) and the start button. */
+/** Page: Tiết tấu's settings (level, tempo, click, tap feedback, length, tap latency) and the start button. */
 export function SetupPhase() {
   const { settings, updateDrill } = useAppStore()
   const own = rhythm.of(settings)
@@ -38,8 +39,11 @@ export function SetupPhase() {
   const backLink = useBackLink()
   const best = getBest(rhythm.id, level)
   const [calibrating, setCalibrating] = useState(false)
+  // No Vibration API (iPhone Safari): no Rung, and a saved vibrate acts as off.
+  const vibrates = canVibrate()
+  const feedback = own.tapFeedback === 'vibrate' && !vibrates ? 'off' : own.tapFeedback
   const save = useCallback((latencyMs: number) => updateDrill(rhythm.id, { latencyMs }), [updateDrill])
-  const calibration = useCalibration(save)
+  const calibration = useCalibration(save, feedback)
   const figures = useMemo(() => LEVELS.map(l => parseNotation(LEVEL_FIGURES[l])), [])
 
   const levelOptions = LEVELS.map(l => ({
@@ -53,6 +57,9 @@ export function SetupPhase() {
     ),
   }))
   const tempoSegments = RHYTHM_TEMPOS.map(bpm => ({ value: bpm, label: String(bpm) }))
+  const feedbackSegments = FEEDBACK
+    .filter(m => m !== 'vibrate' || vibrates)
+    .map(m => ({ value: m, label: t(S[`setup.feedback.${m}`]) }))
 
   const closeCalibration = () => {
     calibration.reset()
@@ -80,6 +87,15 @@ export function SetupPhase() {
         </SettingRow>
         <SettingRow label={t(S['setup.click'])} hint={t(S['setup.click.hint'])}>
           <Switch checked={own.click} label={t(S['setup.click'])} onChange={click => updateDrill(rhythm.id, { click })} />
+        </SettingRow>
+        <SettingRow label={t(S['setup.feedback'])} hint={t(S['setup.feedback.hint'])}>
+          <SegmentedControl
+            compact
+            label={t(S['setup.feedback'])}
+            segments={feedbackSegments}
+            value={feedback}
+            onChange={tapFeedback => updateDrill(rhythm.id, { tapFeedback })}
+          />
         </SettingRow>
         <SettingRow
           label={t(S['setup.latency'])}

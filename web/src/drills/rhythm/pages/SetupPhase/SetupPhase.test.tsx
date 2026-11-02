@@ -14,6 +14,8 @@ vi.mock('@/drills/rhythm/metronome', () => ({
   audioTimeAt: () => clock.now,
   scheduleClicks: vi.fn(),
   stopClicks: vi.fn(),
+  tapFeedback: vi.fn(),
+  canVibrate: vi.fn(() => true),
 }))
 vi.mock('@/core/components/organisms/Staff', () => ({
   Staff: () => <div data-testid="staff" />,
@@ -23,7 +25,7 @@ vi.mock('@/core/components/organisms/Staff', () => ({
 const { SetupPhase } = await import('./SetupPhase')
 const { useAppStore } = await import('@/app/store')
 const { useRhythmStore } = await import('@/drills/rhythm/store')
-const { scheduleClicks, wakeAudio } = await import('@/drills/rhythm/metronome')
+const { scheduleClicks, wakeAudio, tapFeedback, canVibrate } = await import('@/drills/rhythm/metronome')
 
 const renderSetup = () => render(<MemoryRouter><SetupPhase /></MemoryRouter>)
 const own = () => useAppStore.getState().settings.drills.rhythm
@@ -33,6 +35,8 @@ beforeEach(() => {
   clock.now = 5
   vi.mocked(scheduleClicks).mockClear()
   vi.mocked(wakeAudio).mockClear()
+  vi.mocked(tapFeedback).mockClear()
+  vi.mocked(canVibrate).mockReturnValue(true)
   resetStores({ lang: 'en' })
   useRhythmStore.setState({ phase: 'setup', question: null, feedback: null, lastResult: null, pausedAt: null })
 })
@@ -53,6 +57,28 @@ describe('Rhythm SetupPhase', () => {
     fireEvent.click(screen.getByRole('switch', { name: 'Click during the measure' }))
     expect(own()).toMatchObject({ level: 3, tempo: 100, click: false })
     expect(getSettings().drills.rhythm).toMatchObject({ level: 3, tempo: 100, click: false })
+  })
+
+  it('gives tap feedback by sound by default, and saves another choice', () => {
+    renderSetup()
+    expect(screen.getByRole('radio', { name: 'Sound' })).toHaveAttribute('aria-checked', 'true')
+    fireEvent.click(screen.getByRole('radio', { name: 'Off' }))
+    expect(own()).toMatchObject({ tapFeedback: 'off' })
+    expect(getSettings().drills.rhythm).toMatchObject({ tapFeedback: 'off' })
+    fireEvent.click(screen.getByRole('radio', { name: 'Vibrate' }))
+    expect(getSettings().drills.rhythm).toMatchObject({ tapFeedback: 'vibrate' })
+  })
+
+  it('offers no vibrate where the device cannot, and treats a saved vibrate as off', () => {
+    vi.mocked(canVibrate).mockReturnValue(false)
+    act(() => useAppStore.getState().updateDrill('rhythm', { tapFeedback: 'vibrate' }))
+    renderSetup()
+    expect(screen.queryByRole('radio', { name: 'Vibrate' })).not.toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: 'Off' })).toHaveAttribute('aria-checked', 'true')
+    fireEvent.click(screen.getByRole('button', { name: 'Calibrate' }))
+    fireEvent.click(screen.getByRole('button', { name: /Play the clicks/ }))
+    fireEvent.keyDown(window, { key: ' ' })
+    expect(tapFeedback).toHaveBeenCalledWith('off')
   })
 
   it('shows the best score for the chosen level', () => {
@@ -87,6 +113,9 @@ describe('Rhythm SetupPhase', () => {
     clock.now = clicks[clicks.length - 1].at + 2
     act(() => vi.advanceTimersByTime(RHYTHM_FRAME_MS * 2))
     expect(own().latencyMs).toBe(60)
+    // Each tap was heard; the delay came out the same.
+    expect(tapFeedback).toHaveBeenCalledTimes(clicks.length)
+    expect(tapFeedback).toHaveBeenCalledWith('sound')
     expect(screen.getByText('Saved: 60 ms')).toBeInTheDocument()
     expect(screen.getByText('60 ms taken off each tap')).toBeInTheDocument()
   })

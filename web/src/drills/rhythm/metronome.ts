@@ -1,5 +1,6 @@
-import { RHYTHM_CLICK } from '@/config/constants'
+import { RHYTHM_CLICK, RHYTHM_TAP_SOUND, RHYTHM_TAP_VIBRATE_MS } from '@/config/constants'
 import { createAudioContext, wake } from '@/core/audio/context'
+import type { TapFeedback } from './drill'
 
 /*
  * The metronome and the clock taps are judged on. Clicks are scheduled on the
@@ -92,4 +93,40 @@ export function stopClicks(): void {
     try { osc.stop() } catch { /* already stopped */ }
   }
   live.clear()
+}
+
+/** Whether this device can buzz (iPhone Safari has no Vibration API). */
+export function canVibrate(): boolean {
+  return typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function'
+}
+
+/**
+ * What a tap gives back, at once: a woodblock-like knock on the drill's
+ * clock, a short buzz, or nothing. Feedback only: the tap's time comes from
+ * its event, so this never moves what is judged. Vibrate where the device
+ * cannot is nothing, like off.
+ */
+export function tapFeedback(mode: TapFeedback): void {
+  if (mode === 'vibrate') {
+    if (canVibrate()) navigator.vibrate(RHYTHM_TAP_VIBRATE_MS)
+    return
+  }
+  if (mode !== 'sound') return
+  const a = context()
+  if (!a) return
+  try {
+    const { hz, endHz, decaySec, gain: peak } = RHYTHM_TAP_SOUND
+    const at = a.currentTime
+    const osc = a.createOscillator()
+    const gain = a.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(hz, at)
+    osc.frequency.exponentialRampToValueAtTime(endHz, at + decaySec)
+    gain.gain.setValueAtTime(0.0001, at)
+    gain.gain.linearRampToValueAtTime(peak, at + 0.001)
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + decaySec)
+    osc.connect(gain).connect(a.destination)
+    osc.start(at)
+    osc.stop(at + decaySec + 0.01)
+  } catch { /* audio unavailable: silent */ }
 }

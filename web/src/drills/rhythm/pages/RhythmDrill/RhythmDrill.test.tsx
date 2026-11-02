@@ -5,7 +5,7 @@ import { resetStores } from '@/test/fixtures'
 
 vi.mock('@/drills/rhythm/metronome', () => ({
   wakeAudio: vi.fn(), audioReady: () => true, audioNow: () => 0, audioTimeAt: () => 0,
-  scheduleClicks: vi.fn(), stopClicks: vi.fn(),
+  scheduleClicks: vi.fn(), stopClicks: vi.fn(), tapFeedback: vi.fn(), canVibrate: () => true,
 }))
 vi.mock('@/core/components/organisms/Staff', () => ({
   Staff: () => <div data-testid="staff" />,

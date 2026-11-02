@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { act } from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { resetStores, withDrill } from '@/test/fixtures'
 import {
@@ -16,6 +16,7 @@ vi.mock('@/drills/rhythm/metronome', () => ({
   audioTimeAt: () => clock.now,
   scheduleClicks: vi.fn(),
   stopClicks: vi.fn(),
+  tapFeedback: vi.fn(),
 }))
 // jsdom has no canvas: the staff is covered by its own tests.
 vi.mock('@/core/components/organisms/Staff', () => ({
@@ -26,9 +27,10 @@ vi.mock('@/core/components/organisms/Staff', () => ({
 const { RunPhase } = await import('./RunPhase')
 const { useRhythmStore, measureTiming } = await import('@/drills/rhythm/store')
 const { allMeasures } = await import('@/drills/rhythm/generator')
-const { scheduleClicks, audioReady } = await import('@/drills/rhythm/metronome')
+const { scheduleClicks, audioReady, tapFeedback } = await import('@/drills/rhythm/metronome')
 
-const settings = (patch = {}) => withDrill('rhythm', { level: 2, tempo: 80, click: true, latencyMs: null, durationSec: 60, ...patch })
+const settings = (patch = {}) =>
+  withDrill('rhythm', { level: 2, tempo: 80, click: true, latencyMs: null, tapFeedback: 'sound', durationSec: 60, ...patch })
 // q q 8 8 q at L2: four quarter beats, five onsets.
 const measure = allMeasures(2).find(m => m.notation === 'B4:q B4:q B4:8 B4:8 B4:q')!
 
@@ -63,6 +65,7 @@ beforeEach(() => {
   vi.useFakeTimers()
   clock.now = 10
   vi.mocked(scheduleClicks).mockClear()
+  vi.mocked(tapFeedback).mockClear()
   vi.mocked(audioReady).mockReturnValue(true)
   resetStores({ lang: 'en' })
   useRhythmStore.setState({ phase: 'setup', question: null, feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null, takeAt: null })
@@ -98,6 +101,26 @@ describe('Rhythm RunPhase', () => {
     play(downbeat, onsetsMs, 'j')
     expect(useRhythmStore.getState().correct).toBe(1)
     expect(screen.getByRole('status')).toHaveTextContent('In time')
+  })
+
+  it('gives the chosen feedback on every tap, pad or key, and judges the same whatever it is', () => {
+    const judged = []
+    for (const mode of ['sound', 'vibrate', 'off'] as const) {
+      vi.mocked(tapFeedback).mockClear()
+      useRhythmStore.setState({ phase: 'setup', question: null, feedback: null, pausedAt: null, takeAt: null })
+      begin({ tapFeedback: mode })
+      const downbeat = countIn()
+      const { onsetsMs } = measureTiming(measure, useRhythmStore.getState().settings, 2)
+      clock.now = downbeat + onsetsMs[0] / 1000
+      fireEvent.pointerDown(screen.getByRole('button', { name: /Tap/ }))
+      play(downbeat, onsetsMs.slice(1).map((ms, i) => (i === 1 ? ms + 40 : ms)), 'k')
+      expect(tapFeedback).toHaveBeenCalledTimes(onsetsMs.length)
+      expect(vi.mocked(tapFeedback).mock.calls.every(([m]) => m === mode)).toBe(true)
+      judged.push(useRhythmStore.getState().feedback)
+      cleanup()
+    }
+    expect(judged[1]).toEqual(judged[0])
+    expect(judged[2]).toEqual(judged[0])
   })
 
   it('names the first note that was late', () => {

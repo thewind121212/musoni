@@ -466,8 +466,10 @@ sheet, early end and result screen.
 từng nốt của ô nhịp cho đúng nhịp."), then **Trường độ**: four cards, each
 with a small figure of its level on a bare staff (Tròn, trắng, đen / Móc đơn,
 dấu lặng / Chấm dôi, dấu nối / 6/8 và liên ba). **Nhịp**: tempo pills
-(60/80/100/120, hint "♩ = 80"), the **Click trong ô nhịp** switch, and **Độ trễ
-khi gõ** ("Chưa hiệu chỉnh" or "Trừ 45 ms mỗi lần gõ") with a **Hiệu chỉnh**
+(60/80/100/120, hint "♩ = 80"), the **Click trong ô nhịp** switch, **Phản hồi
+khi gõ** (compact pills Âm thanh / Rung / Tắt, Âm thanh by default, hint "Tắt:
+không tiếng, không rung, khó hơn"; no Rung where the device cannot vibrate,
+e.g. iPhone Safari), and **Độ trễ khi gõ** ("Chưa hiệu chỉnh" or "Trừ 45 ms mỗi lần gõ") with a **Hiệu chỉnh**
 button that opens the calibration panel in place: "Gõ theo 8 tiếng click",
 eight dots that light with the clicks, a compact Gõ pad (Space works too),
 "Phát tiếng click", and the outcome ("Đã lưu: 45 ms", or why to try again).

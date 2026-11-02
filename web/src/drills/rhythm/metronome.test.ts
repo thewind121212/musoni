@@ -1,4 +1,5 @@
 import { afterEach, describe, it, expect, vi } from 'vitest'
+import { RHYTHM_CLICK, RHYTHM_TAP_VIBRATE_MS } from '@/config/constants'
 
 /** A stand-in AudioContext: a clock and the parts the metronome uses. */
 function fakeContext(over: Record<string, unknown> = {}) {
@@ -19,7 +20,8 @@ function fakeContext(over: Record<string, unknown> = {}) {
     }
     createOscillator() {
       const osc = {
-        type: '', frequency: { value: 0 }, onended: null,
+        type: '', onended: null,
+        frequency: { value: 0, setValueAtTime(v: number) { this.value = v }, exponentialRampToValueAtTime() {} },
         connect: (n: unknown) => n,
         start: (at: number) => started.push({ at, hz: osc.frequency.value }),
         stop: (at?: number) => { if (at === undefined) stopped.push(1) },
@@ -72,5 +74,33 @@ describe('metronome', () => {
     m = await import('./metronome')
     expect(m.audioReady()).toBe(true)
     expect(m.audioTimeAt(2500)).toBe(2.5)
+  })
+
+  it('knocks a tap at once, lower than any click, and never with the clicks', async () => {
+    const { started, stopped } = fakeContext()
+    const m = await import('./metronome')
+    m.tapFeedback('sound')
+    expect(started).toHaveLength(1)
+    expect(started[0].at).toBe(10)
+    expect(started[0].hz).toBeLessThan(RHYTHM_CLICK.hz)
+    // A pause silences the clicks only; the knock is already over.
+    m.stopClicks()
+    expect(stopped).toHaveLength(0)
+  })
+
+  it('buzzes for vibrate, and stays silent and still when off or unable to buzz', async () => {
+    const { started } = fakeContext()
+    const vibrate = vi.fn(() => true)
+    vi.stubGlobal('navigator', { vibrate })
+    const m = await import('./metronome')
+    expect(m.canVibrate()).toBe(true)
+    m.tapFeedback('vibrate')
+    expect(vibrate).toHaveBeenCalledWith(RHYTHM_TAP_VIBRATE_MS)
+    m.tapFeedback('off')
+    expect(vibrate).toHaveBeenCalledTimes(1)
+    vi.stubGlobal('navigator', {})
+    expect(m.canVibrate()).toBe(false)
+    m.tapFeedback('vibrate')
+    expect(started).toHaveLength(0)
   })
 })

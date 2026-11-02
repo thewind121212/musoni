@@ -86,7 +86,7 @@ defaults, and `entry.of(settings)` reads saved values over them
 | `intervals` | `level` (1), `durationSec` (60), `hear` (true: the interval plays after each answer) |
 | `review` | `level` (1, the only one), `durationSec` (120), `chapters` (null = every chapter with a finished lesson; else chapter ids) |
 | `key-sig` | `level` (1-4, see `drill-key-sig.md`), `durationSec` (60). Its sessions record `accidentals: true` and the level's weight |
-| `rhythm` | `level` (1), `durationSec` (120), `tempo` (80, quarter-note bpm: 60/80/100/120), `click` (true, metronome through the measure), `latencyMs` (null = not calibrated; else ms taken off each tap) |
+| `rhythm` | `level` (1), `durationSec` (120), `tempo` (80, quarter-note bpm: 60/80/100/120), `click` (true, metronome through the measure), `latencyMs` (null = not calibrated; else ms taken off each tap), `tapFeedback` (`"sound"`; `"vibrate"` / `"off"`: what a tap gives back. Added 2026-11-02, additive: an older document reads the default, so `version` stays 2) |
 
 `drill` is a registered drill's id (`DrillId`, a string: `"note-id"`,
 `"hear-play"`, `"review"`, ...). For a `hear-play` session,
