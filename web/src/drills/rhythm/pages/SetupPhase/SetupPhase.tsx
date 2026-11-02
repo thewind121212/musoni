@@ -7,7 +7,7 @@ import { useT } from '@/app/useT'
 import { useBackLink } from '@/app/useBackLink'
 import { sessionSummary } from '@/app/drillPreset'
 import { getBest } from '@/progress/progressStore'
-import { Button, FieldLegend, Switch } from '@/core/components/atoms'
+import { Button, Collapse, FieldLegend, Switch } from '@/core/components/atoms'
 import { DurationPicker, OptionCards, SegmentedControl, SettingRow } from '@/core/components/molecules'
 import { NoteStaff } from '@/core/components/organisms'
 import { parseNotation } from '@/core/music/notation'
@@ -110,8 +110,8 @@ export function SetupPhase() {
           </Button>
         </SettingRow>
       </div>
-      {calibrating && (
-        <div className="mt-2">
+      <Collapse open={calibrating}>
+        <div className="pt-2">
           <CalibrationPanel
             status={calibration.status}
             heard={calibration.heard}
@@ -123,7 +123,7 @@ export function SetupPhase() {
             t={t}
           />
         </div>
-      )}
+      </Collapse>
     </fieldset>,
     <DurationPicker
       key="length"

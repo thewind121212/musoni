@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, NavigationType, useNavigationType } from 'react-router-dom'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowLeftIcon, InfoIcon } from '@phosphor-icons/react'
 import { useAppStore } from '@/app/store'
@@ -25,7 +25,9 @@ export function ChapterList() {
   const { naming, lang } = settings
   const t = useT()
   const backLink = useBackLink()
-  const reduce = useReducedMotion()
+  // Back (a swipe out of a lesson) shows the list as it was: no stagger.
+  const back = useNavigationType() === NavigationType.Pop
+  const still = useReducedMotion() || back
   const openChapter = useTheoryStore(s => s.openChapter)
   const setOpenChapter = useTheoryStore(s => s.setOpenChapter)
   const done = getLessonsDone()
@@ -64,7 +66,7 @@ export function ChapterList() {
           return (
             <motion.div
               key={chapter.id}
-              initial={reduce ? false : { opacity: 0, y: 10 }}
+              initial={still ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: ci * 0.04, ease: [0.16, 1, 0.3, 1] }}
             >

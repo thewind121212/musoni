@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { CaretDownIcon } from '@phosphor-icons/react'
+import { Collapse } from '@/core/components/atoms'
 
 interface Props {
   number: number
@@ -45,7 +46,9 @@ export function ChapterCard({ number, title, detail, current, open, onToggle, ch
           className={'shrink-0 text-ink-faint transition-transform duration-200 ' + (open ? 'rotate-180' : '')}
         />
       </button>
-      {open && <div id={id} className="px-4 pb-1.5">{children}</div>}
+      <Collapse open={open} id={id}>
+        <div className="px-4 pb-1.5">{children}</div>
+      </Collapse>
     </section>
   )
 }

@@ -437,6 +437,13 @@ a real browser.
 - [x] **Theory chapter 25, Hình thức hai đoạn và ba đoạn** (2026-10-24; book 24.1-24.8, review after 24.9): sectional or continuous, balanced, rounded and simple binary, ternary form, telling rounded binary from ternary, review. `docs/theory/ch25-binary-ternary.md`
 - [x] **Theory chapter 26, Hình thức sonata và rondo** (2026-10-24; book 25.1-25.5, review after 25.6): sonata form, sonatina and the sonata principle, the four structural functions, rondo and sonata rondo, rondo character and multimovement works, review. `docs/theory/ch26-sonata-rondo.md`
 - [x] **Theory chapter 29, Dẫn bè với nốt ngoài hợp âm** (2026-10-24; book 28.1-28.3, review after 28.4): non-chord tones and parallels, embellishing repeated notes and steps down, steps up and leaps, review; SATB on a grand staff. `docs/theory/ch29-voice-leading-nct.md`
+- [x] **Back steps through a lesson; folds animate** (2026-11-02, product-owner report from a
+      phone): each lesson step gets a history entry on the lesson's URL (`lessonAt` route state),
+      so a swipe back shows the step before with its answer kept, instead of leaving the lesson;
+      ✕ and "Bài tiếp" skip all of a lesson's entries at once. Học and the chapter list no longer
+      stagger in on a step back. Returning to the list already kept the open chapter and scroll
+      (checked in Chrome at 390 px). New core atom `Collapse` (height + opacity, reduced motion)
+      for the chapter cards, Tiết tấu's calibration panel and the duration stepper.
 - [x] **Theory chapter 31, Nhập môn đối âm** (2026-10-24; book 30.1-30.8, review after 30.9): species counterpoint (first to fifth), invention expositions, fugue analysis, review. `docs/theory/ch31-counterpoint.md`
 - [x] **Đọc nốt: answer with the octave** (2026-11-02, user feedback): a **Quãng tám** setting
       (off by default, ×1.3 weight stacking with ♯ ♭). On, an octave strip (new core molecule

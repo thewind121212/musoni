@@ -76,8 +76,13 @@ chapter, lesson, step and block.
 (`open(key, steps, fresh)`): the same lesson keeps its place (so stepping back
 from its practice drill shows the end screen again, and a lesson left mid-way
 resumes); a fresh visit (a push, not a back) to a finished lesson starts it
-over. Steps are store state, not routes. `next()` past the last step marks the
-lesson done. ✕ calls `close()` (forget the place) and goes back to the list;
+over. Steps share the lesson's route, but each move on pushes a history entry
+marked `lessonAt: { step, depth }` (`theory/outline.ts`); the first entry gets
+its marker on arrival. Back and forward move the store to the entry's step with
+`goTo(step)` (answers kept, nothing saved). `next()` past the last step marks the
+lesson done. ✕ calls `close()` (forget the place) and goes back past all the
+lesson's entries to where it was opened; "Bài tiếp" steps back to the lesson's
+first entry and replaces it (see `docs/fe/screens.md`, Back behaviour);
 unmounting calls `leave()` (keep it). Sounds stop on every step change and on
 leaving. `StepView` renders a step; `LessonBlocks` its blocks; `LessonEnd` the
 end screen; `LessonFrame` the shell. `StepView`, `LessonBlocks`, `ChoiceList`,
