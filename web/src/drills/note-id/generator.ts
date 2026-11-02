@@ -58,25 +58,3 @@ export function generateQuestion(
 
   return { pitch, clef: pool.clef, options, correctIndex, spelling }
 }
-
-/**
- * The octaves a level's notes are written in (scientific pitch, C4 = middle
- * C), from its ranges in `LEVELS`, and the octave the strip starts a session
- * on: the one holding the middle of the range.
- */
-export function levelOctaves(level: 1 | 2 | 3 | 4): { min: number; max: number; start: number } {
-  const pools = LEVELS[level].pools
-  const lo = Math.min(...pools.map(p => diatonicIndex(parsePitch(p.low))))
-  const hi = Math.max(...pools.map(p => diatonicIndex(parsePitch(p.high))))
-  return { min: Math.floor(lo / 7), max: Math.floor(hi / 7), start: Math.floor((lo + hi) / 14) }
-}
-
-/**
- * Whether key `index` answers the question. With `octave` (the "Quãng tám"
- * setting) the octave must match the printed one too. The pad never offers
- * Cb, B#, E# or Fb and the generator never prints them, so a key's octave is
- * the written octave: no spelling crosses an octave line.
- */
-export function isCorrect(q: Question, index: number, octave: number | null): boolean {
-  return index === q.correctIndex && (octave === null || octave === q.pitch.octave)
-}

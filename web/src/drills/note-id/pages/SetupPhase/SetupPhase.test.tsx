@@ -63,15 +63,6 @@ describe('SetupPhase', () => {
     expect(after.sound).toBe(!before.sound)
   })
 
-  it('saves the octave switch, off by default, and tags the summary with it', async () => {
-    renderSetup()
-    const toggle = screen.getByRole('switch', { name: 'Octave' })
-    expect(toggle).toHaveAttribute('aria-checked', 'false')
-    await userEvent.click(toggle)
-    expect(getSettings().drills['note-id'].octave).toBe(true)
-    expect(screen.getByText('Treble · 1 min · Octave')).toBeInTheDocument()
-  })
-
   it('sums up the session next to Start', () => {
     useAppStore.getState().updateDrill('note-id', { level: 3, durationSec: 120, accidentals: true })
     renderSetup()

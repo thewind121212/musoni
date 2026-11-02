@@ -50,11 +50,6 @@ export interface SessionResult {
    * easier, so it would skew both). Absent otherwise.
    */
   aids?: true
-  /**
-   * Đọc nốt asked for the octave too ("Quãng tám"); its weight already holds
-   * the multiplier. Absent otherwise.
-   */
-  octave?: true
 }
 /**
  * Time spent in a theory lesson. It counts toward the day's minutes, the

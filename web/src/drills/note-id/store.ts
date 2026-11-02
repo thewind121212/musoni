@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { generateQuestion, isCorrect, levelOctaves, type Question } from './generator'
+import { generateQuestion, type Question } from './generator'
 import type { Clef, Pitch } from '../../core/music/types'
 import { difficultyWeight, practiceScore, accuracy } from '../../core/scoring'
 import { getSettings, recordSession, type Settings, type SessionResult } from '../../progress/progressStore'
@@ -26,8 +26,6 @@ export interface Miss {
   /** Key labels as the reader saw them, in their chosen naming. */
   answer: string
   chosen: string
-  /** The octave picked on the strip, when the session asks for octaves (the labels then carry it: Mi4). */
-  octave?: number
 }
 
 interface DrillState {
@@ -43,13 +41,7 @@ interface DrillState {
   streak: number
   bestStreak: number
   sumMs: number
-  /** `octave`: the one picked, when the session asks for octaves. */
-  feedback: { correctIndex: number; chosenIndex: number; correct: boolean; octave?: number } | null
-  /**
-   * The octave the strip is on, for the "Quãng tám" setting. It stays put
-   * from one question to the next, so most answers are still one tap.
-   */
-  octave: number
+  feedback: { correctIndex: number; chosenIndex: number; correct: boolean } | null
   lastResult: SessionResult | null
   /** This session's misses, in order. Kept after finishing for the result screen; not persisted. */
   misses: Miss[]
@@ -63,8 +55,6 @@ interface DrillState {
   /** Starts a session on these settings (this drill's level and length are read from them). */
   start: (settings: Settings, now?: number) => void
   answer: (index: number, now?: number) => void
-  /** Moves the octave strip, clamped to the level's octaves. Ignored during feedback. */
-  setOctave: (octave: number) => void
   nextQuestion: (now?: number) => void
   tick: (now?: number) => void
   backToSetup: (now?: number) => void
@@ -98,9 +88,8 @@ function recordPartial(s: DrillState, now: number): SessionResult | null {
     correct: s.correct, wrong: s.wrong,
     accuracy: accuracy(s.correct, s.wrong),
     avgMs: Math.round(s.sumMs / total),
-    bestStreak: s.bestStreak, weight: difficultyWeight(s.level, own(s.settings).accidentals, own(s.settings).octave),
+    bestStreak: s.bestStreak, weight: difficultyWeight(s.level, own(s.settings).accidentals),
     practiceScore: 0,
-    ...(own(s.settings).octave && { octave: true as const }),
     at: new Date(now).toISOString(),
     partial: true,
   }
@@ -113,7 +102,7 @@ export const useDrillStore = create<DrillState>((set, get) => ({
   level: 1,
   settings: getSettings(),
   question: null, endsAt: null, askedAt: 0,
-  correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0, octave: 4,
+  correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
   feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
 
   start: (settings, now = Date.now()) => {
@@ -124,7 +113,7 @@ export const useDrillStore = create<DrillState>((set, get) => ({
     set({
       phase: 'running', level, settings,
       question: generateQuestion(level, accidentals, settings.naming),
-      endsAt: now + durationSec * 1000, askedAt: now, octave: levelOctaves(level).start,
+      endsAt: now + durationSec * 1000, askedAt: now,
       correct: 0, wrong: 0, streak: 0, bestStreak: 0, sumMs: 0,
       feedback: null, lastResult: null, misses: [], pausedAt: null, pauseReason: null,
     })
@@ -133,33 +122,21 @@ export const useDrillStore = create<DrillState>((set, get) => ({
   answer: (index, now = Date.now()) => {
     const s = get()
     if (s.phase !== 'running' || !s.question || s.feedback || s.pausedAt !== null) return
-    const picked = own(s.settings).octave ? s.octave : null
-    const ok = isCorrect(s.question, index, picked)
-    const name = (i: number, octave: number | null) =>
-      s.question!.options[i].label + (octave === null ? '' : octave)
+    const ok = index === s.question.correctIndex
     const streak = ok ? s.streak + 1 : 0
     set({
       correct: s.correct + (ok ? 1 : 0),
       wrong: s.wrong + (ok ? 0 : 1),
       streak, bestStreak: Math.max(s.bestStreak, streak),
       sumMs: s.sumMs + (now - s.askedAt),
-      feedback: { correctIndex: s.question.correctIndex, chosenIndex: index, correct: ok, octave: picked ?? undefined },
+      feedback: { correctIndex: s.question.correctIndex, chosenIndex: index, correct: ok },
       misses: ok ? s.misses : [...s.misses, {
         clef: s.question.clef,
         pitch: s.question.pitch,
-        answer: name(s.question.correctIndex, picked === null ? null : s.question.pitch.octave),
-        chosen: name(index, picked),
-        octave: picked ?? undefined,
+        answer: s.question.options[s.question.correctIndex].label,
+        chosen: s.question.options[index].label,
       }],
     })
-  },
-
-  setOctave: octave => {
-    const s = get()
-    // Held during feedback, like the pad, so the strip shows the octave answered.
-    if (s.phase !== 'running' || s.feedback || s.pausedAt !== null) return
-    const { min, max } = levelOctaves(s.level)
-    set({ octave: Math.min(max, Math.max(min, octave)) })
   },
 
   nextQuestion: (now = Date.now()) => {
@@ -179,8 +156,8 @@ export const useDrillStore = create<DrillState>((set, get) => ({
     const s = get()
     if (s.phase !== 'running' || s.endsAt === null || s.pausedAt !== null || now < s.endsAt) return
     const total = s.correct + s.wrong
-    const { accidentals, durationSec, octave } = own(s.settings)
-    const weight = difficultyWeight(s.level, accidentals, octave)
+    const { accidentals, durationSec } = own(s.settings)
+    const weight = difficultyWeight(s.level, accidentals)
     const result: SessionResult = {
       drill: 'note-id', level: s.level,
       accidentals, naming: s.settings.naming,
@@ -191,7 +168,6 @@ export const useDrillStore = create<DrillState>((set, get) => ({
       bestStreak: s.bestStreak, weight,
       practiceScore: practiceScore(s.correct, s.wrong, weight, durationSec),
       at: new Date(now).toISOString(),
-      ...(octave && { octave: true as const }),
     }
     recordSession(result)
     set({ phase: 'finished', lastResult: result, question: null, feedback: null })

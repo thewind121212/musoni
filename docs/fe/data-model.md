@@ -20,7 +20,7 @@ keyed by local day for the day-by-day tracker:
     "lang": "vi",
     "activityExpanded": false,
     "drills": {
-      "note-id": { "level": 3, "durationSec": 60, "accidentals": true, "octave": true },
+      "note-id": { "level": 3, "durationSec": 60, "accidentals": true },
       "hear-play": { "level": 2, "cadenceEach": false },
       "review": { "chapters": ["pitch-staff"] }
     }
@@ -81,7 +81,7 @@ defaults, and `entry.of(settings)` reads saved values over them
 
 | Drill | Fields (default) |
 |---|---|
-| `note-id` | `level` (1), `durationSec` (60, any value; offered 30/60/120/300, custom 60-1800), `accidentals` (false), `octave` (false: "Quãng tám", answer the octave too; added 2026-11-02, additive: a stored workout without it reads the default through `entry.of`, so `version` stays 2) |
+| `note-id` | `level` (1), `durationSec` (60, any value; offered 30/60/120/300, custom 60-1800), `accidentals` (false) |
 | `hear-play` | `level` (1), `durationSec` (120), `cadenceEach` (false, listening aid: the cadence before every question), `oneKey` (false, listening aid: C at every level) |
 | `intervals` | `level` (1), `durationSec` (60), `hear` (true: the interval plays after each answer) |
 | `review` | `level` (1, the only one), `durationSec` (120), `chapters` (null = every chapter with a finished lesson; else chapter ids) |
@@ -101,9 +101,6 @@ A session may also carry `"partial": true`: it stopped before its clock ran out
 (the reader ended it). Its `durationSec` is the time actually played and its
 `practiceScore` is 0. Partial sessions count toward minutes, streaks and active
 days, and are skipped by bests and averages. The field is optional and additive.
-
-A `note-id` session may carry `"octave": true`: it was played with Quãng tám
-on (its `weight` already includes the ×1.3). Optional and additive.
 
 A `hear-play` session may carry `"aids": true`: it was played with a listening
 aid on (`cadenceEach`, or `oneKey` above L1). It counts toward minutes,
