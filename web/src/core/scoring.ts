@@ -1,10 +1,10 @@
 import {
-  LEVELS, ACCIDENTALS_WEIGHT, OCTAVE_WEIGHT, POINTS_PER_CORRECT,
+  LEVELS, ACCIDENTALS_WEIGHT, POINTS_PER_CORRECT,
   ENDURANCE_PER_DOUBLING, MIN_ENDURANCE_BONUS,
 } from '../config/constants'
 
-export function difficultyWeight(level: 1 | 2 | 3 | 4, accidentals: boolean, octave = false): number {
-  return LEVELS[level].weight * (accidentals ? ACCIDENTALS_WEIGHT : 1) * (octave ? OCTAVE_WEIGHT : 1)
+export function difficultyWeight(level: 1 | 2 | 3 | 4, accidentals: boolean): number {
+  return LEVELS[level].weight * (accidentals ? ACCIDENTALS_WEIGHT : 1)
 }
 export function accuracy(correct: number, wrong: number): number {
   const total = correct + wrong

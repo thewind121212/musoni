@@ -19,11 +19,6 @@ interface Props {
   keyLength?: number
   /** Text under a key, by semitone (a note's name). */
   labels?: Readonly<Record<number, string>>
-  /**
-   * Fill the box it is given, whatever its shape, instead of keeping the
-   * keys' proportions: a strip of a fixed height across any width.
-   */
-  stretch?: boolean
   className?: string
 }
 
@@ -34,32 +29,29 @@ interface Props {
  * own colour; fills take the accent. Decorative: the words beside it say what
  * it shows, so it is hidden from screen readers.
  */
-export function MiniKeyboard({ lit, octaves = 1, mark = 'dot', keyLength = 34, labels, stretch = false, className = '' }: Props) {
+export function MiniKeyboard({ lit, octaves = 1, mark = 'dot', keyLength = 34, labels, className = '' }: Props) {
   const on = (s: number) => lit.includes(s)
   const blackLength = Math.round(keyLength * 0.6)
   const whites = Array.from({ length: octaves }, (_, o) => WHITE.map((s, i) => ({ s: s + o * 12, i: i + o * 7 }))).flat()
   const blacks = Array.from({ length: octaves }, (_, o) => BLACK.map(([s, b]) => ({ s: s + o * 12, b: b + o * 7 }))).flat()
   const fill = mark === 'fill'
-  // Stretched, the outlines would thicken with the width; keep them hairlines.
-  const edge = stretch ? 'non-scaling-stroke' : undefined
   const svg = (
     <svg
       viewBox={`0 0 ${W * 7 * octaves} ${keyLength}`}
       aria-hidden="true"
-      preserveAspectRatio={stretch ? 'none' : undefined}
-      className={(stretch ? 'h-full w-full ' : 'h-auto max-h-full w-full ') + (labels ? '' : className)}
+      className={'h-auto max-h-full w-full ' + (labels ? '' : className)}
     >
       {whites.map(({ s, i }) => (
         <rect
           key={s} data-lit={fill && on(s) ? s : undefined}
-          x={i * W + 0.5} y={0.5} width={W - 1} height={keyLength - 1} rx={1.5} vectorEffect={edge}
+          x={i * W + 0.5} y={0.5} width={W - 1} height={keyLength - 1} rx={1.5}
           className={fill && on(s) ? 'fill-accent stroke-accent' : 'fill-raised stroke-line'}
         />
       ))}
       {blacks.map(({ s, b }) => (
         <rect
           key={s} data-lit={fill && on(s) ? s : undefined}
-          x={b * W - BLACK_W / 2} y={0} width={BLACK_W} height={blackLength} rx={1} vectorEffect={edge}
+          x={b * W - BLACK_W / 2} y={0} width={BLACK_W} height={blackLength} rx={1}
           className={fill && on(s) ? 'fill-accent stroke-raised' : 'fill-ink-soft stroke-ink-soft'}
           strokeWidth={fill && on(s) ? 0.8 : undefined}
         />

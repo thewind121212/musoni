@@ -3,12 +3,6 @@ import type { KeyName } from '../core/music/keys'
 
 export const POINTS_PER_CORRECT = 10
 export const ACCIDENTALS_WEIGHT = 1.4
-/**
- * Đọc nốt's "Quãng tám" setting: naming the octave too (Mi4, not Mi) is a
- * second read of the same note, so it multiplies the weight, stacking with
- * accidentals (L4 + both = 1.8 × 1.4 × 1.3).
- */
-export const OCTAVE_WEIGHT = 1.3
 
 /**
  * Endurance reward, applied per doubling of session length.
