@@ -1,6 +1,6 @@
 # Musoni — Project Status
 
-> Last updated: 2026-10-24
+> Last updated: 2026-11-02
 > Read this first. One-minute overview of where the project stands.
 > Maintained by the doc-sync rule (see CLAUDE.md) — must be updated in the same session as any change.
 
@@ -328,6 +328,13 @@ a real browser.
       click, so a delay over 300 ms read as early for the next click (now a tap counts
       from 150 ms before to 400 ms after its click). Merged with main (Hóa biểu).
       710 web tests green
+- [x] **Tiết tấu: Phản hồi khi gõ** (2026-11-02, learner request): a setup choice of a
+      woodblock-like knock on every tap (default), a short buzz, or nothing. The knock is
+      synthesized on the drill's audio context, lower than the click; Rung is hidden where
+      there is no Vibration API (iPhone Safari), and a saved vibrate acts as off there.
+      Plays in the measure and in calibration; never moves a tap's time or the judging
+      (tested). `docs/fe/drill-rhythm.md`, `docs/fe/screens.md`, `docs/fe/data-model.md`.
+      931 web tests green
 - [x] **Safari audio + letter keys** (user feedback): every audio context now comes from
       `core/audio/context.ts`, which resumes it on any tap / click / key press while it is
       not running (Safari's `interrupted` state after a call or app switch included),
@@ -484,7 +491,8 @@ Port guide: `docs/theory/port-guide.md`; one PR per chapter.
   fix: sound on iPhone (ringer on and on silent, after switching apps) and Mac Safari
 - Tiết tấu by hand on a real phone and a laptop: click sound and its timing, the
   audio wake on iOS, latency calibration, whether the tolerances feel fair, the 6/8
-  tempo (♩. = tempo × 0.75), time running out mid-measure
+  tempo (♩. = tempo × 0.75), time running out mid-measure; the tap knock (does it feel
+  right, is it clearly not a click) and Rung on an Android phone
 - A human pass over the 36 theory chapters on a phone: their sound (the "Nghe" buttons), the
   lesson-to-drill-and-back flow, and a musician's read of the Vietnamese wording. Every step was
   clicked through at 375 px in Chrome (no overflow, no console errors), but nobody has listened yet

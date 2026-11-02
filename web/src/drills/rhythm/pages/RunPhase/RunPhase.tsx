@@ -8,7 +8,9 @@ import { formatClock, formatElapsed } from '@/core/i18n/formatDuration'
 import type { Translate } from '@/core/i18n/translate'
 import { measureTiming, playedMs, useRhythmStore, type PauseReason } from '@/drills/rhythm/store'
 import { firstProblem, type Judgement } from '@/drills/rhythm/judge'
-import { audioNow, audioReady, audioTimeAt, scheduleClicks, stopClicks, wakeAudio, type Click } from '@/drills/rhythm/metronome'
+import {
+  audioNow, audioReady, audioTimeAt, scheduleClicks, stopClicks, tapFeedback, wakeAudio, type Click,
+} from '@/drills/rhythm/metronome'
 import { BeatDots, TapPad } from '@/drills/rhythm/components/atoms'
 import { MarkLegend } from '@/drills/rhythm/components/molecules'
 import { RhythmStaff } from '@/drills/rhythm/components/organisms'
@@ -149,8 +151,9 @@ export function RunPhase() {
   const tap = useCallback((timeStamp: number) => {
     wakeAudio()
     const tk = take.current
-    if (!tk) return
-    tk.taps.push((audioTimeAt(timeStamp) - tk.downbeat) * 1000)
+    if (tk) tk.taps.push((audioTimeAt(timeStamp) - tk.downbeat) * 1000)
+    // After the tap is taken: its time is the event's, so the feedback never moves it.
+    tapFeedback(rhythm.of(useRhythmStore.getState().settings).tapFeedback)
   }, [])
 
   useEffect(() => {

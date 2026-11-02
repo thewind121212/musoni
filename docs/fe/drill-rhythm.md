@@ -20,7 +20,8 @@ Complete-the-Measure design (`drill-complete-measure.md`).
    light with each click.
 3. **Tap**: on the downbeat the status turns to "gõ". A touch on the pad
    (pointer down), Space, or any letter key taps. With **Click trong ô nhịp**
-   on (the default), the metronome keeps clicking through the measure.
+   on (the default), the metronome keeps clicking through the measure. Each
+   tap answers at once with the reader's **Phản hồi khi gõ** (below).
 4. **Judge**: once the bar plus twice the tolerance has passed, the taps are
    judged. Each note to tap gets a mark above it: a green check (on time), an
    amber arrow back or forward (early or late, within twice the tolerance) or a
@@ -36,6 +37,35 @@ Rests have no onset; a tied note has one onset (the tie's first note). Taps
 during the count-in or on the next downbeat that no note claims are not
 counted as extra.
 
+## Tap feedback (Phản hồi khi gõ)
+
+Learners said a silent tap does not feel like pressing anything. The setup
+row **Phản hồi khi gõ** (EN "Tap feedback") has three choices, saved in the
+drill's settings (`tapFeedback`):
+
+- **Âm thanh** (`sound`, the default): a short woodblock-like knock,
+  synthesized on the drill's own `AudioContext` (`tapFeedback` in
+  `metronome.ts`, no asset). A sine dropping from 640 to 380 Hz over 70 ms,
+  well below the click (a triangle at 1100 / 1760 Hz), so the two never
+  sound alike (`RHYTHM_TAP_SOUND`).
+- **Rung** (`vibrate`): `navigator.vibrate(RHYTHM_TAP_VIBRATE_MS)` (15 ms).
+  iPhone Safari has no Vibration API: there the choice is hidden, and a saved
+  `vibrate` acts as **Tắt** (shown as Tắt in setup, silent and still in play).
+  The setup page asks `canVibrate()`; no component below it does.
+- **Tắt** (`off`): nothing, the original drill and a harder test.
+
+It plays on every tap, the same events that take a tap (pad pointer down,
+Space, a letter key), in a measure and in latency calibration, and also on a
+press that lands while no measure is open (reading, the verdict). It is
+feedback only: the tap's time is its event's `timeStamp`, taken before the
+feedback runs, so judging and calibration are the same whatever is chosen
+(tested). It is the reader's own: a lesson preset never sets it.
+
+**Bluetooth and other slow outputs** delay the heard knock (often 150-250 ms),
+so it may sound after the finger lands. Judging is not affected: taps are
+placed on the audio clock the reader was hearing and the calibrated latency
+is taken off, whatever the knock sounds like.
+
 ## Levels
 
 | Level | Name | Adds | Tolerance | Weight |
@@ -47,7 +77,7 @@ counted as extra.
 
 Tunables in `config/constants.ts` (`RHYTHM_*`): levels, tempos (60/80/100/120,
 default 80), the compound tempo factor, count-in, read time, lead time, hold
-times, click sound, calibration, staff width, mark room.
+times, click sound, tap sound and buzz, calibration, staff width, mark room.
 
 ## The generator (`generator.ts`)
 
@@ -128,11 +158,11 @@ result lists up to four missed measures with their marks.
 
 | File | Role |
 |---|---|
-| `drill.ts`, `strings.ts` | registry entry (`RhythmOptions`: `tempo`, `click`, `latencyMs`; preset may set `tempo`), strings |
+| `drill.ts`, `strings.ts` | registry entry (`RhythmOptions`: `tempo`, `click`, `latencyMs`, `tapFeedback`; preset may set `tempo`), strings |
 | `generator.ts` | figures, measures, `allMeasures`, `generateMeasure`, `pulseOf` |
 | `judge.ts` | `judgeTaps`, `firstProblem`, `meanOffset` |
 | `calibrate.ts`, `useCalibration.ts` | latency from taps; setup's calibration run |
-| `metronome.ts` | audio clock, clicks, `audioTimeAt` |
+| `metronome.ts` | audio clock, clicks, `audioTimeAt`, tap feedback (`tapFeedback`, `canVibrate`) |
 | `store.ts` | session, takes, `measureTiming` |
 | `components/` | atoms `TapPad`, `BeatDots`, `MarkDot`; molecule `MarkLegend`; organisms `RhythmStaff` (NoteStaff + marks), `CalibrationPanel`, `MissedMeasures` |
 | `pages/` | `RhythmDrill`, `SetupPhase`, `RunPhase`, `ResultPhase` |

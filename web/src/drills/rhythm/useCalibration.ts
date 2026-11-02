@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { latencyFrom, type Calibration } from './calibrate'
-import { audioNow, audioTimeAt, scheduleClicks, stopClicks, wakeAudio } from './metronome'
+import { audioNow, audioTimeAt, scheduleClicks, stopClicks, tapFeedback, wakeAudio } from './metronome'
+import type { TapFeedback } from './drill'
 import { RHYTHM_CALIBRATION, RHYTHM_FRAME_MS, RHYTHM_LEAD_SEC } from '@/config/constants'
 import type { CalibrationStatus } from './components/organisms'
 
@@ -8,9 +9,9 @@ import type { CalibrationStatus } from './components/organisms'
  * Setup's latency calibration: plays `RHYTHM_CALIBRATION.clicks` clicks,
  * collects the taps on the audio clock, and once the last click has passed
  * works out the latency (`latencyFrom`). A good result goes to `onSaved`.
- * Space taps too while it runs.
+ * Space taps too while it runs. Each tap gives the reader's `feedback`.
  */
-export function useCalibration(onSaved: (latencyMs: number) => void) {
+export function useCalibration(onSaved: (latencyMs: number) => void, feedback: TapFeedback) {
   const [status, setStatus] = useState<CalibrationStatus>('idle')
   const [heard, setHeard] = useState(0)
   const [outcome, setOutcome] = useState<Calibration | null>(null)
@@ -56,7 +57,8 @@ export function useCalibration(onSaved: (latencyMs: number) => void) {
   const tap = useCallback((timeStamp: number) => {
     wakeAudio()
     run.current?.taps.push(audioTimeAt(timeStamp) * 1000)
-  }, [])
+    tapFeedback(feedback)
+  }, [feedback])
 
   const reset = useCallback(() => {
     stop()
