@@ -9,7 +9,7 @@ const saved: Settings = {
   ...getSettings(),
   naming: 'letters',
   drills: {
-    'note-id': { level: 3, durationSec: 300, accidentals: true },
+    'note-id': { level: 3, durationSec: 300, accidentals: true, octave: true },
     'hear-play': { level: 4, cadenceEach: true },
   },
 }
@@ -20,9 +20,9 @@ let remove = () => {}
 afterEach(() => { remove(); remove = () => {} })
 
 describe('withPreset', () => {
-  it("lays a note-reading preset over the reader's settings, keeping their preferences and other drills", () => {
+  it("lays a note-reading preset over the reader's settings, keeping their preferences (octave too) and other drills", () => {
     const s = withPreset(saved, { drill: 'note-id', level: 1, durationSec: 60 })
-    expect(s.drills['note-id']).toEqual({ level: 1, durationSec: 60, accidentals: false })
+    expect(s.drills['note-id']).toEqual({ level: 1, durationSec: 60, accidentals: false, octave: true })
     expect(s.drills['hear-play']).toEqual(saved.drills['hear-play'])
     expect(s.naming).toBe('letters')
   })

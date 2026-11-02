@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateQuestion } from './generator'
+import { generateQuestion, isCorrect, levelOctaves } from './generator'
 import { buildOptions } from '@/core/music/pianoKeys'
 import { diatonicIndex, parsePitch, isExcluded } from '../../core/music/pitch'
 import { LEVELS } from '../../config/constants'
@@ -121,5 +121,38 @@ describe('no repeats', () => {
       expect(next.octave * 7 + next.letter).not.toBe(previous.octave * 7 + previous.letter)
       previous = next
     }
+  })
+})
+
+describe('levelOctaves', () => {
+  it('spans the octaves of each level range and starts in the middle one', () => {
+    expect(levelOctaves(1)).toEqual({ min: 4, max: 5, start: 4 })
+    expect(levelOctaves(2)).toEqual({ min: 3, max: 6, start: 4 })
+    expect(levelOctaves(3)).toEqual({ min: 2, max: 3, start: 3 })
+    expect(levelOctaves(4)).toEqual({ min: 2, max: 6, start: 4 })
+  })
+  it('holds every note a level asks', () => {
+    for (const level of [1, 2, 3, 4] as const) {
+      const { min, max } = levelOctaves(level)
+      for (let i = 0; i < 300; i++) {
+        const { octave } = generateQuestion(level, true, 'letters').pitch
+        expect(octave).toBeGreaterThanOrEqual(min)
+        expect(octave).toBeLessThanOrEqual(max)
+      }
+    }
+  })
+})
+
+describe('isCorrect', () => {
+  const q = generateQuestion(1, false, 'letters', () => 0) // E4
+  const other = (q.correctIndex + 1) % q.options.length
+  it('without the octave setting, the key alone answers', () => {
+    expect(isCorrect(q, q.correctIndex, null)).toBe(true)
+    expect(isCorrect(q, other, null)).toBe(false)
+  })
+  it('with it, the letter and the octave must both match', () => {
+    expect(isCorrect(q, q.correctIndex, q.pitch.octave)).toBe(true)
+    expect(isCorrect(q, q.correctIndex, q.pitch.octave + 1)).toBe(false)
+    expect(isCorrect(q, other, q.pitch.octave)).toBe(false)
   })
 })

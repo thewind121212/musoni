@@ -251,7 +251,7 @@ and fits one phone screen. Each group has a marked header (a small bordered
 icon and the name). What a session practises keeps large controls: the clef
 options are **row cards** (a real VexFlow clef on the left, name and range
 beside it) and session length a pill row. The preferences that need no picture
-share one list of rows: sharps and flats, names on keys and sound are **switches**, note
+share one list of rows: sharps and flats, octave, names on keys and sound are **switches**, note
 names a compact two-way segmented control. Groups stagger in on entry.
 
 | Control | Options |
@@ -259,6 +259,7 @@ names a compact two-way segmented control. Groups stagger in on entry.
 | Clef and range | Treble / Treble+ / Bass / Both (L1-L4), with a one-line description |
 | Session length | 30s / 1 min / 2 min / 5 min / Other; Other reveals a 1-30 minute stepper |
 | Sharps and flats | switch (adds # and b) |
+| Quãng tám (Octave) | switch, off by default: answer the octave too (Mi4), on an octave strip above the pad |
 | Note names | Do Re Mi (solfège, default) / C D E (letters) |
 | Answer keys | Piano (default) / Ô (boxes), compact segmented control |
 | Names on keys | switch, on by default. Off leaves the answer keys bare so the reader finds the note on the keyboard; after an answer the marked keys show their names |
@@ -316,6 +317,18 @@ it in red, and the line under the staff names it in words: "Đây là Sol, bạn
 chọn La" / "That was G, you picked A". A correct answer advances after 260 ms,
 a miss after 1.1 s.
 
+With **Quãng tám** on, an **octave strip** sits between the staff and the pad:
+a thin keyboard (44 px tall) across only the octaves the level uses, the
+octave numbers under it, and an amber window (the practice-mode `cta` colour)
+over the chosen octave. A tap on the strip, or a drag along it, moves the
+window, snapping to whole octaves. Under the pad, "Quãng 4" names the octave
+in words (on desktop followed by the keys that move it, "· 4–5 ← →"). The
+octave stays put between questions. On a miss the picked note is drawn at the
+octave picked and both are named with octaves ("Đây là Mi4, bạn chọn Mi5");
+a right letter in the wrong octave leaves the key green, so the staff and the
+line say which half was wrong. Checked at 390×844: the strip, pad and line fit
+under the staff with no scroll at every level.
+
 **Leaving mid-session never runs the clock down unseen.** The clock pauses and
 the session waits:
 
@@ -354,7 +367,8 @@ the end of the track, captioned "Trung bình tuần 172 · Kỷ lục 219 · cò
 first session at a level, with nothing to compare, skips the bar.
 
 **Notes to review** lists the session's misses, each on a small staff with the
-answer and what was picked ("bạn chọn La ×2"); the same note read the same wrong
+answer and what was picked ("bạn chọn La ×2"; with octaves on, "Mi4" and
+"bạn chọn Mi5"); the same note read the same wrong
 way counts once, most repeated first, up to six. Misses live in the drill store
 for the session only and are not saved.
 

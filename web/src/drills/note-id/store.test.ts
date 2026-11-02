@@ -3,7 +3,7 @@ import { playedMs, useDrillStore } from './store'
 import { getDay, getSettings, localDayKey } from '../../progress/progressStore'
 import { withDrill } from '@/test/fixtures'
 import { restoreLiveSession } from '@/app/liveSession'
-import { LIVE_SESSION_MAX_AGE_MS } from '@/config/constants'
+import { LIVE_SESSION_MAX_AGE_MS, OCTAVE_WEIGHT } from '@/config/constants'
 
 const base = { ...getSettings(), naming: 'letters' as const, sound: false, lang: 'en' as const }
 const settings = withDrill('note-id', { level: 1, durationSec: 60, accidentals: false }, base)
@@ -104,6 +104,67 @@ describe('drill store', () => {
     expect(getDay(DAY0)).toHaveLength(1)
     useDrillStore.getState().tick(T0 + 62_000)
     expect(getDay(DAY0)).toHaveLength(1)
+  })
+})
+
+describe('answering with the octave', () => {
+  const withOctave = (level: number) => withDrill('note-id', { level, octave: true }, settings)
+  /** Starts a session and moves the strip to the printed note's octave plus `off`. */
+  const startAt = (level: number, off: number) => {
+    useDrillStore.getState().start(withOctave(level), T0)
+    const q = useDrillStore.getState().question!
+    useDrillStore.setState({ octave: q.pitch.octave + off })
+    return q
+  }
+
+  it('starts on the level\'s middle octave and clamps the strip to its octaves', () => {
+    useDrillStore.getState().start(withOctave(3), T0)
+    expect(useDrillStore.getState().octave).toBe(3)
+    useDrillStore.getState().setOctave(1)
+    expect(useDrillStore.getState().octave).toBe(2)
+    useDrillStore.getState().setOctave(9)
+    expect(useDrillStore.getState().octave).toBe(3)
+  })
+  it('keeps the octave from one question to the next', () => {
+    useDrillStore.getState().start(withOctave(2), T0)
+    useDrillStore.getState().setOctave(5)
+    useDrillStore.getState().answer(0, T0 + 500)
+    useDrillStore.getState().nextQuestion(T0 + 500)
+    expect(useDrillStore.getState().octave).toBe(5)
+  })
+  it('right letter in the right octave is right', () => {
+    const q = startAt(1, 0)
+    useDrillStore.getState().answer(q.correctIndex, T0 + 500)
+    expect(useDrillStore.getState()).toMatchObject({ correct: 1, wrong: 0 })
+  })
+  it('right letter in the wrong octave is a miss, named and kept with its octave', () => {
+    const q = startAt(2, 1)
+    useDrillStore.getState().answer(q.correctIndex, T0 + 500)
+    const s = useDrillStore.getState()
+    expect(s).toMatchObject({ correct: 0, wrong: 1 })
+    expect(s.feedback).toMatchObject({ correct: false, octave: q.pitch.octave + 1 })
+    const label = q.options[q.correctIndex].label
+    expect(s.misses[0]).toMatchObject({
+      answer: `${label}${q.pitch.octave}`, chosen: `${label}${q.pitch.octave + 1}`, octave: q.pitch.octave + 1,
+    })
+  })
+  it('wrong letter in the right octave is a miss', () => {
+    const q = startAt(1, 0)
+    useDrillStore.getState().answer((q.correctIndex + 1) % q.options.length, T0 + 500)
+    expect(useDrillStore.getState()).toMatchObject({ correct: 0, wrong: 1 })
+  })
+  it('weighs and marks the session', () => {
+    useDrillStore.getState().start(withOctave(1), T0)
+    useDrillStore.getState().tick(T0 + 61_000)
+    expect(useDrillStore.getState().lastResult).toMatchObject({ octave: true, weight: OCTAVE_WEIGHT })
+  })
+  it('off, the octave strip does not judge', () => {
+    useDrillStore.getState().start(settings, T0)
+    const q = useDrillStore.getState().question!
+    useDrillStore.setState({ octave: q.pitch.octave + 1 })
+    useDrillStore.getState().answer(q.correctIndex, T0 + 500)
+    expect(useDrillStore.getState().correct).toBe(1)
+    expect(useDrillStore.getState().feedback!.octave).toBeUndefined()
   })
 })
 
